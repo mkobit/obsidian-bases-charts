@@ -12,7 +12,7 @@ export default class BarePlugin extends Plugin {
 			name: 'Chart',
 			icon: 'bar-chart',
 			factory: (controller, containerEl) => new ChartView(controller, containerEl, this),
-			options: ChartView.getViewOptions,
+			options: () => ChartView.getViewOptions(),
 		});
 
 		// This adds a settings tab so the user can configure various aspects of the plugin

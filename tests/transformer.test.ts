@@ -24,11 +24,14 @@ describe('transformDataToChartOption', () => {
 
         // Check series
         const series = Array.isArray(option.series) ? option.series[0] : option.series;
-        expect(series).toEqual(expect.objectContaining({
-            type: 'bar',
-            data: [10, 20],
-            name: 'value'
-        }));
+        expect(series).toBeDefined();
+        if (series) {
+            expect(series).toEqual(expect.objectContaining({
+                type: 'bar',
+                data: [10, 20],
+                name: 'value'
+            }));
+        }
     });
 
     it('should handle numeric values as strings', () => {
@@ -39,7 +42,10 @@ describe('transformDataToChartOption', () => {
         const option = transformDataToChartOption(data, 'category', 'value');
 
         const series = Array.isArray(option.series) ? option.series[0] : option.series;
-        expect(series.data).toEqual([10, 20.5]);
+        expect(series).toBeDefined();
+        if (series) {
+            expect(series.data).toEqual([10, 20.5]);
+        }
     });
 
     it('should skip non-numeric values', () => {
@@ -57,7 +63,10 @@ describe('transformDataToChartOption', () => {
         }));
 
         const series = Array.isArray(option.series) ? option.series[0] : option.series;
-        expect(series.data).toEqual([10, 30]);
+        expect(series).toBeDefined();
+        if (series) {
+            expect(series.data).toEqual([10, 30]);
+        }
     });
 
     it('should handle nested properties', () => {
@@ -72,7 +81,10 @@ describe('transformDataToChartOption', () => {
         }));
 
         const series = Array.isArray(option.series) ? option.series[0] : option.series;
-        expect(series.data).toEqual([100, 200]);
+        expect(series).toBeDefined();
+        if (series) {
+            expect(series.data).toEqual([100, 200]);
+        }
     });
 
     it('should handle undefined values gracefully', () => {
@@ -87,6 +99,9 @@ describe('transformDataToChartOption', () => {
         }));
 
          const series = Array.isArray(option.series) ? option.series[0] : option.series;
-        expect(series.data).toEqual([10, 20]);
+        expect(series).toBeDefined();
+        if (series) {
+            expect(series.data).toEqual([10, 20]);
+        }
     });
 });

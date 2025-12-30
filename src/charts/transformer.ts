@@ -8,7 +8,7 @@ import type { EChartsOption } from 'echarts';
  * @param yProp The property key to use for the Y-axis (value).
  * @returns An ECharts option object.
  */
-export function transformDataToChartOption(data: Record<string, any>[], xProp: string, yProp: string): EChartsOption {
+export function transformDataToChartOption(data: Record<string, unknown>[], xProp: string, yProp: string): EChartsOption {
     const xData: string[] = [];
     const yData: number[] = [];
 
@@ -22,8 +22,8 @@ export function transformDataToChartOption(data: Record<string, any>[], xProp: s
         // Bases data usually comes as flat objects or with predictable structure.
         // Let's assume `data` is an array of objects where keys are property names.
 
-        let xVal = item[xProp];
-        let yVal = item[yProp];
+        let xVal: unknown = item[xProp];
+        let yVal: unknown = item[yProp];
 
         // Handle potential nesting or different structures if needed,
         // but for now assume direct access.
@@ -42,7 +42,7 @@ export function transformDataToChartOption(data: Record<string, any>[], xProp: s
         }
 
         // Ensure yVal is a number
-        const numVal = parseFloat(yVal);
+        const numVal = typeof yVal === 'number' ? yVal : parseFloat(String(yVal));
 
         if (!isNaN(numVal)) {
             xData.push(String(xVal));
@@ -76,6 +76,15 @@ export function transformDataToChartOption(data: Record<string, any>[], xProp: s
     };
 }
 
-function getNestedValue(obj: any, path: string): any {
-    return path.split('.').reduce((o, key) => (o && o[key] !== undefined) ? o[key] : undefined, obj);
+function getNestedValue(obj: unknown, path: string): unknown {
+    if (typeof obj !== 'object' || obj === null) {
+        return undefined;
+    }
+
+    return path.split('.').reduce((o: unknown, key: string) => {
+        if (typeof o === 'object' && o !== null && key in o) {
+             return (o as Record<string, unknown>)[key];
+        }
+        return undefined;
+    }, obj);
 }
