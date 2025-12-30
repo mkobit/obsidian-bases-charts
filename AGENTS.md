@@ -11,6 +11,10 @@ The goal is to build an assortment of views using:
 ## Architecture
 -   **Entry Point**: `src/main.ts` (`BarePlugin` class).
 -   **Settings**: `src/settings.ts` (Typed settings management).
+-   **Views**:
+    -   **BasesView**: We utilize the Obsidian Bases API for views.
+    -   **ECharts**: We use Apache ECharts for rendering charts.
+    -   **Separation of Concerns**: View logic (`ChartView`) is separated from data transformation logic (`transformer.ts`) to facilitate testing and maintenance.
 -   **Styles**: `styles.css` (Currently empty, reserved for view styles).
 -   **Manifest**: `manifest.json` (Synced via automation).
 
