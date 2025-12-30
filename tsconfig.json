@@ -17,6 +17,8 @@
 		"strictNullChecks": true,
 		"strictBindCallApply": true,
 		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
 		"useUnknownInCatchVariables": true,
 		"lib": [
 			"DOM",
@@ -26,6 +28,7 @@
 		]
 	},
 	"include": [
-		"src/**/*.ts"
+		"src/**/*.ts",
+		"tests/**/*.ts"
 	]
 }

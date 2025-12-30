@@ -75,10 +75,14 @@ export class ChartView extends BasesView {
             return;
         }
 
-        // this.data is BasesQueryResult.
-        // We pass it as unknown because transformer handles the type checking/extraction.
-        const option = transformDataToChartOption(this.data as any, xProp, yProp);
-        this.chart.setOption(option as any);
+        // Ensure data is in the expected format for the transformer
+        // BasesQueryResult.data is an array of BasesEntry.
+        // We need to map it to a Record<string, unknown> if possible, or just cast it safely if BasesEntry behaves like an object.
+        // Since we don't have easy access to BasesEntry keys without iterating or knowing schema, and transformer handles loose objects:
+        const data = this.data.data as unknown as Record<string, unknown>[];
+
+        const option = transformDataToChartOption(data, xProp, yProp);
+        this.chart.setOption(option);
     }
 
     private updateChartTheme = (): void => {
