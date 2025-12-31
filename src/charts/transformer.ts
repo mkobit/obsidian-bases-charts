@@ -1,4 +1,4 @@
-import type { EChartsOption, SeriesOption, XAXisComponentOption, YAXisComponentOption } from 'echarts';
+import type { EChartsOption, SeriesOption, LineSeriesOption, BarSeriesOption, PieSeriesOption } from 'echarts';
 
 export type ChartType = 'bar' | 'line' | 'pie';
 
@@ -29,6 +29,15 @@ export function transformDataToChartOption(
     return createCartesianChartOption(data, xProp, yProp, chartType, options);
 }
 
+function safeToString(val: unknown): string {
+    if (val === null || val === undefined) return '';
+    if (typeof val === 'string') return val;
+    if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+    // Fallback for objects/symbols to avoid [object Object] if possible, or just return it
+    // The lint rule complains about default stringification of objects.
+    return JSON.stringify(val);
+}
+
 function createPieChartOption(
     data: Record<string, unknown>[],
     nameProp: string,
@@ -36,7 +45,9 @@ function createPieChartOption(
     options?: ChartTransformerOptions
 ): EChartsOption {
     const seriesData = data.map(item => {
-        const name = String(getNestedValue(item, nameProp) ?? 'Unknown');
+        const valRaw = getNestedValue(item, nameProp);
+        const name = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+
         const val = Number(getNestedValue(item, valueProp));
         return {
             name: name,
@@ -44,7 +55,7 @@ function createPieChartOption(
         };
     });
 
-    const seriesItem: SeriesOption = {
+    const seriesItem: PieSeriesOption = {
         type: 'pie',
         data: seriesData,
         radius: '50%',
@@ -93,7 +104,8 @@ function createCartesianChartOption(
         // 1. Get all unique X values (categories)
         const uniqueX = new Set<string>();
         data.forEach(item => {
-            const xVal = String(getNestedValue(item, xProp) ?? 'Unknown');
+            const valRaw = getNestedValue(item, xProp);
+            const xVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
             uniqueX.add(xVal);
         });
         xAxisData = Array.from(uniqueX);
@@ -103,25 +115,31 @@ function createCartesianChartOption(
         // Find all unique series names first
         const uniqueSeries = new Set<string>();
         data.forEach(item => {
-            const sVal = String(getNestedValue(item, seriesProp) ?? 'Series 1');
+            const valRaw = getNestedValue(item, seriesProp);
+            const sVal = valRaw === undefined || valRaw === null ? 'Series 1' : safeToString(valRaw);
             uniqueSeries.add(sVal);
         });
 
         uniqueSeries.forEach(sName => {
-            seriesMap.set(sName, new Array(xAxisData.length).fill(null));
+            // Explicitly type the array to avoid "any[] assigned to (number|null)[]"
+            const arr = new Array(xAxisData.length).fill(null) as (number | null)[];
+            seriesMap.set(sName, arr);
         });
 
         // 3. Populate
         data.forEach(item => {
-            const xVal = String(getNestedValue(item, xProp) ?? 'Unknown');
-            const sVal = String(getNestedValue(item, seriesProp) ?? 'Series 1');
+            const xValRaw = getNestedValue(item, xProp);
+            const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+
+            const sValRaw = getNestedValue(item, seriesProp);
+            const sVal = sValRaw === undefined || sValRaw === null ? 'Series 1' : safeToString(sValRaw);
+
             const yVal = Number(getNestedValue(item, yProp));
 
             const xIndex = xAxisData.indexOf(xVal);
             if (xIndex !== -1 && !isNaN(yVal)) {
                 const arr = seriesMap.get(sVal);
                 if (arr) {
-                    // Simple overwrite for now, could sum if multiple entries exist for same x/series
                     arr[xIndex] = yVal;
                 }
             }
@@ -131,7 +149,9 @@ function createCartesianChartOption(
         // Single series logic
         const yData: number[] = [];
         data.forEach(item => {
-            const xVal = String(getNestedValue(item, xProp) ?? 'Unknown');
+            const xValRaw = getNestedValue(item, xProp);
+            const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+
             const yVal = Number(getNestedValue(item, yProp));
             if (!isNaN(yVal)) {
                 xAxisData.push(xVal);
@@ -145,20 +165,31 @@ function createCartesianChartOption(
     const seriesOptions: SeriesOption[] = [];
 
     seriesMap.forEach((sData, sName) => {
-        const seriesItem: any = {
+        // Construct the base object first
+        let seriesItem: LineSeriesOption | BarSeriesOption;
+
+        const base = {
             name: sName,
-            type: chartType,
             data: sData
         };
 
         if (chartType === 'line') {
-            if (options?.smooth) seriesItem.smooth = true;
-            if (options?.showSymbol === false) seriesItem.showSymbol = false;
-            if (options?.areaStyle) seriesItem.areaStyle = {};
-        }
-
-        if (isStacked) {
-            seriesItem.stack = 'total';
+             const lineItem: LineSeriesOption = {
+                 ...base,
+                 type: 'line'
+             };
+             if (options?.smooth) lineItem.smooth = true;
+             if (options?.showSymbol === false) lineItem.showSymbol = false;
+             if (options?.areaStyle) lineItem.areaStyle = {};
+             if (isStacked) lineItem.stack = 'total';
+             seriesItem = lineItem;
+        } else {
+            const barItem: BarSeriesOption = {
+                ...base,
+                type: 'bar'
+            };
+            if (isStacked) barItem.stack = 'total';
+            seriesItem = barItem;
         }
 
         seriesOptions.push(seriesItem);

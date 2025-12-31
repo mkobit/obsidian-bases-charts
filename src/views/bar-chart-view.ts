@@ -14,12 +14,17 @@ export class BarChartView extends BaseChartView {
     protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
+        const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY);
+        const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
 
         if (typeof xProp !== 'string' || typeof yProp !== 'string') {
             return null;
         }
 
-        return transformDataToChartOption(data, xProp, yProp, 'bar');
+        return transformDataToChartOption(data, xProp, yProp, 'bar', {
+            legend: showLegend,
+            seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined
+        });
     }
 
     static getViewOptions(): ViewOption[] {
