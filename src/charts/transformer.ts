@@ -2,6 +2,12 @@ import type { EChartsOption } from 'echarts';
 
 export type ChartType = 'bar' | 'line';
 
+export interface ChartOptions {
+    smooth?: boolean;
+    showSymbol?: boolean;
+    areaStyle?: boolean;
+}
+
 /**
  * Transforms Bases data into an ECharts option object.
  *
@@ -9,9 +15,16 @@ export type ChartType = 'bar' | 'line';
  * @param xProp The property key to use for the X-axis (category).
  * @param yProp The property key to use for the Y-axis (value).
  * @param chartType The type of chart to generate ('bar' or 'line').
+ * @param options Additional chart options.
  * @returns An ECharts option object.
  */
-export function transformDataToChartOption(data: Record<string, unknown>[], xProp: string, yProp: string, chartType: ChartType = 'bar'): EChartsOption {
+export function transformDataToChartOption(
+    data: Record<string, unknown>[],
+    xProp: string,
+    yProp: string,
+    chartType: ChartType = 'bar',
+    options?: ChartOptions
+): EChartsOption {
     const xData: string[] = [];
     const yData: number[] = [];
 
@@ -53,6 +66,18 @@ export function transformDataToChartOption(data: Record<string, unknown>[], xPro
         }
     }
 
+    const seriesItem: any = {
+        data: yData,
+        type: chartType,
+        name: yProp
+    };
+
+    if (chartType === 'line' && options) {
+        if (options.smooth !== undefined) seriesItem.smooth = options.smooth;
+        if (options.showSymbol !== undefined) seriesItem.showSymbol = options.showSymbol;
+        if (options.areaStyle) seriesItem.areaStyle = {};
+    }
+
     return {
         xAxis: {
             type: 'category',
@@ -63,13 +88,7 @@ export function transformDataToChartOption(data: Record<string, unknown>[], xPro
             type: 'value',
             name: yProp
         },
-        series: [
-            {
-                data: yData,
-                type: chartType,
-                name: yProp
-            }
-        ],
+        series: [seriesItem],
         tooltip: {
             trigger: 'axis'
         },

@@ -122,4 +122,23 @@ describe('transformDataToChartOption', () => {
             }));
         }
     });
+
+    it('should apply line chart options', () => {
+        const data = [{ category: 'A', value: 10 }];
+        const option = transformDataToChartOption(data, 'category', 'value', 'line', {
+            smooth: true,
+            showSymbol: false,
+            areaStyle: true
+        });
+
+        const series = Array.isArray(option.series) ? option.series[0] : option.series;
+        expect(series).toBeDefined();
+        if (series) {
+            // Because echarts types are loose here in test context (or we used any in implementation temporarily for seriesItem),
+            // we check if properties are present.
+            expect(series).toHaveProperty('smooth', true);
+            expect(series).toHaveProperty('showSymbol', false);
+            expect(series).toHaveProperty('areaStyle');
+        }
+    });
 });
