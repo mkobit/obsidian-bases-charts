@@ -2,6 +2,9 @@ import { Plugin } from 'obsidian';
 import { DEFAULT_SETTINGS, BarePluginSettings, SettingTab } from "./settings";
 import { BarChartView } from './views/bar-chart-view';
 import { LineChartView } from './views/line-chart-view';
+import { PieChartView } from './views/pie-chart-view';
+import { StackedBarChartView } from './views/stacked-bar-chart-view';
+import { AreaChartView } from './views/area-chart-view';
 
 export default class BarePlugin extends Plugin {
 	settings!: BarePluginSettings;
@@ -18,12 +21,32 @@ export default class BarePlugin extends Plugin {
 
 		this.registerBasesView('line-chart', {
 			name: 'Line Chart',
-			icon: 'activity', // Using 'activity' as a proxy for line chart icon if generic 'chart' is too broad, or just 'chart-line' if available. E.g. 'activity' is standard Lucide.
+			icon: 'activity',
 			factory: (controller, containerEl) => new LineChartView(controller, containerEl, this),
 			options: () => LineChartView.getViewOptions(),
 		});
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
+		this.registerBasesView('pie-chart', {
+			name: 'Pie Chart',
+			icon: 'pie-chart',
+			factory: (controller, containerEl) => new PieChartView(controller, containerEl, this),
+			options: () => PieChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('stacked-bar-chart', {
+			name: 'Stacked Bar Chart',
+			icon: 'bar-chart-2', // Using a variation of bar chart icon
+			factory: (controller, containerEl) => new StackedBarChartView(controller, containerEl, this),
+			options: () => StackedBarChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('area-chart', {
+			name: 'Area Chart',
+			icon: 'mountain', // Often used for area charts or similar
+			factory: (controller, containerEl) => new AreaChartView(controller, containerEl, this),
+			options: () => AreaChartView.getViewOptions(),
+		});
+
 		this.addSettingTab(new SettingTab(this.app, this));
 	}
 

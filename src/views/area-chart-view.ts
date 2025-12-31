@@ -4,8 +4,8 @@ import { transformDataToChartOption } from '../charts/transformer';
 import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
 
-export class LineChartView extends BaseChartView {
-    type = 'line-chart';
+export class AreaChartView extends BaseChartView {
+    type = 'area-chart';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller, scrollEl, plugin);
@@ -17,10 +17,12 @@ export class LineChartView extends BaseChartView {
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY);
         const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
 
-        // Get line specific options safely
+        // Options specific to Area chart logic (inherited from line options logic usually)
         const smooth = this.getBooleanOption('smooth');
         const showSymbol = this.getBooleanOption('showSymbol');
-        const areaStyle = this.getBooleanOption('areaStyle');
+        // We force areaStyle to true, or allow toggle if we want user control, but for "Area Chart" view it implies true.
+        // We can check if user explicitly turned it off if we add a toggle, but let's default to true.
+        const areaStyle = true;
 
         if (typeof xProp !== 'string' || typeof yProp !== 'string') {
             return null;
@@ -30,8 +32,8 @@ export class LineChartView extends BaseChartView {
             smooth,
             showSymbol,
             areaStyle,
-            legend: showLegend,
-            seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined
+            seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined,
+            legend: showLegend
         });
     }
 
@@ -52,11 +54,6 @@ export class LineChartView extends BaseChartView {
                 displayName: 'Show Symbol',
                 type: 'toggle',
                 key: 'showSymbol',
-            },
-            {
-                displayName: 'Area Style',
-                type: 'toggle',
-                key: 'areaStyle',
             }
         ];
     }

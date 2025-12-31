@@ -4,8 +4,8 @@ import { transformDataToChartOption } from '../charts/transformer';
 import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
 
-export class BarChartView extends BaseChartView {
-    type = 'bar-chart';
+export class StackedBarChartView extends BaseChartView {
+    type = 'stacked-bar-chart';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller, scrollEl, plugin);
@@ -22,8 +22,9 @@ export class BarChartView extends BaseChartView {
         }
 
         return transformDataToChartOption(data, xProp, yProp, 'bar', {
-            legend: showLegend,
-            seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined
+            stack: true,
+            seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined,
+            legend: showLegend
         });
     }
 

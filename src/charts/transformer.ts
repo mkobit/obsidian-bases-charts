@@ -1,104 +1,211 @@
-import type { EChartsOption, LineSeriesOption, BarSeriesOption } from 'echarts';
+import type { EChartsOption, SeriesOption, LineSeriesOption, BarSeriesOption, PieSeriesOption } from 'echarts';
 
-export type ChartType = 'bar' | 'line';
+export type ChartType = 'bar' | 'line' | 'pie';
 
-export interface LineChartOptions {
+export interface ChartTransformerOptions {
     smooth?: boolean;
     showSymbol?: boolean;
     areaStyle?: boolean;
+    legend?: boolean;
+    stack?: boolean;
+    seriesProp?: string; // Property to group by (for stacking or multi-series)
 }
 
 /**
  * Transforms Bases data into an ECharts option object.
- *
- * @param data The raw data array from the Bases query.
- * @param xProp The property key to use for the X-axis (category).
- * @param yProp The property key to use for the Y-axis (value).
- * @param chartType The type of chart to generate ('bar' or 'line').
- * @param options Additional chart options (currently only supports LineChartOptions).
- * @returns An ECharts option object.
  */
 export function transformDataToChartOption(
     data: Record<string, unknown>[],
     xProp: string,
     yProp: string,
     chartType: ChartType = 'bar',
-    options?: LineChartOptions
+    options?: ChartTransformerOptions
 ): EChartsOption {
-    const xData: string[] = [];
-    const yData: number[] = [];
-
-    // Map to aggregate values if there are duplicate x-axis categories
-    // Or just push for now. Let's assume aggregation might be needed later,
-    // but for "basic", simple mapping is enough.
-    // However, charts usually expect unique categories on X-axis or it treats them as separate points.
-
-    for (const item of data) {
-        // We only care about the properties, not the full object structure if it's nested.
-        // Bases data usually comes as flat objects or with predictable structure.
-        // Let's assume `data` is an array of objects where keys are property names.
-
-        let xVal: unknown = item[xProp];
-        let yVal: unknown = item[yProp];
-
-        // Handle potential nesting or different structures if needed,
-        // but for now assume direct access.
-
-        // Handle "file.name" or similar if passed as prop
-        if (xProp.includes('.')) {
-             xVal = getNestedValue(item, xProp);
-        }
-        if (yProp.includes('.')) {
-             yVal = getNestedValue(item, yProp);
-        }
-
-        // Basic validation
-        if (xVal === undefined || xVal === null) {
-            xVal = "Unknown";
-        }
-
-        // Ensure yVal is a number
-        const numVal = typeof yVal === 'number' ? yVal : parseFloat(String(yVal));
-
-        if (!isNaN(numVal)) {
-            xData.push(String(xVal));
-            yData.push(numVal);
-        }
+    if (chartType === 'pie') {
+        return createPieChartOption(data, xProp, yProp, options);
     }
 
-    let seriesItem: LineSeriesOption | BarSeriesOption;
+    // For Bar/Line (Cartesian)
+    return createCartesianChartOption(data, xProp, yProp, chartType, options);
+}
 
-    if (chartType === 'line') {
-        const lineSeries: LineSeriesOption = {
-            data: yData,
-            type: 'line',
-            name: yProp
+function safeToString(val: unknown): string {
+    if (val === null || val === undefined) return '';
+    if (typeof val === 'string') return val;
+    if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+    // Fallback for objects/symbols to avoid [object Object] if possible, or just return it
+    // The lint rule complains about default stringification of objects.
+    return JSON.stringify(val);
+}
+
+function createPieChartOption(
+    data: Record<string, unknown>[],
+    nameProp: string,
+    valueProp: string,
+    options?: ChartTransformerOptions
+): EChartsOption {
+    const seriesData = data.map(item => {
+        const valRaw = getNestedValue(item, nameProp);
+        const name = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+
+        const val = Number(getNestedValue(item, valueProp));
+        return {
+            name: name,
+            value: isNaN(val) ? 0 : val
         };
-        if (options) {
-            if (options.smooth !== undefined) lineSeries.smooth = options.smooth;
-            if (options.showSymbol !== undefined) lineSeries.showSymbol = options.showSymbol;
-            if (options.areaStyle) lineSeries.areaStyle = {};
+    });
+
+    const seriesItem: PieSeriesOption = {
+        type: 'pie',
+        data: seriesData,
+        radius: '50%',
+        emphasis: {
+            itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
         }
-        seriesItem = lineSeries;
+    };
+
+    const opt: EChartsOption = {
+        series: [seriesItem],
+        tooltip: {
+            trigger: 'item'
+        }
+    };
+
+    if (options?.legend) {
+        opt.legend = {
+            orient: 'vertical',
+            left: 'left'
+        };
+    }
+
+    return opt;
+}
+
+function createCartesianChartOption(
+    data: Record<string, unknown>[],
+    xProp: string,
+    yProp: string,
+    chartType: 'bar' | 'line',
+    options?: ChartTransformerOptions
+): EChartsOption {
+    const seriesProp = options?.seriesProp;
+    const isStacked = options?.stack;
+
+    // Process Data
+    let xAxisData: string[] = [];
+    let seriesMap: Map<string, (number | null)[]> = new Map();
+
+    if (seriesProp) {
+        // Multi-series logic
+        // 1. Get all unique X values (categories)
+        const uniqueX = new Set<string>();
+        data.forEach(item => {
+            const valRaw = getNestedValue(item, xProp);
+            const xVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+            uniqueX.add(xVal);
+        });
+        xAxisData = Array.from(uniqueX);
+
+        // 2. Initialize series data arrays
+        // We need to map { seriesName -> [val for x1, val for x2, ...] }
+        // Find all unique series names first
+        const uniqueSeries = new Set<string>();
+        data.forEach(item => {
+            const valRaw = getNestedValue(item, seriesProp);
+            const sVal = valRaw === undefined || valRaw === null ? 'Series 1' : safeToString(valRaw);
+            uniqueSeries.add(sVal);
+        });
+
+        uniqueSeries.forEach(sName => {
+            // Explicitly type the array to avoid "any[] assigned to (number|null)[]"
+            const arr = new Array(xAxisData.length).fill(null) as (number | null)[];
+            seriesMap.set(sName, arr);
+        });
+
+        // 3. Populate
+        data.forEach(item => {
+            const xValRaw = getNestedValue(item, xProp);
+            const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+
+            const sValRaw = getNestedValue(item, seriesProp);
+            const sVal = sValRaw === undefined || sValRaw === null ? 'Series 1' : safeToString(sValRaw);
+
+            const yVal = Number(getNestedValue(item, yProp));
+
+            const xIndex = xAxisData.indexOf(xVal);
+            if (xIndex !== -1 && !isNaN(yVal)) {
+                const arr = seriesMap.get(sVal);
+                if (arr) {
+                    arr[xIndex] = yVal;
+                }
+            }
+        });
+
     } else {
-        seriesItem = {
-            data: yData,
-            type: 'bar',
-            name: yProp
-        };
+        // Single series logic
+        const yData: number[] = [];
+        data.forEach(item => {
+            const xValRaw = getNestedValue(item, xProp);
+            const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+
+            const yVal = Number(getNestedValue(item, yProp));
+            if (!isNaN(yVal)) {
+                xAxisData.push(xVal);
+                yData.push(yVal);
+            }
+        });
+        seriesMap.set(yProp, yData);
     }
 
-    return {
+    // Build Series Options
+    const seriesOptions: SeriesOption[] = [];
+
+    seriesMap.forEach((sData, sName) => {
+        // Construct the base object first
+        let seriesItem: LineSeriesOption | BarSeriesOption;
+
+        const base = {
+            name: sName,
+            data: sData
+        };
+
+        if (chartType === 'line') {
+             const lineItem: LineSeriesOption = {
+                 ...base,
+                 type: 'line'
+             };
+             if (options?.smooth) lineItem.smooth = true;
+             if (options?.showSymbol === false) lineItem.showSymbol = false;
+             if (options?.areaStyle) lineItem.areaStyle = {};
+             if (isStacked) lineItem.stack = 'total';
+             seriesItem = lineItem;
+        } else {
+            const barItem: BarSeriesOption = {
+                ...base,
+                type: 'bar'
+            };
+            if (isStacked) barItem.stack = 'total';
+            seriesItem = barItem;
+        }
+
+        seriesOptions.push(seriesItem);
+    });
+
+    const opt: EChartsOption = {
         xAxis: {
             type: 'category',
-            data: xData,
+            data: xAxisData,
             name: xProp
         },
         yAxis: {
             type: 'value',
             name: yProp
         },
-        series: [seriesItem],
+        series: seriesOptions,
         tooltip: {
             trigger: 'axis'
         },
@@ -106,6 +213,12 @@ export function transformDataToChartOption(
             containLabel: true
         }
     };
+
+    if (options?.legend) {
+        opt.legend = {};
+    }
+
+    return opt;
 }
 
 function getNestedValue(obj: unknown, path: string): unknown {
