@@ -18,8 +18,10 @@
 		"esbuild": "0.25.5",
 		"eslint": "^9.39.2",
 		"eslint-plugin-obsidianmd": "0.1.9",
+		"fast-check": "^4.5.3",
 		"globals": "14.0.0",
 		"jiti": "2.6.1",
+		"temporal-polyfill": "^0.3.0",
 		"tslib": "2.4.0",
 		"typescript": "^5.8.3",
 		"typescript-eslint": "8.35.1"
