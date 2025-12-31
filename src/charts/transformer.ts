@@ -1,4 +1,4 @@
-import type { EChartsOption } from 'echarts';
+import type { EChartsOption, LineSeriesOption, BarSeriesOption } from 'echarts';
 
 export type ChartType = 'bar' | 'line';
 
@@ -66,16 +66,27 @@ export function transformDataToChartOption(
         }
     }
 
-    const seriesItem: any = {
-        data: yData,
-        type: chartType,
-        name: yProp
-    };
+    // Use union type for seriesItem
+    let seriesItem: LineSeriesOption | BarSeriesOption;
 
-    if (chartType === 'line' && options) {
-        if (options.smooth !== undefined) seriesItem.smooth = options.smooth;
-        if (options.showSymbol !== undefined) seriesItem.showSymbol = options.showSymbol;
-        if (options.areaStyle) seriesItem.areaStyle = {};
+    if (chartType === 'line') {
+        const lineSeries: LineSeriesOption = {
+            data: yData,
+            type: 'line',
+            name: yProp
+        };
+        if (options) {
+            if (options.smooth !== undefined) lineSeries.smooth = options.smooth;
+            if (options.showSymbol !== undefined) lineSeries.showSymbol = options.showSymbol;
+            if (options.areaStyle) lineSeries.areaStyle = {};
+        }
+        seriesItem = lineSeries;
+    } else {
+        seriesItem = {
+            data: yData,
+            type: 'bar',
+            name: yProp
+        };
     }
 
     return {
