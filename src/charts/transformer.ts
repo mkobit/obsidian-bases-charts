@@ -66,7 +66,6 @@ export function transformDataToChartOption(
         }
     }
 
-    // Use union type for seriesItem
     let seriesItem: LineSeriesOption | BarSeriesOption;
 
     if (chartType === 'line') {
