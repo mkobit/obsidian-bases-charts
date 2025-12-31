@@ -18,6 +18,8 @@ export abstract class BaseChartView extends BasesView {
     // Common Config Keys
     protected static X_AXIS_PROP_KEY = 'xAxisProp';
     protected static Y_AXIS_PROP_KEY = 'yAxisProp';
+    protected static SERIES_PROP_KEY = 'seriesProp';
+    protected static LEGEND_KEY = 'showLegend';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller);
@@ -62,7 +64,8 @@ export abstract class BaseChartView extends BasesView {
         const option = this.getChartOption(data);
 
         if (option) {
-            this.chart.setOption(option);
+            // Re-merge with notMerge: true to ensure clean slate for dynamic series
+            this.chart.setOption(option, true);
         } else {
             this.chart.clear();
         }
@@ -95,6 +98,17 @@ export abstract class BaseChartView extends BasesView {
                 type: 'property',
                 key: BaseChartView.Y_AXIS_PROP_KEY,
                 placeholder: 'Select value property',
+            },
+            {
+                displayName: 'Series Property (Optional)',
+                type: 'property',
+                key: BaseChartView.SERIES_PROP_KEY,
+                placeholder: 'Select series/group property',
+            },
+            {
+                displayName: 'Show Legend',
+                type: 'toggle',
+                key: BaseChartView.LEGEND_KEY,
             }
         ];
     }
