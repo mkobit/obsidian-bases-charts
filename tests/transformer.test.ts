@@ -104,4 +104,22 @@ describe('transformDataToChartOption', () => {
             expect(series.data).toEqual([10, 20]);
         }
     });
+
+    it('should create a line chart when specified', () => {
+        const data = [
+            { category: 'A', value: 10 },
+            { category: 'B', value: 20 },
+        ];
+        const option = transformDataToChartOption(data, 'category', 'value', 'line');
+
+        const series = Array.isArray(option.series) ? option.series[0] : option.series;
+        expect(series).toBeDefined();
+        if (series) {
+            expect(series).toEqual(expect.objectContaining({
+                type: 'line',
+                data: [10, 20],
+                name: 'value'
+            }));
+        }
+    });
 });

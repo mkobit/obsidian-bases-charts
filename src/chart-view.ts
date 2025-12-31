@@ -5,7 +5,7 @@ import {
     debounce
 } from 'obsidian';
 import * as echarts from 'echarts';
-import { transformDataToChartOption } from './charts/transformer';
+import { transformDataToChartOption, ChartType } from './charts/transformer';
 import type BarePlugin from './main';
 
 export const ChartViewType = 'chart';
@@ -22,6 +22,7 @@ export class ChartView extends BasesView {
     // Config keys
     private static X_AXIS_PROP_KEY = 'xAxisProp';
     private static Y_AXIS_PROP_KEY = 'yAxisProp';
+    private static CHART_TYPE_KEY = 'chartType';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller);
@@ -69,6 +70,14 @@ export class ChartView extends BasesView {
         // Get props from config
         const xProp = this.config.get(ChartView.X_AXIS_PROP_KEY);
         const yProp = this.config.get(ChartView.Y_AXIS_PROP_KEY);
+        // Default to 'bar' if not set or invalid
+        let chartTypeVal = this.config.get(ChartView.CHART_TYPE_KEY) as string;
+
+        // Validate chart type
+        let chartType: ChartType = 'bar';
+        if (chartTypeVal === 'line') {
+            chartType = 'line';
+        }
 
         if (typeof xProp !== 'string' || typeof yProp !== 'string') {
             this.chart.clear();
@@ -81,7 +90,7 @@ export class ChartView extends BasesView {
         // Since we don't have easy access to BasesEntry keys without iterating or knowing schema, and transformer handles loose objects:
         const data = this.data.data as unknown as Record<string, unknown>[];
 
-        const option = transformDataToChartOption(data, xProp, yProp);
+        const option = transformDataToChartOption(data, xProp, yProp, chartType);
         this.chart.setOption(option);
     }
 
@@ -111,6 +120,12 @@ export class ChartView extends BasesView {
                 type: 'property',
                 key: ChartView.Y_AXIS_PROP_KEY,
                 placeholder: 'Select value property',
+            },
+            {
+                displayName: 'Chart Type (bar/line)',
+                type: 'text',
+                key: ChartView.CHART_TYPE_KEY,
+                placeholder: 'bar',
             }
         ];
     }
