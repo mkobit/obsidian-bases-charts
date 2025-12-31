@@ -2,7 +2,7 @@ import type { EChartsOption, LineSeriesOption, BarSeriesOption } from 'echarts';
 
 export type ChartType = 'bar' | 'line';
 
-export interface ChartOptions {
+export interface LineChartOptions {
     smooth?: boolean;
     showSymbol?: boolean;
     areaStyle?: boolean;
@@ -15,7 +15,7 @@ export interface ChartOptions {
  * @param xProp The property key to use for the X-axis (category).
  * @param yProp The property key to use for the Y-axis (value).
  * @param chartType The type of chart to generate ('bar' or 'line').
- * @param options Additional chart options.
+ * @param options Additional chart options (currently only supports LineChartOptions).
  * @returns An ECharts option object.
  */
 export function transformDataToChartOption(
@@ -23,7 +23,7 @@ export function transformDataToChartOption(
     xProp: string,
     yProp: string,
     chartType: ChartType = 'bar',
-    options?: ChartOptions
+    options?: LineChartOptions
 ): EChartsOption {
     const xData: string[] = [];
     const yData: number[] = [];

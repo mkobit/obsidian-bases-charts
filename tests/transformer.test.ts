@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { transformDataToChartOption } from '../src/charts/transformer';
+import type { LineSeriesOption } from 'echarts';
 
 describe('transformDataToChartOption', () => {
     it('should transform simple flat data', () => {
@@ -131,11 +132,11 @@ describe('transformDataToChartOption', () => {
             areaStyle: true
         });
 
-        const series = Array.isArray(option.series) ? option.series[0] : option.series;
-        expect(series).toBeDefined();
-        if (series) {
-            // Because echarts types are loose here in test context (or we used any in implementation temporarily for seriesItem),
-            // we check if properties are present.
+        // Our implementation guarantees series is an array of length 1
+        expect(Array.isArray(option.series)).toBe(true);
+        if (Array.isArray(option.series)) {
+            const series = option.series[0] as LineSeriesOption;
+            expect(series).toBeDefined();
             expect(series).toHaveProperty('smooth', true);
             expect(series).toHaveProperty('showSymbol', false);
             expect(series).toHaveProperty('areaStyle');

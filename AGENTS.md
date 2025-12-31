@@ -37,5 +37,5 @@ The goal is to build an assortment of views using:
 2.  **Verify**: Always run the following commands locally to verify your changes before opening a pull request:
     - `pnpm run build`
     - `pnpm run lint`
-    - `npx vitest run` (or `pnpm test` if configured)
+    - `pnpm run test`
 3.  **Clean Code**: Keep `main.ts` focused on lifecycle management. Move heavy logic to separate modules/components.
