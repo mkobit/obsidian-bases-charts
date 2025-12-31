@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { transformDataToChartOption } from '../src/charts/transformer';
+import type { LineSeriesOption } from 'echarts';
 
 describe('transformDataToChartOption', () => {
     it('should transform simple flat data', () => {
@@ -120,6 +121,25 @@ describe('transformDataToChartOption', () => {
                 data: [10, 20],
                 name: 'value'
             }));
+        }
+    });
+
+    it('should apply line chart options', () => {
+        const data = [{ category: 'A', value: 10 }];
+        const option = transformDataToChartOption(data, 'category', 'value', 'line', {
+            smooth: true,
+            showSymbol: false,
+            areaStyle: true
+        });
+
+        // Our implementation guarantees series is an array of length 1
+        expect(Array.isArray(option.series)).toBe(true);
+        if (Array.isArray(option.series)) {
+            const series = option.series[0] as LineSeriesOption;
+            expect(series).toBeDefined();
+            expect(series).toHaveProperty('smooth', true);
+            expect(series).toHaveProperty('showSymbol', false);
+            expect(series).toHaveProperty('areaStyle');
         }
     });
 });

@@ -1,6 +1,12 @@
-import type { EChartsOption } from 'echarts';
+import type { EChartsOption, LineSeriesOption, BarSeriesOption } from 'echarts';
 
 export type ChartType = 'bar' | 'line';
+
+export interface LineChartOptions {
+    smooth?: boolean;
+    showSymbol?: boolean;
+    areaStyle?: boolean;
+}
 
 /**
  * Transforms Bases data into an ECharts option object.
@@ -9,9 +15,16 @@ export type ChartType = 'bar' | 'line';
  * @param xProp The property key to use for the X-axis (category).
  * @param yProp The property key to use for the Y-axis (value).
  * @param chartType The type of chart to generate ('bar' or 'line').
+ * @param options Additional chart options (currently only supports LineChartOptions).
  * @returns An ECharts option object.
  */
-export function transformDataToChartOption(data: Record<string, unknown>[], xProp: string, yProp: string, chartType: ChartType = 'bar'): EChartsOption {
+export function transformDataToChartOption(
+    data: Record<string, unknown>[],
+    xProp: string,
+    yProp: string,
+    chartType: ChartType = 'bar',
+    options?: LineChartOptions
+): EChartsOption {
     const xData: string[] = [];
     const yData: number[] = [];
 
@@ -53,6 +66,28 @@ export function transformDataToChartOption(data: Record<string, unknown>[], xPro
         }
     }
 
+    let seriesItem: LineSeriesOption | BarSeriesOption;
+
+    if (chartType === 'line') {
+        const lineSeries: LineSeriesOption = {
+            data: yData,
+            type: 'line',
+            name: yProp
+        };
+        if (options) {
+            if (options.smooth !== undefined) lineSeries.smooth = options.smooth;
+            if (options.showSymbol !== undefined) lineSeries.showSymbol = options.showSymbol;
+            if (options.areaStyle) lineSeries.areaStyle = {};
+        }
+        seriesItem = lineSeries;
+    } else {
+        seriesItem = {
+            data: yData,
+            type: 'bar',
+            name: yProp
+        };
+    }
+
     return {
         xAxis: {
             type: 'category',
@@ -63,13 +98,7 @@ export function transformDataToChartOption(data: Record<string, unknown>[], xPro
             type: 'value',
             name: yProp
         },
-        series: [
-            {
-                data: yData,
-                type: chartType,
-                name: yProp
-            }
-        ],
+        series: [seriesItem],
         tooltip: {
             trigger: 'axis'
         },

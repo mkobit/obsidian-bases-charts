@@ -15,14 +15,45 @@ export class LineChartView extends BaseChartView {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
 
+        // Get line specific options safely
+        const smooth = this.getBooleanOption('smooth');
+        const showSymbol = this.getBooleanOption('showSymbol');
+        const areaStyle = this.getBooleanOption('areaStyle');
+
         if (typeof xProp !== 'string' || typeof yProp !== 'string') {
             return null;
         }
 
-        return transformDataToChartOption(data, xProp, yProp, 'line');
+        return transformDataToChartOption(data, xProp, yProp, 'line', {
+            smooth,
+            showSymbol,
+            areaStyle
+        });
+    }
+
+    private getBooleanOption(key: string): boolean | undefined {
+        const val = this.config.get(key);
+        return typeof val === 'boolean' ? val : undefined;
     }
 
     static getViewOptions(): ViewOption[] {
-        return BaseChartView.getCommonViewOptions();
+        return [
+            ...BaseChartView.getCommonViewOptions(),
+            {
+                displayName: 'Smooth Line',
+                type: 'toggle',
+                key: 'smooth',
+            },
+            {
+                displayName: 'Show Symbol',
+                type: 'toggle',
+                key: 'showSymbol',
+            },
+            {
+                displayName: 'Area Style',
+                type: 'toggle',
+                key: 'areaStyle',
+            }
+        ];
     }
 }
