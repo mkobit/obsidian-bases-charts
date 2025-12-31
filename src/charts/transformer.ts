@@ -1,14 +1,17 @@
 import type { EChartsOption } from 'echarts';
 
+export type ChartType = 'bar' | 'line';
+
 /**
  * Transforms Bases data into an ECharts option object.
  *
  * @param data The raw data array from the Bases query.
  * @param xProp The property key to use for the X-axis (category).
  * @param yProp The property key to use for the Y-axis (value).
+ * @param chartType The type of chart to generate ('bar' or 'line').
  * @returns An ECharts option object.
  */
-export function transformDataToChartOption(data: Record<string, unknown>[], xProp: string, yProp: string): EChartsOption {
+export function transformDataToChartOption(data: Record<string, unknown>[], xProp: string, yProp: string, chartType: ChartType = 'bar'): EChartsOption {
     const xData: string[] = [];
     const yData: number[] = [];
 
@@ -63,7 +66,7 @@ export function transformDataToChartOption(data: Record<string, unknown>[], xPro
         series: [
             {
                 data: yData,
-                type: 'bar',
+                type: chartType,
                 name: yProp
             }
         ],

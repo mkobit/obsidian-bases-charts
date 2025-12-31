@@ -5,37 +5,30 @@ import {
     debounce
 } from 'obsidian';
 import * as echarts from 'echarts';
-import { transformDataToChartOption } from './charts/transformer';
-import type BarePlugin from './main';
+import type BarePlugin from '../main';
+import type { EChartsOption } from 'echarts';
 
-export const ChartViewType = 'chart';
-
-export class ChartView extends BasesView {
-    type = ChartViewType;
+export abstract class BaseChartView extends BasesView {
     scrollEl: HTMLElement;
     containerEl: HTMLElement;
     chartEl: HTMLElement;
     plugin: BarePlugin;
+    protected chart: echarts.ECharts | null = null;
 
-    private chart: echarts.ECharts | null = null;
-
-    // Config keys
-    private static X_AXIS_PROP_KEY = 'xAxisProp';
-    private static Y_AXIS_PROP_KEY = 'yAxisProp';
+    // Common Config Keys
+    protected static X_AXIS_PROP_KEY = 'xAxisProp';
+    protected static Y_AXIS_PROP_KEY = 'yAxisProp';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller);
         this.scrollEl = scrollEl;
         this.plugin = plugin;
         this.containerEl = scrollEl.createDiv({ cls: 'bases-chart-container' });
-        // Height handled by CSS 'bases-chart' class
         this.chartEl = this.containerEl.createDiv({ cls: 'bases-chart' });
     }
 
     onload(): void {
-        // Handle resize
         this.registerEvent(this.app.workspace.on('resize', this.onResizeDebounce, this));
-        // Handle theme change (ECharts has dark theme support)
         this.registerEvent(this.app.workspace.on('css-change', this.updateChartTheme, this));
     }
 
@@ -58,32 +51,24 @@ export class ChartView extends BasesView {
         this.renderChart();
     }
 
-    private renderChart(): void {
+    protected renderChart(): void {
         if (!this.chartEl) return;
 
-        // Initialize chart if needed
         if (!this.chart) {
             this.chart = echarts.init(this.chartEl, this.isDarkMode() ? 'dark' : undefined);
         }
 
-        // Get props from config
-        const xProp = this.config.get(ChartView.X_AXIS_PROP_KEY);
-        const yProp = this.config.get(ChartView.Y_AXIS_PROP_KEY);
-
-        if (typeof xProp !== 'string' || typeof yProp !== 'string') {
-            this.chart.clear();
-            return;
-        }
-
-        // Ensure data is in the expected format for the transformer
-        // BasesQueryResult.data is an array of BasesEntry.
-        // We need to map it to a Record<string, unknown> if possible, or just cast it safely if BasesEntry behaves like an object.
-        // Since we don't have easy access to BasesEntry keys without iterating or knowing schema, and transformer handles loose objects:
         const data = this.data.data as unknown as Record<string, unknown>[];
+        const option = this.getChartOption(data);
 
-        const option = transformDataToChartOption(data, xProp, yProp);
-        this.chart.setOption(option);
+        if (option) {
+            this.chart.setOption(option);
+        } else {
+            this.chart.clear();
+        }
     }
+
+    protected abstract getChartOption(data: Record<string, unknown>[]): EChartsOption | null;
 
     private updateChartTheme = (): void => {
         if (this.chart) {
@@ -94,22 +79,21 @@ export class ChartView extends BasesView {
     }
 
     private isDarkMode(): boolean {
-        // Obsidian 1.0+ way to check for dark mode
         return document.body.classList.contains('theme-dark');
     }
 
-    static getViewOptions(): ViewOption[] {
+    static getCommonViewOptions(): ViewOption[] {
         return [
             {
                 displayName: 'X-Axis Property',
                 type: 'property',
-                key: ChartView.X_AXIS_PROP_KEY,
+                key: BaseChartView.X_AXIS_PROP_KEY,
                 placeholder: 'Select category property',
             },
             {
                 displayName: 'Y-Axis Property',
                 type: 'property',
-                key: ChartView.Y_AXIS_PROP_KEY,
+                key: BaseChartView.Y_AXIS_PROP_KEY,
                 placeholder: 'Select value property',
             }
         ];
