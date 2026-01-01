@@ -546,7 +546,6 @@ function createCartesianChartOption(
     const opt: EChartsOption = {
         xAxis: {
             type: 'category',
-            data: xAxisData,
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
             data: xAxisData as any, // Cast to any to satisfy explicit any check if inference fails
             name: xProp
