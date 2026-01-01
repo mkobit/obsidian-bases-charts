@@ -12,12 +12,20 @@ import { FunnelChartView } from './views/funnel-chart-view';
 import { GaugeChartView } from './views/gauge-chart-view';
 import { HeatmapChartView } from './views/heatmap-chart-view';
 import { CandlestickChartView } from './views/candlestick-chart-view';
+import { TreemapChartView } from './views/treemap-chart-view';
 
 export default class BarePlugin extends Plugin {
 	settings!: BarePluginSettings;
 
 	async onload() {
 		await this.loadSettings();
+
+		this.registerBasesView('treemap-chart', {
+			name: 'Treemap',
+			icon: 'layout-grid',
+			factory: (controller, containerEl) => new TreemapChartView(controller, containerEl, this),
+			options: () => TreemapChartView.getViewOptions(),
+		});
 
 		this.registerBasesView('bar-chart', {
 			name: 'Bar Chart',
