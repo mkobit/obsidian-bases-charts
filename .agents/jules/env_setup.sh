@@ -1,6 +1,5 @@
 #!/bin/bash
-# Jules environment setup for Obsidian Sample Plugin
-# Based on CI configuration and mkobit/dotfiles example
+# Jules environment setup for Bases Views and ECharts implementation
 
 set -euo pipefail
 
@@ -8,7 +7,7 @@ echo "Setting up environment..."
 
 # 1. Install missing system tools
 # Standard tools that might be useful
-TOOLS="git curl jq"
+TOOLS="curl jq"
 MISSING=""
 for tool in $TOOLS; do
     if ! command -v "$tool" &> /dev/null; then
@@ -28,14 +27,19 @@ if [ -n "$MISSING" ]; then
 fi
 
 # 2. Setup Node.js and pnpm
-# Priority: use mise if available (as per mise.toml)
+# Priority: use mise if available (as per mise.toml), otherwise check for nvm or manual node
 if command -v mise &> /dev/null; then
     echo "mise found, installing tools from mise.toml..."
     mise install
+elif [ -s "$HOME/.nvm/nvm.sh" ]; then
+    echo "nvm found, using .nvmrc..."
+    source "$HOME/.nvm/nvm.sh"
+    nvm install
+    nvm use
 else
-    echo "mise not found. Checking Node.js..."
+    echo "mise and nvm not found. Checking Node.js..."
     if ! command -v node &> /dev/null; then
-        echo "Error: Node.js not found. Please install Node.js 22 (or use mise)."
+        echo "Error: Node.js not found. Please install Node.js 22 (via mise, nvm, or system)."
         exit 1
     fi
     NODE_VERSION=$(node -v)
@@ -65,15 +69,5 @@ pnpm install --frozen-lockfile
 # 4. Diagnostic Info
 echo "User: $(whoami)"
 echo "Git Commit: $(git rev-parse --short HEAD) ($(git log -1 --format=%cI))"
-
-# 5. Build and Verify
-echo "Building (includes type check)..."
-pnpm run build
-
-echo "Running lint..."
-pnpm run lint
-
-echo "Running tests..."
-pnpm run test
 
 echo "Environment ready"
