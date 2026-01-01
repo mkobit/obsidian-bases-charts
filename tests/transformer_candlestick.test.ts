@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import type { CandlestickSeriesOption } from 'echarts';
 import { transformDataToChartOption } from '../src/charts/transformer';
 
 describe('Transformer - Candlestick Chart', () => {
@@ -18,15 +19,14 @@ describe('Transformer - Candlestick Chart', () => {
 
         // Basic Structure
         expect(option).toHaveProperty('series');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const series = option.series as any[];
+
+        const series = option.series as CandlestickSeriesOption[];
         expect(Array.isArray(series)).toBe(true);
         expect(series.length).toBe(1);
         expect(series[0].type).toBe('candlestick');
 
         // Data Verification
         // ECharts Candlestick data format: [open, close, low, high]
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const seriesData = series[0].data as number[][];
         expect(seriesData).toHaveLength(3);
 
@@ -54,8 +54,7 @@ describe('Transformer - Candlestick Chart', () => {
             highProp: 'high'
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const series = option.series as any[];
+        const series = option.series as CandlestickSeriesOption[];
         const seriesData = series[0].data as number[][];
 
         // Should ignore invalid rows (open: null and low: undefined should cause rows to be skipped)
@@ -64,7 +63,8 @@ describe('Transformer - Candlestick Chart', () => {
 
         // Check xAxis data sync
         // @ts-ignore
-        expect(option.xAxis.data).toEqual(['2023-10-01']);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        expect((option.xAxis as any).data).toEqual(['2023-10-01']);
     });
 
     it('should use default property names if options are missing', () => {
@@ -72,8 +72,7 @@ describe('Transformer - Candlestick Chart', () => {
         // We pass empty options for props
         const option = transformDataToChartOption(data, 'date', '', 'candlestick');
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const series = option.series as any[];
+        const series = option.series as CandlestickSeriesOption[];
         const seriesData = series[0].data as number[][];
         expect(seriesData).toHaveLength(3);
         expect(seriesData[0]).toEqual([100, 110, 95, 115]);

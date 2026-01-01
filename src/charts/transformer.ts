@@ -493,14 +493,10 @@ function createHeatmapChartOption(
     const opt: EChartsOption = {
         tooltip: {
             position: 'top',
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             formatter: (params: any) => {
                 if (!params || !Array.isArray(params.value)) return '';
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 const xIndex = params.value[0] as number;
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 const yIndex = params.value[1] as number;
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 const val = params.value[2] as number;
                 return `${xProp}: ${xAxisData[xIndex]}<br/>${yProp}: ${yAxisData[yIndex]}<br/>Value: ${val}`;
             }
@@ -590,7 +586,6 @@ function createScatterChartOption(
         // Add size if exists (making it [x, y, size])
         if (sizeProp) {
             const sizeVal = Number(getNestedValue(item, sizeProp));
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
             (point as any).push(isNaN(sizeVal) ? 0 : sizeVal);
         }
 
@@ -608,11 +603,8 @@ function createScatterChartOption(
         if (sizeProp) {
             // Map the 3rd dimension (index 2) to symbolSize
             // ECharts callback: (val: Array) => number
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             seriesItem.symbolSize = function (data: any) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 if (Array.isArray(data) && data.length > 2) {
-                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                      const r = data[2] as number;
                      return Math.max(0, r);
                 }
@@ -638,15 +630,12 @@ function createScatterChartOption(
         series: seriesOptions,
         tooltip: {
             trigger: 'item',
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             formatter: (params: any) => {
                 if (!params || typeof params !== 'object') return '';
 
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
                 const vals = params.value;
                 let tip = '';
                 if (Array.isArray(vals)) {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                     tip = `${params.seriesName}<br/>${xProp}: ${vals[0]}<br/>${yProp}: ${vals[1]}`;
                     if (sizeProp && vals.length > 2) {
                         tip += `<br/>${sizeProp}: ${vals[2]}`;
@@ -702,7 +691,6 @@ function createCartesianChartOption(
         uniqueSeries.forEach(sName => {
             // Explicitly type the array to avoid "any[] assigned to (number|null)[]"
             const arr = new Array(xAxisData.length).fill(null) as (number | null)[];
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             seriesMap.set(sName, arr as any);
         });
 
@@ -778,7 +766,6 @@ function createCartesianChartOption(
     const opt: EChartsOption = {
         xAxis: {
             type: 'category',
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
             data: xAxisData as any, // Cast to any to satisfy explicit any check if inference fails
             name: xProp
         },

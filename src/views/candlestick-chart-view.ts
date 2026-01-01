@@ -1,5 +1,4 @@
 import {
-    BasesView,
     QueryController,
     ViewOption
 } from 'obsidian';
