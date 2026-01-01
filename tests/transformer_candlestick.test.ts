@@ -23,11 +23,11 @@ describe('Transformer - Candlestick Chart', () => {
         const series = option.series as CandlestickSeriesOption[];
         expect(Array.isArray(series)).toBe(true);
         expect(series.length).toBe(1);
-        expect(series[0].type).toBe('candlestick');
+        expect(series[0]!.type).toBe('candlestick');
 
         // Data Verification
         // ECharts Candlestick data format: [open, close, low, high]
-        const seriesData = series[0].data as number[][];
+        const seriesData = series[0]!.data as number[][];
         expect(seriesData).toHaveLength(3);
 
         expect(seriesData[0]).toEqual([100, 110, 95, 115]);
@@ -55,7 +55,7 @@ describe('Transformer - Candlestick Chart', () => {
         });
 
         const series = option.series as CandlestickSeriesOption[];
-        const seriesData = series[0].data as number[][];
+        const seriesData = series[0]!.data as number[][];
 
         // Should ignore invalid rows (open: null and low: undefined should cause rows to be skipped)
         expect(seriesData).toHaveLength(1);
@@ -73,7 +73,7 @@ describe('Transformer - Candlestick Chart', () => {
         const option = transformDataToChartOption(data, 'date', '', 'candlestick');
 
         const series = option.series as CandlestickSeriesOption[];
-        const seriesData = series[0].data as number[][];
+        const seriesData = series[0]!.data as number[][];
         expect(seriesData).toHaveLength(3);
         expect(seriesData[0]).toEqual([100, 110, 95, 115]);
     });
