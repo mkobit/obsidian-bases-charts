@@ -46,7 +46,7 @@ describe('Treemap Transformer', () => {
 
         // Safety check before access
         if (series && series[0]) {
-             const seriesData = series[0].data as any[];
+             const seriesData = series[0].data as unknown[];
              expect(seriesData.length).toBe(0);
         } else {
              // If series is missing, that might be valid or invalid depending on impl,
