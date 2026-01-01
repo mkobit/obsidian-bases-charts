@@ -897,14 +897,14 @@ function quantile(ascSorted: number[], p: number): number {
     const base = Math.floor(pos);
     const rest = pos - base;
     if (base + 1 < n) {
-        return ascSorted[base] + (ascSorted[base + 1] - ascSorted[base]) * rest;
+        return ascSorted[base]! + (ascSorted[base + 1]! - ascSorted[base]!) * rest;
     } else {
-        return ascSorted[base];
+        return ascSorted[base]!;
     }
 }
 
-function calculateBoxplotStats(values: number[]): [number, number, number, number, number] {
-    if (values.length === 0) return [0, 0, 0, 0, 0];
+function calculateBoxplotStats(values: number[]): number[] {
+    if (values.length === 0) return [];
     const sorted = values.slice().sort((a, b) => a - b);
     const min = sorted[0];
     const max = sorted[sorted.length - 1];
@@ -922,54 +922,42 @@ function createBoxplotChartOption(
 ): EChartsOption {
     const seriesProp = options?.seriesProp;
 
-    // 1. Identify X Categories
+    // 1. Single pass to aggregate data
+    // Map<SeriesName, Map<CategoryName, number[]>>
+    const seriesMap = new Map<string, Map<string, number[]>>();
     const uniqueX = new Set<string>();
+
     data.forEach(item => {
-        const valRaw = getNestedValue(item, xProp);
-        const xVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+        const xValRaw = getNestedValue(item, xProp);
+        const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
         uniqueX.add(xVal);
+
+        let sName = yProp;
+        if (seriesProp) {
+            const sRaw = getNestedValue(item, seriesProp);
+            sName = sRaw === undefined || sRaw === null ? 'Series 1' : safeToString(sRaw);
+        }
+
+        const yVal = Number(getNestedValue(item, yProp));
+        if (isNaN(yVal)) return;
+
+        if (!seriesMap.has(sName)) {
+            seriesMap.set(sName, new Map());
+        }
+        const catMap = seriesMap.get(sName)!;
+        if (!catMap.has(xVal)) {
+            catMap.set(xVal, []);
+        }
+        catMap.get(xVal)!.push(yVal);
     });
+
     const xAxisData = Array.from(uniqueX);
-
-    // 2. Identify Series
-    const uniqueSeries = new Set<string>();
-    if (seriesProp) {
-        data.forEach(item => {
-            const valRaw = getNestedValue(item, seriesProp);
-            const sVal = valRaw === undefined || valRaw === null ? 'Series 1' : safeToString(valRaw);
-            uniqueSeries.add(sVal);
-        });
-    } else {
-        uniqueSeries.add(yProp); // Or 'Data'
-    }
-
-    // 3. Build Series Data
     const seriesOptions: BoxplotSeriesOption[] = [];
 
-    uniqueSeries.forEach(sName => {
+    seriesMap.forEach((catMap, sName) => {
         const seriesData: number[][] = [];
-
-        xAxisData.forEach(xCat => {
-            // Collect values for this series and this category
-            const values: number[] = [];
-            data.forEach(item => {
-                const itemX = getNestedValue(item, xProp);
-                const xVal = itemX === undefined || itemX === null ? 'Unknown' : safeToString(itemX);
-
-                if (xVal !== xCat) return;
-
-                if (seriesProp) {
-                    const itemS = getNestedValue(item, seriesProp);
-                    const sVal = itemS === undefined || itemS === null ? 'Series 1' : safeToString(itemS);
-                    if (sVal !== sName) return;
-                }
-
-                const val = Number(getNestedValue(item, yProp));
-                if (!isNaN(val)) {
-                    values.push(val);
-                }
-            });
-
+        xAxisData.forEach(xVal => {
+            const values = catMap.get(xVal) || [];
             seriesData.push(calculateBoxplotStats(values));
         });
 
