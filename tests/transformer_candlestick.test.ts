@@ -18,13 +18,16 @@ describe('Transformer - Candlestick Chart', () => {
 
         // Basic Structure
         expect(option).toHaveProperty('series');
-        expect(Array.isArray(option.series)).toBe(true);
-        expect(option.series!.length).toBe(1);
-        expect(option.series![0].type).toBe('candlestick');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const series = option.series as any[];
+        expect(Array.isArray(series)).toBe(true);
+        expect(series.length).toBe(1);
+        expect(series[0].type).toBe('candlestick');
 
         // Data Verification
         // ECharts Candlestick data format: [open, close, low, high]
-        const seriesData = option.series![0].data as number[][];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const seriesData = series[0].data as number[][];
         expect(seriesData).toHaveLength(3);
 
         expect(seriesData[0]).toEqual([100, 110, 95, 115]);
@@ -51,7 +54,9 @@ describe('Transformer - Candlestick Chart', () => {
             highProp: 'high'
         });
 
-        const seriesData = option.series![0].data as number[][];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const series = option.series as any[];
+        const seriesData = series[0].data as number[][];
 
         // Should ignore invalid rows (open: null and low: undefined should cause rows to be skipped)
         expect(seriesData).toHaveLength(1);
@@ -67,7 +72,9 @@ describe('Transformer - Candlestick Chart', () => {
         // We pass empty options for props
         const option = transformDataToChartOption(data, 'date', '', 'candlestick');
 
-        const seriesData = option.series![0].data as number[][];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const series = option.series as any[];
+        const seriesData = series[0].data as number[][];
         expect(seriesData).toHaveLength(3);
         expect(seriesData[0]).toEqual([100, 110, 95, 115]);
     });

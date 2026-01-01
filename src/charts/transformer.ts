@@ -210,11 +210,9 @@ function createCandlestickChartOption(
         xAxis: {
             type: 'category',
             data: xAxisData,
-            scale: true,
             boundaryGap: false,
             axisLine: { onZero: false },
-            splitLine: { show: false },
-            splitNumber: 20
+            splitLine: { show: false }
         },
         yAxis: {
             scale: true,

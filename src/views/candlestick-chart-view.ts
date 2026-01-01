@@ -15,10 +15,10 @@ export class CandlestickChartView extends BaseChartView {
     public static LOW_PROP_KEY = 'lowProp';
     public static HIGH_PROP_KEY = 'highProp';
 
+    type = 'candlestick-chart';
+
     constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {
         super(controller, containerEl, plugin);
-        // Explicitly set type to satisfy BasesView requirement
-        this.type = 'candlestick-chart';
     }
 
     protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
