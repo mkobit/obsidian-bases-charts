@@ -5,6 +5,11 @@ import { LineChartView } from './views/line-chart-view';
 import { PieChartView } from './views/pie-chart-view';
 import { StackedBarChartView } from './views/stacked-bar-chart-view';
 import { AreaChartView } from './views/area-chart-view';
+import { ScatterChartView } from './views/scatter-chart-view';
+import { BubbleChartView } from './views/bubble-chart-view';
+import { RadarChartView } from './views/radar-chart-view';
+import { FunnelChartView } from './views/funnel-chart-view';
+import { GaugeChartView } from './views/gauge-chart-view';
 
 export default class BarePlugin extends Plugin {
 	settings!: BarePluginSettings;
@@ -45,6 +50,41 @@ export default class BarePlugin extends Plugin {
 			icon: 'mountain', // Often used for area charts or similar
 			factory: (controller, containerEl) => new AreaChartView(controller, containerEl, this),
 			options: () => AreaChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('scatter-chart', {
+			name: 'Scatter Chart',
+			icon: 'crosshair', // or dot-network
+			factory: (controller, containerEl) => new ScatterChartView(controller, containerEl, this),
+			options: () => ScatterChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('bubble-chart', {
+			name: 'Bubble Chart',
+			icon: 'circle',
+			factory: (controller, containerEl) => new BubbleChartView(controller, containerEl, this),
+			options: () => BubbleChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('radar-chart', {
+			name: 'Radar Chart',
+			icon: 'hexagon',
+			factory: (controller, containerEl) => new RadarChartView(controller, containerEl, this),
+			options: () => RadarChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('funnel-chart', {
+			name: 'Funnel Chart',
+			icon: 'filter',
+			factory: (controller, containerEl) => new FunnelChartView(controller, containerEl, this),
+			options: () => FunnelChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('gauge-chart', {
+			name: 'Gauge Chart',
+			icon: 'gauge',
+			factory: (controller, containerEl) => new GaugeChartView(controller, containerEl, this),
+			options: () => GaugeChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));

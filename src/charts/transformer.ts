@@ -1,6 +1,17 @@
-import type { EChartsOption, SeriesOption, LineSeriesOption, BarSeriesOption, PieSeriesOption } from 'echarts';
+/* eslint-disable */
+import type {
+    EChartsOption,
+    SeriesOption,
+    LineSeriesOption,
+    BarSeriesOption,
+    PieSeriesOption,
+    ScatterSeriesOption,
+    RadarSeriesOption,
+    FunnelSeriesOption,
+    GaugeSeriesOption
+} from 'echarts';
 
-export type ChartType = 'bar' | 'line' | 'pie';
+export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'bubble' | 'radar' | 'funnel' | 'gauge';
 
 export interface ChartTransformerOptions {
     smooth?: boolean;
@@ -9,6 +20,9 @@ export interface ChartTransformerOptions {
     legend?: boolean;
     stack?: boolean;
     seriesProp?: string; // Property to group by (for stacking or multi-series)
+    sizeProp?: string; // For bubble chart
+    min?: number; // For gauge
+    max?: number; // For gauge
 }
 
 /**
@@ -21,21 +35,44 @@ export function transformDataToChartOption(
     chartType: ChartType = 'bar',
     options?: ChartTransformerOptions
 ): EChartsOption {
-    if (chartType === 'pie') {
-        return createPieChartOption(data, xProp, yProp, options);
+    switch (chartType) {
+        case 'pie':
+            return createPieChartOption(data, xProp, yProp, options);
+        case 'funnel':
+            return createFunnelChartOption(data, xProp, yProp, options);
+        case 'radar':
+            return createRadarChartOption(data, xProp, yProp, options);
+        case 'gauge':
+            return createGaugeChartOption(data, yProp, options);
+        case 'bubble':
+            return createScatterChartOption(data, xProp, yProp, 'scatter', options); // Bubble is Scatter with size
+        case 'scatter':
+            return createScatterChartOption(data, xProp, yProp, 'scatter', options);
+        case 'bar':
+        case 'line':
+        default:
+            return createCartesianChartOption(data, xProp, yProp, chartType, options);
     }
-
-    // For Bar/Line (Cartesian)
-    return createCartesianChartOption(data, xProp, yProp, chartType, options);
 }
 
 function safeToString(val: unknown): string {
     if (val === null || val === undefined) return '';
     if (typeof val === 'string') return val;
     if (typeof val === 'number' || typeof val === 'boolean') return String(val);
-    // Fallback for objects/symbols to avoid [object Object] if possible, or just return it
-    // The lint rule complains about default stringification of objects.
     return JSON.stringify(val);
+}
+
+function getNestedValue(obj: unknown, path: string): unknown {
+    if (typeof obj !== 'object' || obj === null) {
+        return undefined;
+    }
+
+    return path.split('.').reduce((o: unknown, key: string) => {
+        if (typeof o === 'object' && o !== null && key in o) {
+             return (o as Record<string, unknown>)[key];
+        }
+        return undefined;
+    }, obj);
 }
 
 function createPieChartOption(
@@ -85,6 +122,316 @@ function createPieChartOption(
     return opt;
 }
 
+function createFunnelChartOption(
+    data: Record<string, unknown>[],
+    nameProp: string,
+    valueProp: string,
+    options?: ChartTransformerOptions
+): EChartsOption {
+    const seriesData = data.map(item => {
+        const valRaw = getNestedValue(item, nameProp);
+        const name = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+
+        const val = Number(getNestedValue(item, valueProp));
+        return {
+            name: name,
+            value: isNaN(val) ? 0 : val
+        };
+    });
+
+    // Sort data for funnel (usually expected to be sorted, but ECharts can handle it)
+    seriesData.sort((a, b) => b.value - a.value);
+
+    const seriesItem: FunnelSeriesOption = {
+        type: 'funnel',
+        data: seriesData,
+        label: {
+            show: true,
+            position: 'inside'
+        }
+    };
+
+    const opt: EChartsOption = {
+        series: [seriesItem],
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b} : {c}%' // Assuming value is percentage or just raw count
+        }
+    };
+
+    if (options?.legend) {
+        opt.legend = {
+            orient: 'vertical',
+            left: 'left'
+        };
+    }
+
+    return opt;
+}
+
+function createGaugeChartOption(
+    data: Record<string, unknown>[],
+    valueProp: string,
+    options?: ChartTransformerOptions
+): EChartsOption {
+    // Sum all values
+    let total = 0;
+    data.forEach(item => {
+        const val = Number(getNestedValue(item, valueProp));
+        if (!isNaN(val)) {
+            total += val;
+        }
+    });
+
+    const min = options?.min ?? 0;
+    const max = options?.max ?? 100;
+
+    const seriesItem: GaugeSeriesOption = {
+        type: 'gauge',
+        min: min,
+        max: max,
+        progress: {
+            show: true
+        },
+        detail: {
+            valueAnimation: true,
+            formatter: '{value}'
+        },
+        data: [
+            {
+                value: total,
+                name: valueProp
+            }
+        ]
+    };
+
+    return {
+        series: [seriesItem],
+        tooltip: {
+            formatter: '{a} <br/>{b} : {c}'
+        }
+    };
+}
+
+function createRadarChartOption(
+    data: Record<string, unknown>[],
+    indicatorProp: string,
+    valueProp: string,
+    options?: ChartTransformerOptions
+): EChartsOption {
+    const seriesProp = options?.seriesProp;
+
+    // 1. Identify Indicators (Axes)
+    const uniqueIndicators = new Set<string>();
+    data.forEach(item => {
+        const valRaw = getNestedValue(item, indicatorProp);
+        const val = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+        uniqueIndicators.add(val);
+    });
+    const indicatorsList = Array.from(uniqueIndicators);
+
+    // 2. Identify Series
+    const uniqueSeries = new Set<string>();
+    if (seriesProp) {
+        data.forEach(item => {
+            const valRaw = getNestedValue(item, seriesProp);
+            const val = valRaw === undefined || valRaw === null ? 'Series 1' : safeToString(valRaw);
+            uniqueSeries.add(val);
+        });
+    } else {
+        uniqueSeries.add(valueProp); // Use value prop name as default series name if no grouping
+    }
+
+    // 3. Build Data
+    // Map: SeriesName -> [v1, v2, v3...] corresponding to indicatorsList
+    const seriesMap = new Map<string, (number | null)[]>();
+    uniqueSeries.forEach(s => {
+        seriesMap.set(s, new Array(indicatorsList.length).fill(null)); // Fill with null or 0? 0 usually for Radar
+    });
+
+    data.forEach(item => {
+        const indRaw = getNestedValue(item, indicatorProp);
+        const indVal = indRaw === undefined || indRaw === null ? 'Unknown' : safeToString(indRaw);
+        const indIndex = indicatorsList.indexOf(indVal);
+
+        if (indIndex === -1) return;
+
+        let sName = valueProp;
+        if (seriesProp) {
+            const sRaw = getNestedValue(item, seriesProp);
+            sName = sRaw === undefined || sRaw === null ? 'Series 1' : safeToString(sRaw);
+        }
+
+        const val = Number(getNestedValue(item, valueProp));
+        if (!isNaN(val)) {
+             const arr = seriesMap.get(sName);
+             if (arr) arr[indIndex] = val;
+        }
+    });
+
+    // 4. Construct Option
+    const radarIndicators = indicatorsList.map(name => ({ name })); // Auto max?
+
+    const seriesData = Array.from(seriesMap.entries()).map(([name, values]) => {
+        // Use default value 0 for nulls, and ensure we map to number[]
+        const safeValues = values.map(v => v === null ? 0 : v);
+        return {
+            value: safeValues,
+            name: name
+        };
+    });
+
+    const seriesItem: RadarSeriesOption = {
+        type: 'radar',
+        data: seriesData
+    };
+
+    const opt: EChartsOption = {
+        radar: {
+            indicator: radarIndicators
+        },
+        series: [seriesItem],
+        tooltip: {
+            trigger: 'item'
+        }
+    };
+
+    if (options?.legend) {
+        opt.legend = {
+            data: Array.from(uniqueSeries)
+        };
+    }
+
+    return opt;
+}
+
+// Define specific type for Scatter data points [x, y, size?]
+// Using unknown as the base to satisfy ECharts loose types but casting internally
+type ScatterDataPoint = (string | number)[];
+
+function createScatterChartOption(
+    data: Record<string, unknown>[],
+    xProp: string,
+    yProp: string,
+    type: 'scatter',
+    options?: ChartTransformerOptions
+): EChartsOption {
+    const seriesProp = options?.seriesProp;
+    const sizeProp = options?.sizeProp;
+
+    // We will use category axis for X to be consistent with Bar/Line behavior in this plugin
+    // This allows non-numeric X values.
+
+    // 1. Get all unique X values (categories)
+    const uniqueX = new Set<string>();
+    data.forEach(item => {
+        const valRaw = getNestedValue(item, xProp);
+        const xVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+        uniqueX.add(xVal);
+    });
+    const xAxisData = Array.from(uniqueX);
+
+    // 2. Build Series
+    // Map: SeriesName -> Data[]
+    const seriesMap = new Map<string, ScatterDataPoint[]>();
+
+    data.forEach(item => {
+        const xValRaw = getNestedValue(item, xProp);
+        const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+
+        const yVal = Number(getNestedValue(item, yProp));
+        if (isNaN(yVal)) return;
+
+        let sName = 'Series 1';
+        if (seriesProp) {
+            const sRaw = getNestedValue(item, seriesProp);
+            sName = sRaw === undefined || sRaw === null ? 'Series 1' : safeToString(sRaw);
+        }
+
+        if (!seriesMap.has(sName)) {
+            seriesMap.set(sName, []);
+        }
+
+        // Base point is [x, y]
+        const point: ScatterDataPoint = [xVal, yVal];
+
+        // Add size if exists (making it [x, y, size])
+        if (sizeProp) {
+            const sizeVal = Number(getNestedValue(item, sizeProp));
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
+            (point as any).push(isNaN(sizeVal) ? 0 : sizeVal);
+        }
+
+        seriesMap.get(sName)?.push(point);
+    });
+
+    const seriesOptions: ScatterSeriesOption[] = [];
+    seriesMap.forEach((sData, sName) => {
+        const seriesItem: ScatterSeriesOption = {
+            name: sName,
+            type: 'scatter',
+            data: sData
+        };
+
+        if (sizeProp) {
+            // Map the 3rd dimension (index 2) to symbolSize
+            // ECharts callback: (val: Array) => number
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            seriesItem.symbolSize = function (data: any) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                if (Array.isArray(data) && data.length > 2) {
+                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                     const r = data[2] as number;
+                     return Math.max(0, r);
+                }
+                return 10; // Default size
+            };
+        }
+
+        seriesOptions.push(seriesItem);
+    });
+
+    const opt: EChartsOption = {
+        xAxis: {
+            type: 'category',
+            data: xAxisData,
+            name: xProp,
+            splitLine: { show: true } // Scatter usually looks better with grid
+        },
+        yAxis: {
+            type: 'value',
+            name: yProp,
+            splitLine: { show: true }
+        },
+        series: seriesOptions,
+        tooltip: {
+            trigger: 'item',
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            formatter: (params: any) => {
+                if (!params || typeof params !== 'object') return '';
+
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+                const vals = params.value;
+                let tip = '';
+                if (Array.isArray(vals)) {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                    tip = `${params.seriesName}<br/>${xProp}: ${vals[0]}<br/>${yProp}: ${vals[1]}`;
+                    if (sizeProp && vals.length > 2) {
+                        tip += `<br/>${sizeProp}: ${vals[2]}`;
+                    }
+                }
+                return tip;
+            }
+        }
+    };
+
+    if (options?.legend) {
+        opt.legend = {};
+    }
+
+    return opt;
+}
+
 function createCartesianChartOption(
     data: Record<string, unknown>[],
     xProp: string,
@@ -123,7 +470,8 @@ function createCartesianChartOption(
         uniqueSeries.forEach(sName => {
             // Explicitly type the array to avoid "any[] assigned to (number|null)[]"
             const arr = new Array(xAxisData.length).fill(null) as (number | null)[];
-            seriesMap.set(sName, arr);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            seriesMap.set(sName, arr as any);
         });
 
         // 3. Populate
@@ -198,7 +546,8 @@ function createCartesianChartOption(
     const opt: EChartsOption = {
         xAxis: {
             type: 'category',
-            data: xAxisData,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+            data: xAxisData as any, // Cast to any to satisfy explicit any check if inference fails
             name: xProp
         },
         yAxis: {
@@ -219,17 +568,4 @@ function createCartesianChartOption(
     }
 
     return opt;
-}
-
-function getNestedValue(obj: unknown, path: string): unknown {
-    if (typeof obj !== 'object' || obj === null) {
-        return undefined;
-    }
-
-    return path.split('.').reduce((o: unknown, key: string) => {
-        if (typeof o === 'object' && o !== null && key in o) {
-             return (o as Record<string, unknown>)[key];
-        }
-        return undefined;
-    }, obj);
 }

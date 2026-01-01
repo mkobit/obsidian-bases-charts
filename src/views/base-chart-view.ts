@@ -16,10 +16,15 @@ export abstract class BaseChartView extends BasesView {
     protected chart: echarts.ECharts | null = null;
 
     // Common Config Keys
-    protected static X_AXIS_PROP_KEY = 'xAxisProp';
-    protected static Y_AXIS_PROP_KEY = 'yAxisProp';
-    protected static SERIES_PROP_KEY = 'seriesProp';
-    protected static LEGEND_KEY = 'showLegend';
+    public static X_AXIS_PROP_KEY = 'xAxisProp';
+    public static Y_AXIS_PROP_KEY = 'yAxisProp';
+    public static SERIES_PROP_KEY = 'seriesProp';
+    public static LEGEND_KEY = 'showLegend';
+
+    // New Config Keys (Made public for easier access in subclasses without casting)
+    public static SIZE_PROP_KEY = 'sizeProp';
+    public static MIN_VALUE_KEY = 'minVal';
+    public static MAX_VALUE_KEY = 'maxVal';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller);
