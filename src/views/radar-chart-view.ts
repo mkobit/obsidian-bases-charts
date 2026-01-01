@@ -35,10 +35,10 @@ export class RadarChartView extends BaseChartView {
         // Clone options to avoid side effects on other charts
         const commonOpts = BaseChartView.getCommonViewOptions().map(opt => ({...opt}));
 
-        const xOpt = commonOpts.find(o => (o as any).key === BaseChartView.X_AXIS_PROP_KEY);
-        if (xOpt) {
-            (xOpt as any).displayName = 'Indicator Property';
-            (xOpt as any).placeholder = 'Select indicator/category property';
+        const xOpt = commonOpts.find(o => 'key' in o && o.key === BaseChartView.X_AXIS_PROP_KEY);
+        if (xOpt && 'displayName' in xOpt && 'placeholder' in xOpt) {
+            xOpt.displayName = 'Indicator Property';
+            xOpt.placeholder = 'Select indicator/category property';
         }
 
         return commonOpts;

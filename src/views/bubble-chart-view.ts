@@ -15,8 +15,8 @@ export class BubbleChartView extends BaseChartView {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY);
-        // Explicitly cast to any to access the property if strict types fail
-        const sizeProp = this.config.get((BaseChartView as any).SIZE_PROP_KEY);
+        // Cast BaseChartView to any to access the property if strict types fail
+        const sizeProp = this.config.get(BaseChartView.SIZE_PROP_KEY);
         const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
 
         if (typeof xProp !== 'string' || typeof yProp !== 'string') {
@@ -36,7 +36,7 @@ export class BubbleChartView extends BaseChartView {
             {
                 displayName: 'Size Property',
                 type: 'property',
-                key: (BaseChartView as any).SIZE_PROP_KEY || 'sizeProp',
+                key: BaseChartView.SIZE_PROP_KEY,
                 placeholder: 'Select property for bubble size',
             }
         ];

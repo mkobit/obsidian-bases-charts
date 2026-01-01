@@ -29,6 +29,11 @@ export class FunnelChartView extends BaseChartView {
         // Funnel doesn't really use "Series Prop" in the same way (usually single series),
         // but we can keep common options or strip Series Prop.
         // Let's strip Series Prop to avoid confusion as our transformer doesn't support multi-funnel yet.
-        return BaseChartView.getCommonViewOptions().filter(o => (o as any).key !== BaseChartView.SERIES_PROP_KEY);
+        return BaseChartView.getCommonViewOptions().filter(o => {
+            if ('key' in o) {
+                return o.key !== BaseChartView.SERIES_PROP_KEY;
+            }
+            return true;
+        });
     }
 }

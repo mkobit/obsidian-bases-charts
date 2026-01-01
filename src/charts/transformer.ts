@@ -272,8 +272,10 @@ function createRadarChartOption(
     const radarIndicators = indicatorsList.map(name => ({ name })); // Auto max?
 
     const seriesData = Array.from(seriesMap.entries()).map(([name, values]) => {
+        // Use default value 0 for nulls, and ensure we map to number[]
+        const safeValues = values.map(v => v === null ? 0 : v);
         return {
-            value: values.map(v => v === null ? 0 : v), // Radar needs numbers
+            value: safeValues,
             name: name
         };
     });
@@ -302,6 +304,9 @@ function createRadarChartOption(
     return opt;
 }
 
+// Define specific type for Scatter data points [x, y, size?]
+type ScatterDataPoint = [string | number, number] | [string | number, number, number];
+
 function createScatterChartOption(
     data: Record<string, unknown>[],
     xProp: string,
@@ -314,8 +319,6 @@ function createScatterChartOption(
 
     // We will use category axis for X to be consistent with Bar/Line behavior in this plugin
     // This allows non-numeric X values.
-    // However, if we want TRUE scatter (numeric X), ECharts can auto-detect if we provide data as [x, y].
-    // But sticking to the pattern:
 
     // 1. Get all unique X values (categories)
     const uniqueX = new Set<string>();
@@ -328,13 +331,7 @@ function createScatterChartOption(
 
     // 2. Build Series
     // Map: SeriesName -> Data[]
-    // For Scatter, Data[] should be [xIndex, yValue, sizeValue?] or [xValue, yValue, sizeValue?]
-    // Since we define xAxis data explicitly, we can use [xIndex, yValue] or just match the index logic.
-    // But Scatter is better with `[x, y]` format where x can be category string or index.
-
-    // Let's use `[xVal, yVal, sizeVal]` format. ECharts handles category string in xVal if xAxis type is category.
-
-    const seriesMap = new Map<string, unknown[][]>();
+    const seriesMap = new Map<string, ScatterDataPoint[]>();
 
     data.forEach(item => {
         const xValRaw = getNestedValue(item, xProp);
@@ -353,12 +350,13 @@ function createScatterChartOption(
             seriesMap.set(sName, []);
         }
 
-        const point = [xVal, yVal];
+        // Base point is [x, y]
+        const point: ScatterDataPoint = [xVal, yVal];
 
-        // Add size if exists
+        // Add size if exists (making it [x, y, size])
         if (sizeProp) {
             const sizeVal = Number(getNestedValue(item, sizeProp));
-            point.push(isNaN(sizeVal) ? 0 : sizeVal);
+            (point as any).push(isNaN(sizeVal) ? 0 : sizeVal);
         }
 
         seriesMap.get(sName)?.push(point);
@@ -369,22 +367,18 @@ function createScatterChartOption(
         const seriesItem: ScatterSeriesOption = {
             name: sName,
             type: 'scatter',
-            data: sData as any
+            data: sData
         };
 
         if (sizeProp) {
             // Map the 3rd dimension (index 2) to symbolSize
-            // We need a scaling function, but for now just raw value or simple scaling?
             // ECharts callback: (val: Array) => number
-            seriesItem.symbolSize = function (data: any) {
-                // data is [x, y, size]
-                // Let's clamp or scale?
-                // Using raw value for now, user might need to ensure it's reasonable size (e.g. 10-50)
-                // Or we can add a simple multiplier/clamp.
-                // Let's trust the data for now, maybe Math.sqrt(size) * constant?
-                // Standard bubble chart practice: sqrt(area) prop to radius.
-                const r = data[2];
-                return Math.max(0, r);
+            seriesItem.symbolSize = function (data: unknown) {
+                if (Array.isArray(data) && data.length > 2) {
+                     const r = data[2] as number;
+                     return Math.max(0, r);
+                }
+                return 10; // Default size
             };
         }
 
@@ -407,10 +401,16 @@ function createScatterChartOption(
         tooltip: {
             trigger: 'item',
             formatter: (params: any) => {
-                const vals = params.value; // [x, y, size]
-                let tip = `${params.seriesName}<br/>${xProp}: ${vals[0]}<br/>${yProp}: ${vals[1]}`;
-                if (sizeProp && vals.length > 2) {
-                    tip += `<br/>${sizeProp}: ${vals[2]}`;
+                // Type casting params to any because ECharts formatter types are complex union
+                if (!params || typeof params !== 'object') return '';
+
+                const vals = params.value;
+                let tip = '';
+                if (Array.isArray(vals)) {
+                    tip = `${params.seriesName}<br/>${xProp}: ${vals[0]}<br/>${yProp}: ${vals[1]}`;
+                    if (sizeProp && vals.length > 2) {
+                        tip += `<br/>${sizeProp}: ${vals[2]}`;
+                    }
                 }
                 return tip;
             }
