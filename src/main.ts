@@ -11,6 +11,7 @@ import { RadarChartView } from './views/radar-chart-view';
 import { FunnelChartView } from './views/funnel-chart-view';
 import { GaugeChartView } from './views/gauge-chart-view';
 import { HeatmapChartView } from './views/heatmap-chart-view';
+import { CandlestickChartView } from './views/candlestick-chart-view';
 
 export default class BarePlugin extends Plugin {
 	settings!: BarePluginSettings;
@@ -93,6 +94,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'grid',
 			factory: (controller, containerEl) => new HeatmapChartView(controller, containerEl, this),
 			options: () => HeatmapChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('candlestick-chart', {
+			name: 'Candlestick Chart',
+			icon: 'bar-chart', // Using bar-chart as placeholder or we could find a better one
+			factory: (controller, containerEl) => new CandlestickChartView(controller, containerEl, this),
+			options: () => CandlestickChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));

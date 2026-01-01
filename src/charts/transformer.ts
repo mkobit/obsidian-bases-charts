@@ -9,23 +9,61 @@ import type {
     RadarSeriesOption,
     FunnelSeriesOption,
     GaugeSeriesOption,
-    HeatmapSeriesOption
+    HeatmapSeriesOption,
+    CandlestickSeriesOption
 } from 'echarts';
 
-export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'bubble' | 'radar' | 'funnel' | 'gauge' | 'heatmap';
+export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'bubble' | 'radar' | 'funnel' | 'gauge' | 'heatmap' | 'candlestick';
 
-export interface ChartTransformerOptions {
+interface BaseTransformerOptions {
+    legend?: boolean;
+}
+
+export interface CartesianTransformerOptions extends BaseTransformerOptions {
     smooth?: boolean;
     showSymbol?: boolean;
     areaStyle?: boolean;
-    legend?: boolean;
     stack?: boolean;
-    seriesProp?: string; // Property to group by (for stacking or multi-series)
-    sizeProp?: string; // For bubble chart
-    min?: number; // For gauge
-    max?: number; // For gauge
-    valueProp?: string; // For heatmap
+    seriesProp?: string;
 }
+
+export interface PieTransformerOptions extends BaseTransformerOptions {
+    // Pie specific options if any
+}
+
+export interface ScatterTransformerOptions extends BaseTransformerOptions {
+    seriesProp?: string;
+    sizeProp?: string;
+}
+
+export interface RadarTransformerOptions extends BaseTransformerOptions {
+    seriesProp?: string;
+}
+
+export interface GaugeTransformerOptions extends BaseTransformerOptions {
+    min?: number;
+    max?: number;
+}
+
+export interface HeatmapTransformerOptions extends BaseTransformerOptions {
+    valueProp?: string;
+}
+
+export interface CandlestickTransformerOptions extends BaseTransformerOptions {
+    openProp?: string;
+    closeProp?: string;
+    lowProp?: string;
+    highProp?: string;
+}
+
+export type ChartTransformerOptions =
+    | CartesianTransformerOptions
+    | PieTransformerOptions
+    | ScatterTransformerOptions
+    | RadarTransformerOptions
+    | GaugeTransformerOptions
+    | HeatmapTransformerOptions
+    | CandlestickTransformerOptions;
 
 /**
  * Transforms Bases data into an ECharts option object.
@@ -43,19 +81,21 @@ export function transformDataToChartOption(
         case 'funnel':
             return createFunnelChartOption(data, xProp, yProp, options);
         case 'radar':
-            return createRadarChartOption(data, xProp, yProp, options);
+            return createRadarChartOption(data, xProp, yProp, options as RadarTransformerOptions);
         case 'gauge':
-            return createGaugeChartOption(data, yProp, options);
+            return createGaugeChartOption(data, yProp, options as GaugeTransformerOptions);
         case 'bubble':
-            return createScatterChartOption(data, xProp, yProp, 'scatter', options); // Bubble is Scatter with size
+            return createScatterChartOption(data, xProp, yProp, 'scatter', options as ScatterTransformerOptions); // Bubble is Scatter with size
         case 'scatter':
-            return createScatterChartOption(data, xProp, yProp, 'scatter', options);
+            return createScatterChartOption(data, xProp, yProp, 'scatter', options as ScatterTransformerOptions);
         case 'heatmap':
-            return createHeatmapChartOption(data, xProp, yProp, options);
+            return createHeatmapChartOption(data, xProp, yProp, options as HeatmapTransformerOptions);
+        case 'candlestick':
+            return createCandlestickChartOption(data, xProp, options as CandlestickTransformerOptions);
         case 'bar':
         case 'line':
         default:
-            return createCartesianChartOption(data, xProp, yProp, chartType, options);
+            return createCartesianChartOption(data, xProp, yProp, chartType, options as CartesianTransformerOptions);
     }
 }
 
@@ -83,7 +123,7 @@ function createPieChartOption(
     data: Record<string, unknown>[],
     nameProp: string,
     valueProp: string,
-    options?: ChartTransformerOptions
+    options?: PieTransformerOptions
 ): EChartsOption {
     const seriesData = data.map(item => {
         const valRaw = getNestedValue(item, nameProp);
@@ -126,11 +166,118 @@ function createPieChartOption(
     return opt;
 }
 
+function createCandlestickChartOption(
+    data: Record<string, unknown>[],
+    xProp: string,
+    options?: CandlestickTransformerOptions
+): EChartsOption {
+    const openProp = options?.openProp ?? 'open';
+    const closeProp = options?.closeProp ?? 'close';
+    const lowProp = options?.lowProp ?? 'low';
+    const highProp = options?.highProp ?? 'high';
+
+    // 1. Extract X Axis Data
+    // We assume data is somewhat sorted or we just take it as is.
+    // ECharts Candlestick expects category axis for X usually.
+    const xAxisData: string[] = [];
+    const values: number[][] = []; // [open, close, low, high]
+
+    // Use a unique set for X to avoid duplicates if that is an issue,
+    // but candlestick usually implies sequential time data.
+    // However, if we have duplicate X values, ECharts might just overlay them.
+    // For now, let's process sequentially but filter out incomplete rows.
+
+    data.forEach(item => {
+        const xValRaw = getNestedValue(item, xProp);
+        const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+
+        const openRaw = getNestedValue(item, openProp);
+        const closeRaw = getNestedValue(item, closeProp);
+        const lowRaw = getNestedValue(item, lowProp);
+        const highRaw = getNestedValue(item, highProp);
+
+        // Explicitly check for null or undefined before converting to number
+        // Because Number(null) is 0, which we might want to treat as missing for financial data
+        if (openRaw === null || openRaw === undefined ||
+            closeRaw === null || closeRaw === undefined ||
+            lowRaw === null || lowRaw === undefined ||
+            highRaw === null || highRaw === undefined) {
+            return;
+        }
+
+        const openVal = Number(openRaw);
+        const closeVal = Number(closeRaw);
+        const lowVal = Number(lowRaw);
+        const highVal = Number(highRaw);
+
+        // Skip if any required value is missing
+        if (isNaN(openVal) || isNaN(closeVal) || isNaN(lowVal) || isNaN(highVal)) {
+            return;
+        }
+
+        // Only add if not "Unknown" or handle duplicates?
+        // ECharts expects aligned arrays.
+        xAxisData.push(xVal);
+        values.push([openVal, closeVal, lowVal, highVal]);
+    });
+
+    const seriesItem: CandlestickSeriesOption = {
+        type: 'candlestick',
+        data: values,
+        itemStyle: {
+            // Western standard: Up = Green, Down = Red
+            color: '#14b143',
+            color0: '#ef232a',
+            borderColor: '#14b143',
+            borderColor0: '#ef232a'
+        }
+    };
+
+    const opt: EChartsOption = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross'
+            }
+        },
+        xAxis: {
+            type: 'category',
+            data: xAxisData,
+            boundaryGap: false,
+            axisLine: { onZero: false },
+            splitLine: { show: false }
+        },
+        yAxis: {
+            scale: true,
+            splitArea: {
+                show: true
+            }
+        },
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 50,
+                end: 100
+            },
+            {
+                show: true,
+                type: 'slider',
+                top: '90%',
+                start: 50,
+                end: 100
+            }
+        ],
+        series: [seriesItem]
+    };
+
+    return opt;
+}
+
 function createFunnelChartOption(
     data: Record<string, unknown>[],
     nameProp: string,
     valueProp: string,
-    options?: ChartTransformerOptions
+    options?: BaseTransformerOptions
 ): EChartsOption {
     const seriesData = data.map(item => {
         const valRaw = getNestedValue(item, nameProp);
@@ -176,7 +323,7 @@ function createFunnelChartOption(
 function createGaugeChartOption(
     data: Record<string, unknown>[],
     valueProp: string,
-    options?: ChartTransformerOptions
+    options?: GaugeTransformerOptions
 ): EChartsOption {
     // Sum all values
     let total = 0;
@@ -221,7 +368,7 @@ function createRadarChartOption(
     data: Record<string, unknown>[],
     indicatorProp: string,
     valueProp: string,
-    options?: ChartTransformerOptions
+    options?: RadarTransformerOptions
 ): EChartsOption {
     const seriesProp = options?.seriesProp;
 
@@ -313,7 +460,7 @@ function createHeatmapChartOption(
     data: Record<string, unknown>[],
     xProp: string,
     yProp: string,
-    options?: ChartTransformerOptions
+    options?: HeatmapTransformerOptions
 ): EChartsOption {
     const valueProp = options?.valueProp;
 
@@ -379,14 +526,10 @@ function createHeatmapChartOption(
     const opt: EChartsOption = {
         tooltip: {
             position: 'top',
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             formatter: (params: any) => {
                 if (!params || !Array.isArray(params.value)) return '';
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 const xIndex = params.value[0] as number;
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 const yIndex = params.value[1] as number;
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 const val = params.value[2] as number;
                 return `${xProp}: ${xAxisData[xIndex]}<br/>${yProp}: ${yAxisData[yIndex]}<br/>Value: ${val}`;
             }
@@ -432,7 +575,7 @@ function createScatterChartOption(
     xProp: string,
     yProp: string,
     type: 'scatter',
-    options?: ChartTransformerOptions
+    options?: ScatterTransformerOptions
 ): EChartsOption {
     const seriesProp = options?.seriesProp;
     const sizeProp = options?.sizeProp;
@@ -476,7 +619,6 @@ function createScatterChartOption(
         // Add size if exists (making it [x, y, size])
         if (sizeProp) {
             const sizeVal = Number(getNestedValue(item, sizeProp));
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
             (point as any).push(isNaN(sizeVal) ? 0 : sizeVal);
         }
 
@@ -494,11 +636,8 @@ function createScatterChartOption(
         if (sizeProp) {
             // Map the 3rd dimension (index 2) to symbolSize
             // ECharts callback: (val: Array) => number
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             seriesItem.symbolSize = function (data: any) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 if (Array.isArray(data) && data.length > 2) {
-                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                      const r = data[2] as number;
                      return Math.max(0, r);
                 }
@@ -524,15 +663,12 @@ function createScatterChartOption(
         series: seriesOptions,
         tooltip: {
             trigger: 'item',
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             formatter: (params: any) => {
                 if (!params || typeof params !== 'object') return '';
 
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
                 const vals = params.value;
                 let tip = '';
                 if (Array.isArray(vals)) {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                     tip = `${params.seriesName}<br/>${xProp}: ${vals[0]}<br/>${yProp}: ${vals[1]}`;
                     if (sizeProp && vals.length > 2) {
                         tip += `<br/>${sizeProp}: ${vals[2]}`;
@@ -555,7 +691,7 @@ function createCartesianChartOption(
     xProp: string,
     yProp: string,
     chartType: 'bar' | 'line',
-    options?: ChartTransformerOptions
+    options?: CartesianTransformerOptions
 ): EChartsOption {
     const seriesProp = options?.seriesProp;
     const isStacked = options?.stack;
@@ -588,7 +724,6 @@ function createCartesianChartOption(
         uniqueSeries.forEach(sName => {
             // Explicitly type the array to avoid "any[] assigned to (number|null)[]"
             const arr = new Array(xAxisData.length).fill(null) as (number | null)[];
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             seriesMap.set(sName, arr as any);
         });
 
@@ -664,7 +799,6 @@ function createCartesianChartOption(
     const opt: EChartsOption = {
         xAxis: {
             type: 'category',
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
             data: xAxisData as any, // Cast to any to satisfy explicit any check if inference fails
             name: xProp
         },
