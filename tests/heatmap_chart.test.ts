@@ -15,25 +15,33 @@ describe('Heatmap Transformer', () => {
 
         expect(option).toBeDefined();
         // Check X Axis
-        const xAxis = option.xAxis as unknown;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+        const xAxis = option.xAxis as any;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(xAxis.type).toBe('category');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(xAxis.data).toContain('Mon');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(xAxis.data).toContain('Tue');
 
         // Check Y Axis
-        const yAxis = option.yAxis as unknown;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+        const yAxis = option.yAxis as any;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(yAxis.type).toBe('category');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(yAxis.data).toContain('Morning');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(yAxis.data).toContain('Evening');
 
         // Check Series
         const series = option.series as HeatmapSeriesOption[];
         expect(series).toHaveLength(1);
-        expect(series[0].type).toBe('heatmap');
+        expect(series[0]?.type).toBe('heatmap');
 
         // Check Data Mapping
         // Mon (index 0 or 1), Morning (index 0 or 1), val 5
-        const seriesData = series[0].data as number[][];
+        const seriesData = series[0]?.data as number[][];
         expect(seriesData).toHaveLength(4);
         // Each point is [xIndex, yIndex, value]
         expect(seriesData[0]).toHaveLength(3);
@@ -47,10 +55,10 @@ describe('Heatmap Transformer', () => {
 
         const option = transformDataToChartOption(data, 'x', 'y', 'heatmap', { valueProp: 'val' });
         const series = option.series as HeatmapSeriesOption[];
-        const seriesData = series[0].data as number[][];
+        const seriesData = series[0]?.data as number[][];
 
         // Should produce 0 for missing value based on current logic
-        const missingPoint = seriesData.find(d => d[2] === 0);
+        const missingPoint = seriesData?.find(d => d[2] === 0);
         expect(missingPoint).toBeDefined();
     });
 
@@ -61,9 +69,12 @@ describe('Heatmap Transformer', () => {
         ];
 
         const option = transformDataToChartOption(data, 'x', 'y', 'heatmap', { valueProp: 'val' });
-        const visualMap = option.visualMap as unknown;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+        const visualMap = option.visualMap as any;
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(visualMap.min).toBe(10);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(visualMap.max).toBe(100);
     });
 });
