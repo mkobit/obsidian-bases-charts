@@ -11,10 +11,11 @@ import type {
     GaugeSeriesOption,
     HeatmapSeriesOption,
     CandlestickSeriesOption,
-    TreemapSeriesOption
+    TreemapSeriesOption,
+    BoxplotSeriesOption
 } from 'echarts';
 
-export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'bubble' | 'radar' | 'funnel' | 'gauge' | 'heatmap' | 'candlestick' | 'treemap';
+export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'bubble' | 'radar' | 'funnel' | 'gauge' | 'heatmap' | 'candlestick' | 'treemap' | 'boxplot';
 
 interface BaseTransformerOptions {
     legend?: boolean;
@@ -61,6 +62,10 @@ export interface TreemapTransformerOptions extends BaseTransformerOptions {
     // Treemap specific options if any
 }
 
+export interface BoxplotTransformerOptions extends BaseTransformerOptions {
+    seriesProp?: string;
+}
+
 export type ChartTransformerOptions =
     | CartesianTransformerOptions
     | PieTransformerOptions
@@ -69,7 +74,8 @@ export type ChartTransformerOptions =
     | GaugeTransformerOptions
     | HeatmapTransformerOptions
     | CandlestickTransformerOptions
-    | TreemapTransformerOptions;
+    | TreemapTransformerOptions
+    | BoxplotTransformerOptions;
 
 /**
  * Transforms Bases data into an ECharts option object.
@@ -100,6 +106,8 @@ export function transformDataToChartOption(
             return createCandlestickChartOption(data, xProp, options as CandlestickTransformerOptions);
         case 'treemap':
             return createTreemapChartOption(data, xProp, yProp, options as TreemapTransformerOptions);
+        case 'boxplot':
+            return createBoxplotChartOption(data, xProp, yProp, options as BoxplotTransformerOptions);
         case 'bar':
         case 'line':
         default:
@@ -879,5 +887,125 @@ function createCartesianChartOption(
         opt.legend = {};
     }
 
+    return opt;
+}
+
+function quantile(ascSorted: number[], p: number): number {
+    const n = ascSorted.length;
+    if (n === 0) return 0;
+    const pos = (n - 1) * p;
+    const base = Math.floor(pos);
+    const rest = pos - base;
+    if (base + 1 < n) {
+        return ascSorted[base] + (ascSorted[base + 1] - ascSorted[base]) * rest;
+    } else {
+        return ascSorted[base];
+    }
+}
+
+function calculateBoxplotStats(values: number[]): [number, number, number, number, number] {
+    if (values.length === 0) return [0, 0, 0, 0, 0];
+    const sorted = values.slice().sort((a, b) => a - b);
+    const min = sorted[0];
+    const max = sorted[sorted.length - 1];
+    const q1 = quantile(sorted, 0.25);
+    const median = quantile(sorted, 0.5);
+    const q3 = quantile(sorted, 0.75);
+    return [min, q1, median, q3, max];
+}
+
+function createBoxplotChartOption(
+    data: Record<string, unknown>[],
+    xProp: string,
+    yProp: string,
+    options?: BoxplotTransformerOptions
+): EChartsOption {
+    const seriesProp = options?.seriesProp;
+
+    // 1. Identify X Categories
+    const uniqueX = new Set<string>();
+    data.forEach(item => {
+        const valRaw = getNestedValue(item, xProp);
+        const xVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+        uniqueX.add(xVal);
+    });
+    const xAxisData = Array.from(uniqueX);
+
+    // 2. Identify Series
+    const uniqueSeries = new Set<string>();
+    if (seriesProp) {
+        data.forEach(item => {
+            const valRaw = getNestedValue(item, seriesProp);
+            const sVal = valRaw === undefined || valRaw === null ? 'Series 1' : safeToString(valRaw);
+            uniqueSeries.add(sVal);
+        });
+    } else {
+        uniqueSeries.add(yProp); // Or 'Data'
+    }
+
+    // 3. Build Series Data
+    const seriesOptions: BoxplotSeriesOption[] = [];
+
+    uniqueSeries.forEach(sName => {
+        const seriesData: number[][] = [];
+
+        xAxisData.forEach(xCat => {
+            // Collect values for this series and this category
+            const values: number[] = [];
+            data.forEach(item => {
+                const itemX = getNestedValue(item, xProp);
+                const xVal = itemX === undefined || itemX === null ? 'Unknown' : safeToString(itemX);
+
+                if (xVal !== xCat) return;
+
+                if (seriesProp) {
+                    const itemS = getNestedValue(item, seriesProp);
+                    const sVal = itemS === undefined || itemS === null ? 'Series 1' : safeToString(itemS);
+                    if (sVal !== sName) return;
+                }
+
+                const val = Number(getNestedValue(item, yProp));
+                if (!isNaN(val)) {
+                    values.push(val);
+                }
+            });
+
+            seriesData.push(calculateBoxplotStats(values));
+        });
+
+        seriesOptions.push({
+            name: sName,
+            type: 'boxplot',
+            data: seriesData
+        });
+    });
+
+    const opt: EChartsOption = {
+        tooltip: {
+            trigger: 'item',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        legend: options?.legend ? {} : undefined,
+        xAxis: {
+            type: 'category',
+            data: xAxisData,
+            boundaryGap: true,
+            splitArea: {
+                show: false
+            },
+            splitLine: {
+                show: false
+            }
+        },
+        yAxis: {
+            type: 'value',
+            splitArea: {
+                show: true
+            }
+        },
+        series: seriesOptions
+    };
     return opt;
 }
