@@ -10,6 +10,7 @@ import { BubbleChartView } from './views/bubble-chart-view';
 import { RadarChartView } from './views/radar-chart-view';
 import { FunnelChartView } from './views/funnel-chart-view';
 import { GaugeChartView } from './views/gauge-chart-view';
+import { HeatmapChartView } from './views/heatmap-chart-view';
 
 export default class BarePlugin extends Plugin {
 	settings!: BarePluginSettings;
@@ -85,6 +86,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'gauge',
 			factory: (controller, containerEl) => new GaugeChartView(controller, containerEl, this),
 			options: () => GaugeChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('heatmap-chart', {
+			name: 'Heatmap',
+			icon: 'grid',
+			factory: (controller, containerEl) => new HeatmapChartView(controller, containerEl, this),
+			options: () => HeatmapChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));
