@@ -906,8 +906,8 @@ function quantile(ascSorted: number[], p: number): number {
 function calculateBoxplotStats(values: number[]): number[] {
     if (values.length === 0) return [];
     const sorted = values.slice().sort((a, b) => a - b);
-    const min = sorted[0];
-    const max = sorted[sorted.length - 1];
+    const min = sorted[0]!;
+    const max = sorted[sorted.length - 1]!;
     const q1 = quantile(sorted, 0.25);
     const median = quantile(sorted, 0.5);
     const q3 = quantile(sorted, 0.75);
