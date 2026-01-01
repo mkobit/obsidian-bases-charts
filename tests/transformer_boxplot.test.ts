@@ -23,7 +23,8 @@ describe('Transformer: Boxplot', () => {
         expect(option.series).toBeDefined();
         expect(option.series).toHaveLength(1);
 
-        const series = option.series![0] as BoxplotSeriesOption;
+        // Cast to array to avoid indexing error on union type
+        const series = (option.series as any[])[0] as BoxplotSeriesOption;
         expect(series.type).toBe('boxplot');
         expect(series.data).toHaveLength(2); // Two categories
 
@@ -40,7 +41,8 @@ describe('Transformer: Boxplot', () => {
             { cat: 'C', val: 100 }
         ];
         const option = transformDataToChartOption(data, 'cat', 'val', 'boxplot');
-        const series = option.series![0] as BoxplotSeriesOption;
+        // Cast to array to avoid indexing error on union type
+        const series = (option.series as any[])[0] as BoxplotSeriesOption;
         expect(series.data).toHaveLength(1);
         // Boxplot with 1 value: min=max=q1=q3=median=100
         // Expected data item to be array of 5 numbers
