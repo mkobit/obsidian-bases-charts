@@ -25,6 +25,7 @@ export abstract class BaseChartView extends BasesView {
     public static SIZE_PROP_KEY = 'sizeProp';
     public static MIN_VALUE_KEY = 'minVal';
     public static MAX_VALUE_KEY = 'maxVal';
+    public static VALUE_PROP_KEY = 'valueProp';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller);
