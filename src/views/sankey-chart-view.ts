@@ -1,4 +1,4 @@
-import { ViewOption } from 'obsidian';
+import { ViewOption, TextOption } from 'obsidian';
 import { BaseChartView } from './base-chart-view';
 import { ChartType, transformDataToChartOption } from '../charts/transformer';
 import { EChartsOption } from 'echarts';
@@ -24,14 +24,16 @@ export class SankeyChartView extends BaseChartView {
     }
 
     static getViewOptions(): ViewOption[] {
+        const valueOption: TextOption = {
+            displayName: 'Value Property',
+            key: BaseChartView.VALUE_PROP_KEY,
+            type: 'text',
+            placeholder: 'Property to use for link value',
+        };
+
         return [
             ...BaseChartView.getCommonViewOptions(),
-            {
-                displayName: 'Value Property',
-                key: BaseChartView.VALUE_PROP_KEY,
-                type: 'text',
-                description: 'Property to use for link value (thickness). Default is count.',
-            } as any
+            valueOption
         ];
     }
 }
