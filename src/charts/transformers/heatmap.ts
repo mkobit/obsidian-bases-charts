@@ -16,28 +16,28 @@ export function createHeatmapChartOption(
 
     // 1. Identify X Categories (Horizontal)
     const uniqueX = new Set<string>();
-    data.forEach(item => {
+    for (const item of data) {
         const valRaw = getNestedValue(item, xProp);
         const xVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
         uniqueX.add(xVal);
-    });
+    }
     const xAxisData = Array.from(uniqueX);
 
     // 2. Identify Y Categories (Vertical)
     const uniqueY = new Set<string>();
-    data.forEach(item => {
+    for (const item of data) {
         const valRaw = getNestedValue(item, yProp);
         const yVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
         uniqueY.add(yVal);
-    });
+    }
     const yAxisData = Array.from(uniqueY);
 
     // 3. Build Data [xIndex, yIndex, value]
-    const seriesData: [number, number, number][] = [];
-    let minVal = Infinity;
-    let maxVal = -Infinity;
-
-    data.forEach(item => {
+    const { seriesData, minVal, maxVal } = data.reduce<{
+        seriesData: [number, number, number][];
+        minVal: number;
+        maxVal: number;
+    }>((acc, item) => {
         const xValRaw = getNestedValue(item, xProp);
         const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
         const xIndex = xAxisData.indexOf(xVal);
@@ -46,7 +46,7 @@ export function createHeatmapChartOption(
         const yVal = yValRaw === undefined || yValRaw === null ? 'Unknown' : safeToString(yValRaw);
         const yIndex = yAxisData.indexOf(yVal);
 
-        if (xIndex === -1 || yIndex === -1) return;
+        if (xIndex === -1 || yIndex === -1) return acc;
 
         let val = 0;
         if (valueProp) {
@@ -56,14 +56,15 @@ export function createHeatmapChartOption(
             }
         }
 
-        if (val < minVal) minVal = val;
-        if (val > maxVal) maxVal = val;
+        if (val < acc.minVal) acc.minVal = val;
+        if (val > acc.maxVal) acc.maxVal = val;
 
-        seriesData.push([xIndex, yIndex, val]);
-    });
+        acc.seriesData.push([xIndex, yIndex, val]);
+        return acc;
+    }, { seriesData: [], minVal: Infinity, maxVal: -Infinity });
 
-    if (minVal === Infinity) minVal = 0;
-    if (maxVal === -Infinity) maxVal = 10;
+    const finalMinVal = minVal === Infinity ? 0 : minVal;
+    const finalMaxVal = maxVal === -Infinity ? 10 : maxVal;
 
     const seriesItem: HeatmapSeriesOption = {
         type: 'heatmap',
@@ -104,8 +105,8 @@ export function createHeatmapChartOption(
             }
         },
         visualMap: {
-            min: minVal,
-            max: maxVal,
+            min: finalMinVal,
+            max: finalMaxVal,
             calculable: true,
             orient: 'horizontal',
             left: 'center',

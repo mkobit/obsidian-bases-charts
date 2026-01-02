@@ -14,23 +14,20 @@ export function createSankeyChartOption(
 ): EChartsOption {
     const valueProp = options?.valueProp;
 
-    const links: { source: string; target: string; value: number }[] = [];
-    const nodes = new Set<string>();
-
-    data.forEach(item => {
+    const { links, nodes } = data.reduce<{
+        links: { source: string; target: string; value: number }[];
+        nodes: Set<string>;
+    }>((acc, item) => {
         const sourceRaw = getNestedValue(item, sourceProp);
         const targetRaw = getNestedValue(item, targetProp);
 
-        if (sourceRaw == null || targetRaw == null) return;
+        if (sourceRaw == null || targetRaw == null) return acc;
 
         const source = safeToString(sourceRaw);
         const target = safeToString(targetRaw);
 
-        // Sankey loops can cause issues, but we'll let ECharts handle or user data validation.
-        // Self-loops are generally not allowed in simple DAGs but ECharts might handle them.
-
-        nodes.add(source);
-        nodes.add(target);
+        acc.nodes.add(source);
+        acc.nodes.add(target);
 
         let value = 1; // Default count
         if (valueProp) {
@@ -39,8 +36,9 @@ export function createSankeyChartOption(
             if (!isNaN(val)) value = val;
         }
 
-        links.push({ source, target, value });
-    });
+        acc.links.push({ source, target, value });
+        return acc;
+    }, { links: [], nodes: new Set<string>() });
 
     const dataNodes = Array.from(nodes).map(name => ({ name }));
 

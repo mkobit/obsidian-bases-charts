@@ -16,32 +16,32 @@ export function createRadarChartOption(
 
     // 1. Identify Indicators (Axes)
     const uniqueIndicators = new Set<string>();
-    data.forEach(item => {
+    for (const item of data) {
         const valRaw = getNestedValue(item, indicatorProp);
         const val = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
         uniqueIndicators.add(val);
-    });
+    }
     const indicatorsList = Array.from(uniqueIndicators);
 
     // 2. Identify Series
     const uniqueSeries = new Set<string>();
-    if (seriesProp) {
-        data.forEach(item => {
+    for (const item of data) {
+        if (seriesProp) {
             const valRaw = getNestedValue(item, seriesProp);
             const val = valRaw === undefined || valRaw === null ? 'Series 1' : safeToString(valRaw);
             uniqueSeries.add(val);
-        });
-    } else {
-        uniqueSeries.add(valueProp); // Use value prop name as default series name if no grouping
+        } else {
+            uniqueSeries.add(valueProp); // Use value prop name as default series name if no grouping
+        }
     }
 
     // 3. Build Data
     // Map: SeriesName -> [v1, v2, v3...] corresponding to indicatorsList
     const seriesMap = new Map<string, (number | null)[]>();
-    uniqueSeries.forEach(s => {
+    for (const s of uniqueSeries) {
         // Explicitly type the array created with fill(null)
         seriesMap.set(s, new Array<number | null>(indicatorsList.length).fill(null));
-    });
+    }
 
     data.forEach(item => {
         const indRaw = getNestedValue(item, indicatorProp);

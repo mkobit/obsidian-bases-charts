@@ -25,23 +25,21 @@ export function createScatterChartOption(
 
     // 1. Get all unique X values (categories)
     const uniqueX = new Set<string>();
-    data.forEach(item => {
+    for (const item of data) {
         const valRaw = getNestedValue(item, xProp);
         const xVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
         uniqueX.add(xVal);
-    });
+    }
     const xAxisData = Array.from(uniqueX);
 
     // 2. Build Series
     // Map: SeriesName -> Data[]
-    const seriesMap = new Map<string, ScatterDataPoint[]>();
-
-    data.forEach(item => {
+    const seriesMap = data.reduce((acc, item) => {
         const xValRaw = getNestedValue(item, xProp);
         const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
 
         const yVal = Number(getNestedValue(item, yProp));
-        if (isNaN(yVal)) return;
+        if (isNaN(yVal)) return acc;
 
         let sName = 'Series 1';
         if (seriesProp) {
@@ -49,8 +47,8 @@ export function createScatterChartOption(
             sName = sRaw === undefined || sRaw === null ? 'Series 1' : safeToString(sRaw);
         }
 
-        if (!seriesMap.has(sName)) {
-            seriesMap.set(sName, []);
+        if (!acc.has(sName)) {
+            acc.set(sName, []);
         }
 
         // Base point is [x, y]
@@ -62,11 +60,11 @@ export function createScatterChartOption(
             point.push(isNaN(sizeVal) ? 0 : sizeVal);
         }
 
-        seriesMap.get(sName)?.push(point);
-    });
+        acc.get(sName)?.push(point);
+        return acc;
+    }, new Map<string, ScatterDataPoint[]>());
 
-    const seriesOptions: ScatterSeriesOption[] = [];
-    seriesMap.forEach((sData, sName) => {
+    const seriesOptions: ScatterSeriesOption[] = Array.from(seriesMap.entries()).map(([sName, sData]) => {
         const seriesItem: ScatterSeriesOption = {
             name: sName,
             type: 'scatter',
@@ -85,7 +83,7 @@ export function createScatterChartOption(
             };
         }
 
-        seriesOptions.push(seriesItem);
+        return seriesItem;
     });
 
     const opt: EChartsOption = {

@@ -22,6 +22,10 @@ The goal is to build an assortment of views using:
 -   **TypeScript**: `"strict": true` is enabled in `tsconfig.json`. No implicit `any` allowed.
 -   **Linting**: ESLint is configured. Run `pnpm run lint` before committing.
 -   **CI**: GitHub Actions workflow (`ci.yml`) enforces build success, type safety, and linting on every push.
+-   **Functional Programming**:
+    -   **Prioritize Immutability**: Avoid mutating enclosed state. Use pure functions where possible.
+    -   **Use Functional Transformations**: Prefer `map`, `reduce`, `filter` over imperative loops like `forEach` or `for`.
+    -   **Avoid Side Effects**: Ensure transformer functions calculate results without side effects.
 
 ## Development Commands
 

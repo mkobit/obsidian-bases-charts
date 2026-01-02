@@ -33,12 +33,14 @@ function buildHierarchy(
         return nodes.find(n => n.name === name);
     };
 
-    data.forEach(item => {
+    // Using traditional loop here because we are building a mutable tree structure incrementally
+    // which is awkward with reduce and cleaner with sequential processing.
+    for (const item of data) {
         const pathRaw = getNestedValue(item, pathProp);
-        if (typeof pathRaw !== 'string' || !pathRaw) return;
+        if (typeof pathRaw !== 'string' || !pathRaw) continue;
 
         const parts = pathRaw.split('/').filter(p => p.length > 0);
-        if (parts.length === 0) return;
+        if (parts.length === 0) continue;
 
         let currentLevel = rootChildren;
         let value: number | undefined = undefined;
@@ -68,7 +70,7 @@ function buildHierarchy(
                 currentLevel = node.children;
             }
         });
-    });
+    }
 
     return rootChildren;
 }

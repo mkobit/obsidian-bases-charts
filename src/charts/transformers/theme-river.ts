@@ -16,13 +16,11 @@ export function createThemeRiverChartOption(
     const themeProp = options?.themeProp;
 
     // Data format: [date, value, themeName]
-    const riverData: (string | number)[][] = [];
-
-    data.forEach(item => {
+    const riverData = data.reduce<(string | number)[][]>((acc, item) => {
         const dateRaw = getNestedValue(item, dateProp);
         const dateVal = safeToString(dateRaw);
 
-        if (!dateVal) return;
+        if (!dateVal) return acc;
 
         let val = 0;
         if (valueProp) {
@@ -36,8 +34,9 @@ export function createThemeRiverChartOption(
             if (tRaw !== undefined && tRaw !== null) theme = safeToString(tRaw);
         }
 
-        riverData.push([dateVal, val, theme]);
-    });
+        acc.push([dateVal, val, theme]);
+        return acc;
+    }, []);
 
     // ThemeRiver requires data to be sorted by date? ECharts usually handles it,
     // but best to sort.

@@ -13,13 +13,10 @@ export function createGaugeChartOption(
     options?: GaugeTransformerOptions
 ): EChartsOption {
     // Sum all values
-    let total = 0;
-    data.forEach(item => {
+    const total = data.reduce((acc, item) => {
         const val = Number(getNestedValue(item, valueProp));
-        if (!isNaN(val)) {
-            total += val;
-        }
-    });
+        return !isNaN(val) ? acc + val : acc;
+    }, 0);
 
     const min = options?.min ?? 0;
     const max = options?.max ?? 100;
