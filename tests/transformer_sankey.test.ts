@@ -18,7 +18,7 @@ describe('Sankey Transformer', () => {
         const result = transformDataToChartOption(data, 'source', 'target', 'sankey', options);
 
         expect(result.series).toHaveLength(1);
-        const series = result.series![0] as SankeySeriesOption;
+        const series = (result.series as SankeySeriesOption[])[0]!;
         expect(series.type).toBe('sankey');
 
         // Nodes should include A, B, C, D
@@ -46,7 +46,7 @@ describe('Sankey Transformer', () => {
         };
 
         const result = transformDataToChartOption(data, 'source', 'target', 'sankey', options);
-        const series = result.series![0] as SankeySeriesOption;
+        const series = (result.series as SankeySeriesOption[])[0]!;
 
         expect(series.links).toEqual(expect.arrayContaining([
             { source: 'A', target: 'B', value: 1 }, // Default
@@ -62,7 +62,7 @@ describe('Sankey Transformer', () => {
         ];
 
         const result = transformDataToChartOption(data, 'source', 'target', 'sankey');
-        const series = result.series![0] as SankeySeriesOption;
+        const series = (result.series as SankeySeriesOption[])[0]!;
 
         expect(series.links).toHaveLength(1);
         expect(series.links![0]).toEqual({ source: 'A', target: 'B', value: 1 });

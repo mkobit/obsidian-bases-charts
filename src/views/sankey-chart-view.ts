@@ -1,6 +1,7 @@
 import { ViewOption } from 'obsidian';
 import { BaseChartView } from './base-chart-view';
-import { ChartType } from '../charts/transformer';
+import { ChartType, transformDataToChartOption } from '../charts/transformer';
+import { EChartsOption } from 'echarts';
 
 export class SankeyChartView extends BaseChartView {
     type = 'sankey';
@@ -9,15 +10,28 @@ export class SankeyChartView extends BaseChartView {
         return 'sankey';
     }
 
+    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+        const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
+        const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY) as string;
+        const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string;
+
+        if (!xProp || !yProp) return null;
+
+        return transformDataToChartOption(data, xProp, yProp, 'sankey', {
+            legend: this.config.get(BaseChartView.LEGEND_KEY) as boolean,
+            valueProp: valueProp
+        });
+    }
+
     static getViewOptions(): ViewOption[] {
         return [
             ...BaseChartView.getCommonViewOptions(),
             {
-                name: 'Value Property',
+                displayName: 'Value Property',
                 key: BaseChartView.VALUE_PROP_KEY,
                 type: 'text',
                 description: 'Property to use for link value (thickness). Default is count.',
-            }
+            } as any
         ];
     }
 }
