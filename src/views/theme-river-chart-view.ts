@@ -12,31 +12,31 @@ export class ThemeRiverChartView extends BaseChartView {
     }
 
     getViewType(): string { return 'theme-river-chart'; }
-    getDisplayText(): string { return 'ThemeRiver'; }
+    getDisplayText(): string { return 'Theme river'; }
     getIcon(): string { return 'waves'; }
 
     static getViewOptions(): ViewOption[] {
         return [
             {
-                displayName: 'Date Property',
+                displayName: 'Date property',
                 type: 'property',
                 key: BaseChartView.X_AXIS_PROP_KEY,
                 placeholder: 'Select date property',
             },
             {
-                displayName: 'Value Property',
+                displayName: 'Value property',
                 type: 'property',
                 key: BaseChartView.VALUE_PROP_KEY,
                 placeholder: 'Select value property',
             },
             {
-                displayName: 'Theme/Category Property',
+                displayName: 'Theme/category property',
                 type: 'property',
                 key: BaseChartView.SERIES_PROP_KEY,
                 placeholder: 'Select category property',
             },
             {
-                displayName: 'Show Legend',
+                displayName: 'Show legend',
                 type: 'toggle',
                 key: BaseChartView.LEGEND_KEY,
             }
@@ -51,7 +51,7 @@ export class ThemeRiverChartView extends BaseChartView {
 
         if (!dateProp || !valueProp || !themeProp) return null;
 
-        return transformDataToChartOption(data, dateProp, '', 'themeRiver' as any, {
+        return transformDataToChartOption(data, dateProp, '', 'themeRiver', {
             valueProp: valueProp,
             themeProp: themeProp, // Ensure this property is added to ChartTransformerOptions
             legend: showLegend

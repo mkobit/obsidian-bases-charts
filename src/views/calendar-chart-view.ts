@@ -18,13 +18,13 @@ export class CalendarChartView extends BaseChartView {
     static getViewOptions(): ViewOption[] {
         return [
             {
-                displayName: 'Date Property',
+                displayName: 'Date property',
                 type: 'property',
                 key: BaseChartView.X_AXIS_PROP_KEY,
                 placeholder: 'Select date property',
             },
             {
-                displayName: 'Value Property',
+                displayName: 'Value property',
                 type: 'property',
                 key: BaseChartView.VALUE_PROP_KEY,
                 placeholder: 'Select value property',
@@ -38,7 +38,7 @@ export class CalendarChartView extends BaseChartView {
 
         if (!dateProp) return null;
 
-        return transformDataToChartOption(data, dateProp, '', 'calendar' as any, {
+        return transformDataToChartOption(data, dateProp, '', 'calendar', {
             valueProp: valueProp
         });
     }

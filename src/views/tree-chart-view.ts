@@ -18,7 +18,7 @@ export class TreeChartView extends BaseChartView {
     static getViewOptions(): ViewOption[] {
         return [
             {
-                displayName: 'Path Property (e.g. "Folder/Subfolder")',
+                displayName: 'Path property (e.g. "Folder/Subfolder")',
                 type: 'property',
                 key: BaseChartView.X_AXIS_PROP_KEY,
                 placeholder: 'Select path property',
@@ -30,7 +30,6 @@ export class TreeChartView extends BaseChartView {
         const pathProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         if (!pathProp) return null;
 
-        // Cast to 'any' to bypass temporary TS check if transformer types aren't fully updated yet
-        return transformDataToChartOption(data, pathProp, '', 'tree' as any, {});
+        return transformDataToChartOption(data, pathProp, '', 'tree', {});
     }
 }

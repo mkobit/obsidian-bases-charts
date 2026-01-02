@@ -3,6 +3,12 @@ import { describe, it, expect } from 'vitest';
 import { transformDataToChartOption } from '../src/charts/transformer';
 import type { SunburstSeriesOption, TreeSeriesOption } from 'echarts';
 
+interface HierarchyNode {
+    name: string;
+    value?: number;
+    children?: HierarchyNode[];
+}
+
 describe('Transformer - Hierarchical Charts', () => {
     describe('Sunburst', () => {
         it('should build hierarchy from path property', () => {
@@ -17,19 +23,27 @@ describe('Transformer - Hierarchical Charts', () => {
             });
 
             expect(option.series).toBeDefined();
-            const seriesArr = option.series as any[];
-            const series = seriesArr[0] as SunburstSeriesOption;
+
+            // Validate and narrow type for option.series
+            if (!Array.isArray(option.series) || option.series.length === 0) {
+                throw new Error('Series is not an array or is empty');
+            }
+
+            const series = option.series[0] as SunburstSeriesOption;
             expect(series.type).toBe('sunburst');
 
-            const hierarchy = series.data as any[];
+            // Cast data to known structure
+            const hierarchy = series.data as unknown as HierarchyNode[];
             expect(hierarchy).toHaveLength(2); // A and D
 
             const nodeA = hierarchy.find(n => n.name === 'A');
             expect(nodeA).toBeDefined();
-            expect(nodeA.children).toHaveLength(2); // B and C
+            // Use non-null assertion since we expect it to exist based on test data
+            expect(nodeA!.children).toHaveLength(2); // B and C
 
-            const nodeB = nodeA.children.find((n: any) => n.name === 'B');
-            expect(nodeB.value).toBe(10);
+            const nodeB = nodeA!.children!.find(n => n.name === 'B');
+            expect(nodeB).toBeDefined();
+            expect(nodeB!.value).toBe(10);
         });
 
         it('should handle missing values gracefully', () => {
@@ -39,10 +53,15 @@ describe('Transformer - Hierarchical Charts', () => {
             const option = transformDataToChartOption(data, 'path', '', 'sunburst', {
                 valueProp: 'val'
             });
-            const seriesArr = option.series as any[];
-            const series = seriesArr[0] as SunburstSeriesOption;
-            const hierarchy = series.data as any[];
-            expect(hierarchy[0].children[0].value).toBeUndefined();
+
+            if (!Array.isArray(option.series) || option.series.length === 0) {
+                 throw new Error('Series is not an array or is empty');
+            }
+
+            const series = option.series[0] as SunburstSeriesOption;
+            const hierarchy = series.data as unknown as HierarchyNode[];
+
+            expect(hierarchy[0]!.children![0]!.value).toBeUndefined();
         });
     });
 
@@ -53,14 +72,18 @@ describe('Transformer - Hierarchical Charts', () => {
                 { path: 'C/D' }
             ];
             const option = transformDataToChartOption(data, 'path', '', 'tree', {});
-            const seriesArr = option.series as any[];
-            const series = seriesArr[0] as TreeSeriesOption;
 
-            const dataRoot = series.data as any[];
+            if (!Array.isArray(option.series) || option.series.length === 0) {
+                 throw new Error('Series is not an array or is empty');
+            }
+
+            const series = option.series[0] as TreeSeriesOption;
+
+            const dataRoot = series.data as unknown as HierarchyNode[];
             // Should be wrapped in "Root" because there are two top-level nodes (A and C)
             expect(dataRoot).toHaveLength(1);
-            expect(dataRoot[0].name).toBe('Root');
-            expect(dataRoot[0].children).toHaveLength(2);
+            expect(dataRoot[0]!.name).toBe('Root');
+            expect(dataRoot[0]!.children).toHaveLength(2);
         });
 
         it('should use single root directly if only one top-level node', () => {
@@ -69,13 +92,17 @@ describe('Transformer - Hierarchical Charts', () => {
                 { path: 'A/C' }
             ];
             const option = transformDataToChartOption(data, 'path', '', 'tree', {});
-            const seriesArr = option.series as any[];
-            const series = seriesArr[0] as TreeSeriesOption;
 
-            const dataRoot = series.data as any[];
+            if (!Array.isArray(option.series) || option.series.length === 0) {
+                 throw new Error('Series is not an array or is empty');
+            }
+
+            const series = option.series[0] as TreeSeriesOption;
+
+            const dataRoot = series.data as unknown as HierarchyNode[];
             // Should be just A, no wrapper
             expect(dataRoot).toHaveLength(1);
-            expect(dataRoot[0].name).toBe('A');
+            expect(dataRoot[0]!.name).toBe('A');
         });
     });
 });
