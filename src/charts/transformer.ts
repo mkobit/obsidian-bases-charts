@@ -12,10 +12,11 @@ import type {
     HeatmapSeriesOption,
     CandlestickSeriesOption,
     TreemapSeriesOption,
-    BoxplotSeriesOption
+    BoxplotSeriesOption,
+    SankeySeriesOption
 } from 'echarts';
 
-export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'bubble' | 'radar' | 'funnel' | 'gauge' | 'heatmap' | 'candlestick' | 'treemap' | 'boxplot';
+export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'bubble' | 'radar' | 'funnel' | 'gauge' | 'heatmap' | 'candlestick' | 'treemap' | 'boxplot' | 'sankey';
 
 interface BaseTransformerOptions {
     legend?: boolean;
@@ -66,6 +67,10 @@ export interface BoxplotTransformerOptions extends BaseTransformerOptions {
     seriesProp?: string;
 }
 
+export interface SankeyTransformerOptions extends BaseTransformerOptions {
+    valueProp?: string;
+}
+
 export type ChartTransformerOptions =
     | CartesianTransformerOptions
     | PieTransformerOptions
@@ -75,7 +80,8 @@ export type ChartTransformerOptions =
     | HeatmapTransformerOptions
     | CandlestickTransformerOptions
     | TreemapTransformerOptions
-    | BoxplotTransformerOptions;
+    | BoxplotTransformerOptions
+    | SankeyTransformerOptions;
 
 /**
  * Transforms Bases data into an ECharts option object.
@@ -108,6 +114,8 @@ export function transformDataToChartOption(
             return createTreemapChartOption(data, xProp, yProp, options as TreemapTransformerOptions);
         case 'boxplot':
             return createBoxplotChartOption(data, xProp, yProp, options as BoxplotTransformerOptions);
+        case 'sankey':
+            return createSankeyChartOption(data, xProp, yProp, options as SankeyTransformerOptions);
         case 'bar':
         case 'line':
         default:
@@ -996,4 +1004,63 @@ function createBoxplotChartOption(
         series: seriesOptions
     };
     return opt;
+}
+
+function createSankeyChartOption(
+    data: Record<string, unknown>[],
+    sourceProp: string,
+    targetProp: string,
+    options?: SankeyTransformerOptions
+): EChartsOption {
+    const valueProp = options?.valueProp;
+
+    const links: { source: string; target: string; value: number }[] = [];
+    const nodes = new Set<string>();
+
+    data.forEach(item => {
+        const sourceRaw = getNestedValue(item, sourceProp);
+        const targetRaw = getNestedValue(item, targetProp);
+
+        if (sourceRaw == null || targetRaw == null) return;
+
+        const source = safeToString(sourceRaw);
+        const target = safeToString(targetRaw);
+
+        // Sankey loops can cause issues, but we'll let ECharts handle or user data validation.
+        // Self-loops are generally not allowed in simple DAGs but ECharts might handle them.
+
+        nodes.add(source);
+        nodes.add(target);
+
+        let value = 1; // Default count
+        if (valueProp) {
+            const valRaw = getNestedValue(item, valueProp);
+            const val = Number(valRaw);
+            if (!isNaN(val)) value = val;
+        }
+
+        links.push({ source, target, value });
+    });
+
+    const dataNodes = Array.from(nodes).map(name => ({ name }));
+
+    const seriesItem: SankeySeriesOption = {
+        type: 'sankey',
+        data: dataNodes,
+        links: links,
+        emphasis: {
+            focus: 'adjacency'
+        },
+        label: {
+            show: true
+        }
+    };
+
+    return {
+        tooltip: {
+            trigger: 'item',
+            triggerOn: 'mousemove'
+        },
+        series: [seriesItem]
+    };
 }

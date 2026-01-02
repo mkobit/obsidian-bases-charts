@@ -14,6 +14,7 @@ import { HeatmapChartView } from './views/heatmap-chart-view';
 import { CandlestickChartView } from './views/candlestick-chart-view';
 import { TreemapChartView } from './views/treemap-chart-view';
 import { BoxplotChartView } from './views/boxplot-chart-view';
+import { SankeyChartView } from './views/sankey-chart-view';
 
 export default class BarePlugin extends Plugin {
 	settings!: BarePluginSettings;
@@ -117,6 +118,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'box-select', // Using box-select from lucide
 			factory: (controller, containerEl) => new BoxplotChartView(controller, containerEl, this),
 			options: () => BoxplotChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('sankey-chart', {
+			name: 'Sankey Chart',
+			icon: 'git-merge', // Using git-merge as it represents flow/splitting
+			factory: (controller, containerEl) => new SankeyChartView(controller, containerEl, this),
+			options: () => SankeyChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));
