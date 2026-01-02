@@ -13,6 +13,7 @@ import { GaugeChartView } from './views/gauge-chart-view';
 import { HeatmapChartView } from './views/heatmap-chart-view';
 import { CandlestickChartView } from './views/candlestick-chart-view';
 import { TreemapChartView } from './views/treemap-chart-view';
+import { BoxplotChartView } from './views/boxplot-chart-view';
 
 export default class BarePlugin extends Plugin {
 	settings!: BarePluginSettings;
@@ -109,6 +110,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'bar-chart', // Using bar-chart as placeholder or we could find a better one
 			factory: (controller, containerEl) => new CandlestickChartView(controller, containerEl, this),
 			options: () => CandlestickChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('boxplot-chart', {
+			name: 'Boxplot Chart',
+			icon: 'box-select', // Using box-select from lucide
+			factory: (controller, containerEl) => new BoxplotChartView(controller, containerEl, this),
+			options: () => BoxplotChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));
