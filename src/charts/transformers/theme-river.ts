@@ -45,7 +45,8 @@ export function createThemeRiverChartOption(
 
     const seriesItem: ThemeRiverSeriesOption = {
         type: 'themeRiver',
-        data: riverData as unknown[], // ECharts types can be tricky with tuple arrays
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+        data: riverData as any,
         emphasis: {
             itemStyle: {
                 shadowBlur: 20,

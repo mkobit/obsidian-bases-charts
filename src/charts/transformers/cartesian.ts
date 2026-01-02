@@ -115,7 +115,8 @@ export function createCartesianChartOption(
     const opt: EChartsOption = {
         xAxis: {
             type: 'category',
-            data: xAxisData as unknown[], // Cast to any to satisfy explicit any check if inference fails
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+            data: xAxisData as any,
             name: xProp
         },
         yAxis: {

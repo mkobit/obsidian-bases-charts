@@ -69,7 +69,8 @@ export function createCalendarChartOption(
     const seriesItem: HeatmapSeriesOption = {
         type: 'heatmap',
         coordinateSystem: 'calendar',
-        data: calendarData as unknown[]
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+        data: calendarData as any
     };
 
     return {
