@@ -1,33 +1,11 @@
 import type { EChartsOption, BoxplotSeriesOption } from 'echarts';
+// @ts-expect-error ECharts extension imports can be tricky with type definitions
+import prepareBoxplotData from 'echarts/extension/dataTool/prepareBoxplotData';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 
 export interface BoxplotTransformerOptions extends BaseTransformerOptions {
     seriesProp?: string;
-}
-
-function quantile(ascSorted: number[], p: number): number {
-    const n = ascSorted.length;
-    if (n === 0) return 0;
-    const pos = (n - 1) * p;
-    const base = Math.floor(pos);
-    const rest = pos - base;
-    if (base + 1 < n) {
-        return ascSorted[base]! + (ascSorted[base + 1]! - ascSorted[base]!) * rest;
-    } else {
-        return ascSorted[base]!;
-    }
-}
-
-function calculateBoxplotStats(values: number[]): number[] {
-    if (values.length === 0) return [];
-    const sorted = values.slice().sort((a, b) => a - b);
-    const min = sorted[0]!;
-    const max = sorted[sorted.length - 1]!;
-    const q1 = quantile(sorted, 0.25);
-    const median = quantile(sorted, 0.5);
-    const q3 = quantile(sorted, 0.75);
-    return [min, q1, median, q3, max];
 }
 
 export function createBoxplotChartOption(
@@ -71,16 +49,28 @@ export function createBoxplotChartOption(
     const seriesOptions: BoxplotSeriesOption[] = [];
 
     seriesMap.forEach((catMap, sName) => {
-        const seriesData: number[][] = [];
+        // Prepare data for prepareBoxplotData
+        // We need a 2D array where each row is a category's data points
+        const rawData: number[][] = [];
+
         xAxisData.forEach(xVal => {
-            const values = catMap.get(xVal) || [];
-            seriesData.push(calculateBoxplotStats(values));
+             const values = catMap.get(xVal) || [];
+             rawData.push(values);
         });
+
+        // Use standard ECharts data tool to process the data
+        // prepareBoxplotData expects [ [v1, v2...], [v3, v4...] ] where each inner array is a category
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
+        const result = prepareBoxplotData(rawData);
+
+        // Result.boxData is the [min, Q1, median, Q3, max] arrays
+        // Result.outliers is the outlier data points
 
         seriesOptions.push({
             name: sName,
             type: 'boxplot',
-            data: seriesData
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+            data: result.boxData
         });
     });
 
