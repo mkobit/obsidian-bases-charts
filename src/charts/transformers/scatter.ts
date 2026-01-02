@@ -1,6 +1,11 @@
 import type { EChartsOption, ScatterSeriesOption } from 'echarts';
-import type { ScatterTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+
+export interface ScatterTransformerOptions extends BaseTransformerOptions {
+    seriesProp?: string;
+    sizeProp?: string;
+}
 
 // Define specific type for Scatter data points [x, y, size?]
 // Using unknown as the base to satisfy ECharts loose types but casting internally

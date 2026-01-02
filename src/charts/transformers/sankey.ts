@@ -1,6 +1,10 @@
 import type { EChartsOption, SankeySeriesOption } from 'echarts';
-import type { SankeyTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+
+export interface SankeyTransformerOptions extends BaseTransformerOptions {
+    valueProp?: string;
+}
 
 export function createSankeyChartOption(
     data: Record<string, unknown>[],

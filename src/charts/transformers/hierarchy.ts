@@ -1,6 +1,15 @@
 import type { EChartsOption, SunburstSeriesOption, TreeSeriesOption } from 'echarts';
-import type { SunburstTransformerOptions, TreeTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { getNestedValue } from './utils';
+
+export interface SunburstTransformerOptions extends BaseTransformerOptions {
+    valueProp?: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface TreeTransformerOptions extends BaseTransformerOptions {
+    // Tree specific options if any
+}
 
 interface HierarchyNode {
     name: string;

@@ -1,6 +1,10 @@
 import type { EChartsOption, BoxplotSeriesOption } from 'echarts';
-import type { BoxplotTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+
+export interface BoxplotTransformerOptions extends BaseTransformerOptions {
+    seriesProp?: string;
+}
 
 function quantile(ascSorted: number[], p: number): number {
     const n = ascSorted.length;

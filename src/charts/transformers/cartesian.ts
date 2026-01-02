@@ -1,6 +1,14 @@
 import type { EChartsOption, SeriesOption, LineSeriesOption, BarSeriesOption } from 'echarts';
-import type { CartesianTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+
+export interface CartesianTransformerOptions extends BaseTransformerOptions {
+    smooth?: boolean;
+    showSymbol?: boolean;
+    areaStyle?: boolean;
+    stack?: boolean;
+    seriesProp?: string;
+}
 
 export function createCartesianChartOption(
     data: Record<string, unknown>[],

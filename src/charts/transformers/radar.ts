@@ -1,6 +1,10 @@
 import type { EChartsOption, RadarSeriesOption } from 'echarts';
-import type { RadarTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+
+export interface RadarTransformerOptions extends BaseTransformerOptions {
+    seriesProp?: string;
+}
 
 export function createRadarChartOption(
     data: Record<string, unknown>[],

@@ -1,6 +1,10 @@
 import type { EChartsOption, CalendarComponentOption, HeatmapSeriesOption } from 'echarts';
-import type { CalendarTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+
+export interface CalendarTransformerOptions extends BaseTransformerOptions {
+    valueProp?: string;
+}
 
 export function createCalendarChartOption(
     data: Record<string, unknown>[],
@@ -9,50 +13,43 @@ export function createCalendarChartOption(
 ): EChartsOption {
     const valueProp = options?.valueProp;
 
-    // Data format: [date, value]
-    const calendarData: (string | number)[][] = [];
-    let minDate = '9999-12-31';
-    let maxDate = '0000-01-01';
+    const calendarData = data
+        .map(item => {
+            const dateRaw = getNestedValue(item, dateProp);
+            const dateVal = safeToString(dateRaw);
+            if (!dateVal) return null;
 
-    let minVal = Infinity;
-    let maxVal = -Infinity;
+            let val = 0;
+            if (valueProp) {
+                const v = Number(getNestedValue(item, valueProp));
+                if (!isNaN(v)) val = v;
+            }
+            return { date: dateVal, value: val };
+        })
+        .filter((d): d is { date: string; value: number } => d !== null);
 
-    data.forEach(item => {
-        const dateRaw = getNestedValue(item, dateProp);
-        const dateVal = safeToString(dateRaw);
-        if (!dateVal) return;
-
-        // Force string type assurance for TS
-        const dStr = dateVal;
-
-        if (dStr < minDate) minDate = dStr;
-        if (dStr > maxDate) maxDate = dStr;
-
-        let val = 0;
-        if (valueProp) {
-            const v = Number(getNestedValue(item, valueProp));
-            if (!isNaN(v)) val = v;
-        }
-
-        if (val < minVal) minVal = val;
-        if (val > maxVal) maxVal = val;
-
-        calendarData.push([dateVal, val]);
-    });
-
-    if (minDate > maxDate) {
-        // No data, defaults
+    if (calendarData.length === 0) {
+        // Return default empty state
         const now = new Date();
-        minDate = now.toISOString().substring(0, 10);
-        maxDate = minDate;
+        const minDate = now.toISOString().substring(0, 10);
+        return {
+             calendar: { range: [minDate, minDate] },
+             series: []
+        };
     }
 
-    // Ensure range spans at least the data
-    // ECharts calendar range can be a year or specific range.
-    // If specific range, we assume one calendar component.
+    const dates = calendarData.map(d => d.date);
+    const values = calendarData.map(d => d.value);
 
-    if (minVal === Infinity) minVal = 0;
-    if (maxVal === -Infinity) maxVal = 10;
+    // Calculate Min/Max without mutation
+    const minDate = dates.reduce((a, b) => (a < b ? a : b), dates[0]!);
+    const maxDate = dates.reduce((a, b) => (a > b ? a : b), dates[0]!);
+
+    const minVal = values.length > 0 ? Math.min(...values) : 0;
+    const maxVal = values.length > 0 ? Math.max(...values) : 10;
+
+    // ECharts expects [date, value] array
+    const seriesData = calendarData.map(d => [d.date, d.value]);
 
     const calendarItem: CalendarComponentOption = {
         top: 120,
@@ -70,7 +67,7 @@ export function createCalendarChartOption(
         type: 'heatmap',
         coordinateSystem: 'calendar',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-        data: calendarData as any
+        data: seriesData as any
     };
 
     return {

@@ -1,6 +1,11 @@
 import type { EChartsOption, TreemapSeriesOption } from 'echarts';
-import type { TreemapTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface TreemapTransformerOptions extends BaseTransformerOptions {
+    // Treemap specific options if any
+}
 
 export function createTreemapChartOption(
     data: Record<string, unknown>[],

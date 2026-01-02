@@ -1,6 +1,11 @@
 import type { EChartsOption, ThemeRiverSeriesOption } from 'echarts';
-import type { ThemeRiverTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+
+export interface ThemeRiverTransformerOptions extends BaseTransformerOptions {
+    valueProp?: string;
+    themeProp?: string;
+}
 
 export function createThemeRiverChartOption(
     data: Record<string, unknown>[],

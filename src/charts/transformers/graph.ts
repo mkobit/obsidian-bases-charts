@@ -1,6 +1,11 @@
 import type { EChartsOption, GraphSeriesOption } from 'echarts';
-import type { GraphTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+
+export interface GraphTransformerOptions extends BaseTransformerOptions {
+    valueProp?: string; // For edge weight
+    categoryProp?: string; // For node category
+}
 
 export function createGraphChartOption(
     data: Record<string, unknown>[],

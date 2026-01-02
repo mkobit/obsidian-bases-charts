@@ -1,6 +1,10 @@
 import type { EChartsOption, HeatmapSeriesOption } from 'echarts';
-import type { HeatmapTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+
+export interface HeatmapTransformerOptions extends BaseTransformerOptions {
+    valueProp?: string;
+}
 
 export function createHeatmapChartOption(
     data: Record<string, unknown>[],

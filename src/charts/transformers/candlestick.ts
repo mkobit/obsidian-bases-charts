@@ -1,6 +1,13 @@
 import type { EChartsOption, CandlestickSeriesOption } from 'echarts';
-import type { CandlestickTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+
+export interface CandlestickTransformerOptions extends BaseTransformerOptions {
+    openProp?: string;
+    closeProp?: string;
+    lowProp?: string;
+    highProp?: string;
+}
 
 export function createCandlestickChartOption(
     data: Record<string, unknown>[],
@@ -12,50 +19,32 @@ export function createCandlestickChartOption(
     const lowProp = options?.lowProp ?? 'low';
     const highProp = options?.highProp ?? 'high';
 
-    // 1. Extract X Axis Data
-    // We assume data is somewhat sorted or we just take it as is.
-    // ECharts Candlestick expects category axis for X usually.
-    const xAxisData: string[] = [];
-    const values: number[][] = []; // [open, close, low, high]
+    // Functional extraction
+    const processedData = data
+        .map(item => {
+            const xValRaw = getNestedValue(item, xProp);
+            const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
 
-    // Use a unique set for X to avoid duplicates if that is an issue,
-    // but candlestick usually implies sequential time data.
-    // However, if we have duplicate X values, ECharts might just overlay them.
-    // For now, let's process sequentially but filter out incomplete rows.
+            const openRaw = getNestedValue(item, openProp);
+            const closeRaw = getNestedValue(item, closeProp);
+            const lowRaw = getNestedValue(item, lowProp);
+            const highRaw = getNestedValue(item, highProp);
 
-    data.forEach(item => {
-        const xValRaw = getNestedValue(item, xProp);
-        const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+            if (openRaw == null || closeRaw == null || lowRaw == null || highRaw == null) return null;
 
-        const openRaw = getNestedValue(item, openProp);
-        const closeRaw = getNestedValue(item, closeProp);
-        const lowRaw = getNestedValue(item, lowProp);
-        const highRaw = getNestedValue(item, highProp);
+            const openVal = Number(openRaw);
+            const closeVal = Number(closeRaw);
+            const lowVal = Number(lowRaw);
+            const highVal = Number(highRaw);
 
-        // Explicitly check for null or undefined before converting to number
-        // Because Number(null) is 0, which we might want to treat as missing for financial data
-        if (openRaw === null || openRaw === undefined ||
-            closeRaw === null || closeRaw === undefined ||
-            lowRaw === null || lowRaw === undefined ||
-            highRaw === null || highRaw === undefined) {
-            return;
-        }
+            if (isNaN(openVal) || isNaN(closeVal) || isNaN(lowVal) || isNaN(highVal)) return null;
 
-        const openVal = Number(openRaw);
-        const closeVal = Number(closeRaw);
-        const lowVal = Number(lowRaw);
-        const highVal = Number(highRaw);
+            return { x: xVal, y: [openVal, closeVal, lowVal, highVal] };
+        })
+        .filter((d): d is { x: string; y: number[] } => d !== null);
 
-        // Skip if any required value is missing
-        if (isNaN(openVal) || isNaN(closeVal) || isNaN(lowVal) || isNaN(highVal)) {
-            return;
-        }
-
-        // Only add if not "Unknown" or handle duplicates?
-        // ECharts expects aligned arrays.
-        xAxisData.push(xVal);
-        values.push([openVal, closeVal, lowVal, highVal]);
-    });
+    const xAxisData = processedData.map(d => d.x);
+    const values = processedData.map(d => d.y);
 
     const seriesItem: CandlestickSeriesOption = {
         type: 'candlestick',

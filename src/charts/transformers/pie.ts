@@ -1,6 +1,11 @@
 import type { EChartsOption, PieSeriesOption } from 'echarts';
-import type { PieTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface PieTransformerOptions extends BaseTransformerOptions {
+    // Pie specific options if any
+}
 
 export function createPieChartOption(
     data: Record<string, unknown>[],

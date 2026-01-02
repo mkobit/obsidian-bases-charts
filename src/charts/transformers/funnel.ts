@@ -1,5 +1,5 @@
 import type { EChartsOption, FunnelSeriesOption } from 'echarts';
-import type { BaseTransformerOptions } from './types';
+import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 
 export function createFunnelChartOption(

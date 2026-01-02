@@ -1,11 +1,94 @@
 import type { EChartsOption } from 'echarts';
-import type {
+
+import {
+    createPieChartOption,
+    PieTransformerOptions
+} from './transformers/pie';
+import {
+    createFunnelChartOption
+} from './transformers/funnel';
+import {
+    createRadarChartOption,
+    RadarTransformerOptions
+} from './transformers/radar';
+import {
+    createGaugeChartOption,
+    GaugeTransformerOptions
+} from './transformers/gauge';
+import {
+    createScatterChartOption,
+    ScatterTransformerOptions
+} from './transformers/scatter';
+import {
+    createHeatmapChartOption,
+    HeatmapTransformerOptions
+} from './transformers/heatmap';
+import {
+    createCandlestickChartOption,
+    CandlestickTransformerOptions
+} from './transformers/candlestick';
+import {
+    createTreemapChartOption,
+    TreemapTransformerOptions
+} from './transformers/treemap';
+import {
+    createBoxplotChartOption,
+    BoxplotTransformerOptions
+} from './transformers/boxplot';
+import {
+    createSankeyChartOption,
+    SankeyTransformerOptions
+} from './transformers/sankey';
+import {
+    createGraphChartOption,
+    GraphTransformerOptions
+} from './transformers/graph';
+import {
+    createSunburstChartOption,
+    createTreeChartOption,
+    SunburstTransformerOptions,
+    TreeTransformerOptions
+} from './transformers/hierarchy';
+import {
+    createThemeRiverChartOption,
+    ThemeRiverTransformerOptions
+} from './transformers/theme-river';
+import {
+    createCalendarChartOption,
+    CalendarTransformerOptions
+} from './transformers/calendar';
+import {
+    createCartesianChartOption,
+    CartesianTransformerOptions
+} from './transformers/cartesian';
+import { BaseTransformerOptions, ChartType } from './transformers/base';
+
+export type ChartTransformerOptions =
+    | CartesianTransformerOptions
+    | PieTransformerOptions
+    | ScatterTransformerOptions
+    | RadarTransformerOptions
+    | GaugeTransformerOptions
+    | HeatmapTransformerOptions
+    | CandlestickTransformerOptions
+    | TreemapTransformerOptions
+    | BoxplotTransformerOptions
+    | SankeyTransformerOptions
+    | GraphTransformerOptions
+    | SunburstTransformerOptions
+    | TreeTransformerOptions
+    | ThemeRiverTransformerOptions
+    | CalendarTransformerOptions;
+
+// Re-export specific types for consumers who need them
+export type {
     ChartType,
-    ChartTransformerOptions,
+    BaseTransformerOptions,
     CartesianTransformerOptions,
+    PieTransformerOptions,
+    ScatterTransformerOptions,
     RadarTransformerOptions,
     GaugeTransformerOptions,
-    ScatterTransformerOptions,
     HeatmapTransformerOptions,
     CandlestickTransformerOptions,
     TreemapTransformerOptions,
@@ -15,27 +98,8 @@ import type {
     SunburstTransformerOptions,
     TreeTransformerOptions,
     ThemeRiverTransformerOptions,
-    CalendarTransformerOptions,
-    PieTransformerOptions
-} from './transformers/types';
-
-import { createPieChartOption } from './transformers/pie';
-import { createFunnelChartOption } from './transformers/funnel';
-import { createRadarChartOption } from './transformers/radar';
-import { createGaugeChartOption } from './transformers/gauge';
-import { createScatterChartOption } from './transformers/scatter';
-import { createHeatmapChartOption } from './transformers/heatmap';
-import { createCandlestickChartOption } from './transformers/candlestick';
-import { createTreemapChartOption } from './transformers/treemap';
-import { createBoxplotChartOption } from './transformers/boxplot';
-import { createSankeyChartOption } from './transformers/sankey';
-import { createGraphChartOption } from './transformers/graph';
-import { createSunburstChartOption, createTreeChartOption } from './transformers/hierarchy';
-import { createThemeRiverChartOption } from './transformers/theme-river';
-import { createCalendarChartOption } from './transformers/calendar';
-import { createCartesianChartOption } from './transformers/cartesian';
-
-export * from './transformers/types'; // Export all types for consumers
+    CalendarTransformerOptions
+};
 
 /**
  * Transforms Bases data into an ECharts option object.
@@ -51,7 +115,7 @@ export function transformDataToChartOption(
         case 'pie':
             return createPieChartOption(data, xProp, yProp, options as PieTransformerOptions);
         case 'funnel':
-            return createFunnelChartOption(data, xProp, yProp, options);
+            return createFunnelChartOption(data, xProp, yProp, options as BaseTransformerOptions);
         case 'radar':
             return createRadarChartOption(data, xProp, yProp, options as RadarTransformerOptions);
         case 'gauge':
