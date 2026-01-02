@@ -1488,7 +1488,7 @@ function createCalendarChartOption(
     if (minDate > maxDate) {
         // No data, defaults
         const now = new Date();
-        minDate = now.toISOString().split('T')[0];
+        minDate = now.toISOString().substring(0, 10);
         maxDate = minDate;
     }
 
