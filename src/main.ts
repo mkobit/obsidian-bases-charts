@@ -16,6 +16,10 @@ import { TreemapChartView } from './views/treemap-chart-view';
 import { BoxplotChartView } from './views/boxplot-chart-view';
 import { SankeyChartView } from './views/sankey-chart-view';
 import { GraphChartView } from './views/graph-chart-view';
+import { SunburstChartView } from './views/sunburst-chart-view';
+import { TreeChartView } from './views/tree-chart-view';
+import { ThemeRiverChartView } from './views/theme-river-chart-view';
+import { CalendarChartView } from './views/calendar-chart-view';
 
 export default class BarePlugin extends Plugin {
 	settings!: BarePluginSettings;
@@ -133,6 +137,34 @@ export default class BarePlugin extends Plugin {
 			icon: 'git-fork', // Using git-fork for graph/network
 			factory: (controller, containerEl) => new GraphChartView(controller, containerEl, this),
 			options: () => GraphChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('sunburst-chart', {
+			name: 'Sunburst Chart',
+			icon: 'disc',
+			factory: (controller, containerEl) => new SunburstChartView(controller, containerEl, this),
+			options: () => SunburstChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('tree-chart', {
+			name: 'Tree Chart',
+			icon: 'network',
+			factory: (controller, containerEl) => new TreeChartView(controller, containerEl, this),
+			options: () => TreeChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('theme-river-chart', {
+			name: 'ThemeRiver Chart',
+			icon: 'waves',
+			factory: (controller, containerEl) => new ThemeRiverChartView(controller, containerEl, this),
+			options: () => ThemeRiverChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('calendar-chart', {
+			name: 'Calendar Chart',
+			icon: 'calendar',
+			factory: (controller, containerEl) => new CalendarChartView(controller, containerEl, this),
+			options: () => CalendarChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));
