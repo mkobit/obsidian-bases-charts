@@ -1,0 +1,62 @@
+import type { EChartsOption, SankeySeriesOption } from 'echarts';
+import type { SankeyTransformerOptions } from './types';
+import { safeToString, getNestedValue } from './utils';
+
+export function createSankeyChartOption(
+    data: Record<string, unknown>[],
+    sourceProp: string,
+    targetProp: string,
+    options?: SankeyTransformerOptions
+): EChartsOption {
+    const valueProp = options?.valueProp;
+
+    const links: { source: string; target: string; value: number }[] = [];
+    const nodes = new Set<string>();
+
+    data.forEach(item => {
+        const sourceRaw = getNestedValue(item, sourceProp);
+        const targetRaw = getNestedValue(item, targetProp);
+
+        if (sourceRaw == null || targetRaw == null) return;
+
+        const source = safeToString(sourceRaw);
+        const target = safeToString(targetRaw);
+
+        // Sankey loops can cause issues, but we'll let ECharts handle or user data validation.
+        // Self-loops are generally not allowed in simple DAGs but ECharts might handle them.
+
+        nodes.add(source);
+        nodes.add(target);
+
+        let value = 1; // Default count
+        if (valueProp) {
+            const valRaw = getNestedValue(item, valueProp);
+            const val = Number(valRaw);
+            if (!isNaN(val)) value = val;
+        }
+
+        links.push({ source, target, value });
+    });
+
+    const dataNodes = Array.from(nodes).map(name => ({ name }));
+
+    const seriesItem: SankeySeriesOption = {
+        type: 'sankey',
+        data: dataNodes,
+        links: links,
+        emphasis: {
+            focus: 'adjacency'
+        },
+        label: {
+            show: true
+        }
+    };
+
+    return {
+        tooltip: {
+            trigger: 'item',
+            triggerOn: 'mousemove'
+        },
+        series: [seriesItem]
+    };
+}
