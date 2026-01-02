@@ -34,10 +34,15 @@ export function createCartesianChartOption(
         const xValRaw = getNestedValue(item, xProp);
         const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
 
-        const sValRaw = getNestedValue(item, seriesProp);
-        const sVal = seriesProp && sValRaw !== undefined && sValRaw !== null
-            ? safeToString(sValRaw)
-            : (seriesProp ? 'Series 1' : yProp);
+        let sVal = yProp;
+        if (seriesProp) {
+            const sValRaw = getNestedValue(item, seriesProp);
+            if (sValRaw !== undefined && sValRaw !== null) {
+                sVal = safeToString(sValRaw);
+            } else {
+                sVal = 'Series 1';
+            }
+        }
 
         const yVal = Number(getNestedValue(item, yProp));
 
