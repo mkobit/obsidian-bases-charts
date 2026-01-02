@@ -15,6 +15,7 @@ import { CandlestickChartView } from './views/candlestick-chart-view';
 import { TreemapChartView } from './views/treemap-chart-view';
 import { BoxplotChartView } from './views/boxplot-chart-view';
 import { SankeyChartView } from './views/sankey-chart-view';
+import { GraphChartView } from './views/graph-chart-view';
 
 export default class BarePlugin extends Plugin {
 	settings!: BarePluginSettings;
@@ -125,6 +126,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'git-merge', // Using git-merge as it represents flow/splitting
 			factory: (controller, containerEl) => new SankeyChartView(controller, containerEl, this),
 			options: () => SankeyChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('graph-chart', {
+			name: 'Graph Chart',
+			icon: 'git-fork', // Using git-fork for graph/network
+			factory: (controller, containerEl) => new GraphChartView(controller, containerEl, this),
+			options: () => GraphChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));
