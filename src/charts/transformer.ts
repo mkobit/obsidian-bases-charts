@@ -14,10 +14,14 @@ import type {
     TreemapSeriesOption,
     BoxplotSeriesOption,
     SankeySeriesOption,
-    GraphSeriesOption
+    GraphSeriesOption,
+    SunburstSeriesOption,
+    TreeSeriesOption,
+    ThemeRiverSeriesOption,
+    CalendarComponentOption
 } from 'echarts';
 
-export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'bubble' | 'radar' | 'funnel' | 'gauge' | 'heatmap' | 'candlestick' | 'treemap' | 'boxplot' | 'sankey' | 'graph';
+export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'bubble' | 'radar' | 'funnel' | 'gauge' | 'heatmap' | 'candlestick' | 'treemap' | 'boxplot' | 'sankey' | 'graph' | 'sunburst' | 'tree' | 'themeRiver' | 'calendar';
 
 interface BaseTransformerOptions {
     legend?: boolean;
@@ -77,6 +81,23 @@ export interface GraphTransformerOptions extends BaseTransformerOptions {
     categoryProp?: string; // For node category
 }
 
+export interface SunburstTransformerOptions extends BaseTransformerOptions {
+    valueProp?: string;
+}
+
+export interface TreeTransformerOptions extends BaseTransformerOptions {
+    // Tree specific options if any
+}
+
+export interface ThemeRiverTransformerOptions extends BaseTransformerOptions {
+    valueProp?: string;
+    themeProp?: string;
+}
+
+export interface CalendarTransformerOptions extends BaseTransformerOptions {
+    valueProp?: string;
+}
+
 export type ChartTransformerOptions =
     | CartesianTransformerOptions
     | PieTransformerOptions
@@ -88,7 +109,11 @@ export type ChartTransformerOptions =
     | TreemapTransformerOptions
     | BoxplotTransformerOptions
     | SankeyTransformerOptions
-    | GraphTransformerOptions;
+    | GraphTransformerOptions
+    | SunburstTransformerOptions
+    | TreeTransformerOptions
+    | ThemeRiverTransformerOptions
+    | CalendarTransformerOptions;
 
 /**
  * Transforms Bases data into an ECharts option object.
@@ -125,6 +150,14 @@ export function transformDataToChartOption(
             return createSankeyChartOption(data, xProp, yProp, options as SankeyTransformerOptions);
         case 'graph':
             return createGraphChartOption(data, xProp, yProp, options as GraphTransformerOptions);
+        case 'sunburst':
+            return createSunburstChartOption(data, xProp, options as SunburstTransformerOptions);
+        case 'tree':
+            return createTreeChartOption(data, xProp, options as TreeTransformerOptions);
+        case 'themeRiver':
+            return createThemeRiverChartOption(data, xProp, options as ThemeRiverTransformerOptions);
+        case 'calendar':
+            return createCalendarChartOption(data, xProp, options as CalendarTransformerOptions);
         case 'bar':
         case 'line':
         default:
@@ -1198,4 +1231,309 @@ function createGraphChartOption(
     };
 
     return opt;
+}
+
+interface HierarchyNode {
+    name: string;
+    value?: number;
+    children?: HierarchyNode[];
+}
+
+/**
+ * Helper to build a tree structure from slash-separated paths.
+ * E.g. "A/B" -> {name: 'A', children: [{name: 'B'}]}
+ */
+function buildHierarchy(
+    data: Record<string, unknown>[],
+    pathProp: string,
+    valueProp?: string
+): HierarchyNode[] {
+    const rootChildren: HierarchyNode[] = [];
+
+    // Helper to find existing child node
+    const findChild = (nodes: HierarchyNode[], name: string): HierarchyNode | undefined => {
+        return nodes.find(n => n.name === name);
+    };
+
+    data.forEach(item => {
+        const pathRaw = getNestedValue(item, pathProp);
+        if (typeof pathRaw !== 'string' || !pathRaw) return;
+
+        const parts = pathRaw.split('/').filter(p => p.length > 0);
+        if (parts.length === 0) return;
+
+        let currentLevel = rootChildren;
+        let value: number | undefined = undefined;
+
+        if (valueProp) {
+            const v = Number(getNestedValue(item, valueProp));
+            if (!isNaN(v)) value = v;
+        }
+
+        parts.forEach((part, index) => {
+            let node = findChild(currentLevel, part);
+            if (!node) {
+                node = { name: part };
+                // Initialize children array if not leaf
+                // ECharts Tree/Sunburst: nodes need children array to be parents, or value to be leaves.
+                // We'll add children array on demand.
+                currentLevel.push(node);
+            }
+
+            // If it's the leaf node, assign value
+            if (index === parts.length - 1) {
+                if (value !== undefined) {
+                    node.value = (node.value || 0) + value;
+                }
+            } else {
+                if (!node.children) node.children = [];
+                currentLevel = node.children;
+            }
+        });
+    });
+
+    return rootChildren;
+}
+
+function createSunburstChartOption(
+    data: Record<string, unknown>[],
+    pathProp: string,
+    options?: SunburstTransformerOptions
+): EChartsOption {
+    const valueProp = options?.valueProp;
+    const hierarchyData = buildHierarchy(data, pathProp, valueProp);
+
+    const seriesItem: SunburstSeriesOption = {
+        type: 'sunburst',
+        data: hierarchyData,
+        radius: [0, '90%'],
+        label: {
+            rotate: 'radial'
+        }
+    };
+
+    return {
+        series: [seriesItem],
+        tooltip: {
+            trigger: 'item'
+        }
+    };
+}
+
+function createTreeChartOption(
+    data: Record<string, unknown>[],
+    pathProp: string,
+    options?: TreeTransformerOptions
+): EChartsOption {
+    // Tree chart expects a single root usually.
+    // If we have multiple roots, we might need to wrap them or ECharts might only show one.
+    // Let's wrap in a virtual root if multiple.
+    let hierarchyData = buildHierarchy(data, pathProp);
+
+    if (hierarchyData.length > 1) {
+        hierarchyData = [{
+            name: 'Root',
+            children: hierarchyData
+        }];
+    }
+
+    const seriesItem: TreeSeriesOption = {
+        type: 'tree',
+        data: hierarchyData,
+        top: '10%',
+        bottom: '10%',
+        layout: 'orthogonal',
+        symbol: 'emptyCircle',
+        symbolSize: 7,
+        initialTreeDepth: 3,
+        animationDurationUpdate: 750,
+        label: {
+            position: 'left',
+            verticalAlign: 'middle',
+            align: 'right',
+            fontSize: 9
+        },
+        leaves: {
+            label: {
+                position: 'right',
+                verticalAlign: 'middle',
+                align: 'left'
+            }
+        },
+        expandAndCollapse: true,
+        animationDuration: 550,
+        animationEasing: 'cubicOut'
+    };
+
+    return {
+        series: [seriesItem],
+        tooltip: {
+            trigger: 'item',
+            triggerOn: 'mousemove'
+        }
+    };
+}
+
+function createThemeRiverChartOption(
+    data: Record<string, unknown>[],
+    dateProp: string,
+    options?: ThemeRiverTransformerOptions
+): EChartsOption {
+    const valueProp = options?.valueProp;
+    const themeProp = options?.themeProp;
+
+    // Data format: [date, value, themeName]
+    const riverData: (string | number)[][] = [];
+
+    data.forEach(item => {
+        const dateRaw = getNestedValue(item, dateProp);
+        const dateVal = safeToString(dateRaw);
+
+        if (!dateVal) return;
+
+        let val = 0;
+        if (valueProp) {
+            const v = Number(getNestedValue(item, valueProp));
+            if (!isNaN(v)) val = v;
+        }
+
+        let theme = 'Series 1';
+        if (themeProp) {
+            const tRaw = getNestedValue(item, themeProp);
+            if (tRaw !== undefined && tRaw !== null) theme = safeToString(tRaw);
+        }
+
+        riverData.push([dateVal, val, theme]);
+    });
+
+    // ThemeRiver requires data to be sorted by date? ECharts usually handles it,
+    // but best to sort.
+    // Simple string sort for ISO dates works.
+    riverData.sort((a, b) => {
+        const da = a[0] as string;
+        const db = b[0] as string;
+        return da.localeCompare(db);
+    });
+
+    const seriesItem: ThemeRiverSeriesOption = {
+        type: 'themeRiver',
+        data: riverData as any, // ECharts types can be tricky with tuple arrays
+        emphasis: {
+            itemStyle: {
+                shadowBlur: 20,
+                shadowColor: 'rgba(0, 0, 0, 0.8)'
+            }
+        }
+    };
+
+    return {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'line',
+                lineStyle: {
+                    color: 'rgba(0,0,0,0.2)',
+                    width: 1,
+                    type: 'solid'
+                }
+            }
+        },
+        singleAxis: {
+            type: 'time',
+            boundaryGap: [0, 0]
+        },
+        series: [seriesItem],
+        legend: options?.legend ? {} : undefined
+    };
+}
+
+function createCalendarChartOption(
+    data: Record<string, unknown>[],
+    dateProp: string,
+    options?: CalendarTransformerOptions
+): EChartsOption {
+    const valueProp = options?.valueProp;
+
+    // Data format: [date, value]
+    const calendarData: (string | number)[][] = [];
+    let minDate = '9999-12-31';
+    let maxDate = '0000-01-01';
+
+    let minVal = Infinity;
+    let maxVal = -Infinity;
+
+    data.forEach(item => {
+        const dateRaw = getNestedValue(item, dateProp);
+        const dateVal = safeToString(dateRaw);
+        if (!dateVal) return;
+
+        // Force string type assurance for TS
+        const dStr = dateVal as string;
+
+        if (dStr < minDate) minDate = dStr;
+        if (dStr > maxDate) maxDate = dStr;
+
+        let val = 0;
+        if (valueProp) {
+            const v = Number(getNestedValue(item, valueProp));
+            if (!isNaN(v)) val = v;
+        }
+
+        if (val < minVal) minVal = val;
+        if (val > maxVal) maxVal = val;
+
+        calendarData.push([dateVal, val]);
+    });
+
+    if (minDate > maxDate) {
+        // No data, defaults
+        const now = new Date();
+        minDate = now.toISOString().split('T')[0];
+        maxDate = minDate;
+    }
+
+    // Ensure range spans at least the data
+    // ECharts calendar range can be a year or specific range.
+    // If specific range, we assume one calendar component.
+
+    if (minVal === Infinity) minVal = 0;
+    if (maxVal === -Infinity) maxVal = 10;
+
+    const calendarItem: CalendarComponentOption = {
+        top: 120,
+        left: 30,
+        right: 30,
+        cellSize: ['auto', 13],
+        range: [minDate, maxDate],
+        itemStyle: {
+            borderWidth: 0.5
+        },
+        yearLabel: { show: false }
+    };
+
+    const seriesItem: HeatmapSeriesOption = {
+        type: 'heatmap',
+        coordinateSystem: 'calendar',
+        data: calendarData as any
+    };
+
+    return {
+        tooltip: {
+            position: 'top',
+            formatter: (params: any) => {
+                 if (!params || !Array.isArray(params.value)) return '';
+                 return `${params.value[0]} : ${params.value[1]}`;
+            }
+        },
+        visualMap: {
+            min: minVal,
+            max: maxVal,
+            calculable: true,
+            orient: 'horizontal',
+            left: 'center',
+            top: 65
+        },
+        calendar: calendarItem,
+        series: [seriesItem]
+    };
 }
