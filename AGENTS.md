@@ -8,6 +8,11 @@ The goal is to build an assortment of views using:
 -   **Apache ECharts**: For advanced data visualization (Primary focus).
 -   **Mermaid**: Potentially building on top of the built-in Mermaid plugin support (Future).
 
+## Environment setup
+An automated environment setup script is available at `.agents/jules/env_setup.sh`. This script handles the bootstrapping of the development environment by:
+-   Managing tool availability (prioritizing `mise` and checking `.nvmrc`).
+-   Installing `pnpm` dependencies.
+
 ## Architecture
 -   **Entry Point**: `src/main.ts` (`BarePlugin` class).
 -   **Settings**: `src/settings.ts` (Typed settings management).
@@ -18,10 +23,10 @@ The goal is to build an assortment of views using:
 -   **Styles**: `styles.css` (Currently empty, reserved for view styles).
 -   **Manifest**: `manifest.json` (Synced via automation).
 
-## CI & Pre-commit Protocol
+## CI & pre-commit protocol
 To ensure the stability of the codebase and prevent CI failures, strict adherence to the following protocol is **mandatory**.
 
-### Required Checks
+### Required checks
 Before submitting any code, you **MUST** run the following commands locally and ensure they pass:
 
 1.  **`pnpm install`**: Ensures your `pnpm-lock.yaml` is consistent with `package.json`.
@@ -31,7 +36,7 @@ Before submitting any code, you **MUST** run the following commands locally and 
 
 **If any of these fail, DO NOT submit.** Fix the errors first.
 
-### Troubleshooting Common Failures
+### Troubleshooting common failures
 -   **Lockfile Errors**: If CI fails on `pnpm install`, you likely committed a `package-lock.json` (which is forbidden) or your `pnpm-lock.yaml` is out of sync. Always use `pnpm`, never `npm`.
 -   **Type Errors**: We run with `"strict": true`.
     -   No implicit `any`.

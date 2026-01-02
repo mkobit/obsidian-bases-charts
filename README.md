@@ -1,44 +1,14 @@
-# Obsidian ECharts Visualization Plugin
+# Chart views for Obsidian Bases
 
 This plugin brings the power of [Apache ECharts](https://echarts.apache.org/) to Obsidian, integrating seamlessly with the [Bases API](https://github.com/obsidian-bases/bases). It allows you to create dynamic, data-driven visualizations directly from your vault's properties.
 
 ## Features
 
--   **Deep Integration**: Built on the Obsidian Bases API to consume data from your vault's properties.
--   **Wide Variety of Charts**: Supports a comprehensive suite of ECharts visualizations.
+-   **Deep integration**: Built on the Obsidian Bases API to consume data from your vault's properties.
+-   **Wide variety of charts**: Supports a comprehensive suite of ECharts visualizations.
 -   **Interactive**: Charts are rendered using the ECharts library, providing tooltips, zooming, and filtering.
 
-## Supported Chart Types
-
-The following chart types are currently implemented:
-
-### Basic Charts
--   **Bar Chart**: Visualize categorical data.
--   **Line Chart**: Perfect for trends over time.
--   **Pie Chart**: Display proportions.
--   **Scatter Chart**: Analyze correlations between two variables.
--   **Bubble Chart**: Three-dimensional data (x, y, size).
--   **Area Chart**: Line chart with filled area.
--   **Stacked Bar Chart**: Visualize parts of a whole across categories.
-
-### Financial & Statistical
--   **Candlestick Chart**: Financial OHLC (Open-High-Low-Close) data.
--   **Boxplot Chart**: Statistical distribution of data.
--   **Gauge Chart**: Single value monitoring (e.g., progress, KPIs).
-
-### Hierarchical & Relational
--   **Treemap**: Hierarchical data with nested rectangles.
--   **Sunburst**: Radial hierarchical visualization.
--   **Tree Chart**: Node-link diagrams for trees.
--   **Sankey Chart**: Flow visualization (source to target).
--   **Graph Chart**: Force-directed graph layouts for network data.
-
-### Specialized
--   **Radar Chart**: Multivariate data on radial axes.
--   **Funnel Chart**: Stages in a process.
--   **Heatmap**: Matrix data with color coding.
--   **ThemeRiver**: Evolution of themes over time.
--   **Calendar Chart**: Activity over time (GitHub-style contribution graphs).
+For examples of the types of visualizations possible, see the [Apache ECharts examples](https://echarts.apache.org/examples/en/index.html).
 
 ## Usage
 
