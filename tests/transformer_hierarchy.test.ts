@@ -17,7 +17,8 @@ describe('Transformer - Hierarchical Charts', () => {
             });
 
             expect(option.series).toBeDefined();
-            const series = option.series![0] as SunburstSeriesOption;
+            const seriesArr = option.series as any[];
+            const series = seriesArr[0] as SunburstSeriesOption;
             expect(series.type).toBe('sunburst');
 
             const hierarchy = series.data as any[];
@@ -38,7 +39,8 @@ describe('Transformer - Hierarchical Charts', () => {
             const option = transformDataToChartOption(data, 'path', '', 'sunburst', {
                 valueProp: 'val'
             });
-            const series = option.series![0] as SunburstSeriesOption;
+            const seriesArr = option.series as any[];
+            const series = seriesArr[0] as SunburstSeriesOption;
             const hierarchy = series.data as any[];
             expect(hierarchy[0].children[0].value).toBeUndefined();
         });
@@ -51,7 +53,8 @@ describe('Transformer - Hierarchical Charts', () => {
                 { path: 'C/D' }
             ];
             const option = transformDataToChartOption(data, 'path', '', 'tree', {});
-            const series = option.series![0] as TreeSeriesOption;
+            const seriesArr = option.series as any[];
+            const series = seriesArr[0] as TreeSeriesOption;
 
             const dataRoot = series.data as any[];
             // Should be wrapped in "Root" because there are two top-level nodes (A and C)
@@ -66,7 +69,8 @@ describe('Transformer - Hierarchical Charts', () => {
                 { path: 'A/C' }
             ];
             const option = transformDataToChartOption(data, 'path', '', 'tree', {});
-            const series = option.series![0] as TreeSeriesOption;
+            const seriesArr = option.series as any[];
+            const series = seriesArr[0] as TreeSeriesOption;
 
             const dataRoot = series.data as any[];
             // Should be just A, no wrapper
