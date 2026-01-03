@@ -58,6 +58,10 @@ import {
     CalendarTransformerOptions
 } from './transformers/calendar';
 import {
+    createParallelChartOption,
+    ParallelTransformerOptions
+} from './transformers/parallel';
+import {
     createCartesianChartOption,
     CartesianTransformerOptions
 } from './transformers/cartesian';
@@ -78,7 +82,8 @@ export type ChartTransformerOptions =
     | SunburstTransformerOptions
     | TreeTransformerOptions
     | ThemeRiverTransformerOptions
-    | CalendarTransformerOptions;
+    | CalendarTransformerOptions
+    | ParallelTransformerOptions;
 
 // Re-export specific types for consumers who need them
 export type {
@@ -98,7 +103,8 @@ export type {
     SunburstTransformerOptions,
     TreeTransformerOptions,
     ThemeRiverTransformerOptions,
-    CalendarTransformerOptions
+    CalendarTransformerOptions,
+    ParallelTransformerOptions
 };
 
 /**
@@ -144,6 +150,8 @@ export function transformDataToChartOption(
             return createThemeRiverChartOption(data, xProp, options as ThemeRiverTransformerOptions);
         case 'calendar':
             return createCalendarChartOption(data, xProp, options as CalendarTransformerOptions);
+        case 'parallel':
+            return createParallelChartOption(data, xProp, yProp, options as ParallelTransformerOptions);
         case 'bar':
         case 'line':
         default:

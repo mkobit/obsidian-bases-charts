@@ -20,6 +20,7 @@ import { SunburstChartView } from './views/sunburst-chart-view';
 import { TreeChartView } from './views/tree-chart-view';
 import { ThemeRiverChartView } from './views/theme-river-chart-view';
 import { CalendarChartView } from './views/calendar-chart-view';
+import { ParallelChartView } from './views/parallel-chart-view';
 
 export default class BarePlugin extends Plugin {
 	settings!: BarePluginSettings;
@@ -165,6 +166,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'calendar',
 			factory: (controller, containerEl) => new CalendarChartView(controller, containerEl, this),
 			options: () => CalendarChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('parallel-chart', {
+			name: 'Parallel Chart',
+			icon: 'sliders-horizontal', // Using sliders-horizontal to represent parallel lines
+			factory: (controller, containerEl) => new ParallelChartView(controller, containerEl, this),
+			options: () => ParallelChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));
