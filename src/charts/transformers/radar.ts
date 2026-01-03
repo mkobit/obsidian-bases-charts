@@ -37,18 +37,19 @@ export function createRadarChartOption(
 
     // 3. Build Data
     // Map: SeriesName -> [v1, v2, v3...] corresponding to indicatorsList
-    const seriesMap = new Map<string, (number | null)[]>();
+    // Initialize map with null-filled arrays
+    const initialMap = new Map<string, (number | null)[]>();
     for (const s of uniqueSeries) {
         // Explicitly type the array created with fill(null)
-        seriesMap.set(s, new Array<number | null>(indicatorsList.length).fill(null));
+        initialMap.set(s, new Array<number | null>(indicatorsList.length).fill(null));
     }
 
-    data.forEach(item => {
+    const seriesMap = data.reduce((acc, item) => {
         const indRaw = getNestedValue(item, indicatorProp);
         const indVal = indRaw === undefined || indRaw === null ? 'Unknown' : safeToString(indRaw);
         const indIndex = indicatorsList.indexOf(indVal);
 
-        if (indIndex === -1) return;
+        if (indIndex === -1) return acc;
 
         let sName = valueProp;
         if (seriesProp) {
@@ -58,10 +59,11 @@ export function createRadarChartOption(
 
         const val = Number(getNestedValue(item, valueProp));
         if (!isNaN(val)) {
-             const arr = seriesMap.get(sName);
+             const arr = acc.get(sName);
              if (arr) arr[indIndex] = val;
         }
-    });
+        return acc;
+    }, initialMap);
 
     // 4. Construct Option
     const radarIndicators = indicatorsList.map(name => ({ name })); // Auto max?

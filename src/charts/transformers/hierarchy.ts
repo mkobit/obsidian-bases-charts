@@ -26,37 +26,28 @@ function buildHierarchy(
     pathProp: string,
     valueProp?: string
 ): HierarchyNode[] {
-    const rootChildren: HierarchyNode[] = [];
-
-    // Helper to find existing child node
-    const findChild = (nodes: HierarchyNode[], name: string): HierarchyNode | undefined => {
-        return nodes.find(n => n.name === name);
-    };
-
-    // Using traditional loop here because we are building a mutable tree structure incrementally
-    // which is awkward with reduce and cleaner with sequential processing.
-    for (const item of data) {
+    return data.reduce<HierarchyNode[]>((rootChildren, item) => {
         const pathRaw = getNestedValue(item, pathProp);
-        if (typeof pathRaw !== 'string' || !pathRaw) continue;
+        if (typeof pathRaw !== 'string' || !pathRaw) return rootChildren;
 
         const parts = pathRaw.split('/').filter(p => p.length > 0);
-        if (parts.length === 0) continue;
+        if (parts.length === 0) return rootChildren;
 
-        let currentLevel = rootChildren;
         let value: number | undefined = undefined;
-
         if (valueProp) {
             const v = Number(getNestedValue(item, valueProp));
             if (!isNaN(v)) value = v;
         }
 
-        parts.forEach((part, index) => {
-            let node = findChild(currentLevel, part);
+        // Traverse/Build the tree for this item
+        parts.reduce<HierarchyNode[]>((currentLevel, part, index) => {
+            let node = currentLevel.find(n => n.name === part);
+
             if (!node) {
                 node = { name: part };
-                // Initialize children array if not leaf
-                // ECharts Tree/Sunburst: nodes need children array to be parents, or value to be leaves.
-                // We'll add children array on demand.
+                // Use push since we are mutating the accumulating tree structure
+                // Ideally this would be fully immutable but for deep trees performance/complexity tradeoff usually favors this hybrid reduce.
+                // However, strictly following "functional" request:
                 currentLevel.push(node);
             }
 
@@ -67,12 +58,14 @@ function buildHierarchy(
                 }
             } else {
                 if (!node.children) node.children = [];
-                currentLevel = node.children;
+                return node.children;
             }
-        });
-    }
 
-    return rootChildren;
+            return currentLevel; // Not used for leaf, but satisfies type
+        }, rootChildren);
+
+        return rootChildren;
+    }, []);
 }
 
 export function createSunburstChartOption(
