@@ -27,98 +27,74 @@ export function createParallelChartOption(
         return {};
     }
 
-    // 1. Identify Series (Grouping)
-    const uniqueSeries = new Set<string>();
-    for (const item of data) {
-        let sName = 'Default';
-        if (seriesProp) {
-            const valRaw = getNestedValue(item, seriesProp);
-            sName = valRaw === undefined || valRaw === null ? 'Default' : safeToString(valRaw);
-        }
-        uniqueSeries.add(sName);
-    }
+    // 1. Identify Series (Grouping) using functional pattern
+    const getSeriesName = (item: Record<string, unknown>): string => {
+        if (!seriesProp) return 'Default';
+        const valRaw = getNestedValue(item, seriesProp);
+        return valRaw === undefined || valRaw === null ? 'Default' : safeToString(valRaw);
+    };
 
-    // 2. Build Parallel Axes Config
+    const uniqueSeries = Array.from(new Set(data.map(getSeriesName)));
+
+    // 2. Build Parallel Axes Config using functional pattern
     const axisConfigs: ParallelAxisOption[] = dimensions.map((dim, index) => {
-        let isNumeric = true;
-        const uniqueValues = new Set<string>();
+        const values = data.map(item => getNestedValue(item, dim));
+        const nonNullValues = values.filter(v => v !== undefined && v !== null && v !== '');
 
-        for (const item of data) {
-            const valRaw = getNestedValue(item, dim);
-            if (valRaw !== undefined && valRaw !== null && valRaw !== '') {
-                if (isNaN(Number(valRaw))) {
-                    isNumeric = false;
-                }
-                uniqueValues.add(safeToString(valRaw));
-            }
-        }
+        // Determine if numeric
+        const isNumeric = nonNullValues.length > 0 && nonNullValues.every(v => !isNaN(Number(v)));
 
         if (isNumeric) {
             return { dim: index, name: dim, type: 'value' };
         } else {
-            return { dim: index, name: dim, type: 'category', data: Array.from(uniqueValues) };
+            const uniqueValues = Array.from(new Set(nonNullValues.map(safeToString)));
+            return { dim: index, name: dim, type: 'category', data: uniqueValues };
         }
     });
 
-    // 3. Build Series Data
-    const seriesDataMap = new Map<string, (string | number)[][]>();
+    // 3. Build Series Data using functional pattern
+    const groupedData = data.reduce<Record<string, (string | number)[][]>>((acc, item) => {
+        const sName = getSeriesName(item);
 
-    // Initialize map
-    for (const s of uniqueSeries) {
-        seriesDataMap.set(s, []);
-    }
-
-    for (const item of data) {
-        let sName = 'Default';
-        if (seriesProp) {
-            const valRaw = getNestedValue(item, seriesProp);
-            sName = valRaw === undefined || valRaw === null ? 'Default' : safeToString(valRaw);
-        }
-
-        const rowData: (string | number)[] = [];
-        for (const dim of dimensions) {
+        const rowData = dimensions.map(dim => {
             const valRaw = getNestedValue(item, dim);
             if (valRaw === undefined || valRaw === null) {
-                rowData.push('N/A');
-            } else {
-                const valStr = safeToString(valRaw);
-                const valNum = Number(valRaw);
-                if (!isNaN(valNum)) {
-                     rowData.push(valNum);
-                } else {
-                     rowData.push(valStr);
-                }
+                return 'N/A';
             }
+            const valNum = Number(valRaw);
+            return !isNaN(valNum) ? valNum : safeToString(valRaw);
+        });
+
+        if (!acc[sName]) {
+            acc[sName] = [];
         }
+        // ESLint complains if we assert non-null unnecessarily, but Typescript might not infer it correctly without strictNullChecks or flow analysis on object access.
+        // If acc[sName] is assigned above, it is definitely there.
+        acc[sName].push(rowData);
+        return acc;
+    }, {});
 
-        seriesDataMap.get(sName)?.push(rowData);
-    }
-
-    const seriesList: ParallelSeriesOption[] = [];
-
-    if (!seriesProp) {
-        const allData: (string | number)[][] = [];
-        for (const arr of seriesDataMap.values()) {
-            allData.push(...arr);
-        }
-         seriesList.push({
+    const seriesList: ParallelSeriesOption[] = Object.entries(groupedData).map(([sName, sData]) => {
+        const seriesOpt: ParallelSeriesOption = {
             type: 'parallel',
-            data: allData,
+            data: sData,
             lineStyle: {
                 width: 2
             }
-        });
-    } else {
-        for (const [sName, sData] of seriesDataMap.entries()) {
-            seriesList.push({
-                name: sName,
-                type: 'parallel',
-                data: sData,
-                lineStyle: {
-                    width: 2
-                }
-            });
+        };
+
+        if (seriesProp) {
+            seriesOpt.name = sName;
         }
+
+        return seriesOpt;
+    });
+
+    // If no series prop, flatten all data into one series if multiple groups were accidentally created (shouldn't happen with 'Default')
+    // Actually, if seriesProp is undefined, getSeriesName returns 'Default', so we have one entry 'Default'.
+    // If we want a clean single series without name when no seriesProp is present:
+    if (!seriesProp && seriesList.length === 1) {
+        delete seriesList[0]!.name;
     }
 
     const opt: EChartsOption = {
@@ -135,7 +111,6 @@ export function createParallelChartOption(
         },
         // Using unknown[] cast to satisfy both strict type checks (EChartsOption expects something compatible)
         // and lint rules (no explicit any).
-        // The ECharts type definition for `parallelAxis` likely allows an array of objects.
         parallelAxis: axisConfigs as unknown as Record<string, unknown>[],
         series: seriesList,
         tooltip: {
@@ -145,7 +120,7 @@ export function createParallelChartOption(
 
     if (options?.legend) {
         opt.legend = {
-            data: Array.from(uniqueSeries),
+            data: uniqueSeries,
             top: 5
         };
     }
