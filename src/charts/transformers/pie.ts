@@ -12,7 +12,8 @@ export function createPieChartOption(
     valueProp: string,
     options?: PieTransformerOptions
 ): EChartsOption {
-    const seriesData = data.map(item => {
+    // Transform complex object array to simple array for dataset
+    const datasetSource = data.map(item => {
         const valRaw = getNestedValue(item, nameProp);
         const name = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
 
@@ -25,7 +26,11 @@ export function createPieChartOption(
 
     const seriesItem: PieSeriesOption = {
         type: 'pie',
-        data: seriesData,
+        // Use encode to map dimensions
+        encode: {
+            itemName: 'name',
+            value: 'value'
+        },
         radius: options?.roseType ? [20, '75%'] : '50%',
         roseType: options?.roseType,
         emphasis: {
@@ -38,6 +43,9 @@ export function createPieChartOption(
     };
 
     const opt: EChartsOption = {
+        dataset: {
+            source: datasetSource
+        },
         series: [seriesItem],
         tooltip: {
             trigger: 'item'
