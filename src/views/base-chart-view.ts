@@ -33,8 +33,8 @@ export abstract class BaseChartView extends BasesView {
         super(controller);
         this.scrollEl = scrollEl;
         this.plugin = plugin;
-        this.containerEl = scrollEl.createDiv({ cls: 'bare-chart-container' });
-        this.chartEl = this.containerEl.createDiv({ cls: 'bare-chart' });
+        this.containerEl = scrollEl.createDiv({ cls: 'bases-echarts-container' });
+        this.chartEl = this.containerEl.createDiv({ cls: 'bases-echarts' });
     }
 
     onload(): void {
