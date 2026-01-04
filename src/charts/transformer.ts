@@ -120,6 +120,11 @@ export function transformDataToChartOption(
     switch (chartType) {
         case 'pie':
             return createPieChartOption(data, xProp, yProp, options as PieTransformerOptions);
+        case 'rose':
+            return createPieChartOption(data, xProp, yProp, {
+                ...(options as PieTransformerOptions),
+                roseType: 'area'
+            });
         case 'funnel':
             return createFunnelChartOption(data, xProp, yProp, options as BaseTransformerOptions);
         case 'radar':

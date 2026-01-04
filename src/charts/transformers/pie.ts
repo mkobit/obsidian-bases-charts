@@ -2,9 +2,8 @@ import type { EChartsOption, PieSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface PieTransformerOptions extends BaseTransformerOptions {
-    // Pie specific options if any
+    roseType?: 'radius' | 'area';
 }
 
 export function createPieChartOption(
@@ -27,7 +26,8 @@ export function createPieChartOption(
     const seriesItem: PieSeriesOption = {
         type: 'pie',
         data: seriesData,
-        radius: '50%',
+        radius: options?.roseType ? [20, '75%'] : '50%',
+        roseType: options?.roseType,
         emphasis: {
             itemStyle: {
                 shadowBlur: 10,
