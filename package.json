@@ -20,7 +20,7 @@
 		"eslint": "^9.39.2",
 		"eslint-plugin-obsidianmd": "0.1.9",
 		"fast-check": "^4.5.3",
-		"globals": "14.0.0",
+		"globals": "17.0.0",
 		"happy-dom": "20.0.11",
 		"jiti": "2.6.1",
 		"temporal-polyfill": "^0.3.0",
