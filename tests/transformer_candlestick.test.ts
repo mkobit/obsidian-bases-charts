@@ -37,9 +37,16 @@ describe('Transformer - Candlestick Chart', () => {
         // Axis Verification
         expect(option.xAxis).toBeDefined();
 
-        // Use XAXisComponentOption to avoid any
         const xAxis = option.xAxis as XAXisComponentOption;
-        expect(xAxis.data).toEqual(['2023-10-01', '2023-10-02', '2023-10-03']);
+
+        // Use any cast for test assertion simplicity due to complex union types
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        if ((xAxis as any).type === 'category') {
+             // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+             expect((xAxis as any).data).toEqual(['2023-10-01', '2023-10-02', '2023-10-03']);
+        } else {
+            throw new Error('Expected xAxis to be category type');
+        }
     });
 
     it('should handle missing values gracefully', () => {
@@ -65,7 +72,14 @@ describe('Transformer - Candlestick Chart', () => {
 
         // Check xAxis data sync
         const xAxis = option.xAxis as XAXisComponentOption;
-        expect(xAxis.data).toEqual(['2023-10-01']);
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        if ((xAxis as any).type === 'category') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+            expect((xAxis as any).data).toEqual(['2023-10-01']);
+        } else {
+             throw new Error('Expected xAxis to be category type');
+        }
     });
 
     it('should use default property names if options are missing', () => {
