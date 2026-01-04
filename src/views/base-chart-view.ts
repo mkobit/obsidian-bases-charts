@@ -120,19 +120,8 @@ export abstract class BaseChartView extends BasesView {
             const customOptionStr = this.config.get(BaseChartView.CUSTOM_OPTION_KEY) as string;
             if (customOptionStr) {
                 try {
-                    const customOpt = JSON.parse(customOptionStr);
-                    // Deep merge or simple merge? ECharts setOption merges.
-                    // But we want to merge *before* setting to maintain control if needed.
-                    // ECharts `setOption` handles merging recursively if we pass it later.
-                    // But if we want to `setOption(totalOption, true)` (notMerge=true), we must merge manually.
-                    // Let's use a simple spread for top-level, or better, let ECharts handle it?
-                    // If we use `setOption(option, true)`, we replace everything.
-                    // So we must merge customOpt into option before passing.
-                    // A simple Object.assign or spread might not be enough for nested props like `series`.
-                    // But importing a deep merge lib adds weight.
-                    // Let's rely on a basic merge for now, or assume users know what they are doing.
-                    // ECharts allows multiple setOption calls.
-                    // Strategy: set the base option with notMerge=true, then set customOption with notMerge=false (merge).
+                    // Safe cast to avoid 'unsafe assignment of any' lint error
+                    const customOpt = JSON.parse(customOptionStr) as EChartsOption;
 
                     // We will do two setOption calls.
                     // First call clears/resets.
@@ -192,13 +181,13 @@ export abstract class BaseChartView extends BasesView {
                 key: BaseChartView.LEGEND_KEY,
             },
             {
-                displayName: 'Custom CSS Class',
+                displayName: 'Custom CSS class',
                 type: 'text',
                 key: BaseChartView.CSS_CLASS_KEY,
                 placeholder: 'e.g. my-custom-chart',
             },
             {
-                displayName: 'Custom ECharts Option (JSON)',
+                displayName: 'Custom ECharts option (JSON)',
                 type: 'text',
                 key: BaseChartView.CUSTOM_OPTION_KEY,
                 placeholder: '{"grid": {"left": 50}}',

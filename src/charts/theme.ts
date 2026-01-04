@@ -15,10 +15,13 @@ export function getChartTheme(
     if (themeSetting === 'custom') {
         if (customThemeJson) {
             try {
-                const themeObj = JSON.parse(customThemeJson);
+                // Parse JSON and cast to object to avoid unsafe 'any' assignment
+                const themeObj = JSON.parse(customThemeJson) as Record<string, unknown>;
+
                 // Register the theme globally with ECharts
                 // We use a fixed name 'bare-plugin-custom-theme' and overwrite it.
                 // Note: registering the same theme name again overwrites it.
+                // echarts.registerTheme expects 'object', Record<string, unknown> satisfies this.
                 echarts.registerTheme('bare-plugin-custom-theme', themeObj);
                 return 'bare-plugin-custom-theme';
             } catch (e) {

@@ -27,8 +27,8 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('Chart Theme')
-			.setDesc('Select the theme to use for charts. "Auto" follows the Obsidian theme (Light/Dark). "Custom" uses the definition below.')
+			.setName('Chart theme')
+			.setDesc('Select the theme to use for charts. The auto option follows the Obsidian theme.')
 			.addDropdown(dropdown => dropdown
 				.addOption('auto', 'Auto')
 				.addOption('light', 'Light')
@@ -43,8 +43,9 @@ export class SettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('Custom Theme Definition')
-			.setDesc('Paste your ECharts JSON theme definition here. Only used if "Chart Theme" is set to "Custom".')
+			.setName('Custom theme definition')
+			// eslint-disable-next-line obsidianmd/ui/sentence-case
+			.setDesc('Paste your theme definition JSON here. See the ECharts documentation for details. Only used if the chart theme is set to custom.')
 			.addTextArea(text => text
 				.setPlaceholder('{"version": 1, "theme": ...}')
 				.setValue(this.plugin.settings.customThemeDefinition)
