@@ -25,10 +25,7 @@ export function createCartesianChartOption(
     const Y_DIM = 'y';
     const S_DIM = 's';
 
-    // 1. Normalize data to flat structure using functional patterns
-    // Using flatMap to combine mapping and filtering in a single pass where possible
-    // (though flatMap builds an intermediate array, it's cleaner than reduce for this logic)
-    const validItems = data.reduce((acc, item) => {
+    const validItems = data.flatMap(item => {
         const xValRaw = getNestedValue(item, xProp);
         const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
 
@@ -36,7 +33,7 @@ export function createCartesianChartOption(
         const yVal = Number(yValRaw);
 
         if (isNaN(yVal)) {
-            return acc;
+            return [];
         }
 
         let sVal: string | undefined = undefined;
@@ -49,9 +46,8 @@ export function createCartesianChartOption(
             }
         }
 
-        acc.push({ xVal, yVal, sVal });
-        return acc;
-    }, [] as { xVal: string; yVal: number; sVal: string | undefined }[]);
+        return [{ xVal, yVal, sVal }];
+    });
 
     const flatData = validItems.map(item => ({
         [X_DIM]: item.xVal,
@@ -60,7 +56,6 @@ export function createCartesianChartOption(
     }));
 
     // Extract unique values for X axis and Series
-    // Note: Iterator helpers (ESNext) are not available in the current build target (ES6).
     const xAxisData = Array.from(new Set(validItems.map(i => i.xVal)));
     const uniqueSeries = Array.from(new Set(validItems.map(i => i.sVal).filter((s): s is string => s !== undefined)));
 
