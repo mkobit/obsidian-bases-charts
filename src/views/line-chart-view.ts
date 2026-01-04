@@ -25,7 +25,7 @@ export class LineChartView extends BaseChartView {
         // Axis Config
         const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
         const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
-        const xAxisLabelRotate = this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY) as number;
+        const xAxisLabelRotate = Number(this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY));
         const flipAxis = this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean;
 
         if (typeof xProp !== 'string' || typeof yProp !== 'string') {
@@ -38,10 +38,12 @@ export class LineChartView extends BaseChartView {
             areaStyle,
             legend: showLegend,
             seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined,
-            xAxisLabel,
-            yAxisLabel,
-            xAxisLabelRotate,
-            flipAxis
+            axis: {
+                xAxisLabel,
+                yAxisLabel,
+                xAxisLabelRotate: isNaN(xAxisLabelRotate) ? undefined : xAxisLabelRotate,
+                flipAxis
+            }
         });
     }
 

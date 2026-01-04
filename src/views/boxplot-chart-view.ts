@@ -21,7 +21,7 @@ export class BoxplotChartView extends BaseChartView {
         // Axis Config
         const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
         const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
-        const xAxisLabelRotate = this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY) as number;
+        const xAxisLabelRotate = Number(this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY));
         const flipAxis = this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean;
 
         if (!xProp || !yProp) {
@@ -31,10 +31,12 @@ export class BoxplotChartView extends BaseChartView {
         return transformDataToChartOption(data, xProp, yProp, 'boxplot', {
             seriesProp: seriesProp,
             legend: showLegend,
-            xAxisLabel,
-            yAxisLabel,
-            xAxisLabelRotate,
-            flipAxis
+            axis: {
+                xAxisLabel,
+                yAxisLabel,
+                xAxisLabelRotate: isNaN(xAxisLabelRotate) ? undefined : xAxisLabelRotate,
+                flipAxis
+            }
         });
     }
 

@@ -21,7 +21,7 @@ export class CandlestickChartView extends BaseChartView {
         // Axis Config
         const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
         const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
-        const xAxisLabelRotate = this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY) as number;
+        const xAxisLabelRotate = Number(this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY));
         const flipAxis = this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean;
 
         if (typeof xProp !== 'string' || typeof openProp !== 'string' || typeof closeProp !== 'string' || typeof lowProp !== 'string' || typeof highProp !== 'string') {
@@ -34,10 +34,12 @@ export class CandlestickChartView extends BaseChartView {
             closeProp,
             lowProp,
             highProp,
-            xAxisLabel,
-            yAxisLabel,
-            xAxisLabelRotate,
-            flipAxis
+            axis: {
+                xAxisLabel,
+                yAxisLabel,
+                xAxisLabelRotate: isNaN(xAxisLabelRotate) ? undefined : xAxisLabelRotate,
+                flipAxis
+            }
         });
     }
 

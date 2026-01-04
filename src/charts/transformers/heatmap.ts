@@ -1,15 +1,11 @@
-import type { EChartsOption, HeatmapSeriesOption, XAXisComponentOption, YAXisComponentOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { EChartsOption, HeatmapSeriesOption } from 'echarts';
+import type { BaseTransformerOptions, AxisOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 
 export interface HeatmapTransformerOptions extends BaseTransformerOptions {
     valueProp?: string;
 
-    // Axis Options
-    xAxisLabel?: string;
-    yAxisLabel?: string;
-    xAxisLabelRotate?: number;
-    flipAxis?: boolean;
+    axis?: AxisOptions;
 }
 
 export function createHeatmapChartOption(
@@ -19,14 +15,11 @@ export function createHeatmapChartOption(
     options?: HeatmapTransformerOptions
 ): EChartsOption {
     const valueProp = options?.valueProp;
-    const xAxisLabel = options?.xAxisLabel;
-    const yAxisLabel = options?.yAxisLabel;
-    const xAxisLabelRotate = options?.xAxisLabelRotate;
-    // Note: Heatmap "flipAxis" implies swapping X and Y axis definitions?
-    // Heatmap is Cartesian. If we flip, X becomes Y and Y becomes X.
-    // X is Category, Y is Category usually.
-    // So "flipping" just means transposing the grid.
-    const flipAxis = options?.flipAxis;
+
+    const xAxisLabel = options?.axis?.xAxisLabel;
+    const yAxisLabel = options?.axis?.yAxisLabel;
+    const xAxisLabelRotate = options?.axis?.xAxisLabelRotate;
+    const flipAxis = options?.axis?.flipAxis;
 
     // 1. Identify Categories
     const uniqueX = new Set<string>();
@@ -42,11 +35,8 @@ export function createHeatmapChartOption(
         uniqueY.add(yVal);
     }
 
-    let xAxisData = Array.from(uniqueX);
-    let yAxisData = Array.from(uniqueY);
-
-    // If flipping, we swap the logical meaning of X and Y in the data processing or just in the axis assignment.
-    // Easier to just build standard X/Y data and then assign to axis options swapped.
+    const xAxisData = Array.from(uniqueX);
+    const yAxisData = Array.from(uniqueY);
 
     // 3. Build Data [xIndex, yIndex, value]
     const { seriesData, minVal, maxVal } = data.reduce<{
@@ -75,17 +65,6 @@ export function createHeatmapChartOption(
         if (val < acc.minVal) acc.minVal = val;
         if (val > acc.maxVal) acc.maxVal = val;
 
-        // Series Data Format for Heatmap: [xIndex, yIndex, value]
-        // This corresponds to xAxis index and yAxis index.
-        // If we flip axes later (swap xAxis config with yAxis config),
-        // we must ensure that the indices match the swapped axes.
-
-        // Strategy:
-        // If flipAxis is true:
-        //   Visual X-Axis uses yAxisData
-        //   Visual Y-Axis uses xAxisData
-        //   Data point should be [yIndex, xIndex, value]
-
         if (flipAxis) {
             acc.seriesData.push([yIndex, xIndex, val]);
         } else {
@@ -106,35 +85,26 @@ export function createHeatmapChartOption(
         }
     };
 
-    // Configure Axis Objects
-    // Standard (No Flip):
-    //   Axis 1 (Bottom/X) = xAxisData (Categories from xProp)
-    //   Axis 2 (Left/Y)   = yAxisData (Categories from yProp)
-
-    // Flipped:
-    //   Axis 1 (Bottom/X) = yAxisData (Categories from yProp)
-    //   Axis 2 (Left/Y)   = xAxisData (Categories from xProp)
-
-    const axisFromXProp: XAXisComponentOption = {
-        type: 'category',
+    const axisFromXProp = {
+        type: 'category' as const,
         data: xAxisData,
         name: xAxisLabel || xProp,
         splitArea: { show: true },
         axisLabel: { rotate: xAxisLabelRotate }
     };
 
-    const axisFromYProp: YAXisComponentOption = {
-        type: 'category',
+    const axisFromYProp = {
+        type: 'category' as const,
         data: yAxisData,
         name: yAxisLabel || yProp,
         splitArea: { show: true }
-        // Rotation usually only needed for X axis (bottom)
     };
 
     const opt: EChartsOption = {
         tooltip: {
             position: 'top',
-            formatter: (params: unknown) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            formatter: (params: any) => {
                 const p = params as { value: (number | string)[] };
                 if (!p || !Array.isArray(p.value)) return '';
                 // p.value is [colIndex, rowIndex, val]
@@ -167,11 +137,15 @@ export function createHeatmapChartOption(
     };
 
     if (flipAxis) {
-        opt.xAxis = axisFromYProp; // Bottom axis shows Y categories
-        opt.yAxis = axisFromXProp; // Left axis shows X categories
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.xAxis = axisFromYProp as any; // Bottom axis shows Y categories
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.yAxis = axisFromXProp as any; // Left axis shows X categories
     } else {
-        opt.xAxis = axisFromXProp;
-        opt.yAxis = axisFromYProp;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.xAxis = axisFromXProp as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.yAxis = axisFromYProp as any;
     }
 
     return opt;

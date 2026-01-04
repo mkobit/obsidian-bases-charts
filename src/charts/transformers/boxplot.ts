@@ -1,17 +1,13 @@
-import type { EChartsOption, BoxplotSeriesOption, XAXisComponentOption, YAXisComponentOption } from 'echarts';
+import type { EChartsOption, BoxplotSeriesOption } from 'echarts';
 // @ts-expect-error ECharts extension imports can be tricky with type definitions
 import prepareBoxplotData from 'echarts/extension/dataTool/prepareBoxplotData';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, AxisOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 
 export interface BoxplotTransformerOptions extends BaseTransformerOptions {
     seriesProp?: string;
 
-    // Axis Options
-    xAxisLabel?: string;
-    yAxisLabel?: string;
-    xAxisLabelRotate?: number;
-    flipAxis?: boolean;
+    axis?: AxisOptions;
 }
 
 export function createBoxplotChartOption(
@@ -21,10 +17,10 @@ export function createBoxplotChartOption(
     options?: BoxplotTransformerOptions
 ): EChartsOption {
     const seriesProp = options?.seriesProp;
-    const xAxisLabel = options?.xAxisLabel;
-    const yAxisLabel = options?.yAxisLabel;
-    const xAxisLabelRotate = options?.xAxisLabelRotate;
-    const flipAxis = options?.flipAxis;
+    const xAxisLabel = options?.axis?.xAxisLabel;
+    const yAxisLabel = options?.axis?.yAxisLabel;
+    const xAxisLabelRotate = options?.axis?.xAxisLabelRotate;
+    const flipAxis = options?.axis?.flipAxis;
 
     // 1. Collect all unique X values (categories)
     const xAxisData = Array.from(new Set(data.map(item => {
@@ -77,9 +73,8 @@ export function createBoxplotChartOption(
         };
     });
 
-    // Configure Axis
-    const categoryAxis: XAXisComponentOption | YAXisComponentOption = {
-        type: 'category',
+    const categoryAxis = {
+        type: 'category' as const,
         data: xAxisData,
         name: flipAxis ? (yAxisLabel || yProp) : (xAxisLabel || xProp),
         boundaryGap: true,
@@ -90,8 +85,8 @@ export function createBoxplotChartOption(
         }
     };
 
-    const valueAxis: XAXisComponentOption | YAXisComponentOption = {
-        type: 'value',
+    const valueAxis = {
+        type: 'value' as const,
         name: flipAxis ? (xAxisLabel || xProp) : (yAxisLabel || yProp),
         splitArea: { show: true }
     };
@@ -102,17 +97,20 @@ export function createBoxplotChartOption(
             axisPointer: { type: 'shadow' }
         },
         legend: options?.legend ? {} : undefined,
+        series: seriesOptions
     };
 
     if (flipAxis) {
-        opt.xAxis = valueAxis;
-        opt.yAxis = categoryAxis;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.xAxis = valueAxis as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.yAxis = categoryAxis as any;
     } else {
-        opt.xAxis = categoryAxis;
-        opt.yAxis = valueAxis;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.xAxis = categoryAxis as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.yAxis = valueAxis as any;
     }
-
-    opt.series = seriesOptions;
 
     return opt;
 }

@@ -1,16 +1,12 @@
-import type { EChartsOption, ScatterSeriesOption, XAXisComponentOption, YAXisComponentOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { EChartsOption, ScatterSeriesOption } from 'echarts';
+import type { BaseTransformerOptions, AxisOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 
 export interface ScatterTransformerOptions extends BaseTransformerOptions {
     seriesProp?: string;
     sizeProp?: string;
 
-    // Axis Options
-    xAxisLabel?: string;
-    yAxisLabel?: string;
-    xAxisLabelRotate?: number;
-    flipAxis?: boolean;
+    axis?: AxisOptions;
 }
 
 type ScatterDataPoint = (string | number)[];
@@ -23,10 +19,11 @@ export function createScatterChartOption(
 ): EChartsOption {
     const seriesProp = options?.seriesProp;
     const sizeProp = options?.sizeProp;
-    const xAxisLabel = options?.xAxisLabel;
-    const yAxisLabel = options?.yAxisLabel;
-    const xAxisLabelRotate = options?.xAxisLabelRotate;
-    const flipAxis = options?.flipAxis;
+
+    const xAxisLabel = options?.axis?.xAxisLabel;
+    const yAxisLabel = options?.axis?.yAxisLabel;
+    const xAxisLabelRotate = options?.axis?.xAxisLabelRotate;
+    const flipAxis = options?.axis?.flipAxis;
 
     const uniqueX = new Set<string>();
     for (const item of data) {
@@ -72,7 +69,8 @@ export function createScatterChartOption(
         };
 
         if (sizeProp) {
-            seriesItem.symbolSize = function (data: unknown) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            seriesItem.symbolSize = function (data: any) {
                 if (Array.isArray(data) && data.length > 2) {
                      const r = data[2] as number;
                      return Math.max(0, r);
@@ -84,24 +82,19 @@ export function createScatterChartOption(
         return seriesItem;
     });
 
-    // Configure Axes
-    // Same logic as Cartesian: Category Axis tracks X Prop, Value Axis tracks Y Prop.
-    // If flipped, Category Axis moves to Y, Value Axis moves to X.
-    // Names should track the underlying data meaning.
-
-    const categoryAxis: XAXisComponentOption | YAXisComponentOption = {
-        type: 'category',
+    const categoryAxis = {
+        type: 'category' as const,
         data: xAxisData,
-        name: xAxisLabel || xProp, // Always X Prop
+        name: xAxisLabel || xProp,
         splitLine: { show: true },
         axisLabel: {
             rotate: xAxisLabelRotate
         }
     };
 
-    const valueAxis: XAXisComponentOption | YAXisComponentOption = {
-        type: 'value',
-        name: yAxisLabel || yProp, // Always Y Prop
+    const valueAxis = {
+        type: 'value' as const,
+        name: yAxisLabel || yProp,
         splitLine: { show: true }
     };
 
@@ -109,36 +102,16 @@ export function createScatterChartOption(
         legend: options?.legend ? {} : undefined,
         tooltip: {
             trigger: 'item',
-            formatter: (params: unknown) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            formatter: (params: any) => {
                 const p = params as { value: ScatterDataPoint, seriesName: string };
                 if (!p || typeof p !== 'object') return '';
 
                 const vals = p.value;
                 let tip = '';
                 if (Array.isArray(vals)) {
-                    // Tip should display X and Y prop names and values.
-                    // If flipped, the visual axes are swapped.
-                    // vals[0] is X-Prop Value (Category).
-                    // vals[1] is Y-Prop Value (Number).
-
-                    // If flipped:
-                    // Visual X (Bottom) is Value Axis (Y Prop).
-                    // Visual Y (Left) is Category Axis (X Prop).
-
-                    // vals[0] corresponds to Category Axis (now Y).
-                    // vals[1] corresponds to Value Axis (now X).
-
-                    // If we swapped data coordinates (see below), then:
-                    // vals[0] corresponds to Visual X Axis (Value).
-                    // vals[1] corresponds to Visual Y Axis (Category).
-
-                    // Let's assume we DO swap data coordinates below.
-
                     const xName = flipAxis ? (yAxisLabel || yProp) : (xAxisLabel || xProp);
                     const yName = flipAxis ? (xAxisLabel || xProp) : (yAxisLabel || yProp);
-
-                    // vals[0] is always X-Axis value.
-                    // vals[1] is always Y-Axis value.
 
                     tip = `${p.seriesName}<br/>${xName}: ${vals[0]}<br/>${yName}: ${vals[1]}`;
                     if (sizeProp && vals.length > 2) {
@@ -147,31 +120,33 @@ export function createScatterChartOption(
                 }
                 return tip;
             }
-        }
+        },
+        series: seriesOptions
     };
 
     if (flipAxis) {
-        // Swap axes config
-        opt.xAxis = valueAxis;
-        opt.yAxis = categoryAxis;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.xAxis = valueAxis as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.yAxis = categoryAxis as any;
 
-        // Swap data coordinates
         seriesOptions.forEach(s => {
             if (Array.isArray(s.data)) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 s.data = s.data.map((pt: any) => {
-                    // pt is [x, y, size?]
-                    // new pt is [y, x, size?]
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                     const [x, y, ...rest] = pt;
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                     return [y, x, ...rest];
                 });
             }
         });
     } else {
-        opt.xAxis = categoryAxis;
-        opt.yAxis = valueAxis;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.xAxis = categoryAxis as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.yAxis = valueAxis as any;
     }
-
-    opt.series = seriesOptions;
 
     return opt;
 }

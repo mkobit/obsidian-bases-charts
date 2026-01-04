@@ -1,5 +1,5 @@
-import type { EChartsOption, CandlestickSeriesOption, XAXisComponentOption, YAXisComponentOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { EChartsOption, CandlestickSeriesOption } from 'echarts';
+import type { BaseTransformerOptions, AxisOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 
 export interface CandlestickTransformerOptions extends BaseTransformerOptions {
@@ -8,11 +8,7 @@ export interface CandlestickTransformerOptions extends BaseTransformerOptions {
     lowProp?: string;
     highProp?: string;
 
-    // Axis Options
-    xAxisLabel?: string;
-    yAxisLabel?: string; // There is usually no single "Y" prop for Candlestick, but a label override is useful.
-    xAxisLabelRotate?: number;
-    flipAxis?: boolean;
+    axis?: AxisOptions;
 }
 
 export function createCandlestickChartOption(
@@ -25,43 +21,28 @@ export function createCandlestickChartOption(
     const lowProp = options?.lowProp || 'low';
     const highProp = options?.highProp || 'high';
 
-    const xAxisLabel = options?.xAxisLabel;
-    const yAxisLabel = options?.yAxisLabel;
-    const xAxisLabelRotate = options?.xAxisLabelRotate;
-    const flipAxis = options?.flipAxis;
+    const xAxisLabel = options?.axis?.xAxisLabel;
+    const yAxisLabel = options?.axis?.yAxisLabel;
+    const xAxisLabelRotate = options?.axis?.xAxisLabelRotate;
+    const flipAxis = options?.axis?.flipAxis;
 
     // 1. Prepare Data
     // ECharts Candlestick Data: [Open, Close, Lowest, Highest]
     const categoryData: string[] = [];
     const values: number[][] = [];
 
-    // Sort data by date if possible? Usually user sorts via query, but we can try sorting if xProp looks like date.
-    // For now, assume data is in order or order doesn't matter (categorical).
+    // Helper to validate numbers
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const isValid = (v: any) => v !== null && v !== undefined && !isNaN(Number(v));
 
     for (const item of data) {
         const xValRaw = getNestedValue(item, xProp);
         const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
 
-        const openVal = Number(getNestedValue(item, openProp));
-        const closeVal = Number(getNestedValue(item, closeProp));
-        const lowVal = Number(getNestedValue(item, lowProp));
-        const highVal = Number(getNestedValue(item, highProp));
-
-        // Validation: All 4 values must be valid numbers
-        // NOTE: Number(null) is 0, Number(undefined) is NaN.
-        // We need to verify that the raw values were not null/undefined/non-numeric strings.
-        // The check !isNaN(val) handles undefined and non-numeric strings.
-        // It treats null as 0.
-        // If we want to exclude nulls, we should check raw values. But let's assume loose check is okay for now EXCEPT for strict "missing values" test.
-        // The test failure suggests `Number(null) === 0` is slipping through as valid, creating a data point [0, 105, 100, 112].
-
-        // Let's make it stricter.
         const openRaw = getNestedValue(item, openProp);
         const closeRaw = getNestedValue(item, closeProp);
         const lowRaw = getNestedValue(item, lowProp);
         const highRaw = getNestedValue(item, highProp);
-
-        const isValid = (v: any) => v !== null && v !== undefined && !isNaN(Number(v));
 
         if (isValid(openRaw) && isValid(closeRaw) && isValid(lowRaw) && isValid(highRaw)) {
              categoryData.push(xVal);
@@ -81,8 +62,8 @@ export function createCandlestickChartOption(
     };
 
     // Configure Axes
-    const categoryAxis: XAXisComponentOption | YAXisComponentOption = {
-        type: 'category',
+    const categoryAxis = {
+        type: 'category' as const,
         data: categoryData,
         scale: true,
         boundaryGap: false,
@@ -96,7 +77,7 @@ export function createCandlestickChartOption(
         }
     };
 
-    const valueAxis: XAXisComponentOption | YAXisComponentOption = {
+    const valueAxis = {
         scale: true,
         splitArea: { show: true },
         name: flipAxis ? (xAxisLabel || xProp) : (yAxisLabel || 'Price')
@@ -115,11 +96,15 @@ export function createCandlestickChartOption(
     };
 
     if (flipAxis) {
-        opt.xAxis = valueAxis;
-        opt.yAxis = categoryAxis;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.xAxis = valueAxis as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.yAxis = categoryAxis as any;
     } else {
-        opt.xAxis = categoryAxis;
-        opt.yAxis = valueAxis;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.xAxis = categoryAxis as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        opt.yAxis = valueAxis as any;
     }
 
     return opt;
