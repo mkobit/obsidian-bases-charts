@@ -17,9 +17,12 @@ describe('Rose Chart Transformer', () => {
 
         expect(option.series).toBeDefined();
         expect(option.series).toHaveLength(1);
-        expect(option.series[0]!.type).toBe('pie');
-        expect(option.series[0]!.roseType).toBe('area');
-        expect(option.series[0]!.radius).toEqual([20, '75%']);
+
+        const [series] = option.series;
+        expect(series).toBeDefined();
+        expect(series.type).toBe('pie');
+        expect(series.roseType).toBe('area');
+        expect(series.radius).toEqual([20, '75%']);
     });
 
     it('should map data correctly', () => {
@@ -29,7 +32,8 @@ describe('Rose Chart Transformer', () => {
         ];
 
         const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as TestOption;
-        const seriesData = option.series[0]!.data as { name: string; value: number }[];
+        const [series] = option.series;
+        const seriesData = series.data as { name: string; value: number }[];
 
         expect(seriesData).toHaveLength(2);
         expect(seriesData[0]).toEqual({ name: 'A', value: 10 });
