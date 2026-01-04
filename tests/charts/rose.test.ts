@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { transformDataToChartOption } from '../../src/charts/transformer';
-import type { PieSeriesOption, EChartsOption } from 'echarts';
+import type { PieSeriesOption, DatasetComponentOption } from 'echarts';
 
 describe('Rose Chart Transformer', () => {
     it('should create a rose chart with roseType: area', () => {
@@ -9,7 +9,7 @@ describe('Rose Chart Transformer', () => {
             { category: 'B', value: 20 }
         ];
 
-        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as EChartsOption;
+        const option = transformDataToChartOption(data, 'category', 'value', 'rose');
 
         expect(option.series).toBeDefined();
         const series = (Array.isArray(option.series) ? option.series[0] : option.series) as PieSeriesOption;
@@ -26,12 +26,16 @@ describe('Rose Chart Transformer', () => {
             { category: 'B', value: 20 }
         ];
 
-        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as EChartsOption;
+        const option = transformDataToChartOption(data, 'category', 'value', 'rose');
 
         // Check dataset instead of series.data
         expect(option.dataset).toBeDefined();
-        const source = (option.dataset as any).source;
 
+        // Safe casting for test verification
+        const dataset = option.dataset as DatasetComponentOption;
+        const source = dataset.source as Record<string, unknown>[];
+
+        expect(source).toBeDefined();
         expect(source).toHaveLength(2);
         expect(source[0]).toHaveProperty('name', 'A');
         expect(source[0]).toHaveProperty('value', 10);
