@@ -73,7 +73,7 @@ export function createBoxplotChartOption(
         };
     });
 
-    const categoryAxis = {
+    const categoryAxisSettings = {
         type: 'category' as const,
         data: xAxisData,
         name: flipAxis ? (yAxisLabel || yProp) : (xAxisLabel || xProp),
@@ -85,7 +85,7 @@ export function createBoxplotChartOption(
         }
     };
 
-    const valueAxis = {
+    const valueAxisSettings = {
         type: 'value' as const,
         name: flipAxis ? (xAxisLabel || xProp) : (yAxisLabel || yProp),
         splitArea: { show: true }
@@ -101,11 +101,11 @@ export function createBoxplotChartOption(
     };
 
     if (flipAxis) {
-        opt.xAxis = valueAxis as unknown as EChartsOption['xAxis'];
-        opt.yAxis = categoryAxis as unknown as EChartsOption['yAxis'];
+        opt.xAxis = valueAxisSettings;
+        opt.yAxis = categoryAxisSettings;
     } else {
-        opt.xAxis = categoryAxis as unknown as EChartsOption['xAxis'];
-        opt.yAxis = valueAxis as unknown as EChartsOption['yAxis'];
+        opt.xAxis = categoryAxisSettings;
+        opt.yAxis = valueAxisSettings;
     }
 
     return opt;

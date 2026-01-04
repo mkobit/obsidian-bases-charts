@@ -125,8 +125,8 @@ export function createScatterChartOption(
     };
 
     if (flipAxis) {
-        opt.xAxis = valueAxis as unknown as EChartsOption['xAxis'];
-        opt.yAxis = categoryAxis as unknown as EChartsOption['yAxis'];
+        opt.xAxis = valueAxis;
+        opt.yAxis = categoryAxis;
 
         seriesOptions.forEach(s => {
             if (Array.isArray(s.data)) {
@@ -141,8 +141,8 @@ export function createScatterChartOption(
             }
         });
     } else {
-        opt.xAxis = categoryAxis as unknown as EChartsOption['xAxis'];
-        opt.yAxis = valueAxis as unknown as EChartsOption['yAxis'];
+        opt.xAxis = categoryAxis;
+        opt.yAxis = valueAxis;
     }
 
     return opt;

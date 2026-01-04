@@ -1,4 +1,4 @@
-import type { EChartsOption, SeriesOption, LineSeriesOption, BarSeriesOption } from 'echarts';
+import type { EChartsOption, SeriesOption, LineSeriesOption, BarSeriesOption, XAXisComponentOption, YAXisComponentOption } from 'echarts';
 import type { BaseTransformerOptions, AxisOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 
@@ -95,9 +95,8 @@ export function createCartesianChartOption(
         }
     });
 
-    // Configure axes
-
-    const categoryAxis = {
+    // Extract axis settings into plain objects to avoid strict type mismatch when swapping
+    const categoryAxisSettings = {
         type: 'category' as const,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
         data: xAxisData as any,
@@ -108,7 +107,7 @@ export function createCartesianChartOption(
         }
     };
 
-    const valueAxis = {
+    const valueAxisSettings = {
         type: 'value' as const,
         name: yAxisLabel || yProp
     };
@@ -127,12 +126,12 @@ export function createCartesianChartOption(
 
     if (flipAxis) {
         // Horizontal: X is Value, Y is Category
-        opt.xAxis = valueAxis as unknown as EChartsOption['xAxis'];
-        opt.yAxis = categoryAxis as unknown as EChartsOption['yAxis'];
+        opt.xAxis = valueAxisSettings;
+        opt.yAxis = categoryAxisSettings;
     } else {
         // Vertical (Default): X is Category, Y is Value
-        opt.xAxis = categoryAxis as unknown as EChartsOption['xAxis'];
-        opt.yAxis = valueAxis as unknown as EChartsOption['yAxis'];
+        opt.xAxis = categoryAxisSettings;
+        opt.yAxis = valueAxisSettings;
     }
 
     return opt;

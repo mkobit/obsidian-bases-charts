@@ -61,8 +61,8 @@ export function createCandlestickChartOption(
         }
     };
 
-    // Configure Axes
-    const categoryAxis = {
+    // Configure Axes using plain objects to avoid strict type mismatch
+    const categoryAxisSettings = {
         type: 'category' as const,
         data: categoryData,
         scale: true,
@@ -77,7 +77,7 @@ export function createCandlestickChartOption(
         }
     };
 
-    const valueAxis = {
+    const valueAxisSettings = {
         scale: true,
         splitArea: { show: true },
         name: flipAxis ? (xAxisLabel || xProp) : (yAxisLabel || 'Price')
@@ -96,11 +96,15 @@ export function createCandlestickChartOption(
     };
 
     if (flipAxis) {
-        opt.xAxis = valueAxis as unknown as EChartsOption['xAxis'];
-        opt.yAxis = categoryAxis as unknown as EChartsOption['yAxis'];
+        // Horizontal
+        // valueAxisSettings is for Value axis (now on X)
+        // categoryAxisSettings is for Category axis (now on Y)
+        opt.xAxis = valueAxisSettings;
+        opt.yAxis = categoryAxisSettings;
     } else {
-        opt.xAxis = categoryAxis as unknown as EChartsOption['xAxis'];
-        opt.yAxis = valueAxis as unknown as EChartsOption['yAxis'];
+        // Vertical
+        opt.xAxis = categoryAxisSettings;
+        opt.yAxis = valueAxisSettings;
     }
 
     return opt;

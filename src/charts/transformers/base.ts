@@ -7,6 +7,10 @@ export interface BaseTransformerOptions {
 export interface AxisOptions {
     xAxisLabel?: string;
     yAxisLabel?: string;
+    /**
+     * Rotation of the X-axis label in degrees.
+     * e.g. 45 for 45-degree rotation.
+     */
     xAxisLabelRotate?: number;
     flipAxis?: boolean;
 }

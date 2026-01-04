@@ -137,11 +137,11 @@ export function createHeatmapChartOption(
     };
 
     if (flipAxis) {
-        opt.xAxis = axisFromYProp as unknown as EChartsOption['xAxis']; // Bottom axis shows Y categories
-        opt.yAxis = axisFromXProp as unknown as EChartsOption['yAxis']; // Left axis shows X categories
+        opt.xAxis = axisFromYProp; // Bottom axis shows Y categories
+        opt.yAxis = axisFromXProp; // Left axis shows X categories
     } else {
-        opt.xAxis = axisFromXProp as unknown as EChartsOption['xAxis'];
-        opt.yAxis = axisFromYProp as unknown as EChartsOption['yAxis'];
+        opt.xAxis = axisFromXProp;
+        opt.yAxis = axisFromYProp;
     }
 
     return opt;
