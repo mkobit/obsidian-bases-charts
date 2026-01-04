@@ -1,0 +1,18 @@
+properties:
+  note.Class:
+    displayName: Class
+  note.Strength:
+    displayName: Strength
+  note.Intelligence:
+    displayName: Intelligence
+  note.Agility:
+    displayName: Agility
+views:
+  - type: radar-chart
+    name: Character Stats Radar
+    xAxisProp: note.Strength, note.Intelligence, note.Agility
+    seriesProp: note.Class
+    showLegend: true
+    filters:
+      and:
+        - note.Class != null

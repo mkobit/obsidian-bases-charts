@@ -1,0 +1,23 @@
+properties:
+  note.Date:
+    displayName: Date
+  note.Open:
+    displayName: Open Price
+  note.Close:
+    displayName: Close Price
+  note.High:
+    displayName: High Price
+  note.Low:
+    displayName: Low Price
+views:
+  - type: candlestick-chart
+    name: AAPL Stock Analysis
+    xAxisProp: note.Date
+    openProp: note.Open
+    closeProp: note.Close
+    highProp: note.High
+    lowProp: note.Low
+    showLegend: true
+    filters:
+      and:
+        - note.Symbol == "AAPL"
