@@ -10,13 +10,13 @@ export class ParallelChartView extends BaseChartView {
     static getViewOptions(): ViewOption[] {
         return [
             {
-                name: 'Dimensions (comma-separated)',
+                displayName: 'Dimensions (comma-separated)',
                 key: 'xProp', // repurpose xProp for dimensions list
                 type: 'text',
                 placeholder: 'e.g. price,rating,volume'
             },
             {
-                name: 'Series property',
+                displayName: 'Series property',
                 key: 'seriesProp',
                 type: 'property',
                 placeholder: 'Property to group by'

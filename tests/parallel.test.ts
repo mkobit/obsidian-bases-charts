@@ -37,16 +37,16 @@ describe('createParallelChartOption', () => {
         expect(axes).toBeDefined();
         if (axes) {
             expect(axes).toHaveLength(3);
-            expect(axes[0].name).toBe('price');
-            expect(axes[0].type).toBe('value');
-            expect(axes[1].name).toBe('rating');
-            expect(axes[2].name).toBe('volume');
+            expect(axes[0]!.name).toBe('price');
+            expect(axes[0]!.type).toBe('value');
+            expect(axes[1]!.name).toBe('rating');
+            expect(axes[2]!.name).toBe('volume');
         }
 
         expect(Array.isArray(option.series)).toBe(true);
         expect(option.series).toHaveLength(1); // Default series
         if (option.series && option.series.length > 0) {
-            expect(option.series[0].data).toHaveLength(2);
+            expect(option.series[0]!.data).toHaveLength(2);
         }
     });
 
@@ -61,12 +61,12 @@ describe('createParallelChartOption', () => {
         const axes = option.parallelAxis;
         expect(axes).toBeDefined();
         if (axes) {
-            expect(axes[0].name).toBe('name');
-            expect(axes[0].type).toBe('category');
-            expect(axes[0].data).toEqual(expect.arrayContaining(['A', 'B']));
+            expect(axes[0]!.name).toBe('name');
+            expect(axes[0]!.type).toBe('category');
+            expect(axes[0]!.data).toEqual(expect.arrayContaining(['A', 'B']));
 
-            expect(axes[1].name).toBe('value');
-            expect(axes[1].type).toBe('value');
+            expect(axes[1]!.name).toBe('value');
+            expect(axes[1]!.type).toBe('value');
         }
     });
 
@@ -101,9 +101,9 @@ describe('createParallelChartOption', () => {
         expect(axes).toBeDefined();
         if (axes) {
             expect(axes).toHaveLength(1);
-            expect(axes[0].name).toBe('price');
+            expect(axes[0]!.name).toBe('price');
             // Defaults to category if no data to infer value
-            expect(axes[0].type).toBe('category');
+            expect(axes[0]!.type).toBe('category');
         }
     });
 
