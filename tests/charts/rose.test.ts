@@ -20,6 +20,8 @@ describe('Rose Chart Transformer', () => {
 
         const [series] = option.series;
         expect(series).toBeDefined();
+        if (!series) return;
+
         expect(series.type).toBe('pie');
         expect(series.roseType).toBe('area');
         expect(series.radius).toEqual([20, '75%']);
@@ -33,6 +35,10 @@ describe('Rose Chart Transformer', () => {
 
         const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as TestOption;
         const [series] = option.series;
+        if (!series) {
+            expect(series).toBeDefined();
+            return;
+        }
         const seriesData = series.data as { name: string; value: number }[];
 
         expect(seriesData).toHaveLength(2);
