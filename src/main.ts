@@ -21,6 +21,7 @@ import { TreeChartView } from './views/tree-chart-view';
 import { ThemeRiverChartView } from './views/theme-river-chart-view';
 import { CalendarChartView } from './views/calendar-chart-view';
 import { ParallelChartView } from './views/parallel-chart-view';
+import { RoseChartView } from './views/rose-chart-view';
 
 export default class BarePlugin extends Plugin {
 	settings!: BarePluginSettings;
@@ -54,6 +55,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'pie-chart',
 			factory: (controller, containerEl) => new PieChartView(controller, containerEl, this),
 			options: () => PieChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('rose-chart', {
+			name: 'Rose Chart',
+			icon: 'aperture',
+			factory: (controller, containerEl) => new RoseChartView(controller, containerEl, this),
+			options: () => RoseChartView.getViewOptions(),
 		});
 
 		this.registerBasesView('stacked-bar-chart', {
