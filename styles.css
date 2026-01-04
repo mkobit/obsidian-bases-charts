@@ -1,8 +1,8 @@
 /* styles.css */
-.bases-chart-container {
-    width: var(--bases-chart-width, 100%);
+.bare-chart-container {
+    width: var(--bare-chart-width, 100%);
 }
 
-.bases-chart {
-    width: var(--bases-chart-width, 100%);
+.bare-chart {
+    width: var(--bare-chart-width, 100%);
 }
