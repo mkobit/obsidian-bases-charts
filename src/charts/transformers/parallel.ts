@@ -1,6 +1,7 @@
 import type { EChartsOption, SeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { getNestedValue, safeToString } from './utils';
+import * as R from 'remeda';
 
 export interface ParallelTransformerOptions extends BaseTransformerOptions {
     seriesProp?: string;
@@ -33,16 +34,13 @@ export function createParallelChartOption(
     const seriesProp = options?.seriesProp;
 
     // 2. Prepare Parallel Axis
-    // We need to determine the type of each axis.
-    // If a dimension has string values that are not numbers, it's a category axis.
-    // If all are numbers, it's a value axis.
-
+    // Use standard map to avoid remeda type issues with indexed map in strict mode
     const parallelAxis: ParallelAxisOption[] = dims.map((dim, index) => {
         // Collect all values for this dimension to infer type
-        const values = data.map(item => getNestedValue(item, dim));
+        const values = R.map(data, item => getNestedValue(item, dim));
 
         // Check if all non-null values are numeric
-        const nonNullValues = values.filter(v => v !== null && v !== undefined && v !== '');
+        const nonNullValues = R.filter(values, v => v !== null && v !== undefined && v !== '');
         const isNumeric = nonNullValues.every(v => !isNaN(Number(v)));
 
         if (isNumeric && nonNullValues.length > 0) {
@@ -52,10 +50,11 @@ export function createParallelChartOption(
                 type: 'value'
             };
         } else {
-            // It's a category axis. We need to collect unique values for 'data'.
-            const uniqueVals = Array.from(new Set(nonNullValues.map(v => safeToString(v))));
-            // Sort categories might be good, or keep order?
-            // uniqueVals.sort();
+            const uniqueVals = R.pipe(
+                nonNullValues,
+                R.map(v => safeToString(v)),
+                R.unique()
+            );
             return {
                 dim: index,
                 name: dim,
@@ -66,44 +65,46 @@ export function createParallelChartOption(
     });
 
     // 3. Prepare Data
-    // Parallel series data is an array of arrays: [[dim0Val, dim1Val, ...], ...]
-    // We can group by seriesProp if provided.
-
-    const seriesDataMap = new Map<string, (string | number | null)[][]>();
-
-    for (const item of data) {
-        let seriesName = 'Series 1';
-        if (seriesProp) {
-            const sValRaw = getNestedValue(item, seriesProp);
-            if (sValRaw !== undefined && sValRaw !== null) {
-                seriesName = safeToString(sValRaw);
+    // Group by series first
+    const seriesDataMap = R.pipe(
+        data,
+        R.groupBy(item => {
+            if (seriesProp) {
+                const sValRaw = getNestedValue(item, seriesProp);
+                if (sValRaw !== undefined && sValRaw !== null) {
+                    return safeToString(sValRaw);
+                }
             }
-        }
+            return 'Series 1';
+        }),
+        R.mapValues(items => {
+            return R.map(items, item => {
+                return R.map(dims, dim => {
+                     const valRaw = getNestedValue(item, dim);
+                     if (valRaw === null || valRaw === undefined || valRaw === '') return null;
 
-        const rowData: (string | number | null)[] = dims.map(dim => {
-             const valRaw = getNestedValue(item, dim);
-             if (valRaw === null || valRaw === undefined || valRaw === '') return null;
-             // If the axis is numeric, return number, else string
-             const isNum = parallelAxis.find(a => a.name === dim)?.type === 'value';
-             return isNum ? Number(valRaw) : safeToString(valRaw);
-        });
+                     const axis = parallelAxis.find(a => a.name === dim);
+                     const isNum = axis?.type === 'value';
+                     return isNum ? Number(valRaw) : safeToString(valRaw);
+                });
+            });
+        })
+    );
 
-        if (!seriesDataMap.has(seriesName)) {
-            seriesDataMap.set(seriesName, []);
-        }
-        seriesDataMap.get(seriesName)!.push(rowData);
-    }
-
-    const series: SeriesOption[] = Array.from(seriesDataMap.entries()).map(([name, sData]) => {
-        return {
-            name: name,
-            type: 'parallel',
-            lineStyle: {
-                width: 2 // make lines visible
-            },
-            data: sData
-        };
-    });
+    const series: SeriesOption[] = R.pipe(
+        seriesDataMap,
+        R.entries(),
+        R.map(([name, sData]) => {
+            return {
+                name: name,
+                type: 'parallel' as const,
+                lineStyle: {
+                    width: 2 // make lines visible
+                },
+                data: sData
+            };
+        })
+    );
 
     const option: EChartsOption = {
         parallel: {
@@ -118,17 +119,15 @@ export function createParallelChartOption(
             }
         },
         // Casting to any because strict ECharts types might complain about local ParallelAxisOption
-        // and we can't easily import the internal one.
         // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
         parallelAxis: parallelAxis as any,
-        series: series
+        series: series,
+        ...(options?.legend ? {
+            legend: {
+                data: R.keys(seriesDataMap)
+            }
+        } : {})
     };
-
-    if (options?.legend) {
-        option.legend = {
-            data: Array.from(seriesDataMap.keys())
-        };
-    }
 
     return option;
 }

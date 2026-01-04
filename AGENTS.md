@@ -20,12 +20,44 @@ The goal is to build an assortment of views using:
 
 ## Strictness & Quality
 -   **TypeScript**: `"strict": true` is enabled in `tsconfig.json`. No implicit `any` allowed.
--   **Linting**: ESLint is configured. Run `pnpm run lint` before committing.
+-   **Linting**: ESLint is configured with strict functional programming rules. Run `pnpm run lint` before committing.
 -   **CI**: GitHub Actions workflow (`ci.yml`) enforces build success, type safety, and linting on every push.
--   **Functional programming**:
-    -   **Prioritize immutability**: Avoid mutating enclosed state. Use pure functions where possible.
-    -   **Use functional transformations**: Prefer `map`, `reduce`, `filter` over imperative loops like `forEach` or `for`.
-    -   **Avoid side effects**: Ensure transformer functions calculate results without side effects.
+
+## Functional Programming Protocol
+
+We strictly enforce functional programming principles to ensure code clarity, prevent side effects, and improve maintainability.
+
+### 1. Immutability is Mandatory
+-   **No Mutations**: Do not mutate objects or arrays after creation.
+    -   ❌ `array.push(item)`
+    -   ❌ `obj.prop = value`
+    -   ✅ Use `[...array, item]` or `remeda`'s functions.
+    -   ✅ Use `{ ...obj, prop: value }`.
+-   **No Let**: Use `const` exclusively. Reassignment is banned.
+
+### 2. No Imperative Loops
+-   **Ban Loops**: `for`, `for...of`, `while`, and `do...while` are strictly forbidden.
+-   **Use Declarative Transforms**:
+    -   Use `map`, `filter`, `reduce` (sparingly, prefer specific transforms), `flatMap`, etc.
+    -   For complex pipelines, use **[Remeda](https://remedajs.com/)** (`remeda`).
+        ```typescript
+        import * as R from 'remeda';
+
+        // Instead of a loop:
+        const result = R.pipe(
+          items,
+          R.filter(item => item.active),
+          R.map(item => item.value),
+          R.sum()
+        );
+        ```
+
+### 3. Iterators and Lazy Evaluation
+-   **Lazy Iterators**: Use modern Iterator helpers (e.g., `.values()`, `Iterator.from()`) where appropriate to avoid creating intermediate arrays for large datasets.
+-   **Streamlining**: Adopt libraries like `remeda` to optimize and streamline development.
+
+### 4. Pure Functions
+-   **No Side Effects**: Functions, especially transformers, must be pure. They should take input and return output without modifying external state.
 
 ## Development Commands
 
@@ -37,7 +69,7 @@ The goal is to build an assortment of views using:
 | `pnpm run version <type>` | Bumps version in `package.json`, `manifest.json`, and `versions.json`. Usage: `pnpm run version patch` |
 
 ## Contributing Guidelines
-1.  **Maintain Strictness**: Do not relax TypeScript rules. Fix types properly.
+1.  **Maintain Strictness**: Do not relax TypeScript rules or linter rules.
 2.  **Verify**: Always run the following commands locally to verify your changes before opening a pull request:
     - `pnpm run build`
     - `pnpm run lint`

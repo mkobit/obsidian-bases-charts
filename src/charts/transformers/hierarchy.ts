@@ -1,6 +1,7 @@
 import type { EChartsOption, SunburstSeriesOption, TreeSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { getNestedValue } from './utils';
+import * as R from 'remeda';
 
 export interface SunburstTransformerOptions extends BaseTransformerOptions {
     valueProp?: string;
@@ -17,55 +18,77 @@ interface HierarchyNode {
     children?: HierarchyNode[];
 }
 
+interface PathItem {
+    parts: string[];
+    value: number | undefined;
+}
+
 /**
  * Helper to build a tree structure from slash-separated paths.
- * E.g. "A/B" -> {name: 'A', children: [{name: 'B'}]}
+ * Refactored to be functional using recursion instead of mutation loops.
  */
 function buildHierarchy(
     data: Record<string, unknown>[],
     pathProp: string,
     valueProp?: string
 ): HierarchyNode[] {
-    return data.reduce<HierarchyNode[]>((rootChildren, item) => {
-        const pathRaw = getNestedValue(item, pathProp);
-        if (typeof pathRaw !== 'string' || !pathRaw) return rootChildren;
+    // 1. Transform data into paths and values
+    const paths = R.pipe(
+        data,
+        R.map(item => {
+            const pathRaw = getNestedValue(item, pathProp);
+            if (typeof pathRaw !== 'string' || !pathRaw) return null;
 
-        const parts = pathRaw.split('/').filter(p => p.length > 0);
-        if (parts.length === 0) return rootChildren;
+            const parts = pathRaw.split('/').filter(p => p.length > 0);
+            if (parts.length === 0) return null;
 
-        let value: number | undefined = undefined;
-        if (valueProp) {
-            const v = Number(getNestedValue(item, valueProp));
-            if (!isNaN(v)) value = v;
-        }
+            const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : NaN;
+            // Explicitly use undefined if NaN, so it matches optional type better?
+            // Actually, type { value?: number } allows undefined.
+            const value = !isNaN(valNum) ? valNum : undefined;
 
-        // Traverse/Build the tree for this item
-        parts.reduce<HierarchyNode[]>((currentLevel, part, index) => {
-            let node = currentLevel.find(n => n.name === part);
+            return { parts, value };
+        }),
+        R.filter((x): x is PathItem => x !== null)
+    );
 
-            if (!node) {
-                node = { name: part };
-                // Use push since we are mutating the accumulating tree structure
-                // Ideally this would be fully immutable but for deep trees performance/complexity tradeoff usually favors this hybrid reduce.
-                // However, strictly following "functional" request:
-                currentLevel.push(node);
-            }
+    // 2. Recursive builder
+    const buildLevel = (items: PathItem[]): HierarchyNode[] => {
+        return R.pipe(
+            items,
+            R.groupBy(item => item.parts[0]!), // Group by current level name
+            R.entries(),
+            R.map(([name, group]) => {
+                // Check if any item in this group is a leaf at this level (length 1)
+                const leafItems = group.filter(item => item.parts.length === 1);
+                const leafValue = leafItems.length > 0
+                    ? R.sumBy(leafItems, item => item.value ?? 0)
+                    : undefined;
 
-            // If it's the leaf node, assign value
-            if (index === parts.length - 1) {
-                if (value !== undefined) {
-                    node.value = (node.value || 0) + value;
-                }
-            } else {
-                if (!node.children) node.children = [];
-                return node.children;
-            }
+                // Get children items (length > 1), slicing off the first part
+                const childrenItems = group
+                    .filter(item => item.parts.length > 1)
+                    .map(item => ({ parts: item.parts.slice(1), value: item.value }));
 
-            return currentLevel; // Not used for leaf, but satisfies type
-        }, rootChildren);
+                const children = childrenItems.length > 0 ? buildLevel(childrenItems) : undefined;
 
-        return rootChildren;
-    }, []);
+                // Construct node without mutation
+                const node: HierarchyNode = { name };
+
+                const nodeWithValue = (leafValue !== undefined && leafValue > 0)
+                    ? { ...node, value: leafValue }
+                    : node;
+
+                const nodeWithChildren = children
+                    ? { ...nodeWithValue, children }
+                    : nodeWithValue;
+
+                return nodeWithChildren;
+            })
+        );
+    };
+
+    return buildLevel(paths);
 }
 
 export function createSunburstChartOption(
@@ -98,17 +121,11 @@ export function createTreeChartOption(
     pathProp: string,
     options?: TreeTransformerOptions
 ): EChartsOption {
-    // Tree chart expects a single root usually.
-    // If we have multiple roots, we might need to wrap them or ECharts might only show one.
-    // Let's wrap in a virtual root if multiple.
-    let hierarchyData = buildHierarchy(data, pathProp);
+    const hierarchyDataRaw = buildHierarchy(data, pathProp);
 
-    if (hierarchyData.length > 1) {
-        hierarchyData = [{
-            name: 'Root',
-            children: hierarchyData
-        }];
-    }
+    const hierarchyData = hierarchyDataRaw.length > 1
+        ? [{ name: 'Root', children: hierarchyDataRaw }]
+        : hierarchyDataRaw;
 
     const seriesItem: TreeSeriesOption = {
         type: 'tree',

@@ -1,6 +1,7 @@
 import type { EChartsOption, FunnelSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+import * as R from 'remeda';
 
 export function createFunnelChartOption(
     data: Record<string, unknown>[],
@@ -8,19 +9,20 @@ export function createFunnelChartOption(
     valueProp: string,
     options?: BaseTransformerOptions
 ): EChartsOption {
-    const seriesData = data.map(item => {
-        const valRaw = getNestedValue(item, nameProp);
-        const name = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+    const seriesData = R.pipe(
+        data,
+        R.map(item => {
+            const valRaw = getNestedValue(item, nameProp);
+            const name = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
 
-        const val = Number(getNestedValue(item, valueProp));
-        return {
-            name: name,
-            value: isNaN(val) ? 0 : val
-        };
-    });
-
-    // Sort data for funnel (usually expected to be sorted, but ECharts can handle it)
-    seriesData.sort((a, b) => b.value - a.value);
+            const val = Number(getNestedValue(item, valueProp));
+            return {
+                name: name,
+                value: isNaN(val) ? 0 : val
+            };
+        }),
+        R.sortBy([x => x.value, 'desc'])
+    );
 
     const seriesItem: FunnelSeriesOption = {
         type: 'funnel',
@@ -35,16 +37,15 @@ export function createFunnelChartOption(
         series: [seriesItem],
         tooltip: {
             trigger: 'item',
-            formatter: '{b} : {c}%' // Assuming value is percentage or just raw count
-        }
+            formatter: '{b} : {c}%'
+        },
+        ...(options?.legend ? {
+            legend: {
+                orient: 'vertical',
+                left: 'left'
+            }
+        } : {})
     };
-
-    if (options?.legend) {
-        opt.legend = {
-            orient: 'vertical',
-            left: 'left'
-        };
-    }
 
     return opt;
 }

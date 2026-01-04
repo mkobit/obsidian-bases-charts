@@ -1,6 +1,7 @@
 import type { EChartsOption, SankeySeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+import * as R from 'remeda';
 
 export interface SankeyTransformerOptions extends BaseTransformerOptions {
     valueProp?: string;
@@ -14,37 +15,35 @@ export function createSankeyChartOption(
 ): EChartsOption {
     const valueProp = options?.valueProp;
 
-    const { links, nodes } = data.reduce<{
-        links: { source: string; target: string; value: number }[];
-        nodes: Set<string>;
-    }>((acc, item) => {
-        const sourceRaw = getNestedValue(item, sourceProp);
-        const targetRaw = getNestedValue(item, targetProp);
+    const links = R.pipe(
+        data,
+        R.map(item => {
+            const sourceRaw = getNestedValue(item, sourceProp);
+            const targetRaw = getNestedValue(item, targetProp);
 
-        if (sourceRaw == null || targetRaw == null) return acc;
+            if (sourceRaw == null || targetRaw == null) return null;
 
-        const source = safeToString(sourceRaw);
-        const target = safeToString(targetRaw);
+            const source = safeToString(sourceRaw);
+            const target = safeToString(targetRaw);
 
-        acc.nodes.add(source);
-        acc.nodes.add(target);
+            const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : NaN;
+            const value = !isNaN(valNum) ? valNum : 1;
 
-        let value = 1; // Default count
-        if (valueProp) {
-            const valRaw = getNestedValue(item, valueProp);
-            const val = Number(valRaw);
-            if (!isNaN(val)) value = val;
-        }
+            return { source, target, value };
+        }),
+        R.filter((x): x is { source: string; target: string; value: number } => x !== null)
+    );
 
-        acc.links.push({ source, target, value });
-        return acc;
-    }, { links: [], nodes: new Set<string>() });
-
-    const dataNodes = Array.from(nodes).map(name => ({ name }));
+    const nodes = R.pipe(
+        links,
+        R.flatMap(l => [l.source, l.target]),
+        R.unique(),
+        R.map(name => ({ name }))
+    );
 
     const seriesItem: SankeySeriesOption = {
         type: 'sankey',
-        data: dataNodes,
+        data: nodes,
         links: links,
         emphasis: {
             focus: 'adjacency'

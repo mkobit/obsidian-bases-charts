@@ -1,6 +1,7 @@
 import type { EChartsOption, ThemeRiverSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+import * as R from 'remeda';
 
 export interface ThemeRiverTransformerOptions extends BaseTransformerOptions {
     valueProp?: string;
@@ -16,36 +17,25 @@ export function createThemeRiverChartOption(
     const themeProp = options?.themeProp;
 
     // Data format: [date, value, themeName]
-    const riverData = data.reduce<(string | number)[][]>((acc, item) => {
-        const dateRaw = getNestedValue(item, dateProp);
-        const dateVal = safeToString(dateRaw);
+    const riverData = R.pipe(
+        data,
+        R.map(item => {
+            const dateRaw = getNestedValue(item, dateProp);
+            const dateVal = safeToString(dateRaw);
 
-        if (!dateVal) return acc;
+            if (!dateVal) return null;
 
-        let val = 0;
-        if (valueProp) {
-            const v = Number(getNestedValue(item, valueProp));
-            if (!isNaN(v)) val = v;
-        }
+            const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : NaN;
+            const val = !isNaN(valNum) ? valNum : 0;
 
-        let theme = 'Series 1';
-        if (themeProp) {
-            const tRaw = getNestedValue(item, themeProp);
-            if (tRaw !== undefined && tRaw !== null) theme = safeToString(tRaw);
-        }
+            const tRaw = themeProp ? getNestedValue(item, themeProp) : undefined;
+            const theme = (tRaw !== undefined && tRaw !== null) ? safeToString(tRaw) : 'Series 1';
 
-        acc.push([dateVal, val, theme]);
-        return acc;
-    }, []);
-
-    // ThemeRiver requires data to be sorted by date? ECharts usually handles it,
-    // but best to sort.
-    // Simple string sort for ISO dates works.
-    riverData.sort((a, b) => {
-        const da = a[0] as string;
-        const db = b[0] as string;
-        return da.localeCompare(db);
-    });
+            return [dateVal, val, theme] as (string | number)[];
+        }),
+        R.filter((x): x is (string | number)[] => x !== null),
+        R.sortBy(x => x[0] as string)
+    );
 
     const seriesItem: ThemeRiverSeriesOption = {
         type: 'themeRiver',
@@ -76,6 +66,6 @@ export function createThemeRiverChartOption(
             boundaryGap: [0, 0]
         },
         series: [seriesItem],
-        legend: options?.legend ? {} : undefined
+        ...(options?.legend ? { legend: {} } : {})
     };
 }
