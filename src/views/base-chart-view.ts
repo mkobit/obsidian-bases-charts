@@ -40,7 +40,6 @@ export abstract class BaseChartView extends BasesView {
     onload(): void {
         this.registerEvent(this.app.workspace.on('css-change', this.updateChartTheme, this));
 
-        // Use ResizeObserver for robust size detection
         this.resizeObserver = new ResizeObserver(() => {
             this.onResizeDebounce();
         });

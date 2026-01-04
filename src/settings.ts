@@ -25,7 +25,7 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('Default Chart Height')
+			.setName('Default chart height')
 			.setDesc('The default height for charts (e.g. 500px, 50vh).')
 			.addText(text => text
 				.setPlaceholder('500px')
