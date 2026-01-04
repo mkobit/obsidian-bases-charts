@@ -25,112 +25,112 @@ export function createCartesianChartOption(
     const Y_DIM = 'y';
     const S_DIM = 's';
 
-    const uniqueX = new Set<string>();
-    const uniqueSeries = new Set<string>();
+    // 1. Normalize data to flat structure using functional patterns
+    // First, map to raw values and filter invalid ones
+    const validItems = data
+        .map(item => {
+            const xValRaw = getNestedValue(item, xProp);
+            const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
 
-    // 1. Normalize data to flat structure
-    const flatData = [];
+            const yValRaw = getNestedValue(item, yProp);
+            const yVal = Number(yValRaw);
 
-    for (const item of data) {
-        const xValRaw = getNestedValue(item, xProp);
-        const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
-        uniqueX.add(xVal);
-
-        const yValRaw = getNestedValue(item, yProp);
-        const yVal = Number(yValRaw);
-
-        // Filter out invalid numbers (matches logic in original: !isNaN(yVal))
-        if (isNaN(yVal)) {
-            continue;
-        }
-
-        let sVal: string | undefined = undefined;
-        if (seriesProp) {
-            const sValRaw = getNestedValue(item, seriesProp);
-            if (sValRaw !== undefined && sValRaw !== null) {
-                sVal = safeToString(sValRaw);
-            } else {
-                sVal = 'Series 1';
+            let sVal: string | undefined = undefined;
+            if (seriesProp) {
+                const sValRaw = getNestedValue(item, seriesProp);
+                if (sValRaw !== undefined && sValRaw !== null) {
+                    sVal = safeToString(sValRaw);
+                } else {
+                    sVal = 'Series 1';
+                }
             }
-            uniqueSeries.add(sVal);
-        }
 
-        flatData.push({
-            [X_DIM]: xVal,
-            [Y_DIM]: yVal,
-            [S_DIM]: sVal
-        });
-    }
+            return { xVal, yVal, sVal };
+        })
+        .filter(item => !isNaN(item.yVal));
 
-    const xAxisData = Array.from(uniqueX);
+    const flatData = validItems.map(item => ({
+        [X_DIM]: item.xVal,
+        [Y_DIM]: item.yVal,
+        [S_DIM]: item.sVal
+    }));
+
+    // Extract unique values for X axis and Series
+    const xAxisData = Array.from(new Set(validItems.map(i => i.xVal)));
+    const uniqueSeries = Array.from(new Set(validItems.map(i => i.sVal).filter((s): s is string => s !== undefined)));
 
     // 2. Configure Dataset
     // Root dataset at index 0
-    const datasets: DatasetComponentOption[] = [{
+    const sourceDataset: DatasetComponentOption = {
         source: flatData,
         dimensions: seriesProp ? [X_DIM, Y_DIM, S_DIM] : [X_DIM, Y_DIM]
-    }];
+    };
+
+    // Create transform datasets for each series if seriesProp is defined
+    const transformDatasets: DatasetComponentOption[] = seriesProp
+        ? uniqueSeries.map(sName => ({
+            transform: {
+                type: 'filter',
+                config: { dimension: S_DIM, value: sName }
+            }
+        }))
+        : [];
+
+    const datasets: DatasetComponentOption[] = [sourceDataset, ...transformDatasets];
+
+    // Helper to apply common styles
+    const applyStyles = (base: SeriesOption): SeriesOption => {
+        if (chartType === 'line') {
+             const line = { ...base, type: 'line' } as LineSeriesOption;
+             if (options?.smooth) line.smooth = true;
+             if (options?.showSymbol === false) line.showSymbol = false;
+             if (options?.areaStyle) line.areaStyle = {};
+             if (isStacked) line.stack = 'total';
+             return line;
+        } else {
+            const bar = { ...base, type: 'bar' } as BarSeriesOption;
+            if (isStacked) bar.stack = 'total';
+            return bar;
+        }
+    };
 
     // 3. Configure Series
-    const seriesOptions: SeriesOption[] = [];
+    let seriesOptions: SeriesOption[];
 
     if (seriesProp) {
-        const seriesNames = Array.from(uniqueSeries);
+        seriesOptions = uniqueSeries.map((sName, index) => {
+            // datasetIndex: 0 is source, 1..N are transforms.
+            // transform for series[0] is at datasets[1], etc.
+            const datasetIndex = index + 1;
 
-        for (const sName of seriesNames) {
-            // Create a transform dataset for this series
-            datasets.push({
-                transform: {
-                    type: 'filter',
-                    config: { dimension: S_DIM, value: sName }
-                }
-            });
-            const datasetIndex = datasets.length - 1;
-
-            const base: any = {
+            const base: SeriesOption = {
                 name: sName,
-                type: chartType,
                 datasetIndex: datasetIndex,
                 encode: {
                     x: X_DIM,
                     y: Y_DIM
                 }
             };
-            seriesOptions.push(base);
-        }
+            return applyStyles(base);
+        });
     } else {
         // Single series, use root dataset
-        const base: any = {
-            name: yProp, // Or just use default
-            type: chartType,
+        const base: SeriesOption = {
+            name: yProp,
             datasetIndex: 0,
             encode: {
                 x: X_DIM,
                 y: Y_DIM
             }
         };
-        seriesOptions.push(base);
+        seriesOptions = [applyStyles(base)];
     }
-
-    // Apply common styles
-    seriesOptions.forEach(s => {
-        if (chartType === 'line') {
-             const line = s as LineSeriesOption;
-             if (options?.smooth) line.smooth = true;
-             if (options?.showSymbol === false) line.showSymbol = false;
-             if (options?.areaStyle) line.areaStyle = {};
-             if (isStacked) line.stack = 'total';
-        } else {
-            const bar = s as BarSeriesOption;
-            if (isStacked) bar.stack = 'total';
-        }
-    });
 
     const opt: EChartsOption = {
         dataset: datasets,
         xAxis: {
             type: 'category',
-            data: xAxisData, // Explicitly set categories to ensure order and show all even if data missing
+            data: xAxisData,
             name: xProp
         },
         yAxis: {
