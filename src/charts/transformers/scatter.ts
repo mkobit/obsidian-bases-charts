@@ -125,27 +125,24 @@ export function createScatterChartOption(
     };
 
     if (flipAxis) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        opt.xAxis = valueAxis as any;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        opt.yAxis = categoryAxis as any;
+        opt.xAxis = valueAxis as unknown as EChartsOption['xAxis'];
+        opt.yAxis = categoryAxis as unknown as EChartsOption['yAxis'];
 
         seriesOptions.forEach(s => {
             if (Array.isArray(s.data)) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                s.data = s.data.map((pt: any) => {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                    const [x, y, ...rest] = pt;
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                    return [y, x, ...rest];
+                // Explicitly type 'pt' as ScatterDataPoint (or unknown[] if we are looser)
+                // ScatterDataPoint is (string|number)[]
+                s.data = s.data.map((pt) => {
+                    const point = pt as unknown as (string | number)[];
+                    const [x, y, ...rest] = point;
+                    // Return explicitly typed array
+                    return [y, x, ...rest] as (string | number)[];
                 });
             }
         });
     } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        opt.xAxis = categoryAxis as any;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        opt.yAxis = valueAxis as any;
+        opt.xAxis = categoryAxis as unknown as EChartsOption['xAxis'];
+        opt.yAxis = valueAxis as unknown as EChartsOption['yAxis'];
     }
 
     return opt;

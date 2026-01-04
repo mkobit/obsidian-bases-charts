@@ -101,15 +101,11 @@ export function createBoxplotChartOption(
     };
 
     if (flipAxis) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        opt.xAxis = valueAxis as any;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        opt.yAxis = categoryAxis as any;
+        opt.xAxis = valueAxis as unknown as EChartsOption['xAxis'];
+        opt.yAxis = categoryAxis as unknown as EChartsOption['yAxis'];
     } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        opt.xAxis = categoryAxis as any;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        opt.yAxis = valueAxis as any;
+        opt.xAxis = categoryAxis as unknown as EChartsOption['xAxis'];
+        opt.yAxis = valueAxis as unknown as EChartsOption['yAxis'];
     }
 
     return opt;

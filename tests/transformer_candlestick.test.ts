@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { CandlestickSeriesOption } from 'echarts';
+import type { CandlestickSeriesOption, XAXisComponentOption } from 'echarts';
 import { transformDataToChartOption } from '../src/charts/transformer';
 
 describe('Transformer - Candlestick Chart', () => {
@@ -36,8 +36,10 @@ describe('Transformer - Candlestick Chart', () => {
 
         // Axis Verification
         expect(option.xAxis).toBeDefined();
-        // @ts-ignore
-        expect((option.xAxis as any).data).toEqual(['2023-10-01', '2023-10-02', '2023-10-03']);
+
+        // Use XAXisComponentOption to avoid any
+        const xAxis = option.xAxis as XAXisComponentOption;
+        expect(xAxis.data).toEqual(['2023-10-01', '2023-10-02', '2023-10-03']);
     });
 
     it('should handle missing values gracefully', () => {
@@ -62,9 +64,8 @@ describe('Transformer - Candlestick Chart', () => {
         expect(seriesData[0]).toEqual([100, 110, 95, 115]);
 
         // Check xAxis data sync
-        // @ts-ignore
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-        expect((option.xAxis as any).data).toEqual(['2023-10-01']);
+        const xAxis = option.xAxis as XAXisComponentOption;
+        expect(xAxis.data).toEqual(['2023-10-01']);
     });
 
     it('should use default property names if options are missing', () => {

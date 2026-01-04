@@ -81,9 +81,7 @@ export abstract class BaseChartView extends BasesView {
         if (typeof height === 'string' && height.trim() !== '') {
             this.chartEl.style.height = height;
         } else {
-            // @ts-ignore - Settings interface might not be fully typed in all contexts
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            this.chartEl.style.height = (this.plugin.settings as any).defaultHeight || '500px';
+            this.chartEl.style.height = this.plugin.settings.defaultHeight || '500px';
         }
         this.chart.resize();
 
