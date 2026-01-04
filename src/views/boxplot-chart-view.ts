@@ -18,13 +18,23 @@ export class BoxplotChartView extends BaseChartView {
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY) as string;
         const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
 
+        // Axis Config
+        const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
+        const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
+        const xAxisLabelRotate = this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY) as number;
+        const flipAxis = this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean;
+
         if (!xProp || !yProp) {
             return null;
         }
 
         return transformDataToChartOption(data, xProp, yProp, 'boxplot', {
             seriesProp: seriesProp,
-            legend: showLegend
+            legend: showLegend,
+            xAxisLabel,
+            yAxisLabel,
+            xAxisLabelRotate,
+            flipAxis
         });
     }
 
@@ -52,7 +62,14 @@ export class BoxplotChartView extends BaseChartView {
                 displayName: 'Show Legend',
                 type: 'toggle',
                 key: BaseChartView.LEGEND_KEY,
-            }
+            },
+            {
+                displayName: 'Height',
+                type: 'text',
+                key: BaseChartView.HEIGHT_KEY,
+                placeholder: 'e.g., 500px'
+            },
+            ...BaseChartView.getAxisViewOptions()
         ];
     }
 

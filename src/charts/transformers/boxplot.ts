@@ -1,4 +1,4 @@
-import type { EChartsOption, BoxplotSeriesOption } from 'echarts';
+import type { EChartsOption, BoxplotSeriesOption, XAXisComponentOption, YAXisComponentOption } from 'echarts';
 // @ts-expect-error ECharts extension imports can be tricky with type definitions
 import prepareBoxplotData from 'echarts/extension/dataTool/prepareBoxplotData';
 import type { BaseTransformerOptions } from './base';
@@ -6,6 +6,12 @@ import { safeToString, getNestedValue } from './utils';
 
 export interface BoxplotTransformerOptions extends BaseTransformerOptions {
     seriesProp?: string;
+
+    // Axis Options
+    xAxisLabel?: string;
+    yAxisLabel?: string;
+    xAxisLabelRotate?: number;
+    flipAxis?: boolean;
 }
 
 export function createBoxplotChartOption(
@@ -15,6 +21,10 @@ export function createBoxplotChartOption(
     options?: BoxplotTransformerOptions
 ): EChartsOption {
     const seriesProp = options?.seriesProp;
+    const xAxisLabel = options?.xAxisLabel;
+    const yAxisLabel = options?.yAxisLabel;
+    const xAxisLabelRotate = options?.xAxisLabelRotate;
+    const flipAxis = options?.flipAxis;
 
     // 1. Collect all unique X values (categories)
     const xAxisData = Array.from(new Set(data.map(item => {
@@ -67,32 +77,42 @@ export function createBoxplotChartOption(
         };
     });
 
+    // Configure Axis
+    const categoryAxis: XAXisComponentOption | YAXisComponentOption = {
+        type: 'category',
+        data: xAxisData,
+        name: flipAxis ? (yAxisLabel || yProp) : (xAxisLabel || xProp),
+        boundaryGap: true,
+        splitArea: { show: false },
+        splitLine: { show: false },
+        axisLabel: {
+            rotate: xAxisLabelRotate
+        }
+    };
+
+    const valueAxis: XAXisComponentOption | YAXisComponentOption = {
+        type: 'value',
+        name: flipAxis ? (xAxisLabel || xProp) : (yAxisLabel || yProp),
+        splitArea: { show: true }
+    };
+
     const opt: EChartsOption = {
         tooltip: {
             trigger: 'item',
-            axisPointer: {
-                type: 'shadow'
-            }
+            axisPointer: { type: 'shadow' }
         },
         legend: options?.legend ? {} : undefined,
-        xAxis: {
-            type: 'category',
-            data: xAxisData,
-            boundaryGap: true,
-            splitArea: {
-                show: false
-            },
-            splitLine: {
-                show: false
-            }
-        },
-        yAxis: {
-            type: 'value',
-            splitArea: {
-                show: true
-            }
-        },
-        series: seriesOptions
     };
+
+    if (flipAxis) {
+        opt.xAxis = valueAxis;
+        opt.yAxis = categoryAxis;
+    } else {
+        opt.xAxis = categoryAxis;
+        opt.yAxis = valueAxis;
+    }
+
+    opt.series = seriesOptions;
+
     return opt;
 }

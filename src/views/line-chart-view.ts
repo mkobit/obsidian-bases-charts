@@ -22,6 +22,12 @@ export class LineChartView extends BaseChartView {
         const showSymbol = this.getBooleanOption('showSymbol');
         const areaStyle = this.getBooleanOption('areaStyle');
 
+        // Axis Config
+        const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
+        const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
+        const xAxisLabelRotate = this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY) as number;
+        const flipAxis = this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean;
+
         if (typeof xProp !== 'string' || typeof yProp !== 'string') {
             return null;
         }
@@ -31,7 +37,11 @@ export class LineChartView extends BaseChartView {
             showSymbol,
             areaStyle,
             legend: showLegend,
-            seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined
+            seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined,
+            xAxisLabel,
+            yAxisLabel,
+            xAxisLabelRotate,
+            flipAxis
         });
     }
 
@@ -43,6 +53,7 @@ export class LineChartView extends BaseChartView {
     static getViewOptions(): ViewOption[] {
         return [
             ...BaseChartView.getCommonViewOptions(),
+            ...BaseChartView.getAxisViewOptions(),
             {
                 displayName: 'Smooth Line',
                 type: 'toggle',

@@ -20,6 +20,13 @@ export abstract class BaseChartView extends BasesView {
     public static Y_AXIS_PROP_KEY = 'yAxisProp';
     public static SERIES_PROP_KEY = 'seriesProp';
     public static LEGEND_KEY = 'showLegend';
+    public static HEIGHT_KEY = 'height';
+
+    // Axis Config Keys
+    public static X_AXIS_LABEL_KEY = 'xAxisLabel';
+    public static Y_AXIS_LABEL_KEY = 'yAxisLabel';
+    public static X_AXIS_LABEL_ROTATE_KEY = 'xAxisLabelRotate';
+    public static FLIP_AXIS_KEY = 'flipAxis';
 
     // New Config Keys (Made public for easier access in subclasses without casting)
     public static SIZE_PROP_KEY = 'sizeProp';
@@ -69,6 +76,15 @@ export abstract class BaseChartView extends BasesView {
         const data = this.data.data as unknown as Record<string, unknown>[];
         const option = this.getChartOption(data);
 
+        // Handle height
+        const height = this.config.get(BaseChartView.HEIGHT_KEY);
+        if (typeof height === 'string' && height.trim() !== '') {
+            this.chartEl.style.height = height;
+        } else {
+            this.chartEl.style.height = this.plugin.settings.defaultHeight || '500px';
+        }
+        this.chart.resize();
+
         if (option) {
             // Re-merge with notMerge: true to ensure clean slate for dynamic series
             this.chart.setOption(option, true);
@@ -115,6 +131,40 @@ export abstract class BaseChartView extends BasesView {
                 displayName: 'Show Legend',
                 type: 'toggle',
                 key: BaseChartView.LEGEND_KEY,
+            },
+            {
+                displayName: 'Height',
+                type: 'text',
+                key: BaseChartView.HEIGHT_KEY,
+                placeholder: 'e.g., 500px'
+            }
+        ];
+    }
+
+    static getAxisViewOptions(): ViewOption[] {
+        return [
+            {
+                displayName: 'X-Axis Label',
+                type: 'text',
+                key: BaseChartView.X_AXIS_LABEL_KEY,
+                placeholder: 'Override X-Axis name'
+            },
+            {
+                displayName: 'Y-Axis Label',
+                type: 'text',
+                key: BaseChartView.Y_AXIS_LABEL_KEY,
+                placeholder: 'Override Y-Axis name'
+            },
+            {
+                displayName: 'X-Axis Label Rotate',
+                type: 'number',
+                key: BaseChartView.X_AXIS_LABEL_ROTATE_KEY,
+                placeholder: 'e.g. 45'
+            },
+            {
+                displayName: 'Flip Axes (Transpose)',
+                type: 'toggle',
+                key: BaseChartView.FLIP_AXIS_KEY
             }
         ];
     }

@@ -37,7 +37,7 @@ describe('Transformer - Candlestick Chart', () => {
         // Axis Verification
         expect(option.xAxis).toBeDefined();
         // @ts-ignore
-        expect(option.xAxis.data).toEqual(['2023-10-01', '2023-10-02', '2023-10-03']);
+        expect((option.xAxis as any).data).toEqual(['2023-10-01', '2023-10-02', '2023-10-03']);
     });
 
     it('should handle missing values gracefully', () => {

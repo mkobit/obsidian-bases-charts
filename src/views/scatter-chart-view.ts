@@ -17,17 +17,30 @@ export class ScatterChartView extends BaseChartView {
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY);
         const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
 
+        // Axis Config
+        const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
+        const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
+        const xAxisLabelRotate = this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY) as number;
+        const flipAxis = this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean;
+
         if (typeof xProp !== 'string' || typeof yProp !== 'string') {
             return null;
         }
 
         return transformDataToChartOption(data, xProp, yProp, 'scatter', {
             legend: showLegend,
-            seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined
+            seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined,
+            xAxisLabel,
+            yAxisLabel,
+            xAxisLabelRotate,
+            flipAxis
         });
     }
 
     static getViewOptions(): ViewOption[] {
-        return BaseChartView.getCommonViewOptions();
+        return [
+            ...BaseChartView.getCommonViewOptions(),
+            ...BaseChartView.getAxisViewOptions()
+        ];
     }
 }

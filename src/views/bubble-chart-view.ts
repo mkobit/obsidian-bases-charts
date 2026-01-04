@@ -19,6 +19,12 @@ export class BubbleChartView extends BaseChartView {
         const sizeProp = this.config.get(BaseChartView.SIZE_PROP_KEY);
         const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
 
+        // Axis Config
+        const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
+        const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
+        const xAxisLabelRotate = this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY) as number;
+        const flipAxis = this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean;
+
         if (typeof xProp !== 'string' || typeof yProp !== 'string') {
             return null;
         }
@@ -26,13 +32,18 @@ export class BubbleChartView extends BaseChartView {
         return transformDataToChartOption(data, xProp, yProp, 'bubble', {
             legend: showLegend,
             seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined,
-            sizeProp: typeof sizeProp === 'string' ? sizeProp : undefined
+            sizeProp: typeof sizeProp === 'string' ? sizeProp : undefined,
+            xAxisLabel,
+            yAxisLabel,
+            xAxisLabelRotate,
+            flipAxis
         });
     }
 
     static getViewOptions(): ViewOption[] {
         return [
             ...BaseChartView.getCommonViewOptions(),
+            ...BaseChartView.getAxisViewOptions(),
             {
                 displayName: 'Size Property',
                 type: 'property',
