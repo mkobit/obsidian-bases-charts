@@ -3,10 +3,12 @@ import BarePlugin from "./main";
 
 export interface BarePluginSettings {
 	mySetting: string;
+	defaultHeight: string;
 }
 
 export const DEFAULT_SETTINGS: BarePluginSettings = {
-	mySetting: 'default'
+	mySetting: 'default',
+	defaultHeight: '500px'
 }
 
 export class SettingTab extends PluginSettingTab {
@@ -23,13 +25,13 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('A secret setting')
+			.setName('Default chart height')
+			.setDesc('The default height for charts (e.g. 500px, 50vh).')
 			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
+				.setPlaceholder('500px')
+				.setValue(this.plugin.settings.defaultHeight)
 				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
+					this.plugin.settings.defaultHeight = value;
 					await this.plugin.saveSettings();
 				}));
 	}

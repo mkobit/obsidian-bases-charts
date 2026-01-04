@@ -1,1 +1,8 @@
 /* styles.css */
+.bases-echarts-container {
+    width: var(--bases-echarts-width, 100%);
+}
+
+.bases-echarts {
+    width: var(--bases-echarts-width, 100%);
+}

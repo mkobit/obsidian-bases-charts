@@ -14,12 +14,14 @@ export abstract class BaseChartView extends BasesView {
     chartEl: HTMLElement;
     plugin: BarePlugin;
     protected chart: echarts.ECharts | null = null;
+    private resizeObserver: ResizeObserver | null = null;
 
     // Common Config Keys
     public static X_AXIS_PROP_KEY = 'xAxisProp';
     public static Y_AXIS_PROP_KEY = 'yAxisProp';
     public static SERIES_PROP_KEY = 'seriesProp';
     public static LEGEND_KEY = 'showLegend';
+    public static HEIGHT_KEY = 'height';
 
     // New Config Keys (Made public for easier access in subclasses without casting)
     public static SIZE_PROP_KEY = 'sizeProp';
@@ -31,16 +33,24 @@ export abstract class BaseChartView extends BasesView {
         super(controller);
         this.scrollEl = scrollEl;
         this.plugin = plugin;
-        this.containerEl = scrollEl.createDiv({ cls: 'bases-chart-container' });
-        this.chartEl = this.containerEl.createDiv({ cls: 'bases-chart' });
+        this.containerEl = scrollEl.createDiv({ cls: 'bases-echarts-container' });
+        this.chartEl = this.containerEl.createDiv({ cls: 'bases-echarts' });
     }
 
     onload(): void {
-        this.registerEvent(this.app.workspace.on('resize', this.onResizeDebounce, this));
         this.registerEvent(this.app.workspace.on('css-change', this.updateChartTheme, this));
+
+        this.resizeObserver = new ResizeObserver(() => {
+            this.onResizeDebounce();
+        });
+        this.resizeObserver.observe(this.containerEl);
     }
 
     onunload() {
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+            this.resizeObserver = null;
+        }
         if (this.chart) {
             this.chart.dispose();
             this.chart = null;
@@ -62,8 +72,15 @@ export abstract class BaseChartView extends BasesView {
     protected renderChart(): void {
         if (!this.chartEl) return;
 
+        // Apply height from config or settings
+        const height = (this.config.get(BaseChartView.HEIGHT_KEY) as string) || this.plugin.settings.defaultHeight;
+        this.chartEl.style.height = height;
+
         if (!this.chart) {
             this.chart = echarts.init(this.chartEl, this.isDarkMode() ? 'dark' : undefined);
+        } else {
+             // If height changed, we might need to resize explicitly if not caught by observer yet
+             this.chart.resize();
         }
 
         const data = this.data.data as unknown as Record<string, unknown>[];
@@ -115,6 +132,12 @@ export abstract class BaseChartView extends BasesView {
                 displayName: 'Show Legend',
                 type: 'toggle',
                 key: BaseChartView.LEGEND_KEY,
+            },
+            {
+                displayName: 'Height',
+                type: 'text',
+                key: BaseChartView.HEIGHT_KEY,
+                placeholder: 'e.g., 500px, 50vh',
             }
         ];
     }
