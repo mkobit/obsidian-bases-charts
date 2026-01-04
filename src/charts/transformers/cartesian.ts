@@ -81,14 +81,14 @@ export function createCartesianChartOption(
     // Helper to apply common styles
     const applyStyles = (base: SeriesOption): SeriesOption => {
         if (chartType === 'line') {
-             const line = { ...base, type: 'line' } as LineSeriesOption;
+             const line: LineSeriesOption = { ...base, type: 'line' };
              if (options?.smooth) line.smooth = true;
              if (options?.showSymbol === false) line.showSymbol = false;
              if (options?.areaStyle) line.areaStyle = {};
              if (isStacked) line.stack = 'total';
              return line;
         } else {
-            const bar = { ...base, type: 'bar' } as BarSeriesOption;
+            const bar: BarSeriesOption = { ...base, type: 'bar' };
             if (isStacked) bar.stack = 'total';
             return bar;
         }
