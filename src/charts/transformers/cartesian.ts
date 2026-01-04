@@ -10,6 +10,16 @@ export interface CartesianTransformerOptions extends BaseTransformerOptions {
     seriesProp?: string;
 }
 
+// Helper interface for the common series properties we construct
+interface BaseSeriesProps {
+    name?: string;
+    datasetIndex: number;
+    encode: {
+        x: string;
+        y: string;
+    };
+}
+
 export function createCartesianChartOption(
     data: Record<string, unknown>[],
     xProp: string,
@@ -79,7 +89,7 @@ export function createCartesianChartOption(
     const datasets: DatasetComponentOption[] = [sourceDataset, ...transformDatasets];
 
     // Helper to apply common styles
-    const applyStyles = (base: SeriesOption): SeriesOption => {
+    const applyStyles = (base: BaseSeriesProps): SeriesOption => {
         if (chartType === 'line') {
              const line: LineSeriesOption = { ...base, type: 'line' };
              if (options?.smooth) line.smooth = true;
@@ -103,7 +113,7 @@ export function createCartesianChartOption(
             // transform for series[0] is at datasets[1], etc.
             const datasetIndex = index + 1;
 
-            const base: SeriesOption = {
+            const base: BaseSeriesProps = {
                 name: sName,
                 datasetIndex: datasetIndex,
                 encode: {
@@ -115,7 +125,7 @@ export function createCartesianChartOption(
         });
     } else {
         // Single series, use root dataset
-        const base: SeriesOption = {
+        const base: BaseSeriesProps = {
             name: yProp,
             datasetIndex: 0,
             encode: {
