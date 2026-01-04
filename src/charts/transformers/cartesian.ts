@@ -26,28 +26,32 @@ export function createCartesianChartOption(
     const S_DIM = 's';
 
     // 1. Normalize data to flat structure using functional patterns
-    // First, map to raw values and filter invalid ones
-    const validItems = data
-        .map(item => {
-            const xValRaw = getNestedValue(item, xProp);
-            const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+    // Using flatMap to combine mapping and filtering in a single pass where possible
+    // (though flatMap builds an intermediate array, it's cleaner than reduce for this logic)
+    const validItems = data.reduce((acc, item) => {
+        const xValRaw = getNestedValue(item, xProp);
+        const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
 
-            const yValRaw = getNestedValue(item, yProp);
-            const yVal = Number(yValRaw);
+        const yValRaw = getNestedValue(item, yProp);
+        const yVal = Number(yValRaw);
 
-            let sVal: string | undefined = undefined;
-            if (seriesProp) {
-                const sValRaw = getNestedValue(item, seriesProp);
-                if (sValRaw !== undefined && sValRaw !== null) {
-                    sVal = safeToString(sValRaw);
-                } else {
-                    sVal = 'Series 1';
-                }
+        if (isNaN(yVal)) {
+            return acc;
+        }
+
+        let sVal: string | undefined = undefined;
+        if (seriesProp) {
+            const sValRaw = getNestedValue(item, seriesProp);
+            if (sValRaw !== undefined && sValRaw !== null) {
+                sVal = safeToString(sValRaw);
+            } else {
+                sVal = 'Series 1';
             }
+        }
 
-            return { xVal, yVal, sVal };
-        })
-        .filter(item => !isNaN(item.yVal));
+        acc.push({ xVal, yVal, sVal });
+        return acc;
+    }, [] as { xVal: string; yVal: number; sVal: string | undefined }[]);
 
     const flatData = validItems.map(item => ({
         [X_DIM]: item.xVal,
@@ -56,6 +60,7 @@ export function createCartesianChartOption(
     }));
 
     // Extract unique values for X axis and Series
+    // Note: Iterator helpers (ESNext) are not available in the current build target (ES6).
     const xAxisData = Array.from(new Set(validItems.map(i => i.xVal)));
     const uniqueSeries = Array.from(new Set(validItems.map(i => i.sVal).filter((s): s is string => s !== undefined)));
 
