@@ -20,21 +20,18 @@ export function createCartesianChartOption(
     const seriesProp = options?.seriesProp;
     const isStacked = options?.stack;
 
-    // 1. Get all unique X values (categories)
+    // 1. Collect all unique X values and Series values
     const uniqueX = new Set<string>();
+    const uniqueSeries = new Set<string>();
+    // Map of xVal -> { sVal -> yVal }
+    const dataMap = new Map<string, Map<string, number>>();
+
     for (const item of data) {
         const valRaw = getNestedValue(item, xProp);
         const xVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
         uniqueX.add(xVal);
-    }
-    const xAxisData = Array.from(uniqueX);
 
-    // 2. Group data by series
-    const seriesMap = data.reduce((acc, item) => {
-        const xValRaw = getNestedValue(item, xProp);
-        const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
-
-        let sVal = yProp;
+        let sVal = yProp; // Default series name if no seriesProp
         if (seriesProp) {
             const sValRaw = getNestedValue(item, seriesProp);
             if (sValRaw !== undefined && sValRaw !== null) {
@@ -43,28 +40,46 @@ export function createCartesianChartOption(
                 sVal = 'Series 1';
             }
         }
+        uniqueSeries.add(sVal);
 
         const yVal = Number(getNestedValue(item, yProp));
-
-        const xIndex = xAxisData.indexOf(xVal);
-        if (xIndex !== -1 && !isNaN(yVal)) {
-            if (!acc.has(sVal)) {
-                // Explicitly type the array to avoid "any[] assigned to (number|null)[]"
-                acc.set(sVal, new Array(xAxisData.length).fill(null) as (number | null)[]);
+        if (!isNaN(yVal)) {
+            if (!dataMap.has(xVal)) {
+                dataMap.set(xVal, new Map());
             }
-            const arr = acc.get(sVal);
-            if (arr) {
-                arr[xIndex] = yVal;
+            dataMap.get(xVal)!.set(sVal, yVal);
+        }
+    }
+
+    const xAxisData = Array.from(uniqueX);
+    const seriesNames = Array.from(uniqueSeries);
+
+    // 2. Build Dataset Source (2D Array)
+    // Row 1: [xProp, ...seriesNames]
+    const datasetSource: (string | number | null)[][] = [];
+
+    // Header
+    datasetSource.push([xProp, ...seriesNames]);
+
+    // Rows
+    for (const xVal of xAxisData) {
+        const row: (string | number | null)[] = [xVal];
+        const rowData = dataMap.get(xVal);
+        for (const sName of seriesNames) {
+            if (rowData && rowData.has(sName)) {
+                row.push(rowData.get(sName)!);
+            } else {
+                row.push(null);
             }
         }
-        return acc;
-    }, new Map<string, (number | null)[]>());
+        datasetSource.push(row);
+    }
 
-    // Build Series Options
-    const seriesOptions: SeriesOption[] = Array.from(seriesMap.entries()).map(([sName, sData]) => {
+    // 3. Build Series Options
+    const seriesOptions: SeriesOption[] = seriesNames.map((sName) => {
         const base = {
             name: sName,
-            data: sData
+            // No data property here!
         };
 
         if (chartType === 'line') {
@@ -88,10 +103,11 @@ export function createCartesianChartOption(
     });
 
     const opt: EChartsOption = {
+        dataset: {
+            source: datasetSource
+        },
         xAxis: {
             type: 'category',
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-            data: xAxisData as any,
             name: xProp
         },
         yAxis: {
