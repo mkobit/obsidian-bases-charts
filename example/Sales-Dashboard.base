@@ -1,0 +1,51 @@
+properties:
+  note.Date:
+    displayName: Date
+  note.Revenue:
+    displayName: Revenue
+  note.Region:
+    displayName: Region
+  note.Category:
+    displayName: Category
+views:
+  - type: bar-chart
+    name: Sales Bar Chart
+    xAxisProp: note.Date
+    yAxisProp: note.Revenue
+    showLegend: true
+    filters:
+      and:
+        - note.Category == "Sales"
+  - type: line-chart
+    name: Sales Line Chart
+    xAxisProp: note.Date
+    yAxisProp: note.Revenue
+    showLegend: true
+    filters:
+      and:
+        - note.Category == "Sales"
+  - type: pie-chart
+    name: Sales by Region (Pie)
+    xAxisProp: note.Region
+    yAxisProp: note.Revenue
+    showLegend: true
+    filters:
+      and:
+        - note.Category == "Sales"
+  - type: stacked-bar-chart
+    name: Sales by Quarter Stacked
+    xAxisProp: note.Quarter
+    yAxisProp: note.Revenue
+    seriesProp: note.Region
+    showLegend: true
+    filters:
+      and:
+        - note.Category == "Sales"
+  - type: area-chart
+    name: Sales Area Chart
+    xAxisProp: note.Date
+    yAxisProp: note.Revenue
+    showLegend: true
+    filters:
+      and:
+        - note.Category == "Sales"
