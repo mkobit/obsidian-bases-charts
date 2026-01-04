@@ -20,63 +20,59 @@ export function createCartesianChartOption(
     const seriesProp = options?.seriesProp;
     const isStacked = options?.stack;
 
-    // 1. Collect all unique X values and Series values
-    const uniqueX = new Set<string>();
-    const uniqueSeries = new Set<string>();
-    // Map of xVal -> { sVal -> yVal }
-    const dataMap = new Map<string, Map<string, number>>();
-
-    for (const item of data) {
+    // 1. Collect all unique X values and Series values using functional patterns
+    const uniqueX = Array.from(new Set(data.map(item => {
         const valRaw = getNestedValue(item, xProp);
-        const xVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
-        uniqueX.add(xVal);
+        return valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+    })));
 
-        let sVal = yProp; // Default series name if no seriesProp
+    const uniqueSeries = Array.from(new Set(data.map(item => {
         if (seriesProp) {
             const sValRaw = getNestedValue(item, seriesProp);
-            if (sValRaw !== undefined && sValRaw !== null) {
-                sVal = safeToString(sValRaw);
-            } else {
-                sVal = 'Series 1';
-            }
+            return (sValRaw !== undefined && sValRaw !== null) ? safeToString(sValRaw) : 'Series 1';
         }
-        uniqueSeries.add(sVal);
+        return yProp;
+    })));
+
+    // Create a lookup map: xVal -> sVal -> yVal
+    const dataMap = data.reduce((acc, item) => {
+        const xValRaw = getNestedValue(item, xProp);
+        const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+
+        let sVal = yProp;
+        if (seriesProp) {
+            const sValRaw = getNestedValue(item, seriesProp);
+            sVal = (sValRaw !== undefined && sValRaw !== null) ? safeToString(sValRaw) : 'Series 1';
+        }
 
         const yVal = Number(getNestedValue(item, yProp));
         if (!isNaN(yVal)) {
-            if (!dataMap.has(xVal)) {
-                dataMap.set(xVal, new Map());
+            if (!acc.has(xVal)) {
+                acc.set(xVal, new Map());
             }
-            dataMap.get(xVal)!.set(sVal, yVal);
+            acc.get(xVal)!.set(sVal, yVal);
         }
-    }
-
-    const xAxisData = Array.from(uniqueX);
-    const seriesNames = Array.from(uniqueSeries);
+        return acc;
+    }, new Map<string, Map<string, number>>());
 
     // 2. Build Dataset Source (2D Array)
-    // Row 1: [xProp, ...seriesNames]
-    const datasetSource: (string | number | null)[][] = [];
+    const headerRow = [xProp, ...uniqueSeries];
 
-    // Header
-    datasetSource.push([xProp, ...seriesNames]);
-
-    // Rows
-    for (const xVal of xAxisData) {
-        const row: (string | number | null)[] = [xVal];
+    const dataRows = uniqueX.map(xVal => {
         const rowData = dataMap.get(xVal);
-        for (const sName of seriesNames) {
+        const seriesValues = uniqueSeries.map(sName => {
             if (rowData && rowData.has(sName)) {
-                row.push(rowData.get(sName)!);
-            } else {
-                row.push(null);
+                return rowData.get(sName)!;
             }
-        }
-        datasetSource.push(row);
-    }
+            return null;
+        });
+        return [xVal, ...seriesValues];
+    });
+
+    const datasetSource = [headerRow, ...dataRows];
 
     // 3. Build Series Options
-    const seriesOptions: SeriesOption[] = seriesNames.map((sName) => {
+    const seriesOptions: SeriesOption[] = uniqueSeries.map((sName) => {
         const base = {
             name: sName,
             // No data property here!
