@@ -2,6 +2,10 @@ import { describe, it, expect } from 'vitest';
 import { transformDataToChartOption } from '../../src/charts/transformer';
 import type { PieSeriesOption } from 'echarts';
 
+interface TestOption {
+    series: PieSeriesOption[];
+}
+
 describe('Rose Chart Transformer', () => {
     it('should create a rose chart with roseType: area', () => {
         const data = [
@@ -9,34 +13,36 @@ describe('Rose Chart Transformer', () => {
             { category: 'B', value: 20 }
         ];
 
-        const option = transformDataToChartOption(data, 'category', 'value', 'rose');
+        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as TestOption;
 
         expect(option.series).toBeDefined();
-        const series = (Array.isArray(option.series) ? option.series[0] : option.series) as PieSeriesOption;
+        expect(option.series).toHaveLength(1);
 
+        const [series] = option.series;
         expect(series).toBeDefined();
+        if (!series) return;
+
         expect(series.type).toBe('pie');
         expect(series.roseType).toBe('area');
         expect(series.radius).toEqual([20, '75%']);
     });
 
-    it('should map data correctly using series data', () => {
+    it('should map data correctly', () => {
         const data = [
             { category: 'A', value: 10 },
             { category: 'B', value: 20 }
         ];
 
-        const option = transformDataToChartOption(data, 'category', 'value', 'rose');
-
-        // Check series.data instead of dataset
-        const series = (Array.isArray(option.series) ? option.series[0] : option.series) as PieSeriesOption;
-        expect(series.data).toBeDefined();
-
+        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as TestOption;
+        const [series] = option.series;
+        if (!series) {
+            expect(series).toBeDefined();
+            return;
+        }
         const seriesData = series.data as { name: string; value: number }[];
+
         expect(seriesData).toHaveLength(2);
-        expect(seriesData[0]).toHaveProperty('name', 'A');
-        expect(seriesData[0]).toHaveProperty('value', 10);
-        expect(seriesData[1]).toHaveProperty('name', 'B');
-        expect(seriesData[1]).toHaveProperty('value', 20);
+        expect(seriesData[0]).toEqual({ name: 'A', value: 10 });
+        expect(seriesData[1]).toEqual({ name: 'B', value: 20 });
     });
 });

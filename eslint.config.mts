@@ -53,14 +53,6 @@ export default tseslint.config(
 			"functional/functional-parameters": "off"
 		}
 	},
-	{
-		files: ["tests/**/*", "**/*.test.ts"],
-		rules: {
-			"functional/no-let": "off",
-			"functional/immutable-data": "off",
-			"functional/no-loop-statements": "off"
-		}
-	},
 	globalIgnores([
 		"node_modules",
 		"dist",

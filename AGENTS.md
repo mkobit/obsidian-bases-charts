@@ -23,11 +23,11 @@ The goal is to build an assortment of views using:
 -   **Linting**: ESLint is configured with strict functional programming rules. Run `pnpm run lint` before committing.
 -   **CI**: GitHub Actions workflow (`ci.yml`) enforces build success, type safety, and linting on every push.
 
-## Functional Programming Protocol
+## Functional programming protocol
 
 We strictly enforce functional programming principles to ensure code clarity, prevent side effects, and improve maintainability.
 
-### 1. Immutability is Mandatory
+### 1. Immutability is mandatory
 -   **No Mutations**: Do not mutate objects or arrays after creation.
     -   ❌ `array.push(item)`
     -   ❌ `obj.prop = value`
@@ -35,7 +35,7 @@ We strictly enforce functional programming principles to ensure code clarity, pr
     -   ✅ Use `{ ...obj, prop: value }`.
 -   **No Let**: Use `const` exclusively. Reassignment is banned.
 
-### 2. No Imperative Loops
+### 2. No imperative loops
 -   **Ban Loops**: `for`, `for...of`, `while`, and `do...while` are strictly forbidden.
 -   **Use Declarative Transforms**:
     -   Use `map`, `filter`, `reduce` (sparingly, prefer specific transforms), `flatMap`, etc.
@@ -52,11 +52,12 @@ We strictly enforce functional programming principles to ensure code clarity, pr
         );
         ```
 
-### 3. Iterators and Lazy Evaluation
+### 3. Iterators and lazy evaluation
 -   **Lazy Iterators**: Use modern Iterator helpers (e.g., `.values()`, `Iterator.from()`) where appropriate to avoid creating intermediate arrays for large datasets.
 -   **Streamlining**: Adopt libraries like `remeda` to optimize and streamline development.
+-   **Exceptions**: The only time we should consider not doing this is when a third-party library requires it (e.g., Obsidian API, ECharts). In that case, explicitly disable the lints for that specific block.
 
-### 4. Pure Functions
+### 4. Pure functions
 -   **No Side Effects**: Functions, especially transformers, must be pure. They should take input and return output without modifying external state.
 
 ## Development Commands
@@ -68,7 +69,7 @@ We strictly enforce functional programming principles to ensure code clarity, pr
 | `pnpm run lint` | Runs ESLint on the source code. |
 | `pnpm run version <type>` | Bumps version in `package.json`, `manifest.json`, and `versions.json`. Usage: `pnpm run version patch` |
 
-## Contributing Guidelines
+## Contributing guidelines
 1.  **Maintain Strictness**: Do not relax TypeScript rules or linter rules.
 2.  **Verify**: Always run the following commands locally to verify your changes before opening a pull request:
     - `pnpm run build`

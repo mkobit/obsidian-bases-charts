@@ -94,8 +94,9 @@ export function createCartesianChartOption(
     const opt: EChartsOption = {
         xAxis: {
             type: 'category',
-            name: xProp,
-            data: xAxisData
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+            data: xAxisData as any,
+            name: xProp
         },
         yAxis: {
             type: 'value',
