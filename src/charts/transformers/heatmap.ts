@@ -1,6 +1,7 @@
 import type { EChartsOption, HeatmapSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+import * as R from 'remeda';
 
 export interface HeatmapTransformerOptions extends BaseTransformerOptions {
     valueProp?: string;
@@ -15,56 +16,50 @@ export function createHeatmapChartOption(
     const valueProp = options?.valueProp;
 
     // 1. Identify X Categories (Horizontal)
-    const uniqueX = new Set<string>();
-    for (const item of data) {
-        const valRaw = getNestedValue(item, xProp);
-        const xVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
-        uniqueX.add(xVal);
-    }
-    const xAxisData = Array.from(uniqueX);
+    const xAxisData = R.pipe(
+        data,
+        R.map(item => {
+            const valRaw = getNestedValue(item, xProp);
+            return valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+        }),
+        R.unique()
+    );
 
     // 2. Identify Y Categories (Vertical)
-    const uniqueY = new Set<string>();
-    for (const item of data) {
-        const valRaw = getNestedValue(item, yProp);
-        const yVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
-        uniqueY.add(yVal);
-    }
-    const yAxisData = Array.from(uniqueY);
+    const yAxisData = R.pipe(
+        data,
+        R.map(item => {
+            const valRaw = getNestedValue(item, yProp);
+            return valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+        }),
+        R.unique()
+    );
 
     // 3. Build Data [xIndex, yIndex, value]
-    const { seriesData, minVal, maxVal } = data.reduce<{
-        seriesData: [number, number, number][];
-        minVal: number;
-        maxVal: number;
-    }>((acc, item) => {
-        const xValRaw = getNestedValue(item, xProp);
-        const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
-        const xIndex = xAxisData.indexOf(xVal);
+    const seriesData = R.pipe(
+        data,
+        R.map(item => {
+            const xValRaw = getNestedValue(item, xProp);
+            const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+            const xIndex = xAxisData.indexOf(xVal);
 
-        const yValRaw = getNestedValue(item, yProp);
-        const yVal = yValRaw === undefined || yValRaw === null ? 'Unknown' : safeToString(yValRaw);
-        const yIndex = yAxisData.indexOf(yVal);
+            const yValRaw = getNestedValue(item, yProp);
+            const yVal = yValRaw === undefined || yValRaw === null ? 'Unknown' : safeToString(yValRaw);
+            const yIndex = yAxisData.indexOf(yVal);
 
-        if (xIndex === -1 || yIndex === -1) return acc;
+            if (xIndex === -1 || yIndex === -1) return null;
 
-        let val = 0;
-        if (valueProp) {
-            const v = Number(getNestedValue(item, valueProp));
-            if (!isNaN(v)) {
-                val = v;
-            }
-        }
+            const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : NaN;
+            const val = !isNaN(valNum) ? valNum : 0;
 
-        if (val < acc.minVal) acc.minVal = val;
-        if (val > acc.maxVal) acc.maxVal = val;
+            return [xIndex, yIndex, val] as [number, number, number];
+        }),
+        R.filter((x): x is [number, number, number] => x !== null)
+    );
 
-        acc.seriesData.push([xIndex, yIndex, val]);
-        return acc;
-    }, { seriesData: [], minVal: Infinity, maxVal: -Infinity });
-
-    const finalMinVal = minVal === Infinity ? 0 : minVal;
-    const finalMaxVal = maxVal === -Infinity ? 10 : maxVal;
+    const values = R.map(seriesData, x => x[2]);
+    const finalMinVal = values.length > 0 ? Math.min(...values) : 0;
+    const finalMaxVal = values.length > 0 ? Math.max(...values) : 10;
 
     const seriesItem: HeatmapSeriesOption = {
         type: 'heatmap',

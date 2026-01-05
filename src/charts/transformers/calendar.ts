@@ -1,6 +1,7 @@
 import type { EChartsOption, CalendarComponentOption, HeatmapSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+import * as R from 'remeda';
 
 export interface CalendarTransformerOptions extends BaseTransformerOptions {
     valueProp?: string;
@@ -13,20 +14,20 @@ export function createCalendarChartOption(
 ): EChartsOption {
     const valueProp = options?.valueProp;
 
-    const calendarData = data
-        .map(item => {
+    const calendarData = R.pipe(
+        data,
+        R.map(item => {
             const dateRaw = getNestedValue(item, dateProp);
             const dateVal = safeToString(dateRaw);
             if (!dateVal) return null;
 
-            let val = 0;
-            if (valueProp) {
-                const v = Number(getNestedValue(item, valueProp));
-                if (!isNaN(v)) val = v;
-            }
-            return { date: dateVal, value: val };
-        })
-        .filter((d): d is { date: string; value: number } => d !== null);
+            const val = valueProp ? Number(getNestedValue(item, valueProp)) : NaN;
+            const finalVal = !isNaN(val) ? val : 0;
+
+            return { date: dateVal, value: finalVal };
+        }),
+        R.filter((d): d is { date: string; value: number } => d !== null)
+    );
 
     if (calendarData.length === 0) {
         // Return default empty state
@@ -38,18 +39,19 @@ export function createCalendarChartOption(
         };
     }
 
-    const dates = calendarData.map(d => d.date);
-    const values = calendarData.map(d => d.value);
+    const dates = R.map(calendarData, d => d.date);
+    const values = R.map(calendarData, d => d.value);
 
     // Calculate Min/Max without mutation
-    const minDate = dates.reduce((a, b) => (a < b ? a : b), dates[0]!);
-    const maxDate = dates.reduce((a, b) => (a > b ? a : b), dates[0]!);
+    const sortedDates = R.sortBy(dates, x => x);
+    const minDate = R.first(sortedDates) ?? dates[0]!;
+    const maxDate = R.last(sortedDates) ?? dates[0]!;
 
     const minVal = values.length > 0 ? Math.min(...values) : 0;
     const maxVal = values.length > 0 ? Math.max(...values) : 10;
 
     // ECharts expects [date, value] array
-    const seriesData = calendarData.map(d => [d.date, d.value]);
+    const seriesData = R.map(calendarData, d => [d.date, d.value]);
 
     const calendarItem: CalendarComponentOption = {
         top: 120,

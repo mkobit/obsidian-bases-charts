@@ -1,6 +1,7 @@
 import type { EChartsOption, PieSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+import * as R from 'remeda';
 
 export interface PieTransformerOptions extends BaseTransformerOptions {
     roseType?: 'radius' | 'area';
@@ -12,8 +13,7 @@ export function createPieChartOption(
     valueProp: string,
     options?: PieTransformerOptions
 ): EChartsOption {
-    // Transform complex object array to simple array for dataset
-    const datasetSource = data.map(item => {
+    const seriesData = R.map(data, item => {
         const valRaw = getNestedValue(item, nameProp);
         const name = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
 
@@ -26,13 +26,9 @@ export function createPieChartOption(
 
     const seriesItem: PieSeriesOption = {
         type: 'pie',
-        // Use encode to map dimensions
-        encode: {
-            itemName: 'name',
-            value: 'value'
-        },
+        data: seriesData,
         radius: options?.roseType ? [20, '75%'] : '50%',
-        roseType: options?.roseType,
+        ...(options?.roseType ? { roseType: options.roseType } : {}),
         emphasis: {
             itemStyle: {
                 shadowBlur: 10,
@@ -43,21 +39,17 @@ export function createPieChartOption(
     };
 
     const opt: EChartsOption = {
-        dataset: {
-            source: datasetSource
-        },
         series: [seriesItem],
         tooltip: {
             trigger: 'item'
-        }
+        },
+        ...(options?.legend ? {
+            legend: {
+                orient: 'vertical',
+                left: 'left'
+            }
+        } : {})
     };
-
-    if (options?.legend) {
-        opt.legend = {
-            orient: 'vertical',
-            left: 'left'
-        };
-    }
 
     return opt;
 }

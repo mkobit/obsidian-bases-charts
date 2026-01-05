@@ -1,6 +1,7 @@
 import type { EChartsOption, GraphSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+import * as R from 'remeda';
 
 export interface GraphTransformerOptions extends BaseTransformerOptions {
     valueProp?: string; // For edge weight
@@ -16,67 +17,63 @@ export function createGraphChartOption(
     const valueProp = options?.valueProp;
     const categoryProp = options?.categoryProp;
 
-    const { links, nodesMap } = data.reduce<{
-        links: { source: string; target: string; value?: number }[];
-        nodesMap: Map<string, { name: string; category?: number | string; value?: number }>;
-    }>((acc, item) => {
-        const sourceRaw = getNestedValue(item, sourceProp);
-        const targetRaw = getNestedValue(item, targetProp);
+    // 1. Process data to get raw links and node info
+    const processedData = R.pipe(
+        data,
+        R.map((item) => {
+            const sourceRaw = getNestedValue(item, sourceProp);
+            const targetRaw = getNestedValue(item, targetProp);
 
-        if (sourceRaw == null || targetRaw == null) return acc;
+            if (sourceRaw == null || targetRaw == null) return null;
 
-        const source = safeToString(sourceRaw);
-        const target = safeToString(targetRaw);
+            const source = safeToString(sourceRaw);
+            const target = safeToString(targetRaw);
 
-        // Edge Value
-        let val: number | undefined = undefined;
-        if (valueProp) {
-            const v = Number(getNestedValue(item, valueProp));
-            if (!isNaN(v)) val = v;
-        }
+            // Edge Value
+            const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : NaN;
+            const val = !isNaN(valNum) ? valNum : undefined;
 
-        // Category (applied to Source node primarily, as this row "belongs" to source usually)
-        let cat: string | undefined = undefined;
-        if (categoryProp) {
-            const cRaw = getNestedValue(item, categoryProp);
-            if (cRaw !== undefined && cRaw !== null) cat = safeToString(cRaw);
-        }
+            // Category (for source node)
+            const cRaw = categoryProp ? getNestedValue(item, categoryProp) : undefined;
+            const cat = (cRaw !== undefined && cRaw !== null) ? safeToString(cRaw) : undefined;
 
-        // Register Source Node
-        if (!acc.nodesMap.has(source)) {
-            acc.nodesMap.set(source, { name: source, category: cat });
-        } else if (cat !== undefined) {
-            // Update category if found (and not previously set or just overwrite)
-            acc.nodesMap.get(source)!.category = cat;
-        }
+            return { source, target, value: val, category: cat };
+        }),
+        R.filter((x): x is NonNullable<typeof x> => x !== null)
+    );
 
-        // Register Target Node
-        if (!acc.nodesMap.has(target)) {
-            acc.nodesMap.set(target, { name: target }); // Category unknown until we encounter it as source
-        }
+    const links = R.map(processedData, ({ source, target, value }) => ({ source, target, value }));
 
-        acc.links.push({ source, target, value: val });
-        return acc;
-    }, { links: [], nodesMap: new Map<string, { name: string; category?: number | string; value?: number }>() });
+    // 2. Extract Nodes and Categories
+    // Collect all nodes from sources and targets
+    const sources = R.map(processedData, x => ({ name: x.source, category: x.category }));
+    const targets = R.map(processedData, x => ({ name: x.target, category: undefined })); // Target categories unknown from this link unless it appears as source elsewhere
 
-    // 2. Extract Categories for Legend and Series
-    const categoriesSet = new Set<string>();
-    for (const node of nodesMap.values()) {
-        if (node.category !== undefined) {
-            categoriesSet.add(String(node.category));
-        }
-    }
-    const categoriesList = Array.from(categoriesSet).sort();
-    const categoriesData = categoriesList.map(name => ({ name }));
+    // Merge nodes by name, preferring the one with category
+    const nodesData = R.pipe(
+        [...sources, ...targets],
+        R.groupBy(x => x.name),
+        R.mapValues(group => {
+            const withCat = group.find(x => x.category !== undefined);
+            return {
+                name: group[0].name,
+                category: withCat?.category,
+                symbolSize: 20,
+                draggable: true
+            };
+        }),
+        R.values()
+    );
 
-    const nodesData = Array.from(nodesMap.values()).map(node => {
-        return {
-            name: node.name,
-            category: node.category, // string name
-            symbolSize: 20,
-            draggable: true
-        };
-    });
+    const categoriesList = R.pipe(
+        nodesData,
+        R.map(x => x.category),
+        R.filter((x): x is string => x !== undefined),
+        R.unique(),
+        R.sortBy(x => x)
+    );
+
+    const categoriesData = R.map(categoriesList, name => ({ name }));
 
     const seriesItem: GraphSeriesOption = {
         type: 'graph',
@@ -115,11 +112,13 @@ export function createGraphChartOption(
 
     const opt: EChartsOption = {
         tooltip: {},
-        legend: options?.legend ? {
-            data: categoriesList,
-            orient: 'vertical',
-            left: 'left'
-        } : undefined,
+        ...(options?.legend ? {
+            legend: {
+                data: categoriesList,
+                orient: 'vertical',
+                left: 'left'
+            }
+        } : {}),
         series: [seriesItem]
     };
 

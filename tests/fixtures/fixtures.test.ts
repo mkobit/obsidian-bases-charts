@@ -9,6 +9,7 @@ import {
     generateDailyTimeSeries
 } from './chart_data';
 import { ObsidianFileBuilder } from './obsidian_builder';
+import * as R from 'remeda';
 
 describe('Chart Data Generators', () => {
     it('should generate valid random chart data points', () => {
@@ -26,11 +27,10 @@ describe('Chart Data Generators', () => {
                 expect(dataset.length).toBeGreaterThanOrEqual(1);
                 expect(dataset.length).toBeLessThanOrEqual(10);
 
-                // Use explicit type guard or just check existence
-                for (const point of dataset) {
+                R.forEach(dataset, (point) => {
                     expect(point).toHaveProperty('x');
                     expect(point).toHaveProperty('y');
-                }
+                });
             })
         );
     });
@@ -40,19 +40,17 @@ describe('Chart Data Generators', () => {
             fc.property(timeSeriesArbitrary(), (dataset) => {
                 expect(dataset.length).toBeGreaterThan(0);
 
-                // Check if sorted
-                for (let i = 0; i < dataset.length - 1; i++) {
-                    const current = dataset[i];
-                    const next = dataset[i+1];
+                // Check if sorted using windowed check
+                const pairs = R.zip(
+                    dataset.slice(0, -1),
+                    dataset.slice(1)
+                );
 
-                    // Safely access properties with non-null checks logic implicitly by loop bounds
-                    if (!current || !next) continue;
-
+                R.forEach(pairs, ([current, next]) => {
                     const t1 = current.date as Temporal.ZonedDateTime;
                     const t2 = next.date as Temporal.ZonedDateTime;
-
                     expect(Temporal.ZonedDateTime.compare(t1, t2)).toBeLessThanOrEqual(0);
-                }
+                });
             })
         );
     });
@@ -70,14 +68,9 @@ describe('Chart Data Generators', () => {
 
         expect(data).toHaveLength(3);
 
-        // Assertions using explicit indexing checks
-        const p0 = data[0];
-        const p1 = data[1];
-        const p2 = data[2];
-
-        if (!p0 || !p1 || !p2) {
-            throw new Error('Data length mismatch');
-        }
+        const p0 = data[0]!;
+        const p1 = data[1]!;
+        const p2 = data[2]!;
 
         const d0 = p0.date as Temporal.PlainDate;
         const d1 = p1.date as Temporal.PlainDate;

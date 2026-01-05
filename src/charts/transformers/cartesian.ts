@@ -1,6 +1,7 @@
 import type { EChartsOption, SeriesOption, LineSeriesOption, BarSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+import * as R from 'remeda';
 
 export interface CartesianTransformerOptions extends BaseTransformerOptions {
     smooth?: boolean;
@@ -20,90 +21,81 @@ export function createCartesianChartOption(
     const seriesProp = options?.seriesProp;
     const isStacked = options?.stack;
 
-    // 1. Collect all unique X values and Series values using functional patterns
-    const uniqueX = Array.from(new Set(data.map(item => {
-        const valRaw = getNestedValue(item, xProp);
-        return valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
-    })));
+    // 1. Get all unique X values (categories)
+    const xAxisData = R.pipe(
+        data,
+        R.map((item) => {
+            const valRaw = getNestedValue(item, xProp);
+            return valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+        }),
+        R.unique()
+    );
 
-    const uniqueSeries = Array.from(new Set(data.map(item => {
-        if (seriesProp) {
+    // 2. Group data by series and map to axis
+    const seriesDataMap = R.pipe(
+        data,
+        R.groupBy((item) => {
+            if (!seriesProp) return yProp;
             const sValRaw = getNestedValue(item, seriesProp);
-            return (sValRaw !== undefined && sValRaw !== null) ? safeToString(sValRaw) : 'Series 1';
-        }
-        return yProp;
-    })));
+            return sValRaw !== undefined && sValRaw !== null ? safeToString(sValRaw) : 'Series 1';
+        }),
+        R.mapValues((items) => {
+            // Map items to their values by xIndex
+            // We want an array of length xAxisData.length, with nulls where missing
+            const valueMap = R.pipe(
+                items,
+                R.map((item) => {
+                    const xValRaw = getNestedValue(item, xProp);
+                    const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+                    const yVal = Number(getNestedValue(item, yProp));
+                    return { xVal, yVal };
+                }),
+                R.indexBy((x) => x.xVal)
+            );
 
-    // Create a lookup map: xVal -> sVal -> yVal
-    const dataMap = data.reduce((acc, item) => {
-        const xValRaw = getNestedValue(item, xProp);
-        const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+            return xAxisData.map((xVal) => {
+                const found = valueMap[xVal];
+                return found && !isNaN(found.yVal) ? found.yVal : null;
+            });
+        })
+    );
 
-        let sVal = yProp;
-        if (seriesProp) {
-            const sValRaw = getNestedValue(item, seriesProp);
-            sVal = (sValRaw !== undefined && sValRaw !== null) ? safeToString(sValRaw) : 'Series 1';
-        }
-
-        const yVal = Number(getNestedValue(item, yProp));
-        if (!isNaN(yVal)) {
-            if (!acc.has(xVal)) {
-                acc.set(xVal, new Map());
-            }
-            acc.get(xVal)!.set(sVal, yVal);
-        }
-        return acc;
-    }, new Map<string, Map<string, number>>());
-
-    // 2. Build Dataset Source (2D Array)
-    const headerRow = [xProp, ...uniqueSeries];
-
-    const dataRows = uniqueX.map(xVal => {
-        const rowData = dataMap.get(xVal);
-        const seriesValues = uniqueSeries.map(sName => {
-            if (rowData && rowData.has(sName)) {
-                return rowData.get(sName)!;
-            }
-            return null;
-        });
-        return [xVal, ...seriesValues];
-    });
-
-    const datasetSource = [headerRow, ...dataRows];
-
-    // 3. Build Series Options
-    const seriesOptions: SeriesOption[] = uniqueSeries.map((sName) => {
-        const base = {
-            name: sName,
-            // No data property here!
-        };
-
-        if (chartType === 'line') {
-             const lineItem: LineSeriesOption = {
-                 ...base,
-                 type: 'line'
-             };
-             if (options?.smooth) lineItem.smooth = true;
-             if (options?.showSymbol === false) lineItem.showSymbol = false;
-             if (options?.areaStyle) lineItem.areaStyle = {};
-             if (isStacked) lineItem.stack = 'total';
-             return lineItem;
-        } else {
-            const barItem: BarSeriesOption = {
-                ...base,
-                type: 'bar'
+    // Build Series Options
+    const seriesOptions: SeriesOption[] = R.pipe(
+        seriesDataMap,
+        R.entries(),
+        R.map(([sName, sData]) => {
+            const base = {
+                name: sName,
+                data: sData
             };
-            if (isStacked) barItem.stack = 'total';
-            return barItem;
-        }
-    });
+
+            if (chartType === 'line') {
+                 const lineItem: LineSeriesOption = {
+                     ...base,
+                     type: 'line',
+                     ...(options?.smooth ? { smooth: true } : {}),
+                     ...(options?.showSymbol === false ? { showSymbol: false } : {}),
+                     ...(options?.areaStyle ? { areaStyle: {} } : {}),
+                     ...(isStacked ? { stack: 'total' } : {})
+                 };
+                 return lineItem;
+            } else {
+                const barItem: BarSeriesOption = {
+                    ...base,
+                    type: 'bar',
+                    ...(isStacked ? { stack: 'total' } : {})
+                };
+                return barItem;
+            }
+        })
+    );
 
     const opt: EChartsOption = {
-        dataset: {
-            source: datasetSource
-        },
         xAxis: {
             type: 'category',
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+            data: xAxisData as any,
             name: xProp
         },
         yAxis: {
@@ -116,12 +108,9 @@ export function createCartesianChartOption(
         },
         grid: {
             containLabel: true
-        }
+        },
+        ...(options?.legend ? { legend: {} } : {})
     };
-
-    if (options?.legend) {
-        opt.legend = {};
-    }
 
     return opt;
 }

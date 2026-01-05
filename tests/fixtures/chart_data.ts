@@ -1,86 +1,85 @@
 import fc from 'fast-check';
 import { Temporal } from 'temporal-polyfill';
+import * as R from 'remeda';
 
 /**
- * A generic chart data point.
- * Using a generic record allows flexibility while still letting consumers narrow it down if they know the schema.
- * However, for our specific known types (XY, TimeSeries), we should prefer specific interfaces.
- */
-export type GenericChartDataPoint = Record<string, unknown>;
-
-/**
- * A data point with explicit X and Y values.
+ * Interface representing a simple data point (x, y).
  */
 export interface XYPoint {
-    x: number | string;
+    x: number;
     y: number;
-    [key: string]: unknown; // Allow extra properties but enforce x/y
 }
 
 /**
- * A data point for time series.
+ * Interface representing a time-series data point (date, value).
+ * Using Temporal.PlainDate or ZonedDateTime for date.
  */
 export interface TimePoint {
-    date: Temporal.ZonedDateTime | Temporal.PlainDate | string | number; // Support various time formats
+    date: Temporal.PlainDate | Temporal.ZonedDateTime;
     value: number;
-    [key: string]: unknown;
 }
 
 /**
- * Type alias for a dataset.
+ * Interface representing a generic chart data point (dynamic keys).
  */
-export type ChartDataset<T = GenericChartDataPoint> = T[];
+export type ChartDataPoint = Record<string, unknown>;
 
-// --- Property-based Generators (using fast-check) ---
+export type ChartDataset<T> = T[];
+
+// --- Arbitraries ---
 
 /**
- * Generator for a generic data point.
+ * Arbitrary for a generic chart data point with specific keys.
  */
-export function chartDataPointArbitrary(
-    keys: string[] = ['x', 'y'],
-    valueArbitrary: fc.Arbitrary<unknown> = fc.oneof(fc.string(), fc.integer(), fc.float())
-): fc.Arbitrary<GenericChartDataPoint> {
-    const properties: Record<string, fc.Arbitrary<unknown>> = {};
-    for (const key of keys) {
-        properties[key] = valueArbitrary;
-    }
-    return fc.record(properties);
+export function chartDataPointArbitrary(keys: string[]): fc.Arbitrary<ChartDataPoint> {
+    const pairs = keys.map(key => [
+        key,
+        fc.oneof(
+            fc.integer(),
+            fc.float(),
+            fc.string(),
+            fc.constant(null)
+        )
+    ] as [string, fc.Arbitrary<unknown>]);
+
+    const keyArbs = Object.fromEntries(pairs);
+    return fc.record(keyArbs);
 }
 
 /**
- * Generator for a generic dataset.
+ * Arbitrary for a dataset (array of points).
  */
-export function chartDatasetArbitrary(
-    keys: string[] = ['x', 'y'],
+export function chartDatasetArbitrary<T>(
+    pointArbitrary: fc.Arbitrary<T> | string[],
     minLength = 0,
     maxLength = 20
-): fc.Arbitrary<ChartDataset<GenericChartDataPoint>> {
-    return fc.array(chartDataPointArbitrary(keys), { minLength, maxLength });
+): fc.Arbitrary<ChartDataset<T>> {
+    const arb = Array.isArray(pointArbitrary)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ? chartDataPointArbitrary(pointArbitrary) as any as fc.Arbitrary<T>
+        : pointArbitrary;
+
+    return fc.array(arb, { minLength, maxLength });
 }
 
 /**
- * Generator for time-series data using Temporal.
- * Returns explicit `TimePoint` objects (with ZonedDateTime for date).
+ * Arbitrary for Time Series Data.
+ * Generates sorted data by default.
  */
 export function timeSeriesArbitrary(): fc.Arbitrary<ChartDataset<TimePoint>> {
-    // Use integers for timestamps to guarantee validity for Temporal
-    // 946684800000 = 2000-01-01
-    // 2524608000000 = 2050-01-01
-    const dateArb = fc.integer({ min: 946684800000, max: 2524608000000 })
-        .map(ts => Temporal.Instant.fromEpochMilliseconds(ts).toZonedDateTimeISO('UTC'));
-
     return fc.array(
         fc.record({
-            date: dateArb,
+            // Generate Temporal ZonedDateTime safely from JS Date
+            // Restrict range to avoid extreme dates, though Instant should handle most.
+            // Using 1970-2099 covers typical use cases.
+            date: fc.date({ min: new Date('1970-01-01'), max: new Date('2099-12-31') })
+                .map(d => Temporal.Instant.fromEpochMilliseconds(d.getTime()).toZonedDateTimeISO('UTC')),
             value: fc.float()
         }),
         { minLength: 1, maxLength: 50 }
     ).map(data => {
-        // Sort by time
-        return data.sort((a, b) => {
-            // inferred type of 'a' has 'date' as ZonedDateTime
-            return Temporal.ZonedDateTime.compare(a.date, b.date);
-        });
+        // Sort safely using Remeda (non-mutating)
+        return R.sortBy(data, (item) => item.date.epochNanoseconds);
     });
 }
 
@@ -123,20 +122,17 @@ export function generateDailyTimeSeries(
     startValue = 100,
     volatility = 5
 ): ChartDataset<TimePoint> {
-    const data: ChartDataset<TimePoint> = [];
-    let currentValue = startValue;
+    const startDate = Temporal.PlainDate.from(startDateStr);
 
-    // Use PlainDate for daily series
-    let currentDate = Temporal.PlainDate.from(startDateStr);
+    return R.range(0, count).map(i => {
+        const date = startDate.add({ days: i });
+        // Create deterministic pseudo-random value based on index
+        const change = Math.sin(i * 1337) * volatility;
+        const value = startValue + change;
 
-    for (let i = 0; i < count; i++) {
-        data.push({
-            date: currentDate,
-            value: Number(currentValue.toFixed(2))
-        });
-
-        currentDate = currentDate.add({ days: 1 });
-        currentValue += (Math.random() - 0.5) * volatility;
-    }
-    return data;
+        return {
+            date,
+            value: Number(value.toFixed(2))
+        };
+    });
 }

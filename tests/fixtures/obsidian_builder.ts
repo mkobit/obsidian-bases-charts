@@ -1,4 +1,5 @@
 import { Temporal } from 'temporal-polyfill';
+import * as R from 'remeda';
 
 /**
  * Represents the valid types for Obsidian frontmatter properties.
@@ -32,6 +33,7 @@ export interface TestFile {
 
 /**
  * Builder for creating TestFile instances.
+ * Implements functional updates internally even if interface is fluent.
  */
 export class ObsidianFileBuilder {
     private file: TestFile;
@@ -70,9 +72,6 @@ export class ObsidianFileBuilder {
     }
 
     build(): TestFile {
-        // Return a copy of the file object.
-        // For frontmatter (which contains Polyfill objects that break structuredClone),
-        // we do a shallow copy. This is sufficient for most test builders.
         return {
             ...this.file,
             path: [...this.file.path],
@@ -82,32 +81,22 @@ export class ObsidianFileBuilder {
 
     toRawString(): string {
         const fmKeys = Object.keys(this.file.frontmatter);
-        let output = '';
+        const yamlBlock = fmKeys.length > 0
+            ? R.pipe(
+                fmKeys,
+                R.filter(key => this.file.frontmatter[key] !== undefined),
+                R.map(key => `${key}: ${this.formatYamlValue(this.file.frontmatter[key]!)}`),
+                R.join('\n'),
+                (content) => `---\n${content}\n---\n`
+            )
+            : '';
 
-        if (fmKeys.length > 0) {
-            output += '---\n';
-            for (const key of fmKeys) {
-                const val = this.file.frontmatter[key];
-                // Check for undefined explicitly, though type says it shouldn't happen if key is from keys()
-                if (val !== undefined) {
-                    output += `${key}: ${this.formatYamlValue(val)}\n`;
-                }
-            }
-            output += '---\n';
-        }
-
-        if (this.file.content) {
-            output += this.file.content;
-        }
-
-        return output;
+        return yamlBlock + (this.file.content || '');
     }
 
     private formatYamlValue(val: FrontmatterValue): string {
         if (val === null) return 'null';
 
-        // Check for Temporal types using 'in' check or instanceof
-        // Using instanceof is safer for classes
         if (val instanceof Temporal.PlainDate ||
             val instanceof Temporal.ZonedDateTime ||
             val instanceof Temporal.Instant) {
@@ -121,7 +110,6 @@ export class ObsidianFileBuilder {
 
         if (typeof val === 'string') return `"${val}"`;
 
-        // number or boolean
         return String(val);
     }
 }

@@ -1,6 +1,7 @@
 import type { EChartsOption, ScatterSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+import * as R from 'remeda';
 
 export interface ScatterTransformerOptions extends BaseTransformerOptions {
     seriesProp?: string;
@@ -24,67 +25,66 @@ export function createScatterChartOption(
     // This allows non-numeric X values.
 
     // 1. Get all unique X values (categories)
-    const uniqueX = new Set<string>();
-    for (const item of data) {
-        const valRaw = getNestedValue(item, xProp);
-        const xVal = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
-        uniqueX.add(xVal);
-    }
-    const xAxisData = Array.from(uniqueX);
+    const xAxisData = R.pipe(
+        data,
+        R.map(item => {
+            const valRaw = getNestedValue(item, xProp);
+            return valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
+        }),
+        R.unique()
+    );
 
     // 2. Build Series
-    // Map: SeriesName -> Data[]
-    const seriesMap = data.reduce((acc, item) => {
-        const xValRaw = getNestedValue(item, xProp);
-        const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
-
-        const yVal = Number(getNestedValue(item, yProp));
-        if (isNaN(yVal)) return acc;
-
-        let sName = 'Series 1';
-        if (seriesProp) {
+    const seriesOptions = R.pipe(
+        data,
+        R.groupBy(item => {
+            if (!seriesProp) return 'Series 1';
             const sRaw = getNestedValue(item, seriesProp);
-            sName = sRaw === undefined || sRaw === null ? 'Series 1' : safeToString(sRaw);
-        }
+            return sRaw === undefined || sRaw === null ? 'Series 1' : safeToString(sRaw);
+        }),
+        R.entries(),
+        R.map(([sName, items]) => {
+            const sData: ScatterDataPoint[] = R.pipe(
+                items,
+                R.map(item => {
+                    const xValRaw = getNestedValue(item, xProp);
+                    const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
 
-        if (!acc.has(sName)) {
-            acc.set(sName, []);
-        }
+                    const yVal = Number(getNestedValue(item, yProp));
+                    if (isNaN(yVal)) return null;
 
-        // Base point is [x, y]
-        const point: ScatterDataPoint = [xVal, yVal];
+                    // Base point is [x, y]
+                    const point: ScatterDataPoint = [xVal, yVal];
 
-        // Add size if exists (making it [x, y, size])
-        if (sizeProp) {
-            const sizeVal = Number(getNestedValue(item, sizeProp));
-            point.push(isNaN(sizeVal) ? 0 : sizeVal);
-        }
+                    // Add size if exists (making it [x, y, size])
+                    if (sizeProp) {
+                        const sizeVal = Number(getNestedValue(item, sizeProp));
+                        const finalSize = !isNaN(sizeVal) ? sizeVal : 0;
+                        return [...point, finalSize] as ScatterDataPoint;
+                    }
+                    return point;
+                }),
+                R.filter((x): x is ScatterDataPoint => x !== null)
+            );
 
-        acc.get(sName)?.push(point);
-        return acc;
-    }, new Map<string, ScatterDataPoint[]>());
-
-    const seriesOptions: ScatterSeriesOption[] = Array.from(seriesMap.entries()).map(([sName, sData]) => {
-        const seriesItem: ScatterSeriesOption = {
-            name: sName,
-            type: 'scatter',
-            data: sData
-        };
-
-        if (sizeProp) {
-            // Map the 3rd dimension (index 2) to symbolSize
-            // ECharts callback: (val: Array) => number
-            seriesItem.symbolSize = function (data: unknown) {
-                if (Array.isArray(data) && data.length > 2) {
-                     const r = data[2] as number;
-                     return Math.max(0, r);
-                }
-                return 10; // Default size
+            const seriesItem: ScatterSeriesOption = {
+                name: sName,
+                type: 'scatter',
+                data: sData,
+                ...(sizeProp ? {
+                    symbolSize: function (data: unknown) {
+                        if (Array.isArray(data) && data.length > 2) {
+                             const r = data[2] as number;
+                             return Math.max(0, r);
+                        }
+                        return 10; // Default size
+                    }
+                } : {})
             };
-        }
 
-        return seriesItem;
-    });
+            return seriesItem;
+        })
+    );
 
     const opt: EChartsOption = {
         xAxis: {
@@ -106,21 +106,21 @@ export function createScatterChartOption(
                 if (!p || typeof p !== 'object') return '';
 
                 const vals = p.value;
-                let tip = '';
-                if (Array.isArray(vals)) {
-                    tip = `${p.seriesName}<br/>${xProp}: ${vals[0]}<br/>${yProp}: ${vals[1]}`;
-                    if (sizeProp && vals.length > 2) {
-                        tip += `<br/>${sizeProp}: ${vals[2]}`;
-                    }
-                }
-                return tip;
-            }
-        }
-    };
+                if (!Array.isArray(vals)) return '';
 
-    if (options?.legend) {
-        opt.legend = {};
-    }
+                const val0 = vals[0] !== undefined ? String(vals[0]) : '';
+                const val1 = vals[1] !== undefined ? String(vals[1]) : '';
+                const baseTip = `${p.seriesName}<br/>${xProp}: ${val0}<br/>${yProp}: ${val1}`;
+
+                const sizeTip = (sizeProp && vals.length > 2)
+                    ? `<br/>${sizeProp}: ${vals[2] !== undefined ? String(vals[2]) : ''}`
+                    : '';
+
+                return baseTip + sizeTip;
+            }
+        },
+        ...(options?.legend ? { legend: {} } : {})
+    };
 
     return opt;
 }

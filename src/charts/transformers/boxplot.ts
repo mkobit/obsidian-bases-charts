@@ -3,6 +3,7 @@ import type { EChartsOption, BoxplotSeriesOption } from 'echarts';
 import prepareBoxplotData from 'echarts/extension/dataTool/prepareBoxplotData';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+import * as R from 'remeda';
 
 export interface BoxplotTransformerOptions extends BaseTransformerOptions {
     seriesProp?: string;
@@ -17,55 +18,64 @@ export function createBoxplotChartOption(
     const seriesProp = options?.seriesProp;
 
     // 1. Collect all unique X values (categories)
-    const xAxisData = Array.from(new Set(data.map(item => {
-        const xValRaw = getNestedValue(item, xProp);
-        return xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
-    })));
+    const xAxisData = R.pipe(
+        data,
+        R.map(item => {
+            const xValRaw = getNestedValue(item, xProp);
+            return xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+        }),
+        R.unique()
+    );
 
     // 2. Group data by series and category
     // Map<SeriesName, Map<CategoryName, number[]>>
-    const seriesMap = data.reduce((acc, item) => {
-        const xValRaw = getNestedValue(item, xProp);
-        const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
-
-        let sName = yProp;
-        if (seriesProp) {
+    const seriesMap = R.pipe(
+        data,
+        R.groupBy(item => {
+            if (!seriesProp) return yProp;
             const sRaw = getNestedValue(item, seriesProp);
-            sName = sRaw === undefined || sRaw === null ? 'Series 1' : safeToString(sRaw);
-        }
-
-        const yVal = Number(getNestedValue(item, yProp));
-        if (isNaN(yVal)) return acc;
-
-        if (!acc.has(sName)) {
-            acc.set(sName, new Map());
-        }
-        const catMap = acc.get(sName)!;
-        if (!catMap.has(xVal)) {
-            catMap.set(xVal, []);
-        }
-        catMap.get(xVal)!.push(yVal);
-        return acc;
-    }, new Map<string, Map<string, number[]>>());
+            return sRaw === undefined || sRaw === null ? 'Series 1' : safeToString(sRaw);
+        }),
+        R.mapValues(items => {
+            return R.pipe(
+                items,
+                R.groupBy(item => {
+                    const xValRaw = getNestedValue(item, xProp);
+                    return xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
+                }),
+                R.mapValues(catItems => {
+                    return R.pipe(
+                        catItems,
+                        R.map(item => Number(getNestedValue(item, yProp))),
+                        R.filter(val => !isNaN(val))
+                    );
+                })
+            );
+        })
+    );
 
     // 3. Transform to ECharts series
-    const seriesOptions: BoxplotSeriesOption[] = Array.from(seriesMap.entries()).map(([sName, catMap]) => {
-        // Prepare data for prepareBoxplotData
-        // We need a 2D array where each row is a category's data points
-        const rawData = xAxisData.map(xVal => catMap.get(xVal) || []);
+    const seriesOptions: BoxplotSeriesOption[] = R.pipe(
+        seriesMap,
+        R.entries(),
+        R.map(([sName, catMap]) => {
+            // Prepare data for prepareBoxplotData
+            // We need a 2D array where each row is a category's data points
+            const rawData = xAxisData.map(xVal => catMap[xVal] || []);
 
-        // Use standard ECharts data tool to process the data
-        // prepareBoxplotData expects [ [v1, v2...], [v3, v4...] ] where each inner array is a category
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
-        const result = prepareBoxplotData(rawData);
+            // Use standard ECharts data tool to process the data
+            // prepareBoxplotData expects [ [v1, v2...], [v3, v4...] ] where each inner array is a category
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
+            const result = prepareBoxplotData(rawData);
 
-        return {
-            name: sName,
-            type: 'boxplot',
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-            data: result.boxData
-        };
-    });
+            return {
+                name: sName,
+                type: 'boxplot' as const,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+                data: result.boxData
+            };
+        })
+    );
 
     const opt: EChartsOption = {
         tooltip: {
@@ -74,7 +84,6 @@ export function createBoxplotChartOption(
                 type: 'shadow'
             }
         },
-        legend: options?.legend ? {} : undefined,
         xAxis: {
             type: 'category',
             data: xAxisData,
@@ -92,7 +101,8 @@ export function createBoxplotChartOption(
                 show: true
             }
         },
-        series: seriesOptions
+        series: seriesOptions,
+        ...(options?.legend ? { legend: {} } : {})
     };
     return opt;
 }
