@@ -69,10 +69,11 @@ export function chartDatasetArbitrary<T>(
 export function timeSeriesArbitrary(): fc.Arbitrary<ChartDataset<TimePoint>> {
     return fc.array(
         fc.record({
-            // Generate ISO 8601 strings then convert to Temporal
-            // Restrict date range to avoid Temporal invalid time value errors with extreme JS dates
+            // Generate Temporal ZonedDateTime safely from JS Date
+            // Restrict range to avoid extreme dates, though Instant should handle most.
+            // Using 1970-2099 covers typical use cases.
             date: fc.date({ min: new Date('1970-01-01'), max: new Date('2099-12-31') })
-                .map(d => Temporal.ZonedDateTime.from(d.toISOString() + '[UTC]')),
+                .map(d => Temporal.Instant.fromEpochMilliseconds(d.getTime()).toZonedDateTimeISO('UTC')),
             value: fc.float()
         }),
         { minLength: 1, maxLength: 50 }
