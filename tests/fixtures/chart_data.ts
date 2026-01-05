@@ -70,7 +70,9 @@ export function timeSeriesArbitrary(): fc.Arbitrary<ChartDataset<TimePoint>> {
     return fc.array(
         fc.record({
             // Generate ISO 8601 strings then convert to Temporal
-            date: fc.date().map(d => Temporal.ZonedDateTime.from(d.toISOString() + '[UTC]')),
+            // Restrict date range to avoid Temporal invalid time value errors with extreme JS dates
+            date: fc.date({ min: new Date('1970-01-01'), max: new Date('2099-12-31') })
+                .map(d => Temporal.ZonedDateTime.from(d.toISOString() + '[UTC]')),
             value: fc.float()
         }),
         { minLength: 1, maxLength: 50 }
