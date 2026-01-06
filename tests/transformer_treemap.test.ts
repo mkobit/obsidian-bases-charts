@@ -15,7 +15,7 @@ describe('Treemap Transformer', () => {
         expect(option).toBeDefined();
         const series = option.series as TreemapSeriesOption[];
         expect(series).toBeDefined();
-        if (!series) return; // Guard for TS
+        if (!series) {return;} // Guard for TS
 
         expect(series.length).toBe(1);
         expect(series[0]!.type).toBe('treemap');

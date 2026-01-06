@@ -30,16 +30,26 @@ export function createCandlestickChartOption(
             const lowRaw = getNestedValue(item, lowProp);
             const highRaw = getNestedValue(item, highProp);
 
-            if (openRaw == null || closeRaw == null || lowRaw == null || highRaw == null) return null;
+            // Use conditional expression instead of if statement
+            const rawValuesValid = openRaw !== null && openRaw !== undefined &&
+                                   closeRaw !== null && closeRaw !== undefined &&
+                                   lowRaw !== null && lowRaw !== undefined &&
+                                   highRaw !== null && highRaw !== undefined;
 
-            const openVal = Number(openRaw);
-            const closeVal = Number(closeRaw);
-            const lowVal = Number(lowRaw);
-            const highVal = Number(highRaw);
+            return rawValuesValid
+                ? (() => {
+                    const openVal = Number(openRaw);
+                    const closeVal = Number(closeRaw);
+                    const lowVal = Number(lowRaw);
+                    const highVal = Number(highRaw);
 
-            if (isNaN(openVal) || isNaN(closeVal) || isNaN(lowVal) || isNaN(highVal)) return null;
+                    const numericValuesValid = !Number.isNaN(openVal) && !Number.isNaN(closeVal) && !Number.isNaN(lowVal) && !Number.isNaN(highVal);
 
-            return { x: xVal, y: [openVal, closeVal, lowVal, highVal] };
+                    return numericValuesValid
+                        ? { x: xVal, y: [openVal, closeVal, lowVal, highVal] }
+                        : null;
+                })()
+                : null;
         })
         .filter((d): d is { x: string; y: number[] } => d !== null);
 

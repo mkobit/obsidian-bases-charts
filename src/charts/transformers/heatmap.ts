@@ -47,12 +47,13 @@ export function createHeatmapChartOption(
             const yVal = yValRaw === undefined || yValRaw === null ? 'Unknown' : safeToString(yValRaw);
             const yIndex = yAxisData.indexOf(yVal);
 
-            if (xIndex === -1 || yIndex === -1) return null;
-
-            const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : NaN;
-            const val = !isNaN(valNum) ? valNum : 0;
-
-            return [xIndex, yIndex, val] as [number, number, number];
+            return (xIndex === -1 || yIndex === -1)
+                ? null
+                : (() => {
+                    const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : Number.NaN;
+                    const val = Number.isNaN(valNum) ? 0 : valNum;
+                    return [xIndex, yIndex, val] as [number, number, number];
+                })();
         }),
         R.filter((x): x is [number, number, number] => x !== null)
     );
@@ -74,11 +75,14 @@ export function createHeatmapChartOption(
             position: 'top',
             formatter: (params: unknown) => {
                 const p = params as { value: (number | string)[] };
-                if (!p || !Array.isArray(p.value)) return '';
-                const xIndex = p.value[0] as number;
-                const yIndex = p.value[1] as number;
-                const val = p.value[2] as number;
-                return `${xProp}: ${xAxisData[xIndex]}<br/>${yProp}: ${yAxisData[yIndex]}<br/>Value: ${val}`;
+                return (!p || !Array.isArray(p.value))
+                    ? ''
+                    : (() => {
+                        const xIndex = p.value[0] as number;
+                        const yIndex = p.value[1] as number;
+                        const val = p.value[2] as number;
+                        return `${xProp}: ${xAxisData[xIndex]}<br/>${yProp}: ${yAxisData[yIndex]}<br/>Value: ${val}`;
+                    })();
             }
         },
         grid: {

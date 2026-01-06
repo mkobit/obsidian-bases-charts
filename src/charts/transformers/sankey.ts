@@ -21,15 +21,17 @@ export function createSankeyChartOption(
             const sourceRaw = getNestedValue(item, sourceProp);
             const targetRaw = getNestedValue(item, targetProp);
 
-            if (sourceRaw == null || targetRaw == null) return null;
+            return (sourceRaw !== null && sourceRaw !== undefined && targetRaw !== null && targetRaw !== undefined)
+                ? (() => {
+                    const source = safeToString(sourceRaw);
+                    const target = safeToString(targetRaw);
 
-            const source = safeToString(sourceRaw);
-            const target = safeToString(targetRaw);
+                    const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : Number.NaN;
+                    const value = Number.isNaN(valNum) ? 1 : valNum;
 
-            const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : NaN;
-            const value = !isNaN(valNum) ? valNum : 1;
-
-            return { source, target, value };
+                    return { source, target, value };
+                })()
+                : null;
         }),
         R.filter((x): x is { source: string; target: string; value: number } => x !== null)
     );

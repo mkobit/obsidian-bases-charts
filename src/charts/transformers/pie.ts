@@ -20,7 +20,7 @@ export function createPieChartOption(
         const val = Number(getNestedValue(item, valueProp));
         return {
             name: name,
-            value: isNaN(val) ? 0 : val
+            value: Number.isNaN(val) ? 0 : val
         };
     });
 

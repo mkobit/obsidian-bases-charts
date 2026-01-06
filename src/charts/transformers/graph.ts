@@ -24,20 +24,22 @@ export function createGraphChartOption(
             const sourceRaw = getNestedValue(item, sourceProp);
             const targetRaw = getNestedValue(item, targetProp);
 
-            if (sourceRaw == null || targetRaw == null) return null;
+            return (sourceRaw !== null && sourceRaw !== undefined && targetRaw !== null && targetRaw !== undefined)
+                ? (() => {
+                    const source = safeToString(sourceRaw);
+                    const target = safeToString(targetRaw);
 
-            const source = safeToString(sourceRaw);
-            const target = safeToString(targetRaw);
+                    // Edge Value
+                    const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : Number.NaN;
+                    const val = Number.isNaN(valNum) ? undefined : valNum;
 
-            // Edge Value
-            const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : NaN;
-            const val = !isNaN(valNum) ? valNum : undefined;
+                    // Category (for source node)
+                    const cRaw = categoryProp ? getNestedValue(item, categoryProp) : undefined;
+                    const cat = (cRaw !== undefined && cRaw !== null) ? safeToString(cRaw) : undefined;
 
-            // Category (for source node)
-            const cRaw = categoryProp ? getNestedValue(item, categoryProp) : undefined;
-            const cat = (cRaw !== undefined && cRaw !== null) ? safeToString(cRaw) : undefined;
-
-            return { source, target, value: val, category: cat };
+                    return { source, target, value: val, category: cat };
+                })()
+                : null;
         }),
         R.filter((x): x is NonNullable<typeof x> => x !== null)
     );

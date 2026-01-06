@@ -95,7 +95,7 @@ export class ObsidianFileBuilder {
     }
 
     private formatYamlValue(val: FrontmatterValue): string {
-        if (val === null) return 'null';
+        if (val === null) {return 'null';}
 
         if (val instanceof Temporal.PlainDate ||
             val instanceof Temporal.ZonedDateTime ||
@@ -108,7 +108,7 @@ export class ObsidianFileBuilder {
             return `[${val.map(v => this.formatYamlValue(v)).join(', ')}]`;
         }
 
-        if (typeof val === 'string') return `"${val}"`;
+        if (typeof val === 'string') {return `"${val}"`;}
 
         return String(val);
     }

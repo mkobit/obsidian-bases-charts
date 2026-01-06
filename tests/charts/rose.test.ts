@@ -20,7 +20,7 @@ describe('Rose Chart Transformer', () => {
 
         const [series] = option.series;
         expect(series).toBeDefined();
-        if (!series) return;
+        if (!series) {return;}
 
         expect(series.type).toBe('pie');
         expect(series.roseType).toBe('area');

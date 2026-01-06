@@ -37,17 +37,21 @@ function buildHierarchy(
         data,
         R.map(item => {
             const pathRaw = getNestedValue(item, pathProp);
-            if (typeof pathRaw !== 'string' || !pathRaw) return null;
+            return (typeof pathRaw !== 'string' || !pathRaw)
+                ? null
+                : (() => {
+                    const parts = pathRaw.split('/').filter(p => p.length > 0);
+                    return parts.length === 0
+                        ? null
+                        : (() => {
+                            const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : Number.NaN;
+                            // Explicitly use undefined if NaN, so it matches optional type better?
+                            // Actually, type { value?: number } allows undefined.
+                            const value = Number.isNaN(valNum) ? undefined : valNum;
 
-            const parts = pathRaw.split('/').filter(p => p.length > 0);
-            if (parts.length === 0) return null;
-
-            const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : NaN;
-            // Explicitly use undefined if NaN, so it matches optional type better?
-            // Actually, type { value?: number } allows undefined.
-            const value = !isNaN(valNum) ? valNum : undefined;
-
-            return { parts, value };
+                            return { parts, value };
+                        })();
+                })();
         }),
         R.filter((x): x is PathItem => x !== null)
     );

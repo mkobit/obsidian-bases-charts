@@ -35,9 +35,12 @@ export function createCartesianChartOption(
     const seriesDataMap = R.pipe(
         data,
         R.groupBy((item) => {
-            if (!seriesProp) return yProp;
-            const sValRaw = getNestedValue(item, seriesProp);
-            return sValRaw !== undefined && sValRaw !== null ? safeToString(sValRaw) : 'Series 1';
+            return !seriesProp
+                ? yProp
+                : (() => {
+                    const sValRaw = getNestedValue(item, seriesProp);
+                    return sValRaw !== undefined && sValRaw !== null ? safeToString(sValRaw) : 'Series 1';
+                })();
         }),
         R.mapValues((items) => {
             // Map items to their values by xIndex
@@ -55,7 +58,7 @@ export function createCartesianChartOption(
 
             return xAxisData.map((xVal) => {
                 const found = valueMap[xVal];
-                return found && !isNaN(found.yVal) ? found.yVal : null;
+                return found && !Number.isNaN(found.yVal) ? found.yVal : null;
             });
         })
     );
@@ -70,24 +73,26 @@ export function createCartesianChartOption(
                 data: sData
             };
 
-            if (chartType === 'line') {
-                 const lineItem: LineSeriesOption = {
-                     ...base,
-                     type: 'line',
-                     ...(options?.smooth ? { smooth: true } : {}),
-                     ...(options?.showSymbol === false ? { showSymbol: false } : {}),
-                     ...(options?.areaStyle ? { areaStyle: {} } : {}),
-                     ...(isStacked ? { stack: 'total' } : {})
-                 };
-                 return lineItem;
-            } else {
-                const barItem: BarSeriesOption = {
-                    ...base,
-                    type: 'bar',
-                    ...(isStacked ? { stack: 'total' } : {})
-                };
-                return barItem;
-            }
+            return chartType === 'line'
+                ? (() => {
+                     const lineItem: LineSeriesOption = {
+                         ...base,
+                         type: 'line',
+                         ...(options?.smooth ? { smooth: true } : {}),
+                         ...(options?.showSymbol === false ? { showSymbol: false } : {}),
+                         ...(options?.areaStyle ? { areaStyle: {} } : {}),
+                         ...(isStacked ? { stack: 'total' } : {})
+                     };
+                     return lineItem;
+                })()
+                : (() => {
+                    const barItem: BarSeriesOption = {
+                        ...base,
+                        type: 'bar',
+                        ...(isStacked ? { stack: 'total' } : {})
+                    };
+                    return barItem;
+                })();
         })
     );
 

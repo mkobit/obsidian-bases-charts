@@ -32,9 +32,12 @@ export function createBoxplotChartOption(
     const seriesMap = R.pipe(
         data,
         R.groupBy(item => {
-            if (!seriesProp) return yProp;
-            const sRaw = getNestedValue(item, seriesProp);
-            return sRaw === undefined || sRaw === null ? 'Series 1' : safeToString(sRaw);
+            return !seriesProp
+                ? yProp
+                : (() => {
+                    const sRaw = getNestedValue(item, seriesProp);
+                    return sRaw === undefined || sRaw === null ? 'Series 1' : safeToString(sRaw);
+                })();
         }),
         R.mapValues(items => {
             return R.pipe(
@@ -47,7 +50,7 @@ export function createBoxplotChartOption(
                     return R.pipe(
                         catItems,
                         R.map(item => Number(getNestedValue(item, yProp))),
-                        R.filter(val => !isNaN(val))
+                        R.filter(val => !Number.isNaN(val))
                     );
                 })
             );

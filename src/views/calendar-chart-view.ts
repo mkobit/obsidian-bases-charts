@@ -36,7 +36,7 @@ export class CalendarChartView extends BaseChartView {
         const dateProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string;
 
-        if (!dateProp) return null;
+        if (!dateProp) {return null;}
 
         return transformDataToChartOption(data, dateProp, '', 'calendar', {
             valueProp: valueProp

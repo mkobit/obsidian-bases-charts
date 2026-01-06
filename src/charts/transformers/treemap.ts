@@ -20,7 +20,7 @@ export function createTreemapChartOption(
         const val = Number(getNestedValue(item, valueProp));
         return {
             name: name,
-            value: isNaN(val) ? 0 : val
+            value: Number.isNaN(val) ? 0 : val
         };
     });
 
@@ -50,11 +50,9 @@ export function createTreemapChartOption(
         }
     };
 
-    if (options?.legend) {
-        // Treemap usually doesn't use a standard legend in the same way,
-        // but if we had categories it might. For flat data, it's less useful.
-        // We'll leave it out or implement if requested.
-    }
-
-    return opt;
+    // Use side-effect free logic for legend check (though modifying opt implicitly)
+    // Actually we can just spread it.
+    return options?.legend
+        ? { ...opt } // Placeholder if we implemented legend logic
+        : opt;
 }

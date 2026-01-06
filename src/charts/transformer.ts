@@ -85,26 +85,29 @@ export type ChartTransformerOptions =
     | CalendarTransformerOptions
     | ParallelTransformerOptions;
 
-// Re-export specific types for consumers who need them
-export type {
-    ChartType,
-    BaseTransformerOptions,
-    CartesianTransformerOptions,
-    PieTransformerOptions,
-    ScatterTransformerOptions,
-    RadarTransformerOptions,
-    GaugeTransformerOptions,
-    HeatmapTransformerOptions,
-    CandlestickTransformerOptions,
-    TreemapTransformerOptions,
-    BoxplotTransformerOptions,
-    SankeyTransformerOptions,
-    GraphTransformerOptions,
-    SunburstTransformerOptions,
-    TreeTransformerOptions,
-    ThemeRiverTransformerOptions,
-    CalendarTransformerOptions,
-    ParallelTransformerOptions
+// Map of chart types to their transformer functions
+const transformerMap: Record<
+    string,
+    (data: Record<string, unknown>[], xProp: string, yProp: string, options: unknown) => EChartsOption
+> = {
+    pie: (data, xProp, yProp, options) => createPieChartOption(data, xProp, yProp, options as PieTransformerOptions),
+    rose: (data, xProp, yProp, options) => createPieChartOption(data, xProp, yProp, { ...(options as PieTransformerOptions), roseType: 'area' }),
+    funnel: (data, xProp, yProp, options) => createFunnelChartOption(data, xProp, yProp, options as BaseTransformerOptions),
+    radar: (data, xProp, yProp, options) => createRadarChartOption(data, xProp, yProp, options as RadarTransformerOptions),
+    gauge: (data, _, yProp, options) => createGaugeChartOption(data, yProp, options as GaugeTransformerOptions),
+    bubble: (data, xProp, yProp, options) => createScatterChartOption(data, xProp, yProp, options as ScatterTransformerOptions),
+    scatter: (data, xProp, yProp, options) => createScatterChartOption(data, xProp, yProp, options as ScatterTransformerOptions),
+    heatmap: (data, xProp, yProp, options) => createHeatmapChartOption(data, xProp, yProp, options as HeatmapTransformerOptions),
+    candlestick: (data, xProp, _, options) => createCandlestickChartOption(data, xProp, options as CandlestickTransformerOptions),
+    treemap: (data, xProp, yProp, options) => createTreemapChartOption(data, xProp, yProp, options as TreemapTransformerOptions),
+    boxplot: (data, xProp, yProp, options) => createBoxplotChartOption(data, xProp, yProp, options as BoxplotTransformerOptions),
+    sankey: (data, xProp, yProp, options) => createSankeyChartOption(data, xProp, yProp, options as SankeyTransformerOptions),
+    graph: (data, xProp, yProp, options) => createGraphChartOption(data, xProp, yProp, options as GraphTransformerOptions),
+    sunburst: (data, xProp, _, options) => createSunburstChartOption(data, xProp, options as SunburstTransformerOptions),
+    tree: (data, xProp, _, options) => createTreeChartOption(data, xProp, options as TreeTransformerOptions),
+    themeRiver: (data, xProp, _, options) => createThemeRiverChartOption(data, xProp, options as ThemeRiverTransformerOptions),
+    calendar: (data, xProp, _, options) => createCalendarChartOption(data, xProp, options as CalendarTransformerOptions),
+    parallel: (data, xProp, _, options) => createParallelChartOption(data, xProp, options as ParallelTransformerOptions),
 };
 
 /**
@@ -117,49 +120,26 @@ export function transformDataToChartOption(
     chartType: ChartType = 'bar',
     options?: ChartTransformerOptions
 ): EChartsOption {
-    switch (chartType) {
-        case 'pie':
-            return createPieChartOption(data, xProp, yProp, options as PieTransformerOptions);
-        case 'rose':
-            return createPieChartOption(data, xProp, yProp, {
-                ...(options as PieTransformerOptions),
-                roseType: 'area'
-            });
-        case 'funnel':
-            return createFunnelChartOption(data, xProp, yProp, options as BaseTransformerOptions);
-        case 'radar':
-            return createRadarChartOption(data, xProp, yProp, options as RadarTransformerOptions);
-        case 'gauge':
-            return createGaugeChartOption(data, yProp, options as GaugeTransformerOptions);
-        case 'bubble':
-            return createScatterChartOption(data, xProp, yProp, options as ScatterTransformerOptions);
-        case 'scatter':
-            return createScatterChartOption(data, xProp, yProp, options as ScatterTransformerOptions);
-        case 'heatmap':
-            return createHeatmapChartOption(data, xProp, yProp, options as HeatmapTransformerOptions);
-        case 'candlestick':
-            return createCandlestickChartOption(data, xProp, options as CandlestickTransformerOptions);
-        case 'treemap':
-            return createTreemapChartOption(data, xProp, yProp, options as TreemapTransformerOptions);
-        case 'boxplot':
-            return createBoxplotChartOption(data, xProp, yProp, options as BoxplotTransformerOptions);
-        case 'sankey':
-            return createSankeyChartOption(data, xProp, yProp, options as SankeyTransformerOptions);
-        case 'graph':
-            return createGraphChartOption(data, xProp, yProp, options as GraphTransformerOptions);
-        case 'sunburst':
-            return createSunburstChartOption(data, xProp, options as SunburstTransformerOptions);
-        case 'tree':
-            return createTreeChartOption(data, xProp, options as TreeTransformerOptions);
-        case 'themeRiver':
-            return createThemeRiverChartOption(data, xProp, options as ThemeRiverTransformerOptions);
-        case 'calendar':
-            return createCalendarChartOption(data, xProp, options as CalendarTransformerOptions);
-        case 'parallel':
-            return createParallelChartOption(data, xProp, options as ParallelTransformerOptions);
-        case 'bar':
-        case 'line':
-        default:
-            return createCartesianChartOption(data, xProp, yProp, chartType, options as CartesianTransformerOptions);
-    }
+    const transformer = transformerMap[chartType];
+
+    return transformer
+        ? transformer(data, xProp, yProp, options)
+        : createCartesianChartOption(data, xProp, yProp, chartType, options as CartesianTransformerOptions);
 }
+
+export {type ChartType, type BaseTransformerOptions} from './transformers/base';
+export {type CartesianTransformerOptions} from './transformers/cartesian';
+export {type PieTransformerOptions} from './transformers/pie';
+export {type ScatterTransformerOptions} from './transformers/scatter';
+export {type RadarTransformerOptions} from './transformers/radar';
+export {type GaugeTransformerOptions} from './transformers/gauge';
+export {type HeatmapTransformerOptions} from './transformers/heatmap';
+export {type CandlestickTransformerOptions} from './transformers/candlestick';
+export {type TreemapTransformerOptions} from './transformers/treemap';
+export {type BoxplotTransformerOptions} from './transformers/boxplot';
+export {type SankeyTransformerOptions} from './transformers/sankey';
+export {type GraphTransformerOptions} from './transformers/graph';
+export {type SunburstTransformerOptions, type TreeTransformerOptions} from './transformers/hierarchy';
+export {type ThemeRiverTransformerOptions} from './transformers/theme-river';
+export {type CalendarTransformerOptions} from './transformers/calendar';
+export {type ParallelTransformerOptions} from './transformers/parallel';

@@ -23,15 +23,17 @@ export function createThemeRiverChartOption(
             const dateRaw = getNestedValue(item, dateProp);
             const dateVal = safeToString(dateRaw);
 
-            if (!dateVal) return null;
+            return !dateVal
+                ? null
+                : (() => {
+                    const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : Number.NaN;
+                    const val = Number.isNaN(valNum) ? 0 : valNum;
 
-            const valNum = valueProp ? Number(getNestedValue(item, valueProp)) : NaN;
-            const val = !isNaN(valNum) ? valNum : 0;
+                    const tRaw = themeProp ? getNestedValue(item, themeProp) : undefined;
+                    const theme = (tRaw !== undefined && tRaw !== null) ? safeToString(tRaw) : 'Series 1';
 
-            const tRaw = themeProp ? getNestedValue(item, themeProp) : undefined;
-            const theme = (tRaw !== undefined && tRaw !== null) ? safeToString(tRaw) : 'Series 1';
-
-            return [dateVal, val, theme] as (string | number)[];
+                    return [dateVal, val, theme] as (string | number)[];
+                })();
         }),
         R.filter((x): x is (string | number)[] => x !== null),
         R.sortBy(x => x[0] as string)

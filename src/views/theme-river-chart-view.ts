@@ -49,7 +49,7 @@ export class ThemeRiverChartView extends BaseChartView {
         const themeProp = this.config.get(BaseChartView.SERIES_PROP_KEY) as string;
         const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
 
-        if (!dateProp || !valueProp || !themeProp) return null;
+        if (!dateProp || !valueProp || !themeProp) {return null;}
 
         return transformDataToChartOption(data, dateProp, '', 'themeRiver', {
             valueProp: valueProp,

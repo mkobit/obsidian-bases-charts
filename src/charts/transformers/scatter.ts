@@ -38,9 +38,12 @@ export function createScatterChartOption(
     const seriesOptions = R.pipe(
         data,
         R.groupBy(item => {
-            if (!seriesProp) return 'Series 1';
-            const sRaw = getNestedValue(item, seriesProp);
-            return sRaw === undefined || sRaw === null ? 'Series 1' : safeToString(sRaw);
+            return !seriesProp
+                ? 'Series 1'
+                : (() => {
+                    const sRaw = getNestedValue(item, seriesProp);
+                    return sRaw === undefined || sRaw === null ? 'Series 1' : safeToString(sRaw);
+                })();
         }),
         R.entries(),
         R.map(([sName, items]) => {
@@ -51,18 +54,21 @@ export function createScatterChartOption(
                     const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
 
                     const yVal = Number(getNestedValue(item, yProp));
-                    if (isNaN(yVal)) return null;
+                    return Number.isNaN(yVal)
+                        ? null
+                        : (() => {
+                            // Base point is [x, y]
+                            const point: ScatterDataPoint = [xVal, yVal];
 
-                    // Base point is [x, y]
-                    const point: ScatterDataPoint = [xVal, yVal];
-
-                    // Add size if exists (making it [x, y, size])
-                    if (sizeProp) {
-                        const sizeVal = Number(getNestedValue(item, sizeProp));
-                        const finalSize = !isNaN(sizeVal) ? sizeVal : 0;
-                        return [...point, finalSize] as ScatterDataPoint;
-                    }
-                    return point;
+                            // Add size if exists (making it [x, y, size])
+                            return sizeProp
+                                ? (() => {
+                                    const sizeVal = Number(getNestedValue(item, sizeProp));
+                                    const finalSize = Number.isNaN(sizeVal) ? 0 : sizeVal;
+                                    return [...point, finalSize] as ScatterDataPoint;
+                                })()
+                                : point;
+                        })();
                 }),
                 R.filter((x): x is ScatterDataPoint => x !== null)
             );
@@ -73,11 +79,11 @@ export function createScatterChartOption(
                 data: sData,
                 ...(sizeProp ? {
                     symbolSize: function (data: unknown) {
-                        if (Array.isArray(data) && data.length > 2) {
-                             const r = data[2] as number;
-                             return Math.max(0, r);
-                        }
-                        return 10; // Default size
+
+                        const dArr = Array.isArray(data) ? data : [];
+                        return dArr.length > 2
+                             ? Math.max(0, dArr[2] as number)
+                             : 10; // Default size
                     }
                 } : {})
             };
@@ -103,20 +109,24 @@ export function createScatterChartOption(
             trigger: 'item',
             formatter: (params: unknown) => {
                 const p = params as { value: ScatterDataPoint, seriesName: string };
-                if (!p || typeof p !== 'object') return '';
+                return (!p || typeof p !== 'object')
+                    ? ''
+                    : (() => {
+                        const vals = p.value;
+                        return (!Array.isArray(vals))
+                            ? ''
+                            : (() => {
+                                const val0 = vals[0] === undefined ? '' : String(vals[0]);
+                                const val1 = vals[1] === undefined ? '' : String(vals[1]);
+                                const baseTip = `${p.seriesName}<br/>${xProp}: ${val0}<br/>${yProp}: ${val1}`;
 
-                const vals = p.value;
-                if (!Array.isArray(vals)) return '';
+                                const sizeTip = (sizeProp && vals.length > 2)
+                                    ? `<br/>${sizeProp}: ${vals[2] === undefined ? '' : String(vals[2])}`
+                                    : '';
 
-                const val0 = vals[0] !== undefined ? String(vals[0]) : '';
-                const val1 = vals[1] !== undefined ? String(vals[1]) : '';
-                const baseTip = `${p.seriesName}<br/>${xProp}: ${val0}<br/>${yProp}: ${val1}`;
-
-                const sizeTip = (sizeProp && vals.length > 2)
-                    ? `<br/>${sizeProp}: ${vals[2] !== undefined ? String(vals[2]) : ''}`
-                    : '';
-
-                return baseTip + sizeTip;
+                                return baseTip + sizeTip;
+                            })();
+                    })();
             }
         },
         ...(options?.legend ? { legend: {} } : {})
