@@ -90,6 +90,8 @@ const transformerMap: Record<
     string,
     (data: Record<string, unknown>[], xProp: string, yProp: string, options: unknown) => EChartsOption
 > = {
+    bar: (data, xProp, yProp, options) => createCartesianChartOption(data, xProp, yProp, 'bar', options as CartesianTransformerOptions),
+    line: (data, xProp, yProp, options) => createCartesianChartOption(data, xProp, yProp, 'line', options as CartesianTransformerOptions),
     pie: (data, xProp, yProp, options) => createPieChartOption(data, xProp, yProp, options as PieTransformerOptions),
     rose: (data, xProp, yProp, options) => createPieChartOption(data, xProp, yProp, { ...(options as PieTransformerOptions), roseType: 'area' }),
     funnel: (data, xProp, yProp, options) => createFunnelChartOption(data, xProp, yProp, options as BaseTransformerOptions),
@@ -124,7 +126,7 @@ export function transformDataToChartOption(
 
     return transformer
         ? transformer(data, xProp, yProp, options)
-        : createCartesianChartOption(data, xProp, yProp, chartType, options as CartesianTransformerOptions);
+        : createCartesianChartOption(data, xProp, yProp, 'bar', options as CartesianTransformerOptions);
 }
 
 export {type ChartType, type BaseTransformerOptions} from './transformers/base';
