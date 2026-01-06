@@ -25,14 +25,21 @@ describe('Transformer - Candlestick Chart', () => {
         expect(series.length).toBe(1);
         expect(series[0]!.type).toBe('candlestick');
 
-        // Data Verification
-        // ECharts Candlestick data format: [open, close, low, high]
-        const seriesData = series[0]!.data as number[][];
-        expect(seriesData).toHaveLength(3);
+        // Data Verification (using Dataset)
+        // Check dataset presence
+        expect(option.dataset).toBeDefined();
+        const dataset = option.dataset as { source: any[] }[];
+        const source = dataset[0].source;
 
-        expect(seriesData[0]).toEqual([100, 110, 95, 115]);
-        expect(seriesData[1]).toEqual([110, 105, 100, 112]);
-        expect(seriesData[2]).toEqual([105, 120, 105, 125]);
+        expect(source).toHaveLength(3);
+        // Normalized data structure
+        expect(source[0]).toEqual({ x: '2023-10-01', open: 100, close: 110, low: 95, high: 115 });
+
+        // Encode Verification
+        expect(series[0].encode).toEqual({
+            x: 'x',
+            y: ['open', 'close', 'low', 'high']
+        });
 
         // Axis Verification
         expect(option.xAxis).toBeDefined();
@@ -54,12 +61,12 @@ describe('Transformer - Candlestick Chart', () => {
             highProp: 'high'
         });
 
-        const series = option.series as CandlestickSeriesOption[];
-        const seriesData = series[0]!.data as number[][];
+        const dataset = option.dataset as { source: any[] }[];
+        const source = dataset[0].source;
 
         // Should ignore invalid rows (open: null and low: undefined should cause rows to be skipped)
-        expect(seriesData).toHaveLength(1);
-        expect(seriesData[0]).toEqual([100, 110, 95, 115]);
+        expect(source).toHaveLength(1);
+        expect(source[0]).toEqual({ x: '2023-10-01', open: 100, close: 110, low: 95, high: 115 });
 
         // Check xAxis data sync
         // @ts-ignore
@@ -72,9 +79,10 @@ describe('Transformer - Candlestick Chart', () => {
         // We pass empty options for props
         const option = transformDataToChartOption(data, 'date', '', 'candlestick');
 
-        const series = option.series as CandlestickSeriesOption[];
-        const seriesData = series[0]!.data as number[][];
-        expect(seriesData).toHaveLength(3);
-        expect(seriesData[0]).toEqual([100, 110, 95, 115]);
+        const dataset = option.dataset as { source: any[] }[];
+        const source = dataset[0].source;
+
+        expect(source).toHaveLength(3);
+        expect(source[0]).toEqual({ x: '2023-10-01', open: 100, close: 110, low: 95, high: 115 });
     });
 });
