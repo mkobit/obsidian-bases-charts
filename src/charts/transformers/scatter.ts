@@ -1,4 +1,4 @@
-import type { EChartsOption, ScatterSeriesOption } from 'echarts';
+import type { EChartsOption, ScatterSeriesOption, DatasetComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 import * as R from 'remeda';
@@ -6,6 +6,13 @@ import * as R from 'remeda';
 export interface ScatterTransformerOptions extends BaseTransformerOptions {
     seriesProp?: string;
     sizeProp?: string;
+}
+
+interface ScatterDataPoint {
+    x: string;
+    y: number | null;
+    s: string;
+    size?: number;
 }
 
 export function createScatterChartOption(
@@ -51,17 +58,16 @@ export function createScatterChartOption(
     );
 
     // 4. Create Datasets
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const datasets: any[] = [{ source: normalizedData }];
+    const sourceDataset: DatasetComponentOption = { source: normalizedData };
 
-    seriesNames.forEach(name => {
-        datasets.push({
-            transform: {
-                type: 'filter',
-                config: { dimension: 's', value: name }
-            }
-        });
-    });
+    const filterDatasets: DatasetComponentOption[] = seriesNames.map(name => ({
+        transform: {
+            type: 'filter',
+            config: { dimension: 's', value: name }
+        }
+    }));
+
+    const datasets: DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
 
     // 5. Build Series Options
     const seriesOptions: ScatterSeriesOption[] = seriesNames.map((name, idx) => {
@@ -77,14 +83,10 @@ export function createScatterChartOption(
                 tooltip: sizeProp ? ['x', 'y', 'size', 's'] : ['x', 'y', 's']
             },
             ...(sizeProp ? {
-                symbolSize: function (val: any) {
-                    // When using dataset, val is the data object { x, y, s, size } or array
-                    // But with encode, ECharts passes the whole item.
-                    // However, we can simply map the dimension.
-                    // Actually, simpler approach with dataset:
-                    // Use `symbolSize` callback which receives the whole data item.
-                    return val && typeof val === 'object' && 'size' in val
-                        ? Math.max(0, Number(val.size))
+                symbolSize: (val: unknown) => {
+                    const point = val as ScatterDataPoint;
+                    return (point && typeof point === 'object' && 'size' in point)
+                        ? Math.max(0, Number(point.size))
                         : 10;
                 }
             } : {})
@@ -95,7 +97,7 @@ export function createScatterChartOption(
         dataset: datasets,
         xAxis: {
             type: 'category', // Consistent with bar/line
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
             data: xAxisData as any,
             name: xAxisLabel,
             splitLine: { show: true },

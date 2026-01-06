@@ -40,24 +40,24 @@ export function createCandlestickChartOption(
                                    lowRaw !== null && lowRaw !== undefined &&
                                    highRaw !== null && highRaw !== undefined;
 
-            if (!rawValuesValid) {return null;}
+            return rawValuesValid
+                ? (() => {
+                    const openVal = Number(openRaw);
+                    const closeVal = Number(closeRaw);
+                    const lowVal = Number(lowRaw);
+                    const highVal = Number(highRaw);
 
-            const openVal = Number(openRaw);
-            const closeVal = Number(closeRaw);
-            const lowVal = Number(lowRaw);
-            const highVal = Number(highRaw);
+                    const isNum = !Number.isNaN(openVal) && !Number.isNaN(closeVal) && !Number.isNaN(lowVal) && !Number.isNaN(highVal);
 
-            if (Number.isNaN(openVal) || Number.isNaN(closeVal) || Number.isNaN(lowVal) || Number.isNaN(highVal)) {
-                return null;
-            }
-
-            return {
-                x: xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw),
-                open: openVal,
-                close: closeVal,
-                low: lowVal,
-                high: highVal
-            };
+                    return isNum ? {
+                        x: xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw),
+                        open: openVal,
+                        close: closeVal,
+                        low: lowVal,
+                        high: highVal
+                    } : null;
+                })()
+                : null;
         }),
         R.filter((x): x is { x: string, open: number, close: number, low: number, high: number } => x !== null)
     );
