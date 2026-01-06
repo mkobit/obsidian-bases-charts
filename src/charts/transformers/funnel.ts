@@ -18,7 +18,7 @@ export function createFunnelChartOption(
             const val = Number(getNestedValue(item, valueProp));
             return {
                 name: name,
-                value: isNaN(val) ? 0 : val
+                value: Number.isNaN(val) ? 0 : val
             };
         }),
         R.sortBy([x => x.value, 'desc'])

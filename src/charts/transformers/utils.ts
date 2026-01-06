@@ -1,19 +1,19 @@
 export function safeToString(val: unknown): string {
-    if (val === null || val === undefined) return '';
-    if (typeof val === 'string') return val;
-    if (typeof val === 'number' || typeof val === 'boolean') return String(val);
-    return JSON.stringify(val);
+    return val === null || val === undefined
+        ? ''
+        : typeof val === 'string'
+        ? val
+        : typeof val === 'number' || typeof val === 'boolean'
+        ? String(val)
+        : JSON.stringify(val);
 }
 
 export function getNestedValue(obj: unknown, path: string): unknown {
-    if (typeof obj !== 'object' || obj === null) {
-        return undefined;
-    }
-
-    return path.split('.').reduce((o: unknown, key: string) => {
-        if (typeof o === 'object' && o !== null && key in o) {
-             return (o as Record<string, unknown>)[key];
-        }
-        return undefined;
-    }, obj);
+    return (typeof obj !== 'object' || obj === null)
+        ? undefined
+        : path.split('.').reduce((o: unknown, key: string) => {
+            return (typeof o === 'object' && o !== null && key in o)
+                ? (o as Record<string, unknown>)[key]
+                : undefined;
+        }, obj);
 }

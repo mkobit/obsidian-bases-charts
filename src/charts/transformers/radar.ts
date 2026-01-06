@@ -28,11 +28,12 @@ export function createRadarChartOption(
     // 2. Group data by Series
     // Explicitly type to help TS
     const groupedData: Record<string, Record<string, unknown>[]> = R.groupBy(data, (item) => {
-        if (seriesProp) {
-            const valRaw = getNestedValue(item, seriesProp);
-            return valRaw === undefined || valRaw === null ? 'Series 1' : safeToString(valRaw);
-        }
-        return valueProp; // Use value prop name as default series name if no grouping
+        return seriesProp
+            ? (() => {
+                const valRaw = getNestedValue(item, seriesProp);
+                return valRaw === undefined || valRaw === null ? 'Series 1' : safeToString(valRaw);
+            })()
+            : valueProp; // Use value prop name as default series name if no grouping
     });
 
     const uniqueSeries = R.keys(groupedData);
@@ -56,7 +57,7 @@ export function createRadarChartOption(
         // Create array matching indicatorsList order
         const values = indicatorsList.map(ind => {
             const found = valueMap[ind];
-            return found && !isNaN(found.val) ? found.val : 0;
+            return found && !Number.isNaN(found.val) ? found.val : 0;
         });
 
         return {

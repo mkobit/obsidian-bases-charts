@@ -28,7 +28,7 @@ export class TreeChartView extends BaseChartView {
 
     protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
         const pathProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
-        if (!pathProp) return null;
+        if (!pathProp) {return null;}
 
         return transformDataToChartOption(data, pathProp, '', 'tree', {});
     }

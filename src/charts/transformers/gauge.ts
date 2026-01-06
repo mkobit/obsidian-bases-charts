@@ -15,7 +15,7 @@ export function createGaugeChartOption(
     // Sum all values
     const total = data.reduce((acc, item) => {
         const val = Number(getNestedValue(item, valueProp));
-        return !isNaN(val) ? acc + val : acc;
+        return Number.isNaN(val) ? acc : acc + val;
     }, 0);
 
     const min = options?.min ?? 0;

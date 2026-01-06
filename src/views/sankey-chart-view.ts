@@ -15,7 +15,7 @@ export class SankeyChartView extends BaseChartView {
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY) as string;
         const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string;
 
-        if (!xProp || !yProp) return null;
+        if (!xProp || !yProp) {return null;}
 
         return transformDataToChartOption(data, xProp, yProp, 'sankey', {
             legend: this.config.get(BaseChartView.LEGEND_KEY) as boolean,

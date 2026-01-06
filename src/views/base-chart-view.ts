@@ -70,17 +70,17 @@ export abstract class BaseChartView extends BasesView {
     }
 
     protected renderChart(): void {
-        if (!this.chartEl) return;
+        if (!this.chartEl) {return;}
 
         // Apply height from config or settings
         const height = (this.config.get(BaseChartView.HEIGHT_KEY) as string) || this.plugin.settings.defaultHeight;
         this.chartEl.style.height = height;
 
-        if (!this.chart) {
-            this.chart = echarts.init(this.chartEl, this.isDarkMode() ? 'dark' : undefined);
-        } else {
+        if (this.chart) {
              // If height changed, we might need to resize explicitly if not caught by observer yet
              this.chart.resize();
+        } else {
+            this.chart = echarts.init(this.chartEl, this.isDarkMode() ? 'dark' : undefined);
         }
 
         const data = this.data.data as unknown as Record<string, unknown>[];

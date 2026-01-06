@@ -72,8 +72,14 @@ export function timeSeriesArbitrary(): fc.Arbitrary<ChartDataset<TimePoint>> {
             // Generate Temporal ZonedDateTime safely from JS Date
             // Restrict range to avoid extreme dates, though Instant should handle most.
             // Using 1970-2099 covers typical use cases.
-            date: fc.date({ min: new Date('1970-01-01'), max: new Date('2099-12-31') })
-                .map(d => Temporal.Instant.fromEpochMilliseconds(d.getTime()).toZonedDateTimeISO('UTC')),
+            // Ensure no NaN dates are passed by filtering valid timestamps if necessary
+            date: fc.date({ min: new Date('1970-01-01T00:00:00.000Z'), max: new Date('2099-12-31T23:59:59.999Z') })
+                .map(d => {
+                    const time = d.getTime();
+                    // Fallback to epoch if somehow invalid (should not happen with fc.date constraints but safe for Temporal)
+                    const safeTime = Number.isNaN(time) ? 0 : time;
+                    return Temporal.Instant.fromEpochMilliseconds(safeTime).toZonedDateTimeISO('UTC');
+                }),
             value: fc.float()
         }),
         { minLength: 1, maxLength: 50 }
