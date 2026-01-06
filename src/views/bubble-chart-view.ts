@@ -13,6 +13,11 @@ export class BubbleChartView extends BaseChartView {
 
     protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
+        const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
+        const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
+        const xAxisLabelRotate = Number(this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY));
+        const flipAxis = this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean;
+
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY);
         // Cast BaseChartView to any to access the property if strict types fail
@@ -24,6 +29,10 @@ export class BubbleChartView extends BaseChartView {
         }
 
         return transformDataToChartOption(data, xProp, yProp, 'bubble', {
+            xAxisLabel,
+            yAxisLabel,
+            xAxisLabelRotate,
+            flipAxis,
             legend: showLegend,
             seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined,
             sizeProp: typeof sizeProp === 'string' ? sizeProp : undefined
@@ -32,7 +41,8 @@ export class BubbleChartView extends BaseChartView {
 
     static getViewOptions(): ViewOption[] {
         return [
-            ...BaseChartView.getCommonViewOptions(),
+            ...BaseChartView.getCommonViewOptions(), // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+            ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY),
             {
                 displayName: 'Size Property',
                 type: 'property',

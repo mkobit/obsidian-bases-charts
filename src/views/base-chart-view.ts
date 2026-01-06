@@ -29,6 +29,12 @@ export abstract class BaseChartView extends BasesView {
     public static MAX_VALUE_KEY = 'maxVal';
     public static VALUE_PROP_KEY = 'valueProp';
 
+    // Axis Config Keys
+    public static X_AXIS_LABEL_KEY = 'xAxisLabel';
+    public static Y_AXIS_LABEL_KEY = 'yAxisLabel';
+    public static X_AXIS_LABEL_ROTATE_KEY = 'xAxisLabelRotate';
+    public static FLIP_AXIS_KEY = 'flipAxis';
+
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller);
         this.scrollEl = scrollEl;
@@ -138,6 +144,34 @@ export abstract class BaseChartView extends BasesView {
                 type: 'text',
                 key: BaseChartView.HEIGHT_KEY,
                 placeholder: 'e.g., 500px, 50vh',
+            }
+        ];
+    }
+
+    static getAxisViewOptions(): ViewOption[] {
+        return [
+            {
+                displayName: 'X-Axis Label',
+                type: 'text',
+                key: BaseChartView.X_AXIS_LABEL_KEY,
+                placeholder: 'Override X-Axis label',
+            },
+            {
+                displayName: 'Y-Axis Label',
+                type: 'text',
+                key: BaseChartView.Y_AXIS_LABEL_KEY,
+                placeholder: 'Override Y-Axis label',
+            },
+            {
+                displayName: 'X-Axis Label Rotation',
+                type: 'text',
+                key: BaseChartView.X_AXIS_LABEL_ROTATE_KEY,
+                placeholder: 'Degrees (e.g. 45)',
+            },
+            {
+                displayName: 'Flip Axis',
+                type: 'toggle',
+                key: BaseChartView.FLIP_AXIS_KEY,
             }
         ];
     }

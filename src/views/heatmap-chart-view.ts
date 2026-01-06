@@ -30,12 +30,19 @@ export class HeatmapChartView extends BaseChartView {
                 type: 'property',
                 key: BaseChartView.VALUE_PROP_KEY,
                 placeholder: 'Select value property (color)',
-            }
+            },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+            ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY)
         ];
     }
 
     protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
+        const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
+        const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
+        const xAxisLabelRotate = Number(this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY));
+        const flipAxis = this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean;
+
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY);
 
@@ -44,6 +51,10 @@ export class HeatmapChartView extends BaseChartView {
         }
 
         return transformDataToChartOption(data, xProp, yProp, 'heatmap', {
+            xAxisLabel,
+            yAxisLabel,
+            xAxisLabelRotate,
+            flipAxis,
             valueProp: valueProp
         });
     }
