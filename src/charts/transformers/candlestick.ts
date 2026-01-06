@@ -1,6 +1,7 @@
 import type { EChartsOption, CandlestickSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
+import * as R from 'remeda';
 
 export interface CandlestickTransformerOptions extends BaseTransformerOptions {
     openProp?: string;
@@ -21,18 +22,19 @@ export function createCandlestickChartOption(
     const xAxisLabel = options?.xAxisLabel ?? xProp;
     const xAxisRotate = options?.xAxisLabelRotate ?? 0;
 
-    // Functional extraction
-    const processedData = data
-        .map(item => {
+    // 1. Normalize Data for Dataset
+    // Structure: { x, open, close, low, high }
+    const normalizedData = R.pipe(
+        data,
+        R.map(item => {
             const xValRaw = getNestedValue(item, xProp);
-            const xVal = xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw);
 
             const openRaw = getNestedValue(item, openProp);
             const closeRaw = getNestedValue(item, closeProp);
             const lowRaw = getNestedValue(item, lowProp);
             const highRaw = getNestedValue(item, highProp);
 
-            // Use conditional expression instead of if statement
+            // Validation
             const rawValuesValid = openRaw !== null && openRaw !== undefined &&
                                    closeRaw !== null && closeRaw !== undefined &&
                                    lowRaw !== null && lowRaw !== undefined &&
@@ -45,22 +47,32 @@ export function createCandlestickChartOption(
                     const lowVal = Number(lowRaw);
                     const highVal = Number(highRaw);
 
-                    const numericValuesValid = !Number.isNaN(openVal) && !Number.isNaN(closeVal) && !Number.isNaN(lowVal) && !Number.isNaN(highVal);
+                    const isNum = !Number.isNaN(openVal) && !Number.isNaN(closeVal) && !Number.isNaN(lowVal) && !Number.isNaN(highVal);
 
-                    return numericValuesValid
-                        ? { x: xVal, y: [openVal, closeVal, lowVal, highVal] }
-                        : null;
+                    return isNum ? {
+                        x: xValRaw === undefined || xValRaw === null ? 'Unknown' : safeToString(xValRaw),
+                        open: openVal,
+                        close: closeVal,
+                        low: lowVal,
+                        high: highVal
+                    } : null;
                 })()
                 : null;
-        })
-        .filter((d): d is { x: string; y: number[] } => d !== null);
+        }),
+        R.filter((x): x is { x: string, open: number, close: number, low: number, high: number } => x !== null)
+    );
 
-    const xAxisData = processedData.map(d => d.x);
-    const values = processedData.map(d => d.y);
+    // 2. Get X Axis Data
+    const xAxisData = normalizedData.map(d => d.x);
 
+    // 3. Build Series
     const seriesItem: CandlestickSeriesOption = {
         type: 'candlestick',
-        data: values,
+        datasetIndex: 0,
+        encode: {
+            x: 'x',
+            y: ['open', 'close', 'low', 'high']
+        },
         itemStyle: {
             // Western standard: Up = Green, Down = Red
             color: '#14b143',
@@ -71,6 +83,7 @@ export function createCandlestickChartOption(
     };
 
     const opt: EChartsOption = {
+        dataset: [{ source: normalizedData }],
         tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -93,7 +106,7 @@ export function createCandlestickChartOption(
             splitArea: {
                 show: true
             },
-            name: options?.yAxisLabel // Often empty for candlestick but good to have
+            name: options?.yAxisLabel
         },
         dataZoom: [
             {
