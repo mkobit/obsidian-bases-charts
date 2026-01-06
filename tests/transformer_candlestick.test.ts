@@ -28,23 +28,28 @@ describe('Transformer - Candlestick Chart', () => {
         // Data Verification (using Dataset)
         // Check dataset presence
         expect(option.dataset).toBeDefined();
+        if (!option.dataset || !Array.isArray(option.dataset) || option.dataset.length === 0) {
+             throw new Error('Dataset is missing or empty');
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const dataset = option.dataset as { source: any[] }[];
-        const source = dataset[0].source;
+        const source = dataset[0]!.source;
 
         expect(source).toHaveLength(3);
         // Normalized data structure
         expect(source[0]).toEqual({ x: '2023-10-01', open: 100, close: 110, low: 95, high: 115 });
 
         // Encode Verification
-        expect(series[0].encode).toEqual({
+        expect(series[0]!.encode).toEqual({
             x: 'x',
             y: ['open', 'close', 'low', 'high']
         });
 
         // Axis Verification
         expect(option.xAxis).toBeDefined();
-        // @ts-ignore
-        expect(option.xAxis.data).toEqual(['2023-10-01', '2023-10-02', '2023-10-03']);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        expect((option.xAxis as any).data).toEqual(['2023-10-01', '2023-10-02', '2023-10-03']);
     });
 
     it('should handle missing values gracefully', () => {
@@ -61,16 +66,19 @@ describe('Transformer - Candlestick Chart', () => {
             highProp: 'high'
         });
 
+        if (!option.dataset || !Array.isArray(option.dataset) || option.dataset.length === 0) {
+             throw new Error('Dataset is missing or empty');
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const dataset = option.dataset as { source: any[] }[];
-        const source = dataset[0].source;
+        const source = dataset[0]!.source;
 
         // Should ignore invalid rows (open: null and low: undefined should cause rows to be skipped)
         expect(source).toHaveLength(1);
         expect(source[0]).toEqual({ x: '2023-10-01', open: 100, close: 110, low: 95, high: 115 });
 
         // Check xAxis data sync
-        // @ts-ignore
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
         expect((option.xAxis as any).data).toEqual(['2023-10-01']);
     });
 
@@ -79,8 +87,12 @@ describe('Transformer - Candlestick Chart', () => {
         // We pass empty options for props
         const option = transformDataToChartOption(data, 'date', '', 'candlestick');
 
+        if (!option.dataset || !Array.isArray(option.dataset) || option.dataset.length === 0) {
+             throw new Error('Dataset is missing or empty');
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const dataset = option.dataset as { source: any[] }[];
-        const source = dataset[0].source;
+        const source = dataset[0]!.source;
 
         expect(source).toHaveLength(3);
         expect(source[0]).toEqual({ x: '2023-10-01', open: 100, close: 110, low: 95, high: 115 });
