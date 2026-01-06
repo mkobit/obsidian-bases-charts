@@ -31,7 +31,8 @@ export class HeatmapChartView extends BaseChartView {
                 key: BaseChartView.VALUE_PROP_KEY,
                 placeholder: 'Select value property (color)',
             },
-            ...BaseChartView.getAxisViewOptions().filter(opt => opt.key !== BaseChartView.FLIP_AXIS_KEY)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+            ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY)
         ];
     }
 

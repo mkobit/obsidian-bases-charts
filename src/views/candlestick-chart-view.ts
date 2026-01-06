@@ -80,7 +80,8 @@ export class CandlestickChartView extends BaseChartView {
                 key: CandlestickChartView.HIGH_PROP_KEY,
                 placeholder: 'Select High price property',
             },
-            ...BaseChartView.getAxisViewOptions().filter(opt => opt.key !== BaseChartView.FLIP_AXIS_KEY)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+            ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY)
         ];
     }
 }
