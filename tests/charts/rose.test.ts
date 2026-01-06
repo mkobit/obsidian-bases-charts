@@ -27,22 +27,25 @@ describe('Rose Chart Transformer', () => {
         expect(series.radius).toEqual([20, '75%']);
     });
 
-    it('should map data correctly', () => {
+    it('should map data correctly via dataset', () => {
         const data = [
             { category: 'A', value: 10 },
             { category: 'B', value: 20 }
         ];
 
-        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as TestOption;
+        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as { series: PieSeriesOption[], dataset: { source: unknown[] }[] };
         const [series] = option.series;
         if (!series) {
             expect(series).toBeDefined();
             return;
         }
-        const seriesData = series.data as { name: string; value: number }[];
 
-        expect(seriesData).toHaveLength(2);
-        expect(seriesData[0]).toEqual({ name: 'A', value: 10 });
-        expect(seriesData[1]).toEqual({ name: 'B', value: 20 });
+        expect(series.datasetIndex).toBe(0);
+        expect(option.dataset).toBeDefined();
+        expect(option.dataset[0].source).toHaveLength(2);
+        expect(option.dataset[0].source).toEqual([
+            { name: 'A', value: 10 },
+            { name: 'B', value: 20 }
+        ]);
     });
 });
