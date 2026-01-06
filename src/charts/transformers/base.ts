@@ -2,4 +2,8 @@ export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'bubble' | 'radar' 
 
 export interface BaseTransformerOptions {
     legend?: boolean;
+    xAxisLabel?: string;
+    yAxisLabel?: string;
+    xAxisLabelRotate?: number;
+    flipAxis?: boolean;
 }

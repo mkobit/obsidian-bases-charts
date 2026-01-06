@@ -22,6 +22,11 @@ export class CandlestickChartView extends BaseChartView {
 
     protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
+        const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
+        const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
+        const xAxisLabelRotate = Number(this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY));
+        const flipAxis = this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean;
+
         const openProp = this.config.get(CandlestickChartView.OPEN_PROP_KEY) as string;
         const closeProp = this.config.get(CandlestickChartView.CLOSE_PROP_KEY) as string;
         const lowProp = this.config.get(CandlestickChartView.LOW_PROP_KEY) as string;
@@ -32,6 +37,10 @@ export class CandlestickChartView extends BaseChartView {
         }
 
         return transformDataToChartOption(data, xProp, '', 'candlestick', {
+            xAxisLabel,
+            yAxisLabel,
+            xAxisLabelRotate,
+            flipAxis,
             openProp,
             closeProp,
             lowProp,
@@ -70,7 +79,8 @@ export class CandlestickChartView extends BaseChartView {
                 type: 'property',
                 key: CandlestickChartView.HIGH_PROP_KEY,
                 placeholder: 'Select High price property',
-            }
+            },
+            ...BaseChartView.getAxisViewOptions().filter(opt => opt.key !== BaseChartView.FLIP_AXIS_KEY)
         ];
     }
 }

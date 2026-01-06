@@ -20,6 +20,10 @@ export function createScatterChartOption(
 ): EChartsOption {
     const seriesProp = options?.seriesProp;
     const sizeProp = options?.sizeProp;
+    // flipAxis is not supported for scatter yet due to complexity in data mapping
+    const xAxisLabel = options?.xAxisLabel ?? xProp;
+    const yAxisLabel = options?.yAxisLabel ?? yProp;
+    const xAxisRotate = options?.xAxisLabelRotate ?? 0;
 
     // We will use category axis for X to be consistent with Bar/Line behavior in this plugin
     // This allows non-numeric X values.
@@ -96,12 +100,15 @@ export function createScatterChartOption(
         xAxis: {
             type: 'category',
             data: xAxisData,
-            name: xProp,
-            splitLine: { show: true } // Scatter usually looks better with grid
+            name: xAxisLabel,
+            splitLine: { show: true },
+            axisLabel: {
+                rotate: xAxisRotate
+            }
         },
         yAxis: {
             type: 'value',
-            name: yProp,
+            name: yAxisLabel,
             splitLine: { show: true }
         },
         series: seriesOptions,

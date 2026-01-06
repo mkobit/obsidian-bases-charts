@@ -14,6 +14,10 @@ export function createHeatmapChartOption(
     options?: HeatmapTransformerOptions
 ): EChartsOption {
     const valueProp = options?.valueProp;
+    // flipAxis not supported for heatmap yet
+    const xAxisLabel = options?.xAxisLabel ?? xProp;
+    const yAxisLabel = options?.yAxisLabel ?? yProp;
+    const xAxisRotate = options?.xAxisLabelRotate ?? 0;
 
     // 1. Identify X Categories (Horizontal)
     const xAxisData = R.pipe(
@@ -92,16 +96,15 @@ export function createHeatmapChartOption(
         xAxis: {
             type: 'category',
             data: xAxisData,
-            splitArea: {
-                show: true
-            }
+            name: xAxisLabel,
+            splitArea: { show: true },
+            axisLabel: { rotate: xAxisRotate }
         },
         yAxis: {
             type: 'category',
             data: yAxisData,
-            splitArea: {
-                show: true
-            }
+            name: yAxisLabel,
+            splitArea: { show: true }
         },
         visualMap: {
             min: finalMinVal,

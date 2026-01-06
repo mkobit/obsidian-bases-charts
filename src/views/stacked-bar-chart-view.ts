@@ -13,6 +13,11 @@ export class StackedBarChartView extends BaseChartView {
 
     protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
+        const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
+        const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
+        const xAxisLabelRotate = Number(this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY));
+        const flipAxis = this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean;
+
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY);
         const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
@@ -22,6 +27,10 @@ export class StackedBarChartView extends BaseChartView {
         }
 
         return transformDataToChartOption(data, xProp, yProp, 'bar', {
+            xAxisLabel,
+            yAxisLabel,
+            xAxisLabelRotate,
+            flipAxis,
             stack: true,
             seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined,
             legend: showLegend
@@ -29,6 +38,6 @@ export class StackedBarChartView extends BaseChartView {
     }
 
     static getViewOptions(): ViewOption[] {
-        return BaseChartView.getCommonViewOptions();
+        return [...BaseChartView.getCommonViewOptions(), ...BaseChartView.getAxisViewOptions()];
     }
 }

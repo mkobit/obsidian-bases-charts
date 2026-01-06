@@ -20,6 +20,10 @@ export function createCartesianChartOption(
 ): EChartsOption {
     const seriesProp = options?.seriesProp;
     const isStacked = options?.stack;
+    const flipAxis = options?.flipAxis ?? false;
+    const xAxisLabel = options?.xAxisLabel ?? xProp;
+    const yAxisLabel = options?.yAxisLabel ?? yProp;
+    const xAxisRotate = options?.xAxisLabelRotate ?? 0;
 
     // 1. Get all unique X values (categories)
     const xAxisData = R.pipe(
@@ -97,16 +101,34 @@ export function createCartesianChartOption(
     );
 
     const opt: EChartsOption = {
-        xAxis: {
-            type: 'category',
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-            data: xAxisData as any,
-            name: xProp
-        },
-        yAxis: {
-            type: 'value',
-            name: yProp
-        },
+        xAxis: flipAxis
+            ? {
+                type: 'value',
+                name: yAxisLabel
+            }
+            : {
+                type: 'category',
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+                data: xAxisData as any,
+                name: xAxisLabel,
+                axisLabel: {
+                    rotate: xAxisRotate
+                }
+            },
+        yAxis: flipAxis
+            ? {
+                type: 'category',
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+                data: xAxisData as any,
+                name: xAxisLabel,
+                axisLabel: {
+                    rotate: xAxisRotate
+                }
+            }
+            : {
+                type: 'value',
+                name: yAxisLabel
+            },
         series: seriesOptions,
         tooltip: {
             trigger: 'axis'

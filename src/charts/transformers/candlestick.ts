@@ -18,6 +18,8 @@ export function createCandlestickChartOption(
     const closeProp = options?.closeProp ?? 'close';
     const lowProp = options?.lowProp ?? 'low';
     const highProp = options?.highProp ?? 'high';
+    const xAxisLabel = options?.xAxisLabel ?? xProp;
+    const xAxisRotate = options?.xAxisLabelRotate ?? 0;
 
     // Functional extraction
     const processedData = data
@@ -78,15 +80,20 @@ export function createCandlestickChartOption(
         xAxis: {
             type: 'category',
             data: xAxisData,
+            name: xAxisLabel,
             boundaryGap: false,
             axisLine: { onZero: false },
-            splitLine: { show: false }
+            splitLine: { show: false },
+            axisLabel: {
+                rotate: xAxisRotate
+            }
         },
         yAxis: {
             scale: true,
             splitArea: {
                 show: true
-            }
+            },
+            name: options?.yAxisLabel // Often empty for candlestick but good to have
         },
         dataZoom: [
             {
