@@ -6,7 +6,6 @@ import { transformDataToChartOption, ChartType } from '../charts/transformer';
 export class GraphChartView extends BaseChartView {
     readonly type: ChartType = 'graph';
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             ...BaseChartView.getCommonViewOptions(),

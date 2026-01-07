@@ -7,7 +7,6 @@ import type { EChartsOption } from 'echarts';
 export class ParallelChartView extends BaseChartView {
     readonly type = 'parallel';
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {

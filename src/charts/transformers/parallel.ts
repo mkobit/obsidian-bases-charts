@@ -1,4 +1,4 @@
-import type { EChartsOption, SeriesOption } from 'echarts';
+import type { EChartsOption, ParallelSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { getNestedValue, safeToString, getLegendOption } from './utils';
 import * as R from 'remeda';
@@ -7,13 +7,10 @@ export interface ParallelTransformerOptions extends BaseTransformerOptions {
     readonly seriesProp?: string;
 }
 
-// Define the interface locally as it might not be exported by echarts top-level
-interface ParallelAxisOption {
-    readonly dim: number;
-    readonly name: string;
-    readonly type?: 'category' | 'value';
-    readonly data?: readonly string[];
-    readonly nameLocation?: 'start' | 'middle' | 'end';
+// ECharts parallelAxis type is complex union
+function asParallelAxis(axis: unknown): EChartsOption['parallelAxis'] {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+    return axis as any;
 }
 
 export function createParallelChartOption(
@@ -35,7 +32,7 @@ export function createParallelChartOption(
 
             // 2. Prepare Parallel Axis
             // Use standard map to avoid remeda type issues with indexed map in strict mode
-            const parallelAxis: readonly ParallelAxisOption[] = dims.map((dim, index) => {
+            const parallelAxis = dims.map((dim, index) => {
                 // Collect all values for this dimension to infer type
                 const values = R.map(data, item => getNestedValue(item, dim));
 
@@ -47,7 +44,7 @@ export function createParallelChartOption(
                     ? {
                         dim: index,
                         name: dim,
-                        type: 'value'
+                        type: 'value' as const
                     }
                     : (() => {
                         const uniqueVals = R.pipe(
@@ -58,7 +55,7 @@ export function createParallelChartOption(
                         return {
                             dim: index,
                             name: dim,
-                            type: 'category',
+                            type: 'category' as const,
                             data: uniqueVals
                         };
                     })();
@@ -93,7 +90,7 @@ export function createParallelChartOption(
                 })
             );
 
-            const series: readonly SeriesOption[] = R.pipe(
+            const series: ParallelSeriesOption[] = R.pipe(
                 seriesDataMap,
                 R.entries(),
                 R.map(([name, sData]) => {
@@ -120,9 +117,8 @@ export function createParallelChartOption(
                         nameGap: 20
                     }
                 },
-                parallelAxis: parallelAxis as unknown as EChartsOption['parallelAxis'],
-                // eslint-disable-next-line functional/prefer-readonly-type
-                series: series as unknown as SeriesOption[],
+                parallelAxis: asParallelAxis(parallelAxis),
+                series: series,
                 ...(getLegendOption(options) ? {
                     legend: {
                         data: R.keys(seriesDataMap),

@@ -25,7 +25,6 @@ export class PieChartView extends BaseChartView {
         });
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         // Pie charts don't necessarily need 'Series Property' in the same way stacked bars do,
         // but we can reuse common options.

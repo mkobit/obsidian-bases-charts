@@ -26,7 +26,6 @@ export class BarChartView extends BaseChartView {
         });
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [...BaseChartView.getCommonViewOptions(), ...BaseChartView.getAxisViewOptions()];
     }

@@ -30,7 +30,6 @@ export class RadarChartView extends BaseChartView {
         });
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         // Clone options to avoid side effects on other charts
         const commonOpts = BaseChartView.getCommonViewOptions().map(opt => ({...opt}));

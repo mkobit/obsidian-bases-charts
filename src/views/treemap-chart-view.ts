@@ -26,7 +26,6 @@ export class TreemapChartView extends BaseChartView {
         return 'layout-grid'; // Use an icon that looks like a treemap
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {

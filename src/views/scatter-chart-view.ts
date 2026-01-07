@@ -39,7 +39,6 @@ export class ScatterChartView extends BaseChartView {
         });
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             ...BaseChartView.getCommonViewOptions(),

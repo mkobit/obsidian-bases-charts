@@ -15,7 +15,6 @@ export class TreeChartView extends BaseChartView {
     getDisplayText(): string { return 'Tree'; }
     getIcon(): string { return 'network'; }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {

@@ -59,7 +59,7 @@ export default tseslint.config(
 			"functional/no-loop-statements": "error",
 			"functional/no-conditional-statements": "error",
 			"functional/no-expression-statements": ["error", { ignoreVoid: true }],
-            "functional/prefer-readonly-type": "error",
+            // "functional/prefer-readonly-type": "error", // Deprecated and removed
 
 			// Obsidian Compatibility overrides (Global)
 			"functional/no-classes": "off",
@@ -74,6 +74,11 @@ export default tseslint.config(
 			"no-console": "warn",
 			"eqeqeq": "error",
 			"curly": "error",
+
+            // Type Safety Rules
+            "@typescript-eslint/consistent-type-assertions": ["error", {
+                assertionStyle: "never"
+            }]
 		}
 	},
     // Overrides
@@ -83,6 +88,8 @@ export default tseslint.config(
             "functional/no-conditional-statements": "off",
             "functional/no-expression-statements": "off",
             "functional/immutable-data": "off", // Tests often need mutation
+             // Allow casting in tests and views if necessary, though ideally avoided
+             "@typescript-eslint/consistent-type-assertions": "off"
         }
     },
 	globalIgnores([

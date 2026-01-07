@@ -26,7 +26,6 @@ export class SunburstChartView extends BaseChartView {
         return 'disc';
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {

@@ -41,7 +41,6 @@ export class AreaChartView extends BaseChartView {
         return typeof val === 'boolean' ? val : undefined;
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             ...BaseChartView.getCommonViewOptions(), ...BaseChartView.getAxisViewOptions(),

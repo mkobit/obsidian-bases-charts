@@ -16,10 +16,18 @@ interface HierarchyNode {
 }
 
 interface PathItem {
-    // eslint-disable-next-line functional/prefer-readonly-type
     parts: string[];
-    // eslint-disable-next-line functional/prefer-readonly-type
     value: number | undefined;
+}
+
+function asSunburstData(data: readonly HierarchyNode[]): SunburstSeriesOption['data'] {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+    return data as any;
+}
+
+function asTreeData(data: readonly HierarchyNode[]): TreeSeriesOption['data'] {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+    return data as any;
 }
 
 /**
@@ -104,7 +112,7 @@ export function createSunburstChartOption(
 
     const seriesItem: SunburstSeriesOption = {
         type: 'sunburst',
-        data: hierarchyData as unknown as SunburstSeriesOption['data'],
+        data: asSunburstData(hierarchyData),
         radius: [0, '90%'],
         label: {
             rotate: 'radial'
@@ -132,7 +140,7 @@ export function createTreeChartOption(
 
     const seriesItem: TreeSeriesOption = {
         type: 'tree',
-        data: hierarchyData as unknown as TreeSeriesOption['data'],
+        data: asTreeData(hierarchyData),
         top: '10%',
         bottom: '10%',
         layout: 'orthogonal',

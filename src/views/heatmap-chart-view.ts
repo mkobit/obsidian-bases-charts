@@ -11,7 +11,6 @@ export class HeatmapChartView extends BaseChartView {
         super(controller, containerEl, plugin);
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {
