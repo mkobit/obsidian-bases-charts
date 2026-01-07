@@ -3,7 +3,7 @@
 > [!WARNING]
 > **Work in Progress** as of 2026-01-07. This plugin is under active development.
 
-## Project Summary
+## Project summary
 
 Obsidian Bases Charts is a visualization-heavy plugin for Obsidian that bridges the gap between your vault's data and powerful, interactive charts.
 
@@ -48,7 +48,7 @@ To build for production:
 pnpm build
 ```
 
-### Manual Testing
+### Manual testing
 
 To test the plugin in Obsidian, you need to load the built files into a vault.
 
@@ -58,6 +58,11 @@ To test the plugin in Obsidian, you need to load the built files into a vault.
 
 For a smoother development experience, we recommend using the **Hot Reload** plugin:
 -   [https://github.com/pjeby/hot-reload](https://github.com/pjeby/hot-reload)
+
+### Resources
+
+For more information on building Obsidian plugins, refer to the official documentation:
+-   [Build a plugin - Obsidian Developer Docs](https://docs.obsidian.md/Plugins/Getting+started/Build+a+plugin)
 
 ### License
 
