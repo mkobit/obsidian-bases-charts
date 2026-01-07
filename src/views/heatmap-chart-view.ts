@@ -5,12 +5,13 @@ import { transformDataToChartOption } from '../charts/transformer';
 import type { EChartsOption } from 'echarts';
 
 export class HeatmapChartView extends BaseChartView {
-    type = 'heatmap-chart';
+    readonly type = 'heatmap-chart';
 
     constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {
         super(controller, containerEl, plugin);
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {
@@ -37,7 +38,7 @@ export class HeatmapChartView extends BaseChartView {
         ];
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY);

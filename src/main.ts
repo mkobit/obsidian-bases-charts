@@ -26,7 +26,8 @@ import { ParallelChartView } from './views/parallel-chart-view';
 import { RoseChartView } from './views/rose-chart-view';
 
 export default class BarePlugin extends Plugin {
-	settings!: BarePluginSettings;
+    // eslint-disable-next-line functional/prefer-readonly-type
+	public settings: BarePluginSettings = DEFAULT_SETTINGS;
 
 	async onload() {
 		await this.loadSettings();

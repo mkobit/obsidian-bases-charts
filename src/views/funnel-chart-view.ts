@@ -5,13 +5,13 @@ import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
 
 export class FunnelChartView extends BaseChartView {
-    type = 'funnel-chart';
+    readonly type = 'funnel-chart';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller, scrollEl, plugin);
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
 
@@ -24,6 +24,7 @@ export class FunnelChartView extends BaseChartView {
         });
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         // Funnel doesn't really use "Series Prop" in the same way (usually single series),
         // but we can keep common options or strip Series Prop.

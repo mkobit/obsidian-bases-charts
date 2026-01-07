@@ -4,13 +4,13 @@ import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface LinesTransformerOptions extends BaseTransformerOptions {
-    x2Prop?: string;
-    y2Prop?: string;
-    seriesProp?: string;
+    readonly x2Prop?: string;
+    readonly y2Prop?: string;
+    readonly seriesProp?: string;
 }
 
 export function createLinesChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     xProp: string,
     yProp: string,
     options?: LinesTransformerOptions
@@ -39,7 +39,8 @@ export function createLinesChartOption(
                         ? null
                         : { coords: [[x1, y1], [x2, y2]], series };
                 }),
-                R.filter((d): d is { coords: number[][], series: string } => d !== null)
+                // eslint-disable-next-line functional/prefer-readonly-type
+                R.filter((d): d is { readonly coords: number[][], readonly series: string } => d !== null)
             );
 
             // 2. Group by Series
@@ -47,8 +48,12 @@ export function createLinesChartOption(
             const seriesNames = Object.keys(groupedData);
 
             // 3. Build Series
+            // eslint-disable-next-line functional/prefer-readonly-type
             const seriesOptions: LinesSeriesOption[] = seriesNames.map(name => {
-                const seriesData = groupedData[name]!.map(d => ({ coords: d.coords }));
+                const seriesData = groupedData[name]!.map(d => ({
+                    // eslint-disable-next-line functional/prefer-readonly-type
+                    coords: d.coords as unknown as number[][]
+                }));
 
                 return {
                     type: 'lines',
@@ -76,7 +81,8 @@ export function createLinesChartOption(
                     name: yAxisLabel,
                     splitLine: { show: false }
                 },
-                series: seriesOptions,
+                // eslint-disable-next-line functional/prefer-readonly-type
+                series: seriesOptions as unknown as LinesSeriesOption[],
                 ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
             };
         })();

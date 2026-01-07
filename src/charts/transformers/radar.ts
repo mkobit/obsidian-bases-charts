@@ -4,11 +4,11 @@ import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface RadarTransformerOptions extends BaseTransformerOptions {
-    seriesProp?: string;
+    readonly seriesProp?: string;
 }
 
 export function createRadarChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     indicatorProp: string,
     valueProp: string,
     options?: RadarTransformerOptions
@@ -27,7 +27,7 @@ export function createRadarChartOption(
 
     // 2. Group data by Series
     // Explicitly type to help TS
-    const groupedData: Record<string, Record<string, unknown>[]> = R.groupBy(data, (item) => {
+    const groupedData: Record<string, readonly Record<string, unknown>[]> = R.groupBy(data, (item) => {
         return seriesProp
             ? (() => {
                 const valRaw = getNestedValue(item, seriesProp);

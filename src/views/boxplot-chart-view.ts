@@ -12,7 +12,7 @@ export class BoxplotChartView extends BaseChartView {
         super(controller, containerEl, plugin);
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY) as string;
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY) as string;
@@ -27,6 +27,7 @@ export class BoxplotChartView extends BaseChartView {
         });
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {
@@ -55,5 +56,5 @@ export class BoxplotChartView extends BaseChartView {
         ];
     }
 
-    public type = 'boxplot-chart';
+    public readonly type = 'boxplot-chart';
 }

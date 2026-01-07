@@ -5,13 +5,13 @@ import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
 
 export class BarChartView extends BaseChartView {
-    type = 'bar-chart';
+    readonly type = 'bar-chart';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller, scrollEl, plugin);
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY);
@@ -26,6 +26,7 @@ export class BarChartView extends BaseChartView {
         });
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [...BaseChartView.getCommonViewOptions(), ...BaseChartView.getAxisViewOptions()];
     }

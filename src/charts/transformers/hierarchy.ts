@@ -4,22 +4,21 @@ import { getNestedValue } from './utils';
 import * as R from 'remeda';
 
 export interface SunburstTransformerOptions extends BaseTransformerOptions {
-    valueProp?: string;
+    readonly valueProp?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface TreeTransformerOptions extends BaseTransformerOptions {
-    // Tree specific options if any
-}
+export type TreeTransformerOptions = BaseTransformerOptions;
 
 interface HierarchyNode {
-    name: string;
-    value?: number;
-    children?: HierarchyNode[];
+    readonly name: string;
+    readonly value?: number;
+    readonly children?: readonly HierarchyNode[];
 }
 
 interface PathItem {
+    // eslint-disable-next-line functional/prefer-readonly-type
     parts: string[];
+    // eslint-disable-next-line functional/prefer-readonly-type
     value: number | undefined;
 }
 
@@ -28,10 +27,10 @@ interface PathItem {
  * Refactored to be functional using recursion instead of mutation loops.
  */
 function buildHierarchy(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     pathProp: string,
     valueProp?: string
-): HierarchyNode[] {
+): readonly HierarchyNode[] {
     // 1. Transform data into paths and values
     const paths = R.pipe(
         data,
@@ -57,7 +56,7 @@ function buildHierarchy(
     );
 
     // 2. Recursive builder
-    const buildLevel = (items: PathItem[]): HierarchyNode[] => {
+    const buildLevel = (items: readonly PathItem[]): readonly HierarchyNode[] => {
         return R.pipe(
             items,
             R.groupBy(item => item.parts[0]!), // Group by current level name
@@ -96,7 +95,7 @@ function buildHierarchy(
 }
 
 export function createSunburstChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     pathProp: string,
     options?: SunburstTransformerOptions
 ): EChartsOption {
@@ -105,7 +104,7 @@ export function createSunburstChartOption(
 
     const seriesItem: SunburstSeriesOption = {
         type: 'sunburst',
-        data: hierarchyData,
+        data: hierarchyData as unknown as SunburstSeriesOption['data'],
         radius: [0, '90%'],
         label: {
             rotate: 'radial'
@@ -121,7 +120,7 @@ export function createSunburstChartOption(
 }
 
 export function createTreeChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     pathProp: string,
     options?: TreeTransformerOptions
 ): EChartsOption {
@@ -133,7 +132,7 @@ export function createTreeChartOption(
 
     const seriesItem: TreeSeriesOption = {
         type: 'tree',
-        data: hierarchyData,
+        data: hierarchyData as unknown as TreeSeriesOption['data'],
         top: '10%',
         bottom: '10%',
         layout: 'orthogonal',

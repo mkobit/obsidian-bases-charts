@@ -4,19 +4,19 @@ import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface EffectScatterTransformerOptions extends BaseTransformerOptions {
-    seriesProp?: string;
-    sizeProp?: string;
+    readonly seriesProp?: string;
+    readonly sizeProp?: string;
 }
 
 interface ScatterDataPoint {
-    x: string;
-    y: number | null;
-    s: string;
-    size?: number;
+    readonly x: string;
+    readonly y: number | null;
+    readonly s: string;
+    readonly size?: number;
 }
 
 export function createEffectScatterChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     xProp: string,
     yProp: string,
     options?: EffectScatterTransformerOptions
@@ -60,17 +60,17 @@ export function createEffectScatterChartOption(
     // 4. Create Datasets
     const sourceDataset: DatasetComponentOption = { source: normalizedData };
 
-    const filterDatasets: DatasetComponentOption[] = seriesNames.map(name => ({
+    const filterDatasets: readonly DatasetComponentOption[] = seriesNames.map(name => ({
         transform: {
             type: 'filter',
             config: { dimension: 's', value: name }
         }
     }));
 
-    const datasets: DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
+    const datasets: readonly DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
 
     // 5. Build Series Options
-    const seriesOptions: EffectScatterSeriesOption[] = seriesNames.map((name, idx) => {
+    const seriesOptions: readonly EffectScatterSeriesOption[] = seriesNames.map((name, idx) => {
         const datasetIndex = idx + 1;
 
         return {
@@ -94,11 +94,11 @@ export function createEffectScatterChartOption(
     });
 
     const opt: EChartsOption = {
-        dataset: datasets,
+        // eslint-disable-next-line functional/prefer-readonly-type
+        dataset: datasets as unknown as DatasetComponentOption[],
         xAxis: {
             type: 'category', // Consistent with bar/line
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-            data: xAxisData as any,
+            data: xAxisData,
             name: xAxisLabel,
             splitLine: { show: true },
             axisLabel: {
@@ -110,7 +110,8 @@ export function createEffectScatterChartOption(
             name: yAxisLabel,
             splitLine: { show: true }
         },
-        series: seriesOptions,
+        // eslint-disable-next-line functional/prefer-readonly-type
+        series: seriesOptions as unknown as EffectScatterSeriesOption[],
         tooltip: {
             trigger: 'item'
         },

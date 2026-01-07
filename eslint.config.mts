@@ -59,13 +59,13 @@ export default tseslint.config(
 			"functional/no-loop-statements": "error",
 			"functional/no-conditional-statements": "error",
 			"functional/no-expression-statements": ["error", { ignoreVoid: true }],
-            "functional/prefer-readonly-type": "off",
+            "functional/prefer-readonly-type": "error",
 
 			// Obsidian Compatibility overrides (Global)
 			"functional/no-classes": "off",
 			"functional/no-this-expressions": "off",
 			"functional/no-return-void": "off",
-			"functional/no-mixed-types": "off",
+			"functional/no-mixed-types": "error",
 			"functional/functional-parameters": "off",
 			"functional/no-try-statements": "off",
 			"functional/no-throw-statements": "off",

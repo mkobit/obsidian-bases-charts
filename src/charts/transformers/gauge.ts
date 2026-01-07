@@ -3,12 +3,12 @@ import type { BaseTransformerOptions } from './base';
 import { getNestedValue } from './utils';
 
 export interface GaugeTransformerOptions extends BaseTransformerOptions {
-    min?: number;
-    max?: number;
+    readonly min?: number;
+    readonly max?: number;
 }
 
 export function createGaugeChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     valueProp: string,
     options?: GaugeTransformerOptions
 ): EChartsOption {

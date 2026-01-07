@@ -4,8 +4,9 @@ import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption, ChartType } from '../charts/transformer';
 
 export class GraphChartView extends BaseChartView {
-    type: ChartType = 'graph';
+    readonly type: ChartType = 'graph';
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             ...BaseChartView.getCommonViewOptions(),
@@ -36,7 +37,7 @@ export class GraphChartView extends BaseChartView {
         ];
     }
 
-    getChartOption(data: Record<string, unknown>[]) {
+    getChartOption(data: readonly Record<string, unknown>[]) {
         const sourceProp = this.config.get('sourceProp') as string;
         const targetProp = this.config.get('targetProp') as string;
         const valueProp = this.config.get('valueProp') as string;

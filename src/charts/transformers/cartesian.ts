@@ -4,15 +4,15 @@ import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface CartesianTransformerOptions extends BaseTransformerOptions {
-    smooth?: boolean;
-    showSymbol?: boolean;
-    areaStyle?: boolean;
-    stack?: boolean;
-    seriesProp?: string;
+    readonly smooth?: boolean;
+    readonly showSymbol?: boolean;
+    readonly areaStyle?: boolean;
+    readonly stack?: boolean;
+    readonly seriesProp?: string;
 }
 
 export function createCartesianChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     xProp: string,
     yProp: string,
     chartType: 'bar' | 'line',
@@ -59,7 +59,7 @@ export function createCartesianChartOption(
 
     // If we have a seriesProp, we create filtered datasets for each series
     // If no seriesProp, we just use the source dataset directly (datasetIndex 0)
-    const filterDatasets: DatasetComponentOption[] = seriesProp
+    const filterDatasets: readonly DatasetComponentOption[] = seriesProp
         ? seriesNames.map(name => ({
             transform: {
                 type: 'filter',
@@ -68,10 +68,10 @@ export function createCartesianChartOption(
         }))
         : [];
 
-    const datasets: DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
+    const datasets: readonly DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
 
     // 5. Build Series Options
-    const seriesOptions: SeriesOption[] = seriesNames.map((name, idx) => {
+    const seriesOptions: readonly SeriesOption[] = seriesNames.map((name, idx) => {
         // If seriesProp exists, we use the filtered datasets (starting at index 1)
         // If not, we use the source dataset (index 0)
         const datasetIndex = seriesProp ? idx + 1 : 0;
@@ -110,7 +110,8 @@ export function createCartesianChartOption(
     });
 
     const opt: EChartsOption = {
-        dataset: datasets,
+        // eslint-disable-next-line functional/prefer-readonly-type
+        dataset: datasets as unknown as DatasetComponentOption[],
         xAxis: flipAxis
             ? {
                 type: 'value',
@@ -118,8 +119,7 @@ export function createCartesianChartOption(
             }
             : {
                 type: 'category',
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-                data: xAxisData as any,
+                data: xAxisData,
                 name: xAxisLabel,
                 axisLabel: {
                     rotate: xAxisRotate
@@ -128,8 +128,7 @@ export function createCartesianChartOption(
         yAxis: flipAxis
             ? {
                 type: 'category',
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-                data: xAxisData as any,
+                data: xAxisData,
                 name: xAxisLabel,
                 axisLabel: {
                     rotate: xAxisRotate
@@ -139,7 +138,8 @@ export function createCartesianChartOption(
                 type: 'value',
                 name: yAxisLabel
             },
-        series: seriesOptions,
+        // eslint-disable-next-line functional/prefer-readonly-type
+        series: seriesOptions as unknown as SeriesOption[],
         tooltip: {
             trigger: 'axis'
         },

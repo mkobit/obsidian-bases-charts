@@ -5,13 +5,13 @@ import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
 
 export class StackedBarChartView extends BaseChartView {
-    type = 'stacked-bar-chart';
+    readonly type = 'stacked-bar-chart';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller, scrollEl, plugin);
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
         const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
         const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
@@ -37,6 +37,7 @@ export class StackedBarChartView extends BaseChartView {
         });
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [...BaseChartView.getCommonViewOptions(), ...BaseChartView.getAxisViewOptions()];
     }

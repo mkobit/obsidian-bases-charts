@@ -4,11 +4,11 @@ import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface HeatmapTransformerOptions extends BaseTransformerOptions {
-    valueProp?: string;
+    readonly valueProp?: string;
 }
 
 export function createHeatmapChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     xProp: string,
     yProp: string,
     options?: HeatmapTransformerOptions

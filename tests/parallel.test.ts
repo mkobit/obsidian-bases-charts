@@ -3,22 +3,22 @@ import { createParallelChartOption } from '../src/charts/transformers/parallel';
 
 // Define a minimal interface for the test expectations to avoid "unsafe member access" errors
 interface TestParallelAxis {
-    name: string;
-    type: string;
-    data?: string[];
+    readonly name: string;
+    readonly type: string;
+    readonly data?: readonly string[];
 }
 
 interface TestSeries {
-    name: string;
-    type: string;
-    data: unknown[];
+    readonly name: string;
+    readonly type: string;
+    readonly data: readonly unknown[];
 }
 
 interface TestOption {
-    parallel?: unknown;
-    parallelAxis?: TestParallelAxis[];
-    series?: TestSeries[];
-    title?: { text: string };
+    readonly parallel?: unknown;
+    readonly parallelAxis?: readonly TestParallelAxis[];
+    readonly series?: readonly TestSeries[];
+    readonly title?: { readonly text: string };
 }
 
 describe('createParallelChartOption', () => {

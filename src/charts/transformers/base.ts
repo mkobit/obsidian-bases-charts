@@ -1,21 +1,21 @@
 export type ChartType = 'bar' | 'line' | 'lines' | 'pie' | 'scatter' | 'effectScatter' | 'bubble' | 'radar' | 'funnel' | 'gauge' | 'heatmap' | 'candlestick' | 'treemap' | 'boxplot' | 'sankey' | 'graph' | 'sunburst' | 'tree' | 'themeRiver' | 'calendar' | 'parallel' | 'rose';
 
 export interface VisualMapOptions {
-    visualMapMin?: number;
-    visualMapMax?: number;
-    visualMapColor?: string[];
-    visualMapOrient?: 'horizontal' | 'vertical';
-    visualMapType?: 'continuous' | 'piecewise';
-    visualMapLeft?: string | number;
-    visualMapTop?: string | number;
+    readonly visualMapMin?: number;
+    readonly visualMapMax?: number;
+    readonly visualMapColor?: readonly string[];
+    readonly visualMapOrient?: 'horizontal' | 'vertical';
+    readonly visualMapType?: 'continuous' | 'piecewise';
+    readonly visualMapLeft?: string | number;
+    readonly visualMapTop?: string | number;
 }
 
 export interface BaseTransformerOptions extends VisualMapOptions {
-    legend?: boolean;
-    legendPosition?: 'top' | 'bottom' | 'left' | 'right';
-    legendOrient?: 'horizontal' | 'vertical';
-    xAxisLabel?: string;
-    yAxisLabel?: string;
-    xAxisLabelRotate?: number;
-    flipAxis?: boolean;
+    readonly legend?: boolean;
+    readonly legendPosition?: 'top' | 'bottom' | 'left' | 'right';
+    readonly legendOrient?: 'horizontal' | 'vertical';
+    readonly xAxisLabel?: string;
+    readonly yAxisLabel?: string;
+    readonly xAxisLabelRotate?: number;
+    readonly flipAxis?: boolean;
 }

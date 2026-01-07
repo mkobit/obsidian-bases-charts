@@ -5,7 +5,7 @@ import { transformDataToChartOption } from '../charts/transformer';
 import type { EChartsOption } from 'echarts';
 
 export class TreeChartView extends BaseChartView {
-    type = 'tree-chart';
+    readonly type = 'tree-chart';
 
     constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {
         super(controller, containerEl, plugin);
@@ -15,6 +15,7 @@ export class TreeChartView extends BaseChartView {
     getDisplayText(): string { return 'Tree'; }
     getIcon(): string { return 'network'; }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {
@@ -26,7 +27,7 @@ export class TreeChartView extends BaseChartView {
         ];
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         const pathProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         if (!pathProp) {return null;}
 

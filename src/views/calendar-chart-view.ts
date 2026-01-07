@@ -5,7 +5,7 @@ import { transformDataToChartOption } from '../charts/transformer';
 import type { EChartsOption } from 'echarts';
 
 export class CalendarChartView extends BaseChartView {
-    type = 'calendar-chart';
+    readonly type = 'calendar-chart';
 
     constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {
         super(controller, containerEl, plugin);
@@ -15,6 +15,7 @@ export class CalendarChartView extends BaseChartView {
     getDisplayText(): string { return 'Calendar'; }
     getIcon(): string { return 'calendar'; }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {
@@ -33,7 +34,7 @@ export class CalendarChartView extends BaseChartView {
         ];
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         const dateProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string;
 

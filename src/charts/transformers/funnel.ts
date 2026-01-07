@@ -4,7 +4,7 @@ import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export function createFunnelChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     nameProp: string,
     valueProp: string,
     options?: BaseTransformerOptions

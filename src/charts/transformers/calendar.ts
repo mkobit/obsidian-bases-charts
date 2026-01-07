@@ -4,11 +4,11 @@ import { safeToString, getNestedValue } from './utils';
 import * as R from 'remeda';
 
 export interface CalendarTransformerOptions extends BaseTransformerOptions {
-    valueProp?: string;
+    readonly valueProp?: string;
 }
 
 export function createCalendarChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     dateProp: string,
     options?: CalendarTransformerOptions
 ): EChartsOption {
@@ -28,7 +28,7 @@ export function createCalendarChartOption(
                     return { date: dateVal, value: finalVal };
                 })();
         }),
-        R.filter((d): d is { date: string; value: number } => d !== null)
+        R.filter((d): d is { readonly date: string; readonly value: number } => d !== null)
     );
 
     return calendarData.length === 0
@@ -77,8 +77,7 @@ export function createCalendarChartOption(
             const seriesItem: HeatmapSeriesOption = {
                 type: 'heatmap',
                 coordinateSystem: 'calendar',
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-                data: seriesData as any
+                data: seriesData
             };
 
             const visualMapOption: VisualMapComponentOption = {
@@ -96,7 +95,7 @@ export function createCalendarChartOption(
                 tooltip: {
                     position: 'top',
                     formatter: (params: unknown) => {
-                         const p = params as { value: (number | string)[] };
+                         const p = params as { readonly value: readonly (number | string)[] };
                          return (!p || !Array.isArray(p.value))
                             ? ''
                             : `${p.value[0]} : ${p.value[1]}`;

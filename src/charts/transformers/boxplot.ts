@@ -6,11 +6,25 @@ import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface BoxplotTransformerOptions extends BaseTransformerOptions {
-    seriesProp?: string;
+    readonly seriesProp?: string;
+}
+
+interface BoxplotResult {
+    // eslint-disable-next-line functional/prefer-readonly-type
+    boxData: number[][];
+}
+
+function isBoxplotResult(data: unknown): data is BoxplotResult {
+    return (
+        typeof data === 'object' &&
+        data !== null &&
+        'boxData' in data &&
+        Array.isArray((data as { readonly boxData: unknown }).boxData)
+    );
 }
 
 export function createBoxplotChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     xProp: string,
     yProp: string,
     options?: BoxplotTransformerOptions
@@ -58,7 +72,7 @@ export function createBoxplotChartOption(
     );
 
     // 3. Transform to ECharts series
-    const seriesOptions: BoxplotSeriesOption[] = R.pipe(
+    const seriesOptions: readonly BoxplotSeriesOption[] = R.pipe(
         seriesMap,
         R.entries(),
         R.map(([sName, catMap]) => {
@@ -68,15 +82,20 @@ export function createBoxplotChartOption(
 
             // Use standard ECharts data tool to process the data
             // prepareBoxplotData expects [ [v1, v2...], [v3, v4...] ] where each inner array is a category
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
-            const result = prepareBoxplotData(rawData);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            const result: unknown = prepareBoxplotData(rawData);
 
-            return {
-                name: sName,
-                type: 'boxplot' as const,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                data: result.boxData
-            };
+            return !isBoxplotResult(result)
+                ? {
+                    name: sName,
+                    type: 'boxplot' as const,
+                    data: []
+                }
+                : {
+                    name: sName,
+                    type: 'boxplot' as const,
+                    data: result.boxData
+                };
         })
     );
 
@@ -104,7 +123,7 @@ export function createBoxplotChartOption(
                 show: true
             }
         },
-        series: seriesOptions,
+        series: [...seriesOptions],
         ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
     };
     return opt;

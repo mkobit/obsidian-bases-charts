@@ -5,8 +5,9 @@ import type { ParallelTransformerOptions } from '../charts/transformer';
 import type { EChartsOption } from 'echarts';
 
 export class ParallelChartView extends BaseChartView {
-    type = 'parallel';
+    readonly type = 'parallel';
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {
@@ -25,7 +26,7 @@ export class ParallelChartView extends BaseChartView {
         ];
     }
 
-    getChartOption(data: Record<string, unknown>[]): EChartsOption {
+    getChartOption(data: readonly Record<string, unknown>[]): EChartsOption {
         const xProp = this.config.get('xProp') as string;
         const seriesProp = this.config.get('seriesProp') as string;
 

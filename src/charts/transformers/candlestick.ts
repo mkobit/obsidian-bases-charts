@@ -4,14 +4,14 @@ import { safeToString, getNestedValue } from './utils';
 import * as R from 'remeda';
 
 export interface CandlestickTransformerOptions extends BaseTransformerOptions {
-    openProp?: string;
-    closeProp?: string;
-    lowProp?: string;
-    highProp?: string;
+    readonly openProp?: string;
+    readonly closeProp?: string;
+    readonly lowProp?: string;
+    readonly highProp?: string;
 }
 
 export function createCandlestickChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     xProp: string,
     options?: CandlestickTransformerOptions
 ): EChartsOption {
@@ -59,7 +59,7 @@ export function createCandlestickChartOption(
                 })()
                 : null;
         }),
-        R.filter((x): x is { x: string, open: number, close: number, low: number, high: number } => x !== null)
+        R.filter((x): x is { readonly x: string, readonly open: number, readonly close: number, readonly low: number, readonly high: number } => x !== null)
     );
 
     // 2. Get X Axis Data

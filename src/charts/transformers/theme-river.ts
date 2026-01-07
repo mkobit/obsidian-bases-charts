@@ -4,12 +4,12 @@ import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface ThemeRiverTransformerOptions extends BaseTransformerOptions {
-    valueProp?: string;
-    themeProp?: string;
+    readonly valueProp?: string;
+    readonly themeProp?: string;
 }
 
 export function createThemeRiverChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     dateProp: string,
     options?: ThemeRiverTransformerOptions
 ): EChartsOption {
@@ -32,17 +32,16 @@ export function createThemeRiverChartOption(
                     const tRaw = themeProp ? getNestedValue(item, themeProp) : undefined;
                     const theme = (tRaw !== undefined && tRaw !== null) ? safeToString(tRaw) : 'Series 1';
 
-                    return [dateVal, val, theme] as (string | number)[];
+                    return [dateVal, val, theme] as readonly (string | number)[];
                 })();
         }),
-        R.filter((x): x is (string | number)[] => x !== null),
+        R.filter((x): x is readonly (string | number)[] => x !== null),
         R.sortBy(x => x[0] as string)
     );
 
     const seriesItem: ThemeRiverSeriesOption = {
         type: 'themeRiver',
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-        data: riverData as any,
+        data: riverData as unknown as ThemeRiverSeriesOption['data'],
         emphasis: {
             itemStyle: {
                 shadowBlur: 20,

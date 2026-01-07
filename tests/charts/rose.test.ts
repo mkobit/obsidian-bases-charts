@@ -9,7 +9,7 @@ describe('Rose Chart Transformer', () => {
             { category: 'B', value: 20 }
         ];
 
-        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as { series: PieSeriesOption[], dataset: { source: unknown[] }[] };
+        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as { readonly series: readonly PieSeriesOption[], readonly dataset: readonly { readonly source: readonly unknown[] }[] };
 
         expect(option.series).toBeDefined();
         expect(option.series).toHaveLength(1);
@@ -29,7 +29,7 @@ describe('Rose Chart Transformer', () => {
             { category: 'B', value: 20 }
         ];
 
-        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as { series: PieSeriesOption[], dataset: DatasetComponentOption[] };
+        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as { readonly series: readonly PieSeriesOption[], readonly dataset: readonly DatasetComponentOption[] };
         const [series] = option.series;
         if (!series) {
             expect(series).toBeDefined();

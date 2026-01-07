@@ -4,20 +4,20 @@ import { getNestedValue, safeToString, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface ParallelTransformerOptions extends BaseTransformerOptions {
-    seriesProp?: string;
+    readonly seriesProp?: string;
 }
 
 // Define the interface locally as it might not be exported by echarts top-level
 interface ParallelAxisOption {
-    dim: number;
-    name: string;
-    type?: 'category' | 'value';
-    data?: string[];
-    nameLocation?: 'start' | 'middle' | 'end';
+    readonly dim: number;
+    readonly name: string;
+    readonly type?: 'category' | 'value';
+    readonly data?: readonly string[];
+    readonly nameLocation?: 'start' | 'middle' | 'end';
 }
 
 export function createParallelChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     dimensionsStr: string,
     options?: ParallelTransformerOptions
 ): EChartsOption {
@@ -35,7 +35,7 @@ export function createParallelChartOption(
 
             // 2. Prepare Parallel Axis
             // Use standard map to avoid remeda type issues with indexed map in strict mode
-            const parallelAxis: ParallelAxisOption[] = dims.map((dim, index) => {
+            const parallelAxis: readonly ParallelAxisOption[] = dims.map((dim, index) => {
                 // Collect all values for this dimension to infer type
                 const values = R.map(data, item => getNestedValue(item, dim));
 
@@ -93,7 +93,7 @@ export function createParallelChartOption(
                 })
             );
 
-            const series: SeriesOption[] = R.pipe(
+            const series: readonly SeriesOption[] = R.pipe(
                 seriesDataMap,
                 R.entries(),
                 R.map(([name, sData]) => {
@@ -120,10 +120,9 @@ export function createParallelChartOption(
                         nameGap: 20
                     }
                 },
-                // Casting to any because strict ECharts types might complain about local ParallelAxisOption
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-                parallelAxis: parallelAxis as any,
-                series: series,
+                parallelAxis: parallelAxis as unknown as EChartsOption['parallelAxis'],
+                // eslint-disable-next-line functional/prefer-readonly-type
+                series: series as unknown as SeriesOption[],
                 ...(getLegendOption(options) ? {
                     legend: {
                         data: R.keys(seriesDataMap),

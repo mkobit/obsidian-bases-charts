@@ -4,11 +4,11 @@ import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface PieTransformerOptions extends BaseTransformerOptions {
-    roseType?: 'radius' | 'area';
+    readonly roseType?: 'radius' | 'area';
 }
 
 export function createPieChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     nameProp: string,
     valueProp: string,
     options?: PieTransformerOptions

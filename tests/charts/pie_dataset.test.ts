@@ -14,7 +14,7 @@ describe('Pie Chart Transformer (Dataset Architecture)', () => {
 
         expect(option.dataset).toBeDefined();
         // Check source dataset
-        const datasets = (Array.isArray(option.dataset) ? option.dataset : [option.dataset]) as DatasetComponentOption[];
+        const datasets = (Array.isArray(option.dataset) ? option.dataset : [option.dataset]) as readonly DatasetComponentOption[];
         expect(datasets[0]).toHaveProperty('source');
 
         expect(datasets[0]!.source).toHaveLength(2);

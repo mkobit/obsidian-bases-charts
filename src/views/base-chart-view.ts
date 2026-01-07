@@ -9,40 +9,42 @@ import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
 
 export abstract class BaseChartView extends BasesView {
-    scrollEl: HTMLElement;
-    containerEl: HTMLElement;
-    chartEl: HTMLElement;
-    plugin: BarePlugin;
+    readonly scrollEl: HTMLElement;
+    readonly containerEl: HTMLElement;
+    readonly chartEl: HTMLElement;
+    readonly plugin: BarePlugin;
+    // eslint-disable-next-line functional/prefer-readonly-type
     protected chart: echarts.ECharts | null = null;
+    // eslint-disable-next-line functional/prefer-readonly-type
     private resizeObserver: ResizeObserver | null = null;
 
     // Common Config Keys
-    public static X_AXIS_PROP_KEY = 'xAxisProp';
-    public static Y_AXIS_PROP_KEY = 'yAxisProp';
-    public static SERIES_PROP_KEY = 'seriesProp';
-    public static LEGEND_KEY = 'showLegend';
-    public static LEGEND_POSITION_KEY = 'legendPosition';
-    public static LEGEND_ORIENT_KEY = 'legendOrient';
-    public static HEIGHT_KEY = 'height';
+    public static readonly X_AXIS_PROP_KEY = 'xAxisProp';
+    public static readonly Y_AXIS_PROP_KEY = 'yAxisProp';
+    public static readonly SERIES_PROP_KEY = 'seriesProp';
+    public static readonly LEGEND_KEY = 'showLegend';
+    public static readonly LEGEND_POSITION_KEY = 'legendPosition';
+    public static readonly LEGEND_ORIENT_KEY = 'legendOrient';
+    public static readonly HEIGHT_KEY = 'height';
 
     // New Config Keys (Made public for easier access in subclasses without casting)
-    public static SIZE_PROP_KEY = 'sizeProp';
-    public static MIN_VALUE_KEY = 'minVal';
-    public static MAX_VALUE_KEY = 'maxVal';
-    public static VALUE_PROP_KEY = 'valueProp';
+    public static readonly SIZE_PROP_KEY = 'sizeProp';
+    public static readonly MIN_VALUE_KEY = 'minVal';
+    public static readonly MAX_VALUE_KEY = 'maxVal';
+    public static readonly VALUE_PROP_KEY = 'valueProp';
 
     // Axis Config Keys
-    public static X_AXIS_LABEL_KEY = 'xAxisLabel';
-    public static Y_AXIS_LABEL_KEY = 'yAxisLabel';
-    public static X_AXIS_LABEL_ROTATE_KEY = 'xAxisLabelRotate';
-    public static FLIP_AXIS_KEY = 'flipAxis';
+    public static readonly X_AXIS_LABEL_KEY = 'xAxisLabel';
+    public static readonly Y_AXIS_LABEL_KEY = 'yAxisLabel';
+    public static readonly X_AXIS_LABEL_ROTATE_KEY = 'xAxisLabelRotate';
+    public static readonly FLIP_AXIS_KEY = 'flipAxis';
 
     // Visual Map Config Keys
-    public static VISUAL_MAP_MIN_KEY = 'visualMapMin';
-    public static VISUAL_MAP_MAX_KEY = 'visualMapMax';
-    public static VISUAL_MAP_COLOR_KEY = 'visualMapColor';
-    public static VISUAL_MAP_ORIENT_KEY = 'visualMapOrient';
-    public static VISUAL_MAP_TYPE_KEY = 'visualMapType';
+    public static readonly VISUAL_MAP_MIN_KEY = 'visualMapMin';
+    public static readonly VISUAL_MAP_MAX_KEY = 'visualMapMax';
+    public static readonly VISUAL_MAP_COLOR_KEY = 'visualMapColor';
+    public static readonly VISUAL_MAP_ORIENT_KEY = 'visualMapOrient';
+    public static readonly VISUAL_MAP_TYPE_KEY = 'visualMapType';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller);
@@ -72,7 +74,7 @@ export abstract class BaseChartView extends BasesView {
         }
     }
 
-    private onResizeDebounce = debounce(() => {
+    private readonly onResizeDebounce = debounce(() => {
         this.chart?.resize();
     }, 100, true);
 
@@ -110,7 +112,7 @@ export abstract class BaseChartView extends BasesView {
             this.chart = echarts.init(this.chartEl, this.isDarkMode() ? 'dark' : undefined);
         }
 
-        const data = this.data.data as unknown as Record<string, unknown>[];
+        const data = this.data.data as unknown as readonly Record<string, unknown>[];
         const option = this.getChartOption(data);
 
         if (option) {
@@ -121,9 +123,9 @@ export abstract class BaseChartView extends BasesView {
         }
     }
 
-    protected abstract getChartOption(data: Record<string, unknown>[]): EChartsOption | null;
+    protected abstract getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null;
 
-    private updateChartTheme = (): void => {
+    private readonly updateChartTheme = (): void => {
         if (this.chart) {
             this.chart.dispose();
             this.chart = echarts.init(this.chartEl, this.isDarkMode() ? 'dark' : undefined);
@@ -135,6 +137,7 @@ export abstract class BaseChartView extends BasesView {
         return document.body.classList.contains('theme-dark');
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getCommonViewOptions(): ViewOption[] {
         return [
             {
@@ -189,6 +192,7 @@ export abstract class BaseChartView extends BasesView {
         ];
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getAxisViewOptions(): ViewOption[] {
         return [
             {
@@ -217,6 +221,7 @@ export abstract class BaseChartView extends BasesView {
         ];
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getVisualMapViewOptions(): ViewOption[] {
         return [
             {

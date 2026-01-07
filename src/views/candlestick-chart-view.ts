@@ -9,18 +9,18 @@ import type BarePlugin from '../main';
 
 export class CandlestickChartView extends BaseChartView {
     // Unique keys for Candlestick
-    public static OPEN_PROP_KEY = 'openProp';
-    public static CLOSE_PROP_KEY = 'closeProp';
-    public static LOW_PROP_KEY = 'lowProp';
-    public static HIGH_PROP_KEY = 'highProp';
+    public static readonly OPEN_PROP_KEY = 'openProp';
+    public static readonly CLOSE_PROP_KEY = 'closeProp';
+    public static readonly LOW_PROP_KEY = 'lowProp';
+    public static readonly HIGH_PROP_KEY = 'highProp';
 
-    type = 'candlestick-chart';
+    readonly type = 'candlestick-chart';
 
     constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {
         super(controller, containerEl, plugin);
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
         const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
@@ -48,6 +48,7 @@ export class CandlestickChartView extends BaseChartView {
         });
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {

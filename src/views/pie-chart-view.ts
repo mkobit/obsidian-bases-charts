@@ -5,13 +5,13 @@ import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
 
 export class PieChartView extends BaseChartView {
-    type = 'pie-chart';
+    readonly type = 'pie-chart';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller, scrollEl, plugin);
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         // For Pie chart, X-Axis prop serves as "Name" (Category) and Y-Axis prop as "Value"
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
@@ -25,6 +25,7 @@ export class PieChartView extends BaseChartView {
         });
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         // Pie charts don't necessarily need 'Series Property' in the same way stacked bars do,
         // but we can reuse common options.

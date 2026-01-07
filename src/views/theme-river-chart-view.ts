@@ -5,7 +5,7 @@ import { transformDataToChartOption } from '../charts/transformer';
 import type { EChartsOption } from 'echarts';
 
 export class ThemeRiverChartView extends BaseChartView {
-    type = 'theme-river-chart';
+    readonly type = 'theme-river-chart';
 
     constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {
         super(controller, containerEl, plugin);
@@ -15,6 +15,7 @@ export class ThemeRiverChartView extends BaseChartView {
     getDisplayText(): string { return 'Theme river'; }
     getIcon(): string { return 'waves'; }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {
@@ -43,7 +44,7 @@ export class ThemeRiverChartView extends BaseChartView {
         ];
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         const dateProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string;
         const themeProp = this.config.get(BaseChartView.SERIES_PROP_KEY) as string;
