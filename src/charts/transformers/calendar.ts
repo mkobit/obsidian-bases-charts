@@ -35,29 +35,32 @@ export function createCalendarChartOption(
         ? (() => {
             // Return default empty state
             const now = new Date();
-            const minDate = now.toISOString().substring(0, 10);
+            const minDate = now.toISOString().slice(0, 10);
             return {
                  calendar: { range: [minDate, minDate] },
                  series: []
             };
         })()
         : (() => {
-            const dates = R.map(calendarData, d => d.date);
-            const values = R.map(calendarData, d => d.value);
+            // Sort data by date for range calculation and predictable order
+            const sortedData = R.sortBy(calendarData, d => d.date);
+            const minDate = sortedData[0]!.date;
+            const maxDate = sortedData[sortedData.length - 1]!.date;
 
-            // Calculate Min/Max without mutation
-            const sortedDates = R.sortBy(dates, x => x);
-            const minDate = R.first(sortedDates) ?? dates[0]!;
-            const maxDate = R.last(sortedDates) ?? dates[0]!;
+            // Calculate min/max values in one pass using reduce
+            const range = sortedData.reduce((acc, d) => ({
+                min: Math.min(acc.min, d.value),
+                max: Math.max(acc.max, d.value)
+            }), { min: Infinity, max: -Infinity });
 
-            const dataMin = values.length > 0 ? Math.min(...values) : 0;
-            const dataMax = values.length > 0 ? Math.max(...values) : 10;
+            const dataMin = range.min === Infinity ? 0 : range.min;
+            const dataMax = range.max === -Infinity ? 10 : range.max;
 
             const minVal = options?.visualMapMin !== undefined ? options.visualMapMin : dataMin;
             const maxVal = options?.visualMapMax !== undefined ? options.visualMapMax : dataMax;
 
             // ECharts expects [date, value] array
-            const seriesData = R.map(calendarData, d => [d.date, d.value]);
+            const seriesData = R.map(sortedData, d => [d.date, d.value]);
 
             const calendarItem: CalendarComponentOption = {
                 top: 120,
