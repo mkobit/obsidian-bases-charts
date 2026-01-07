@@ -95,4 +95,22 @@ export default tseslint.config(
 		"main.js",
 		"coverage"
 	]),
+    // Node scripts
+    {
+        files: ["scripts/**/*.ts", "esbuild.config.mjs", "version-bump.mjs"],
+        languageOptions: {
+            globals: {
+                ...globals.node
+            }
+        },
+        rules: {
+            "functional/no-conditional-statements": "off",
+            "functional/no-expression-statements": "off",
+            "functional/immutable-data": "off",
+            "@typescript-eslint/no-unsafe-assignment": "off",
+            "@typescript-eslint/no-unsafe-member-access": "off",
+            "import/no-nodejs-modules": "off",
+            "no-console": "off"
+        }
+    }
 );
