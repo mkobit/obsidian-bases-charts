@@ -38,13 +38,4 @@ jobs:
                   path: coverage/
             - name: Report coverage
               if: always()
-              run: |
-                  echo "## Coverage Summary" >> $GITHUB_STEP_SUMMARY
-                  echo "| File | Stmts | Branch | Funcs | Lines |" >> $GITHUB_STEP_SUMMARY
-                  echo "|---|---|---|---|---|" >> $GITHUB_STEP_SUMMARY
-                  node -e "
-                    const fs = require('fs');
-                    const coverage = require('./coverage/coverage-summary.json');
-                    const total = coverage.total;
-                    console.log(\`| Total | \${total.statements.pct}% | \${total.branches.pct}% | \${total.functions.pct}% | \${total.lines.pct}% |\`);
-                  " >> $GITHUB_STEP_SUMMARY
+              run: node scripts/report-coverage.cjs
