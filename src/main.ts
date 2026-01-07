@@ -2,10 +2,12 @@ import { Plugin } from 'obsidian';
 import { DEFAULT_SETTINGS, BarePluginSettings, SettingTab } from "./settings";
 import { BarChartView } from './views/bar-chart-view';
 import { LineChartView } from './views/line-chart-view';
+import { LinesChartView } from './views/lines-chart-view';
 import { PieChartView } from './views/pie-chart-view';
 import { StackedBarChartView } from './views/stacked-bar-chart-view';
 import { AreaChartView } from './views/area-chart-view';
 import { ScatterChartView } from './views/scatter-chart-view';
+import { EffectScatterChartView } from './views/effect-scatter-chart-view';
 import { BubbleChartView } from './views/bubble-chart-view';
 import { RadarChartView } from './views/radar-chart-view';
 import { FunnelChartView } from './views/funnel-chart-view';
@@ -50,6 +52,13 @@ export default class BarePlugin extends Plugin {
 			options: () => LineChartView.getViewOptions(),
 		});
 
+		this.registerBasesView('lines-chart', {
+			name: 'Lines Chart',
+			icon: 'route', // Using route icon if available, or similar
+			factory: (controller, containerEl) => new LinesChartView(controller, containerEl, this),
+			options: () => LinesChartView.getViewOptions(),
+		});
+
 		this.registerBasesView('pie-chart', {
 			name: 'Pie Chart',
 			icon: 'pie-chart',
@@ -83,6 +92,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'crosshair', // or dot-network
 			factory: (controller, containerEl) => new ScatterChartView(controller, containerEl, this),
 			options: () => ScatterChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('effect-scatter-chart', {
+			name: 'Effect Scatter Chart',
+			icon: 'disc', // Similar to scatter but with effects
+			factory: (controller, containerEl) => new EffectScatterChartView(controller, containerEl, this),
+			options: () => EffectScatterChartView.getViewOptions(),
 		});
 
 		this.registerBasesView('bubble-chart', {

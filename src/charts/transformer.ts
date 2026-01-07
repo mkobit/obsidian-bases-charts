@@ -20,6 +20,10 @@ import {
     ScatterTransformerOptions
 } from './transformers/scatter';
 import {
+    createEffectScatterChartOption,
+    EffectScatterTransformerOptions
+} from './transformers/effect-scatter';
+import {
     createHeatmapChartOption,
     HeatmapTransformerOptions
 } from './transformers/heatmap';
@@ -65,12 +69,18 @@ import {
     createCartesianChartOption,
     CartesianTransformerOptions
 } from './transformers/cartesian';
+import {
+    createLinesChartOption,
+    LinesTransformerOptions
+} from './transformers/lines';
 import { BaseTransformerOptions, ChartType } from './transformers/base';
 
 export type ChartTransformerOptions =
     | CartesianTransformerOptions
+    | LinesTransformerOptions
     | PieTransformerOptions
     | ScatterTransformerOptions
+    | EffectScatterTransformerOptions
     | RadarTransformerOptions
     | GaugeTransformerOptions
     | HeatmapTransformerOptions
@@ -92,6 +102,7 @@ const transformerMap: Record<
 > = {
     bar: (data, xProp, yProp, options) => createCartesianChartOption(data, xProp, yProp, 'bar', options as CartesianTransformerOptions),
     line: (data, xProp, yProp, options) => createCartesianChartOption(data, xProp, yProp, 'line', options as CartesianTransformerOptions),
+    lines: (data, xProp, yProp, options) => createLinesChartOption(data, xProp, yProp, options as LinesTransformerOptions),
     pie: (data, xProp, yProp, options) => createPieChartOption(data, xProp, yProp, options as PieTransformerOptions),
     rose: (data, xProp, yProp, options) => createPieChartOption(data, xProp, yProp, { ...(options as PieTransformerOptions), roseType: 'area' }),
     funnel: (data, xProp, yProp, options) => createFunnelChartOption(data, xProp, yProp, options as BaseTransformerOptions),
@@ -99,6 +110,7 @@ const transformerMap: Record<
     gauge: (data, _, yProp, options) => createGaugeChartOption(data, yProp, options as GaugeTransformerOptions),
     bubble: (data, xProp, yProp, options) => createScatterChartOption(data, xProp, yProp, options as ScatterTransformerOptions),
     scatter: (data, xProp, yProp, options) => createScatterChartOption(data, xProp, yProp, options as ScatterTransformerOptions),
+    effectScatter: (data, xProp, yProp, options) => createEffectScatterChartOption(data, xProp, yProp, options as EffectScatterTransformerOptions),
     heatmap: (data, xProp, yProp, options) => createHeatmapChartOption(data, xProp, yProp, options as HeatmapTransformerOptions),
     candlestick: (data, xProp, _, options) => createCandlestickChartOption(data, xProp, options as CandlestickTransformerOptions),
     treemap: (data, xProp, yProp, options) => createTreemapChartOption(data, xProp, yProp, options as TreemapTransformerOptions),
@@ -131,8 +143,10 @@ export function transformDataToChartOption(
 
 export {type ChartType, type BaseTransformerOptions} from './transformers/base';
 export {type CartesianTransformerOptions} from './transformers/cartesian';
+export {type LinesTransformerOptions} from './transformers/lines';
 export {type PieTransformerOptions} from './transformers/pie';
 export {type ScatterTransformerOptions} from './transformers/scatter';
+export {type EffectScatterTransformerOptions} from './transformers/effect-scatter';
 export {type RadarTransformerOptions} from './transformers/radar';
 export {type GaugeTransformerOptions} from './transformers/gauge';
 export {type HeatmapTransformerOptions} from './transformers/heatmap';
