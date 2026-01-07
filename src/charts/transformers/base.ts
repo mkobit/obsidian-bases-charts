@@ -12,6 +12,8 @@ export interface VisualMapOptions {
 
 export interface BaseTransformerOptions extends VisualMapOptions {
     legend?: boolean;
+    legendPosition?: 'top' | 'bottom' | 'left' | 'right';
+    legendOrient?: 'horizontal' | 'vertical';
     xAxisLabel?: string;
     yAxisLabel?: string;
     xAxisLabelRotate?: number;

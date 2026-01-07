@@ -1,6 +1,6 @@
 import type { EChartsOption, ThemeRiverSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
-import { safeToString, getNestedValue } from './utils';
+import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface ThemeRiverTransformerOptions extends BaseTransformerOptions {
@@ -68,6 +68,6 @@ export function createThemeRiverChartOption(
             boundaryGap: [0, 0]
         },
         series: [seriesItem],
-        ...(options?.legend ? { legend: {} } : {})
+        ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
     };
 }

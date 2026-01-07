@@ -28,11 +28,10 @@ export class ParallelChartView extends BaseChartView {
     getChartOption(data: Record<string, unknown>[]): EChartsOption {
         const xProp = this.config.get('xProp') as string;
         const seriesProp = this.config.get('seriesProp') as string;
-        const showLegend = this.config.get('showLegend') as boolean;
 
         const options: ParallelTransformerOptions = {
-            seriesProp,
-            legend: showLegend
+            ...this.getCommonTransformerOptions(),
+            seriesProp
         };
 
         return transformDataToChartOption(data, xProp, '', 'parallel', options);

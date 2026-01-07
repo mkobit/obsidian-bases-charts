@@ -47,14 +47,13 @@ export class ThemeRiverChartView extends BaseChartView {
         const dateProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string;
         const themeProp = this.config.get(BaseChartView.SERIES_PROP_KEY) as string;
-        const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
 
         if (!dateProp || !valueProp || !themeProp) {return null;}
 
         return transformDataToChartOption(data, dateProp, '', 'themeRiver', {
+            ...this.getCommonTransformerOptions(),
             valueProp: valueProp,
             themeProp: themeProp, // Ensure this property is added to ChartTransformerOptions
-            legend: showLegend
         });
     }
 }

@@ -1,6 +1,6 @@
 import type { EChartsOption, RadarSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
-import { safeToString, getNestedValue } from './utils';
+import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface RadarTransformerOptions extends BaseTransformerOptions {
@@ -82,9 +82,10 @@ export function createRadarChartOption(
         tooltip: {
             trigger: 'item'
         },
-        ...(options?.legend ? {
+        ...(getLegendOption(options) ? {
             legend: {
-                data: uniqueSeries
+                data: R.keys(seriesData),
+                ...getLegendOption(options)
             }
         } : {})
     };

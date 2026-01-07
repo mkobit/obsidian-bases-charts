@@ -29,4 +29,13 @@ jobs:
             - name: Lint
               run: pnpm run lint
             - name: Test
-              run: pnpm run test
+              run: pnpm run test:coverage
+            - name: Upload coverage
+              uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4
+              if: always()
+              with:
+                  name: coverage
+                  path: coverage/
+            - name: Report coverage
+              if: always()
+              run: pnpm tsx scripts/report-coverage.ts

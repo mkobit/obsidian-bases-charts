@@ -13,14 +13,8 @@ export class LineChartView extends BaseChartView {
 
     protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
-        const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
-        const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;
-        const xAxisLabelRotate = Number(this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY));
-        const flipAxis = this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean;
-
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY);
-        const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
 
         // Get line specific options safely
         const smooth = this.getBooleanOption('smooth');
@@ -32,14 +26,10 @@ export class LineChartView extends BaseChartView {
         }
 
         return transformDataToChartOption(data, xProp, yProp, 'line', {
-            xAxisLabel,
-            yAxisLabel,
-            xAxisLabelRotate,
-            flipAxis,
+            ...this.getCommonTransformerOptions(),
             smooth,
             showSymbol,
             areaStyle,
-            legend: showLegend,
             seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined
         });
     }

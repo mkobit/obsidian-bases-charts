@@ -1,6 +1,6 @@
 import type { EChartsOption, HeatmapSeriesOption, DatasetComponentOption, VisualMapComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
-import { safeToString, getNestedValue } from './utils';
+import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface HeatmapTransformerOptions extends BaseTransformerOptions {
@@ -98,7 +98,8 @@ export function createHeatmapChartOption(
             splitArea: { show: true }
         },
         visualMap: visualMapOption,
-        series: [seriesItem]
+        series: [seriesItem],
+        ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
     };
 
     return opt;
