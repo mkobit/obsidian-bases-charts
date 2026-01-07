@@ -1,6 +1,6 @@
 import type { EChartsOption, GraphSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
-import { safeToString, getNestedValue } from './utils';
+import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface GraphTransformerOptions extends BaseTransformerOptions {
@@ -114,11 +114,10 @@ export function createGraphChartOption(
 
     const opt: EChartsOption = {
         tooltip: {},
-        ...(options?.legend ? {
+        ...(getLegendOption(options) ? {
             legend: {
                 data: categoriesList,
-                orient: 'vertical',
-                left: 'left'
+                ...getLegendOption(options)
             }
         } : {}),
         series: [seriesItem]

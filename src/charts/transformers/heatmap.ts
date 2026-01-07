@@ -1,6 +1,6 @@
 import type { EChartsOption, HeatmapSeriesOption, DatasetComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
-import { safeToString, getNestedValue } from './utils';
+import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface HeatmapTransformerOptions extends BaseTransformerOptions {

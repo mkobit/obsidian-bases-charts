@@ -1,6 +1,6 @@
 import type { EChartsOption, ScatterSeriesOption, DatasetComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
-import { safeToString, getNestedValue } from './utils';
+import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface ScatterTransformerOptions extends BaseTransformerOptions {
@@ -114,7 +114,7 @@ export function createScatterChartOption(
         tooltip: {
             trigger: 'item'
         },
-        ...(options?.legend ? { legend: {} } : {})
+        ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
     };
 
     return opt;

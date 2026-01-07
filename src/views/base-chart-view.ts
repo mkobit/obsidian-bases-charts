@@ -21,6 +21,8 @@ export abstract class BaseChartView extends BasesView {
     public static Y_AXIS_PROP_KEY = 'yAxisProp';
     public static SERIES_PROP_KEY = 'seriesProp';
     public static LEGEND_KEY = 'showLegend';
+    public static LEGEND_POSITION_KEY = 'legendPosition';
+    public static LEGEND_ORIENT_KEY = 'legendOrient';
     public static HEIGHT_KEY = 'height';
 
     // New Config Keys (Made public for easier access in subclasses without casting)
@@ -73,6 +75,18 @@ export abstract class BaseChartView extends BasesView {
 
     onDataUpdated(): void {
         this.renderChart();
+    }
+
+    protected getCommonTransformerOptions(): import('../charts/transformers/base').BaseTransformerOptions {
+        return {
+            legend: this.config.get(BaseChartView.LEGEND_KEY) as boolean,
+            legendPosition: this.config.get(BaseChartView.LEGEND_POSITION_KEY) as any,
+            legendOrient: this.config.get(BaseChartView.LEGEND_ORIENT_KEY) as any,
+            flipAxis: this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean,
+            xAxisLabel: this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string,
+            yAxisLabel: this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string,
+            xAxisLabelRotate: Number(this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY) || 0),
+        };
     }
 
     protected renderChart(): void {
@@ -139,6 +153,26 @@ export abstract class BaseChartView extends BasesView {
                 type: 'toggle',
                 key: BaseChartView.LEGEND_KEY,
             },
+            {
+                displayName: 'Legend Position',
+                type: 'dropdown',
+                key: BaseChartView.LEGEND_POSITION_KEY,
+                options: {
+                    'top': 'Top',
+                    'bottom': 'Bottom',
+                    'left': 'Left',
+                    'right': 'Right'
+                }
+            } as any,
+            {
+                displayName: 'Legend Orientation',
+                type: 'dropdown',
+                key: BaseChartView.LEGEND_ORIENT_KEY,
+                options: {
+                    'horizontal': 'Horizontal',
+                    'vertical': 'Vertical'
+                }
+            } as any,
             {
                 displayName: 'Height',
                 type: 'text',

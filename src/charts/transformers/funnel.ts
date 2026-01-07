@@ -1,6 +1,6 @@
 import type { EChartsOption, FunnelSeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
-import { safeToString, getNestedValue } from './utils';
+import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export function createFunnelChartOption(
@@ -39,12 +39,7 @@ export function createFunnelChartOption(
             trigger: 'item',
             formatter: '{b} : {c}%'
         },
-        ...(options?.legend ? {
-            legend: {
-                orient: 'vertical',
-                left: 'left'
-            }
-        } : {})
+        ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
     };
 
     return opt;

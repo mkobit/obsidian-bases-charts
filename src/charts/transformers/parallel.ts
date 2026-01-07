@@ -1,6 +1,6 @@
 import type { EChartsOption, SeriesOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
-import { getNestedValue, safeToString } from './utils';
+import { getNestedValue, safeToString, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface ParallelTransformerOptions extends BaseTransformerOptions {
@@ -124,9 +124,10 @@ export function createParallelChartOption(
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
                 parallelAxis: parallelAxis as any,
                 series: series,
-                ...(options?.legend ? {
+                ...(getLegendOption(options) ? {
                     legend: {
-                        data: R.keys(seriesDataMap)
+                        data: R.keys(seriesDataMap),
+                        ...getLegendOption(options)
                     }
                 } : {})
             };

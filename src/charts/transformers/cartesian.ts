@@ -1,6 +1,6 @@
 import type { EChartsOption, SeriesOption, LineSeriesOption, BarSeriesOption, DatasetComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
-import { safeToString, getNestedValue } from './utils';
+import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface CartesianTransformerOptions extends BaseTransformerOptions {
@@ -146,7 +146,7 @@ export function createCartesianChartOption(
         grid: {
             containLabel: true
         },
-        ...(options?.legend ? { legend: {} } : {})
+        ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
     };
 
     return opt;
