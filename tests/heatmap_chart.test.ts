@@ -1,6 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { transformDataToChartOption } from '../src/charts/transformer';
-import type { HeatmapSeriesOption } from 'echarts';
+import type { DatasetComponentOption } from 'echarts';
+
+interface HeatmapSourceItem {
+    x: string;
+    y: string;
+    value: number;
+}
 
 describe('Heatmap Transformer', () => {
     it('should create a valid heatmap option', () => {
@@ -35,16 +41,21 @@ describe('Heatmap Transformer', () => {
         expect(yAxis.data).toContain('Evening');
 
         // Check Series
-        const series = option.series as HeatmapSeriesOption[];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const series = option.series as any[];
         expect(series).toHaveLength(1);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(series[0]?.type).toBe('heatmap');
 
         // Check Data Mapping
-        // Mon (index 0 or 1), Morning (index 0 or 1), val 5
-        const seriesData = series[0]?.data as number[][];
-        expect(seriesData).toHaveLength(4);
-        // Each point is [xIndex, yIndex, value]
-        expect(seriesData[0]).toHaveLength(3);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(series[0].datasetIndex).toBe(0);
+        const dataset = option.dataset as DatasetComponentOption[];
+        expect(dataset).toBeDefined();
+
+        const source = dataset[0]!.source as HeatmapSourceItem[];
+        expect(source).toHaveLength(4);
+        expect(source[0]).toEqual({ x: 'Mon', y: 'Morning', value: 5 });
     });
 
     it('should handle missing values gracefully', () => {
@@ -54,11 +65,12 @@ describe('Heatmap Transformer', () => {
         ];
 
         const option = transformDataToChartOption(data, 'x', 'y', 'heatmap', { valueProp: 'val' });
-        const series = option.series as HeatmapSeriesOption[];
-        const seriesData = series[0]?.data as number[][];
+        const dataset = option.dataset as DatasetComponentOption[];
+
+        const source = dataset[0]!.source as HeatmapSourceItem[];
 
         // Should produce 0 for missing value based on current logic
-        const missingPoint = seriesData?.find(d => d[2] === 0);
+        const missingPoint = source.find(d => d.value === 0);
         expect(missingPoint).toBeDefined();
     });
 

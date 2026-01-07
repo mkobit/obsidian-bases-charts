@@ -1,4 +1,4 @@
-import type { EChartsOption, PieSeriesOption } from 'echarts';
+import type { EChartsOption, PieSeriesOption, DatasetComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 import * as R from 'remeda';
@@ -13,7 +13,9 @@ export function createPieChartOption(
     valueProp: string,
     options?: PieTransformerOptions
 ): EChartsOption {
-    const seriesData = R.map(data, item => {
+    // 1. Normalize Data for Dataset
+    // Structure: { name, value }
+    const normalizedData = R.map(data, item => {
         const valRaw = getNestedValue(item, nameProp);
         const name = valRaw === undefined || valRaw === null ? 'Unknown' : safeToString(valRaw);
 
@@ -24,9 +26,17 @@ export function createPieChartOption(
         };
     });
 
+    const dataset: DatasetComponentOption = {
+        source: normalizedData
+    };
+
     const seriesItem: PieSeriesOption = {
         type: 'pie',
-        data: seriesData,
+        datasetIndex: 0,
+        encode: {
+            itemName: 'name',
+            value: 'value'
+        },
         radius: options?.roseType ? [20, '75%'] : '50%',
         ...(options?.roseType ? { roseType: options.roseType } : {}),
         emphasis: {
@@ -39,6 +49,7 @@ export function createPieChartOption(
     };
 
     const opt: EChartsOption = {
+        dataset: [dataset],
         series: [seriesItem],
         tooltip: {
             trigger: 'item'
