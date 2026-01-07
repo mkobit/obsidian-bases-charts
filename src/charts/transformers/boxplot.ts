@@ -6,11 +6,11 @@ import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface BoxplotTransformerOptions extends BaseTransformerOptions {
-    seriesProp?: string;
+    readonly seriesProp?: string;
 }
 
 export function createBoxplotChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     xProp: string,
     yProp: string,
     options?: BoxplotTransformerOptions
@@ -58,7 +58,7 @@ export function createBoxplotChartOption(
     );
 
     // 3. Transform to ECharts series
-    const seriesOptions: BoxplotSeriesOption[] = R.pipe(
+    const seriesOptions: readonly BoxplotSeriesOption[] = R.pipe(
         seriesMap,
         R.entries(),
         R.map(([sName, catMap]) => {
@@ -68,14 +68,14 @@ export function createBoxplotChartOption(
 
             // Use standard ECharts data tool to process the data
             // prepareBoxplotData expects [ [v1, v2...], [v3, v4...] ] where each inner array is a category
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
-            const result = prepareBoxplotData(rawData);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            const result = prepareBoxplotData(rawData) as { readonly boxData: readonly (readonly number[])[] };
 
             return {
                 name: sName,
                 type: 'boxplot' as const,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                data: result.boxData
+                // eslint-disable-next-line functional/prefer-readonly-type
+                data: result.boxData as unknown as number[][]
             };
         })
     );
@@ -104,7 +104,8 @@ export function createBoxplotChartOption(
                 show: true
             }
         },
-        series: seriesOptions,
+        // eslint-disable-next-line functional/prefer-readonly-type
+        series: seriesOptions as unknown as BoxplotSeriesOption[],
         ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
     };
     return opt;

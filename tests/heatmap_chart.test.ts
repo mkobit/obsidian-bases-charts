@@ -3,9 +3,9 @@ import { transformDataToChartOption } from '../src/charts/transformer';
 import type { DatasetComponentOption } from 'echarts';
 
 interface HeatmapSourceItem {
-    x: string;
-    y: string;
-    value: number;
+    readonly x: string;
+    readonly y: string;
+    readonly value: number;
 }
 
 describe('Heatmap Transformer', () => {
@@ -42,7 +42,7 @@ describe('Heatmap Transformer', () => {
 
         // Check Series
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const series = option.series as any[];
+        const series = option.series as readonly any[];
         expect(series).toHaveLength(1);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(series[0]?.type).toBe('heatmap');
@@ -50,10 +50,10 @@ describe('Heatmap Transformer', () => {
         // Check Data Mapping
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(series[0].datasetIndex).toBe(0);
-        const dataset = option.dataset as DatasetComponentOption[];
+        const dataset = option.dataset as readonly DatasetComponentOption[];
         expect(dataset).toBeDefined();
 
-        const source = dataset[0]!.source as HeatmapSourceItem[];
+        const source = dataset[0]!.source as readonly HeatmapSourceItem[];
         expect(source).toHaveLength(4);
         expect(source[0]).toEqual({ x: 'Mon', y: 'Morning', value: 5 });
     });
@@ -65,9 +65,9 @@ describe('Heatmap Transformer', () => {
         ];
 
         const option = transformDataToChartOption(data, 'x', 'y', 'heatmap', { valueProp: 'val' });
-        const dataset = option.dataset as DatasetComponentOption[];
+        const dataset = option.dataset as readonly DatasetComponentOption[];
 
-        const source = dataset[0]!.source as HeatmapSourceItem[];
+        const source = dataset[0]!.source as readonly HeatmapSourceItem[];
 
         // Should produce 0 for missing value based on current logic
         const missingPoint = source.find(d => d.value === 0);

@@ -16,7 +16,7 @@ describe('createEffectScatterChartOption', () => {
         });
 
         expect(option.series).toHaveLength(2); // S1, S2
-        const series = option.series as EffectScatterSeriesOption[];
+        const series = option.series as readonly EffectScatterSeriesOption[];
         expect(series[0]!.type).toBe('effectScatter');
         expect(series[0]!.name).toBe('S1');
         expect(series[1]!.type).toBe('effectScatter');
@@ -27,7 +27,7 @@ describe('createEffectScatterChartOption', () => {
             sizeProp: 'size'
         });
 
-        const series = option.series as EffectScatterSeriesOption[];
+        const series = option.series as readonly EffectScatterSeriesOption[];
         expect(series[0]!.symbolSize).toBeDefined();
 
         // Check symbolSize function

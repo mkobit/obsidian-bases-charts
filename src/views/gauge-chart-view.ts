@@ -5,13 +5,13 @@ import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
 
 export class GaugeChartView extends BaseChartView {
-    type = 'gauge-chart';
+    readonly type = 'gauge-chart';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller, scrollEl, plugin);
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         // Cast BaseChartView to any to access new props
         const minVal = Number(this.config.get(BaseChartView.MIN_VALUE_KEY));
@@ -27,6 +27,7 @@ export class GaugeChartView extends BaseChartView {
         });
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {

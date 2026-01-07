@@ -8,7 +8,7 @@ import { transformDataToChartOption } from '../charts/transformer';
 import type { EChartsOption } from 'echarts';
 
 export class SunburstChartView extends BaseChartView {
-    type = 'sunburst-chart';
+    readonly type = 'sunburst-chart';
 
     constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {
         super(controller, containerEl, plugin);
@@ -26,6 +26,7 @@ export class SunburstChartView extends BaseChartView {
         return 'disc';
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {
@@ -43,7 +44,7 @@ export class SunburstChartView extends BaseChartView {
         ];
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         const pathProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string;
 

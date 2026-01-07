@@ -13,14 +13,14 @@ describe('Treemap Transformer', () => {
         const option = transformDataToChartOption(data, 'name', 'val', 'treemap', {});
 
         expect(option).toBeDefined();
-        const series = option.series as TreemapSeriesOption[];
+        const series = option.series as readonly TreemapSeriesOption[];
         expect(series).toBeDefined();
         if (!series) {return;} // Guard for TS
 
         expect(series.length).toBe(1);
         expect(series[0]!.type).toBe('treemap');
 
-        const seriesData = series[0]!.data as {name: string, value: number}[];
+        const seriesData = series[0]!.data as readonly {readonly name: string, readonly value: number}[];
         expect(seriesData.length).toBe(2);
 
         const itemA = seriesData.find(d => d.name === 'A');
@@ -42,11 +42,11 @@ describe('Treemap Transformer', () => {
         ];
 
         const option = transformDataToChartOption(data, 'name', 'val', 'treemap', {});
-        const series = option.series as TreemapSeriesOption[];
+        const series = option.series as readonly TreemapSeriesOption[];
 
         // Safety check before access
         if (series && series[0]) {
-             const seriesData = series[0].data as unknown[];
+             const seriesData = series[0].data as readonly unknown[];
              expect(seriesData.length).toBe(0);
         } else {
              // If series is missing, that might be valid or invalid depending on impl,

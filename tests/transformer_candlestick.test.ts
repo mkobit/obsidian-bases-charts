@@ -20,7 +20,7 @@ describe('Transformer - Candlestick Chart', () => {
         // Basic Structure
         expect(option).toHaveProperty('series');
 
-        const series = option.series as CandlestickSeriesOption[];
+        const series = option.series as readonly CandlestickSeriesOption[];
         expect(Array.isArray(series)).toBe(true);
         expect(series.length).toBe(1);
         expect(series[0]!.type).toBe('candlestick');
@@ -33,7 +33,7 @@ describe('Transformer - Candlestick Chart', () => {
         }
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const dataset = option.dataset as { source: any[] }[];
+        const dataset = option.dataset as readonly { readonly source: readonly any[] }[];
         const source = dataset[0]!.source;
 
         expect(source).toHaveLength(3);
@@ -70,7 +70,7 @@ describe('Transformer - Candlestick Chart', () => {
              throw new Error('Dataset is missing or empty');
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const dataset = option.dataset as { source: any[] }[];
+        const dataset = option.dataset as readonly { readonly source: readonly any[] }[];
         const source = dataset[0]!.source;
 
         // Should ignore invalid rows (open: null and low: undefined should cause rows to be skipped)
@@ -91,7 +91,7 @@ describe('Transformer - Candlestick Chart', () => {
              throw new Error('Dataset is missing or empty');
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const dataset = option.dataset as { source: any[] }[];
+        const dataset = option.dataset as readonly { readonly source: readonly any[] }[];
         const source = dataset[0]!.source;
 
         expect(source).toHaveLength(3);

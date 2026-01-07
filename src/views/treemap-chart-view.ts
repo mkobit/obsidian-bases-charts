@@ -8,7 +8,7 @@ import { transformDataToChartOption } from '../charts/transformer';
 import type { EChartsOption } from 'echarts';
 
 export class TreemapChartView extends BaseChartView {
-    type = 'treemap-chart';
+    readonly type = 'treemap-chart';
 
     constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {
         super(controller, containerEl, plugin);
@@ -26,6 +26,7 @@ export class TreemapChartView extends BaseChartView {
         return 'layout-grid'; // Use an icon that looks like a treemap
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {
@@ -43,7 +44,7 @@ export class TreemapChartView extends BaseChartView {
         ];
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         const nameProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const valueProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY) as string;
 

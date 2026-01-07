@@ -6,8 +6,8 @@ import * as R from 'remeda';
  * Interface representing a simple data point (x, y).
  */
 export interface XYPoint {
-    x: number;
-    y: number;
+    readonly x: number;
+    readonly y: number;
 }
 
 /**
@@ -15,8 +15,8 @@ export interface XYPoint {
  * Using Temporal.PlainDate or ZonedDateTime for date.
  */
 export interface TimePoint {
-    date: Temporal.PlainDate | Temporal.ZonedDateTime;
-    value: number;
+    readonly date: Temporal.PlainDate | Temporal.ZonedDateTime;
+    readonly value: number;
 }
 
 /**
@@ -24,14 +24,14 @@ export interface TimePoint {
  */
 export type ChartDataPoint = Record<string, unknown>;
 
-export type ChartDataset<T> = T[];
+export type ChartDataset<T> = readonly T[];
 
 // --- Arbitraries ---
 
 /**
  * Arbitrary for a generic chart data point with specific keys.
  */
-export function chartDataPointArbitrary(keys: string[]): fc.Arbitrary<ChartDataPoint> {
+export function chartDataPointArbitrary(keys: readonly string[]): fc.Arbitrary<ChartDataPoint> {
     const pairs = keys.map(key => [
         key,
         fc.oneof(
@@ -40,7 +40,7 @@ export function chartDataPointArbitrary(keys: string[]): fc.Arbitrary<ChartDataP
             fc.string(),
             fc.constant(null)
         )
-    ] as [string, fc.Arbitrary<unknown>]);
+    ] as readonly [string, fc.Arbitrary<unknown>]);
 
     const keyArbs = Object.fromEntries(pairs);
     return fc.record(keyArbs);
@@ -50,14 +50,16 @@ export function chartDataPointArbitrary(keys: string[]): fc.Arbitrary<ChartDataP
  * Arbitrary for a dataset (array of points).
  */
 export function chartDatasetArbitrary<T>(
-    pointArbitrary: fc.Arbitrary<T> | string[],
+    pointArbitrary: fc.Arbitrary<T> | readonly string[],
     minLength = 0,
     maxLength = 20
 ): fc.Arbitrary<ChartDataset<T>> {
-    const arb = Array.isArray(pointArbitrary)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ? chartDataPointArbitrary(pointArbitrary) as any as fc.Arbitrary<T>
-        : pointArbitrary;
+    // Array.isArray(readonly array) is strict in TS, but runtime works.
+    // Casting pointArbitrary to any[] or readonly string[] for the check is tricky if generics involved.
+    // But Array.isArray(pointArbitrary) acts as type guard if T matches.
+    const arb = (Array.isArray(pointArbitrary) || Object.prototype.toString.call(pointArbitrary) === '[object Array]')
+        ? chartDataPointArbitrary(pointArbitrary as readonly string[]) as unknown as fc.Arbitrary<T>
+        : pointArbitrary as fc.Arbitrary<T>;
 
     return fc.array(arb, { minLength, maxLength });
 }

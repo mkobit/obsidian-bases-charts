@@ -16,7 +16,7 @@ describe('Cartesian Chart Transformer (Dataset Architecture)', () => {
 
         expect(option.dataset).toBeDefined();
         // Check source dataset
-        const datasets = (Array.isArray(option.dataset) ? option.dataset : [option.dataset]) as DatasetComponentOption[];
+        const datasets = (Array.isArray(option.dataset) ? option.dataset : [option.dataset]) as readonly DatasetComponentOption[];
         expect(datasets[0]).toHaveProperty('source');
 
         expect(datasets[0]!.source).toHaveLength(4);
@@ -35,7 +35,7 @@ describe('Cartesian Chart Transformer (Dataset Architecture)', () => {
         const option = createCartesianChartOption(data, 'date', 'value', 'line', { seriesProp: 'category' });
 
         expect(option.dataset).toBeDefined();
-        const datasets = (Array.isArray(option.dataset) ? option.dataset : [option.dataset]) as DatasetComponentOption[];
+        const datasets = (Array.isArray(option.dataset) ? option.dataset : [option.dataset]) as readonly DatasetComponentOption[];
 
         // Should have 1 source + 2 filtered datasets (A and B)
         expect(datasets.length).toBeGreaterThanOrEqual(3);
@@ -52,7 +52,7 @@ describe('Cartesian Chart Transformer (Dataset Architecture)', () => {
 
         // Verify series reference these datasets
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const series = option.series as any[];
+        const series = option.series as readonly any[];
         expect(series).toHaveLength(2);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(series[0].datasetIndex).toBeGreaterThan(0);

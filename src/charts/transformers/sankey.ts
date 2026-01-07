@@ -4,11 +4,11 @@ import { safeToString, getNestedValue } from './utils';
 import * as R from 'remeda';
 
 export interface SankeyTransformerOptions extends BaseTransformerOptions {
-    valueProp?: string;
+    readonly valueProp?: string;
 }
 
 export function createSankeyChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     sourceProp: string,
     targetProp: string,
     options?: SankeyTransformerOptions
@@ -33,7 +33,7 @@ export function createSankeyChartOption(
                 })()
                 : null;
         }),
-        R.filter((x): x is { source: string; target: string; value: number } => x !== null)
+        R.filter((x): x is { readonly source: string; readonly target: string; readonly value: number } => x !== null)
     );
 
     const nodes = R.pipe(

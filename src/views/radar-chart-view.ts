@@ -5,13 +5,13 @@ import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
 
 export class RadarChartView extends BaseChartView {
-    type = 'radar-chart';
+    readonly type = 'radar-chart';
 
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller, scrollEl, plugin);
     }
 
-    protected getChartOption(data: Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
         // For Radar:
         // X-Axis Prop -> Indicator (Category)
         // Y-Axis Prop -> Value
@@ -30,6 +30,7 @@ export class RadarChartView extends BaseChartView {
         });
     }
 
+    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         // Clone options to avoid side effects on other charts
         const commonOpts = BaseChartView.getCommonViewOptions().map(opt => ({...opt}));

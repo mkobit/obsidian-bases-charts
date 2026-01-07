@@ -13,7 +13,7 @@ export type FrontmatterValue =
     | Temporal.PlainDate
     | Temporal.ZonedDateTime
     | Temporal.Instant
-    | FrontmatterValue[];
+    | readonly FrontmatterValue[];
 
 /**
  * A strongly-typed representation of an Obsidian frontmatter block.
@@ -24,11 +24,11 @@ export type Frontmatter = Record<string, FrontmatterValue>;
  * Interface representing a test Obsidian file.
  */
 export interface TestFile {
-    name: string;
-    path: string[];
-    filename: string;
-    frontmatter: Frontmatter;
-    content?: string;
+    readonly name: string;
+    readonly path: readonly string[];
+    readonly filename: string;
+    readonly frontmatter: Frontmatter;
+    readonly content?: string;
 }
 
 /**
@@ -36,6 +36,7 @@ export interface TestFile {
  * Implements functional updates internally even if interface is fluent.
  */
 export class ObsidianFileBuilder {
+    // eslint-disable-next-line functional/prefer-readonly-type
     private file: TestFile;
 
     private constructor(name: string) {
@@ -51,23 +52,23 @@ export class ObsidianFileBuilder {
         return new ObsidianFileBuilder(name);
     }
 
-    withPath(segments: string[]): ObsidianFileBuilder {
-        this.file.path = segments;
+    withPath(segments: readonly string[]): ObsidianFileBuilder {
+        this.file = { ...this.file, path: segments };
         return this;
     }
 
     withProperty(key: string, value: FrontmatterValue): ObsidianFileBuilder {
-        this.file.frontmatter[key] = value;
+        this.file = { ...this.file, frontmatter: { ...this.file.frontmatter, [key]: value } };
         return this;
     }
 
     withFrontmatter(frontmatter: Frontmatter): ObsidianFileBuilder {
-        this.file.frontmatter = { ...this.file.frontmatter, ...frontmatter };
+        this.file = { ...this.file, frontmatter: { ...this.file.frontmatter, ...frontmatter } };
         return this;
     }
 
     withContent(content: string): ObsidianFileBuilder {
-        this.file.content = content;
+        this.file = { ...this.file, content: content };
         return this;
     }
 
@@ -105,7 +106,7 @@ export class ObsidianFileBuilder {
 
         if (Array.isArray(val)) {
             // Recursive call for array items
-            return `[${val.map(v => this.formatYamlValue(v)).join(', ')}]`;
+            return `[${val.map((v: FrontmatterValue) => this.formatYamlValue(v)).join(', ')}]`;
         }
 
         if (typeof val === 'string') {return `"${val}"`;}

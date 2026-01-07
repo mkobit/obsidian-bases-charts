@@ -4,9 +4,9 @@ import { transformDataToChartOption } from '../src/charts/transformer';
 import type { SunburstSeriesOption, TreeSeriesOption } from 'echarts';
 
 interface HierarchyNode {
-    name: string;
-    value?: number;
-    children?: HierarchyNode[];
+    readonly name: string;
+    readonly value?: number;
+    readonly children?: readonly HierarchyNode[];
 }
 
 describe('Transformer - Hierarchical Charts', () => {
@@ -33,7 +33,7 @@ describe('Transformer - Hierarchical Charts', () => {
             expect(series.type).toBe('sunburst');
 
             // Cast data to known structure
-            const hierarchy = series.data as unknown as HierarchyNode[];
+            const hierarchy = series.data as unknown as readonly HierarchyNode[];
             expect(hierarchy).toHaveLength(2); // A and D
 
             const nodeA = hierarchy.find(n => n.name === 'A');
@@ -59,7 +59,7 @@ describe('Transformer - Hierarchical Charts', () => {
             }
 
             const series = option.series[0] as SunburstSeriesOption;
-            const hierarchy = series.data as unknown as HierarchyNode[];
+            const hierarchy = series.data as unknown as readonly HierarchyNode[];
 
             expect(hierarchy[0]!.children![0]!.value).toBeUndefined();
         });
@@ -79,7 +79,7 @@ describe('Transformer - Hierarchical Charts', () => {
 
             const series = option.series[0] as TreeSeriesOption;
 
-            const dataRoot = series.data as unknown as HierarchyNode[];
+            const dataRoot = series.data as unknown as readonly HierarchyNode[];
             // Should be wrapped in "Root" because there are two top-level nodes (A and C)
             expect(dataRoot).toHaveLength(1);
             expect(dataRoot[0]!.name).toBe('Root');
@@ -99,7 +99,7 @@ describe('Transformer - Hierarchical Charts', () => {
 
             const series = option.series[0] as TreeSeriesOption;
 
-            const dataRoot = series.data as unknown as HierarchyNode[];
+            const dataRoot = series.data as unknown as readonly HierarchyNode[];
             // Should be just A, no wrapper
             expect(dataRoot).toHaveLength(1);
             expect(dataRoot[0]!.name).toBe('A');

@@ -90,7 +90,8 @@ export type ChartTransformerOptions =
     | SankeyTransformerOptions
     | GraphTransformerOptions
     | SunburstTransformerOptions
-    | TreeTransformerOptions
+    // TreeTransformerOptions is just BaseTransformerOptions alias, so it is duplicated in union
+    // | TreeTransformerOptions
     | ThemeRiverTransformerOptions
     | CalendarTransformerOptions
     | ParallelTransformerOptions;
@@ -98,7 +99,7 @@ export type ChartTransformerOptions =
 // Map of chart types to their transformer functions
 const transformerMap: Record<
     string,
-    (data: Record<string, unknown>[], xProp: string, yProp: string, options: unknown) => EChartsOption
+    (data: readonly Record<string, unknown>[], xProp: string, yProp: string, options: unknown) => EChartsOption
 > = {
     bar: (data, xProp, yProp, options) => createCartesianChartOption(data, xProp, yProp, 'bar', options as CartesianTransformerOptions),
     line: (data, xProp, yProp, options) => createCartesianChartOption(data, xProp, yProp, 'line', options as CartesianTransformerOptions),
@@ -128,7 +129,7 @@ const transformerMap: Record<
  * Transforms Bases data into an ECharts option object.
  */
 export function transformDataToChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     xProp: string,
     yProp: string,
     chartType: ChartType = 'bar',

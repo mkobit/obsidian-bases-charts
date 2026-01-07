@@ -16,14 +16,14 @@ describe('createLinesChartOption', () => {
             seriesProp: 'group'
         });
 
-        const series = option.series as LinesSeriesOption[];
+        const series = option.series as readonly LinesSeriesOption[];
         expect(series).toHaveLength(2); // A, B
         expect(series[0]!.type).toBe('lines');
         expect(series[0]!.coordinateSystem).toBe('cartesian2d');
         expect(series[0]!.data).toHaveLength(2);
 
         // Check coords
-        const data0 = series[0]!.data as { coords: number[][] }[];
+        const data0 = series[0]!.data as readonly { readonly coords: readonly (readonly number[])[] }[];
         expect(data0[0]!.coords).toEqual([[10, 10], [20, 20]]);
     });
 

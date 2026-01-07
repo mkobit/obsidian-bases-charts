@@ -4,18 +4,18 @@ import { createCandlestickChartOption } from '../src/charts/transformers/candles
 import type { DatasetComponentOption, ScatterSeriesOption, CandlestickSeriesOption, VisualMapComponentOption } from 'echarts';
 
 interface ScatterDatasetSource {
-    x: string;
-    y: number;
-    s: string;
-    size?: number;
+    readonly x: string;
+    readonly y: number;
+    readonly s: string;
+    readonly size?: number;
 }
 
 interface CandlestickDatasetSource {
-    x: string;
-    open: number;
-    close: number;
-    low: number;
-    high: number;
+    readonly x: string;
+    readonly open: number;
+    readonly close: number;
+    readonly low: number;
+    readonly high: number;
 }
 
 describe('Transformers with Dataset - Extended', () => {
@@ -32,8 +32,8 @@ describe('Transformers with Dataset - Extended', () => {
             expect(option.dataset).toBeDefined();
             expect(Array.isArray(option.dataset)).toBe(true);
 
-            const datasets = option.dataset as DatasetComponentOption[];
-            const sourceDataset = datasets[0] as { source: ScatterDatasetSource[] };
+            const datasets = option.dataset as readonly DatasetComponentOption[];
+            const sourceDataset = datasets[0] as { readonly source: readonly ScatterDatasetSource[] };
             expect(sourceDataset.source).toHaveLength(3);
 
             // Check normalization
@@ -41,7 +41,7 @@ describe('Transformers with Dataset - Extended', () => {
 
             // Expect G1 and G2 series
             expect(option.series).toHaveLength(2);
-            const series = option.series as ScatterSeriesOption[];
+            const series = option.series as readonly ScatterSeriesOption[];
 
             expect(series[0]?.datasetIndex).toBe(1);
             expect(series[0]?.encode).toEqual({ x: 'x', y: 'y', tooltip: ['x', 'y', 'size', 's'] });
@@ -78,12 +78,12 @@ describe('Transformers with Dataset - Extended', () => {
             const option = createCandlestickChartOption(data, 'date');
 
             expect(option.dataset).toBeDefined();
-            const datasets = option.dataset as DatasetComponentOption[];
-            const sourceDataset = datasets[0] as { source: CandlestickDatasetSource[] };
+            const datasets = option.dataset as readonly DatasetComponentOption[];
+            const sourceDataset = datasets[0] as { readonly source: readonly CandlestickDatasetSource[] };
 
             expect(sourceDataset.source).toEqual([{ x: '2023-01-01', open: 10, close: 20, low: 5, high: 25 }]);
 
-            const series = option.series as CandlestickSeriesOption[];
+            const series = option.series as readonly CandlestickSeriesOption[];
             expect(series[0]?.encode).toEqual({ x: 'x', y: ['open', 'close', 'low', 'high'] });
         });
     });

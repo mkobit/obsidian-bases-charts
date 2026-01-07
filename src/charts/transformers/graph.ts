@@ -4,12 +4,12 @@ import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface GraphTransformerOptions extends BaseTransformerOptions {
-    valueProp?: string; // For edge weight
-    categoryProp?: string; // For node category
+    readonly valueProp?: string; // For edge weight
+    readonly categoryProp?: string; // For node category
 }
 
 export function createGraphChartOption(
-    data: Record<string, unknown>[],
+    data: readonly Record<string, unknown>[],
     sourceProp: string,
     targetProp: string,
     options?: GraphTransformerOptions

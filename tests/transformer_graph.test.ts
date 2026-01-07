@@ -18,12 +18,12 @@ describe('Graph Transformer', () => {
         const result = transformDataToChartOption(data, 'source', 'target', 'graph', options);
 
         expect(result.series).toHaveLength(1);
-        const series = (result.series as GraphSeriesOption[])[0]!;
+        const series = (result.series as readonly GraphSeriesOption[])[0]!;
         expect(series.type).toBe('graph');
         expect(series.layout).toBe('force');
 
         // Nodes should include A, B, C, D
-        const nodeNames = (series.data as { name: string }[]).map((n) => n.name).sort();
+        const nodeNames = (series.data as readonly { readonly name: string }[]).map((n) => n.name).sort();
         expect(nodeNames).toEqual(['A', 'B', 'C', 'D']);
 
         // Links
@@ -49,7 +49,7 @@ describe('Graph Transformer', () => {
         };
 
         const result = transformDataToChartOption(data, 'source', 'target', 'graph', options);
-        const series = (result.series as GraphSeriesOption[])[0]!;
+        const series = (result.series as readonly GraphSeriesOption[])[0]!;
 
         // Check categories list
         expect(series.categories).toEqual(expect.arrayContaining([
@@ -63,7 +63,7 @@ describe('Graph Transformer', () => {
         // Node C ... depends. If it was never a source with category, it remains undefined.
         // Wait, C appears as target in row 2 (cat2 applies to B), and source in row 3 (no cat).
 
-        const nodes = series.data as { name: string; category?: string }[];
+        const nodes = series.data as readonly { readonly name: string; readonly category?: string }[];
         const nodeA = nodes.find(n => n.name === 'A');
         const nodeB = nodes.find(n => n.name === 'B');
 
@@ -81,7 +81,7 @@ describe('Graph Transformer', () => {
         ];
 
         const result = transformDataToChartOption(data, 'source', 'target', 'graph');
-        const series = (result.series as GraphSeriesOption[])[0]!;
+        const series = (result.series as readonly GraphSeriesOption[])[0]!;
 
         expect(series.links).toHaveLength(1);
         expect(series.links![0]).toEqual({ source: 'A', target: 'B', value: undefined });
