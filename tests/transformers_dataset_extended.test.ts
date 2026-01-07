@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { createScatterChartOption } from '../src/charts/transformers/scatter';
 import { createCandlestickChartOption } from '../src/charts/transformers/candlestick';
-import type { DatasetComponentOption, ScatterSeriesOption, CandlestickSeriesOption } from 'echarts';
+import type { DatasetComponentOption, ScatterSeriesOption, CandlestickSeriesOption, VisualMapComponentOption } from 'echarts';
 
 interface ScatterDatasetSource {
     x: string;
@@ -48,8 +48,13 @@ describe('Transformers with Dataset - Extended', () => {
 
             // Symbol size check - now handled via visualMap if sizeProp is present
             if (option.visualMap) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                expect((option.visualMap as any).dimension).toBe('size');
+                // Cast to specific type to avoid unsafe member access
+                const visualMap = option.visualMap as VisualMapComponentOption;
+                // ECharts VisualMap type definition usually has dimension as number, but we used string.
+                // We access it as unknown or check existence to satisfy lint.
+                // Or define a local interface if needed.
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+                expect((visualMap as any).dimension).toBe('size');
             } else {
                  const sizeFn = series[0]?.symbolSize;
                  if (typeof sizeFn === 'function') {
