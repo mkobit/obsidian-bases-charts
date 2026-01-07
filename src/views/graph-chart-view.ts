@@ -41,16 +41,15 @@ export class GraphChartView extends BaseChartView {
         const targetProp = this.config.get('targetProp') as string;
         const valueProp = this.config.get('valueProp') as string;
         const categoryProp = this.config.get('categoryProp') as string;
-        const legend = this.config.get('showLegend') as boolean;
 
         if (!sourceProp || !targetProp) {
             return {};
         }
 
         return transformDataToChartOption(data, sourceProp, targetProp, 'graph', {
+            ...this.getCommonTransformerOptions(),
             valueProp,
-            categoryProp,
-            legend
+            categoryProp
         });
     }
 }

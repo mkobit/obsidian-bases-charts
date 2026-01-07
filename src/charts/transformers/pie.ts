@@ -1,6 +1,6 @@
 import type { EChartsOption, PieSeriesOption, DatasetComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
-import { safeToString, getNestedValue } from './utils';
+import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export interface PieTransformerOptions extends BaseTransformerOptions {
@@ -54,12 +54,7 @@ export function createPieChartOption(
         tooltip: {
             trigger: 'item'
         },
-        ...(options?.legend ? {
-            legend: {
-                orient: 'vertical',
-                left: 'left'
-            }
-        } : {})
+        ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
     };
 
     return opt;

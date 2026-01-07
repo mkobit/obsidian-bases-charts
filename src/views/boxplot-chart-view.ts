@@ -16,15 +16,14 @@ export class BoxplotChartView extends BaseChartView {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY) as string;
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY) as string;
-        const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
 
         if (!xProp || !yProp) {
             return null;
         }
 
         return transformDataToChartOption(data, xProp, yProp, 'boxplot', {
-            seriesProp: seriesProp,
-            legend: showLegend
+            ...this.getCommonTransformerOptions(),
+            seriesProp: seriesProp
         });
     }
 

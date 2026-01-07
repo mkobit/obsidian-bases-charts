@@ -19,14 +19,13 @@ export class RadarChartView extends BaseChartView {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY);
-        const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
 
         if (typeof xProp !== 'string' || typeof yProp !== 'string') {
             return null;
         }
 
         return transformDataToChartOption(data, xProp, yProp, 'radar', {
-            legend: showLegend,
+            ...this.getCommonTransformerOptions(),
             seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined
         });
     }
