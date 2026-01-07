@@ -1,10 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { transformDataToChartOption } from '../../src/charts/transformer';
-import type { PieSeriesOption } from 'echarts';
-
-interface TestOption {
-    series: PieSeriesOption[];
-}
+import type { PieSeriesOption, DatasetComponentOption } from 'echarts';
 
 describe('Rose Chart Transformer', () => {
     it('should create a rose chart with roseType: area', () => {
@@ -13,7 +9,7 @@ describe('Rose Chart Transformer', () => {
             { category: 'B', value: 20 }
         ];
 
-        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as TestOption;
+        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as { series: PieSeriesOption[], dataset: { source: unknown[] }[] };
 
         expect(option.series).toBeDefined();
         expect(option.series).toHaveLength(1);
@@ -33,7 +29,7 @@ describe('Rose Chart Transformer', () => {
             { category: 'B', value: 20 }
         ];
 
-        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as { series: PieSeriesOption[], dataset: { source: unknown[] }[] };
+        const option = transformDataToChartOption(data, 'category', 'value', 'rose') as unknown as { series: PieSeriesOption[], dataset: DatasetComponentOption[] };
         const [series] = option.series;
         if (!series) {
             expect(series).toBeDefined();
@@ -42,8 +38,10 @@ describe('Rose Chart Transformer', () => {
 
         expect(series.datasetIndex).toBe(0);
         expect(option.dataset).toBeDefined();
-        expect(option.dataset[0].source).toHaveLength(2);
-        expect(option.dataset[0].source).toEqual([
+
+        const source = option.dataset[0]!.source;
+        expect(source).toHaveLength(2);
+        expect(source).toEqual([
             { name: 'A', value: 10 },
             { name: 'B', value: 20 }
         ]);

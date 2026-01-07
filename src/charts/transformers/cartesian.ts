@@ -76,7 +76,7 @@ export function createCartesianChartOption(
         // If not, we use the source dataset (index 0)
         const datasetIndex = seriesProp ? idx + 1 : 0;
 
-        const base: SeriesOption = {
+        const base = {
             name: name,
             datasetIndex: datasetIndex,
             // Encode: Map dimensions to axes

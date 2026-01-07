@@ -18,14 +18,17 @@ describe('Cartesian Chart Transformer (Dataset Architecture)', () => {
         // Check source dataset
         const datasets = (Array.isArray(option.dataset) ? option.dataset : [option.dataset]) as DatasetComponentOption[];
         expect(datasets[0]).toHaveProperty('source');
-        expect(datasets[0].source).toHaveLength(4);
+
+        expect(datasets[0]!.source).toHaveLength(4);
 
         // Check series
         const series = (Array.isArray(option.series) ? option.series[0] : option.series) as SeriesOption;
         expect(series).toBeDefined();
         expect(series.type).toBe('bar');
-        expect(series.datasetIndex).toBeDefined();
-        expect(series.encode).toEqual({ x: 'x', y: 'y', tooltip: ['x', 'y', 's'] });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        expect((series as any).datasetIndex).toBeDefined();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        expect((series as any).encode).toEqual({ x: 'x', y: 'y', tooltip: ['x', 'y', 's'] });
     });
 
     it('should handle series grouping using filter transforms', () => {
@@ -42,13 +45,18 @@ describe('Cartesian Chart Transformer (Dataset Architecture)', () => {
         expect(transformDatasets.length).toBe(2);
 
         // Explicit check for transform type
-        const t = transformDatasets[0].transform;
-        expect((t as unknown as { type: string }).type).toBe('filter');
+
+        const t = transformDatasets[0]!.transform;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        expect((t as any).type).toBe('filter');
 
         // Verify series reference these datasets
-        const series = option.series as SeriesOption[];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const series = option.series as any[];
         expect(series).toHaveLength(2);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(series[0].datasetIndex).toBeGreaterThan(0);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(series[1].datasetIndex).toBeGreaterThan(0);
     });
 
