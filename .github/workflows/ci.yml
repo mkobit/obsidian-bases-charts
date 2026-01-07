@@ -29,4 +29,22 @@ jobs:
             - name: Lint
               run: pnpm run lint
             - name: Test
-              run: pnpm run test
+              run: pnpm run test:coverage
+            - name: Upload coverage
+              uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4
+              if: always()
+              with:
+                  name: coverage
+                  path: coverage/
+            - name: Report coverage
+              if: always()
+              run: |
+                  echo "## Coverage Summary" >> $GITHUB_STEP_SUMMARY
+                  echo "| File | Stmts | Branch | Funcs | Lines |" >> $GITHUB_STEP_SUMMARY
+                  echo "|---|---|---|---|---|" >> $GITHUB_STEP_SUMMARY
+                  node -e "
+                    const fs = require('fs');
+                    const coverage = require('./coverage/coverage-summary.json');
+                    const total = coverage.total;
+                    console.log(\`| Total | \${total.statements.pct}% | \${total.branches.pct}% | \${total.functions.pct}% | \${total.lines.pct}% |\`);
+                  " >> $GITHUB_STEP_SUMMARY
