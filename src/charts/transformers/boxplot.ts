@@ -9,6 +9,20 @@ export interface BoxplotTransformerOptions extends BaseTransformerOptions {
     readonly seriesProp?: string;
 }
 
+interface BoxplotResult {
+    // eslint-disable-next-line functional/prefer-readonly-type
+    boxData: number[][];
+}
+
+function isBoxplotResult(data: unknown): data is BoxplotResult {
+    return (
+        typeof data === 'object' &&
+        data !== null &&
+        'boxData' in data &&
+        Array.isArray((data as { readonly boxData: unknown }).boxData)
+    );
+}
+
 export function createBoxplotChartOption(
     data: readonly Record<string, unknown>[],
     xProp: string,
@@ -69,16 +83,19 @@ export function createBoxplotChartOption(
             // Use standard ECharts data tool to process the data
             // prepareBoxplotData expects [ [v1, v2...], [v3, v4...] ] where each inner array is a category
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            const result = prepareBoxplotData(rawData) as {
-                // eslint-disable-next-line functional/prefer-readonly-type
-                boxData: number[][]
-            };
+            const result: unknown = prepareBoxplotData(rawData);
 
-            return {
-                name: sName,
-                type: 'boxplot' as const,
-                data: result.boxData
-            };
+            return !isBoxplotResult(result)
+                ? {
+                    name: sName,
+                    type: 'boxplot' as const,
+                    data: []
+                }
+                : {
+                    name: sName,
+                    type: 'boxplot' as const,
+                    data: result.boxData
+                };
         })
     );
 
