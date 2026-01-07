@@ -69,13 +69,15 @@ export function createBoxplotChartOption(
             // Use standard ECharts data tool to process the data
             // prepareBoxplotData expects [ [v1, v2...], [v3, v4...] ] where each inner array is a category
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            const result = prepareBoxplotData(rawData) as { readonly boxData: readonly (readonly number[])[] };
+            const result = prepareBoxplotData(rawData) as {
+                // eslint-disable-next-line functional/prefer-readonly-type
+                boxData: number[][]
+            };
 
             return {
                 name: sName,
                 type: 'boxplot' as const,
-                // eslint-disable-next-line functional/prefer-readonly-type
-                data: result.boxData as unknown as number[][]
+                data: result.boxData
             };
         })
     );
@@ -104,8 +106,7 @@ export function createBoxplotChartOption(
                 show: true
             }
         },
-        // eslint-disable-next-line functional/prefer-readonly-type
-        series: seriesOptions as unknown as BoxplotSeriesOption[],
+        series: [...seriesOptions],
         ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
     };
     return opt;
