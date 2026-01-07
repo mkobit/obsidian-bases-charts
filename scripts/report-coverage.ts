@@ -20,11 +20,12 @@ try {
 | Total | ${total.statements.pct}% | ${total.branches.pct}% | ${total.functions.pct}% | ${total.lines.pct}% |
 `;
 
+    // Always print to console for visibility in logs
+    console.log(summary);
+
     // Append to GITHUB_STEP_SUMMARY if available
     if (process.env.GITHUB_STEP_SUMMARY) {
         fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);
-    } else {
-        console.log(summary);
     }
 } catch (error) {
     console.error('Error reading coverage report:', error);
