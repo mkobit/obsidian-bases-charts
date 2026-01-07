@@ -95,4 +95,13 @@ export default tseslint.config(
 		"main.js",
 		"coverage"
 	]),
+    // Node scripts
+    {
+        files: ["scripts/**/*.cjs", "esbuild.config.mjs", "version-bump.mjs"],
+        languageOptions: {
+            globals: {
+                ...globals.node
+            }
+        }
+    }
 );
