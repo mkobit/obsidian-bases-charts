@@ -1,16 +1,16 @@
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
 
 const coveragePath = path.resolve(process.cwd(), 'coverage/coverage-summary.json');
 
 if (!fs.existsSync(coveragePath)) {
-    console.log('No coverage report found.');
-    // We don't exit with error to avoid failing the workflow step if coverage is just missing
-    process.exit(0);
+    console.error('Error: No coverage report found at', coveragePath);
+    process.exit(1);
 }
 
 try {
-    const coverage = require(coveragePath);
+    const content = fs.readFileSync(coveragePath, 'utf-8');
+    const coverage = JSON.parse(content);
     const total = coverage.total;
 
     const summary = `

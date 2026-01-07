@@ -38,4 +38,4 @@ jobs:
                   path: coverage/
             - name: Report coverage
               if: always()
-              run: node scripts/report-coverage.cjs
+              run: pnpm tsx scripts/report-coverage.ts
