@@ -93,7 +93,8 @@ export function createHeatmapChartOption(
             left: 'center',
             bottom: '0%'
         },
-        series: [seriesItem]
+        series: [seriesItem],
+        ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
     };
 
     return opt;

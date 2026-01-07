@@ -22,39 +22,30 @@ export function getNestedValue(obj: unknown, path: string): unknown {
 }
 
 export function getLegendOption(options?: BaseTransformerOptions): LegendComponentOption | undefined {
-    if (!options?.legend) return undefined;
+    const showLegend = options?.legend ?? false;
+    const position = options?.legendPosition ?? 'top';
 
-    const position = options.legendPosition || 'top';
     // Default orient based on position if not set
     // Left/Right -> Vertical
     // Top/Bottom -> Horizontal
     const defaultOrient = (position === 'left' || position === 'right') ? 'vertical' : 'horizontal';
-    const orient = options.legendOrient || defaultOrient;
+    const orient = options?.legendOrient ?? defaultOrient;
 
     const base: LegendComponentOption = {
         orient,
         type: 'scroll'
     };
 
-    switch (position) {
-        case 'bottom':
-            base.bottom = 0;
-            base.left = 'center';
-            break;
-        case 'left':
-            base.left = 0;
-            base.top = 'middle';
-            break;
-        case 'right':
-            base.right = 0;
-            base.top = 'middle';
-            break;
-        case 'top':
-        default:
-            base.top = 0;
-            base.left = 'center';
-            break;
-    }
+    const positionMap: Record<string, LegendComponentOption> = {
+        bottom: { bottom: 0, left: 'center' },
+        left: { left: 0, top: 'middle' },
+        right: { right: 0, top: 'middle' },
+        top: { top: 0, left: 'center' }
+    };
 
-    return base;
+    const posConfig = positionMap[position] ?? positionMap['top']!;
+
+    return showLegend
+        ? { ...base, ...posConfig }
+        : undefined;
 }

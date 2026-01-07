@@ -80,8 +80,8 @@ export abstract class BaseChartView extends BasesView {
     protected getCommonTransformerOptions(): import('../charts/transformers/base').BaseTransformerOptions {
         return {
             legend: this.config.get(BaseChartView.LEGEND_KEY) as boolean,
-            legendPosition: this.config.get(BaseChartView.LEGEND_POSITION_KEY) as any,
-            legendOrient: this.config.get(BaseChartView.LEGEND_ORIENT_KEY) as any,
+            legendPosition: this.config.get(BaseChartView.LEGEND_POSITION_KEY) as 'top' | 'bottom' | 'left' | 'right',
+            legendOrient: this.config.get(BaseChartView.LEGEND_ORIENT_KEY) as 'horizontal' | 'vertical',
             flipAxis: this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean,
             xAxisLabel: this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string,
             yAxisLabel: this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string,
@@ -163,7 +163,7 @@ export abstract class BaseChartView extends BasesView {
                     'left': 'Left',
                     'right': 'Right'
                 }
-            } as any,
+            } as ViewOption,
             {
                 displayName: 'Legend Orientation',
                 type: 'dropdown',
@@ -172,7 +172,7 @@ export abstract class BaseChartView extends BasesView {
                     'horizontal': 'Horizontal',
                     'vertical': 'Vertical'
                 }
-            } as any,
+            } as ViewOption,
             {
                 displayName: 'Height',
                 type: 'text',
