@@ -1,4 +1,4 @@
-import type { EChartsOption, HeatmapSeriesOption, DatasetComponentOption } from 'echarts';
+import type { EChartsOption, HeatmapSeriesOption, DatasetComponentOption, VisualMapComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
@@ -33,16 +33,17 @@ export function createHeatmapChartOption(
     });
 
     // 2. Identify Categories for Axes
-    // ECharts heatmap needs 'category' axes.
-    // We should compute unique values to ensure order, or let ECharts infer.
-    // Explicitly providing data to axes ensures all categories are shown even if not in dataset?
-    // Actually, for heatmap, we usually want all categories.
     const xAxisData = R.pipe(normalizedData, R.map(d => d.x), R.unique());
     const yAxisData = R.pipe(normalizedData, R.map(d => d.y), R.unique());
 
     const values = R.map(normalizedData, d => d.value);
-    const finalMinVal = values.length > 0 ? Math.min(...values) : 0;
-    const finalMaxVal = values.length > 0 ? Math.max(...values) : 10;
+
+    // Determine Min/Max
+    const dataMin = values.length > 0 ? Math.min(...values) : 0;
+    const dataMax = values.length > 0 ? Math.max(...values) : 10;
+
+    const finalMinVal = options?.visualMapMin !== undefined ? options.visualMapMin : dataMin;
+    const finalMaxVal = options?.visualMapMax !== undefined ? options.visualMapMax : dataMax;
 
     const dataset: DatasetComponentOption = {
         source: normalizedData
@@ -62,11 +63,22 @@ export function createHeatmapChartOption(
         }
     };
 
+    const visualMapOption: VisualMapComponentOption = {
+        min: finalMinVal,
+        max: finalMaxVal,
+        calculable: true,
+        orient: options?.visualMapOrient ?? 'horizontal',
+        left: options?.visualMapLeft ?? 'center',
+        bottom: options?.visualMapTop !== undefined ? undefined : '0%', // Default bottom if top not set
+        top: options?.visualMapTop,
+        type: options?.visualMapType ?? 'continuous',
+        ...(options?.visualMapColor ? { inRange: { color: options.visualMapColor } } : {})
+    };
+
     const opt: EChartsOption = {
         dataset: [dataset],
         tooltip: {
             position: 'top',
-            // Default tooltip for encoded data is usually fine, but we can customize if needed
         },
         grid: {
             height: '70%',
@@ -85,14 +97,7 @@ export function createHeatmapChartOption(
             name: yAxisLabel,
             splitArea: { show: true }
         },
-        visualMap: {
-            min: finalMinVal,
-            max: finalMaxVal,
-            calculable: true,
-            orient: 'horizontal',
-            left: 'center',
-            bottom: '0%'
-        },
+        visualMap: visualMapOption,
         series: [seriesItem],
         ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
     };

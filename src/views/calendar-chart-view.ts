@@ -28,7 +28,8 @@ export class CalendarChartView extends BaseChartView {
                 type: 'property',
                 key: BaseChartView.VALUE_PROP_KEY,
                 placeholder: 'Select value property',
-            }
+            },
+            ...BaseChartView.getVisualMapViewOptions()
         ];
     }
 
@@ -38,8 +39,19 @@ export class CalendarChartView extends BaseChartView {
 
         if (!dateProp) {return null;}
 
+        const visualMapMin = this.config.get(BaseChartView.VISUAL_MAP_MIN_KEY) ? Number(this.config.get(BaseChartView.VISUAL_MAP_MIN_KEY)) : undefined;
+        const visualMapMax = this.config.get(BaseChartView.VISUAL_MAP_MAX_KEY) ? Number(this.config.get(BaseChartView.VISUAL_MAP_MAX_KEY)) : undefined;
+        const visualMapColor = (this.config.get(BaseChartView.VISUAL_MAP_COLOR_KEY) as string)?.split(',').map(s => s.trim()).filter(Boolean);
+        const visualMapOrient = this.config.get(BaseChartView.VISUAL_MAP_ORIENT_KEY) as 'horizontal' | 'vertical' | undefined;
+        const visualMapType = this.config.get(BaseChartView.VISUAL_MAP_TYPE_KEY) as 'continuous' | 'piecewise' | undefined;
+
         return transformDataToChartOption(data, dateProp, '', 'calendar', {
-            valueProp: valueProp
+            valueProp: valueProp,
+            visualMapMin: !Number.isNaN(visualMapMin) ? visualMapMin : undefined,
+            visualMapMax: !Number.isNaN(visualMapMax) ? visualMapMax : undefined,
+            visualMapColor: visualMapColor && visualMapColor.length > 0 ? visualMapColor : undefined,
+            visualMapOrient,
+            visualMapType
         });
     }
 }

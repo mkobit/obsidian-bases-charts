@@ -1,4 +1,4 @@
-import type { EChartsOption, CalendarComponentOption, HeatmapSeriesOption } from 'echarts';
+import type { EChartsOption, CalendarComponentOption, HeatmapSeriesOption, VisualMapComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 import * as R from 'remeda';
@@ -42,19 +42,25 @@ export function createCalendarChartOption(
             };
         })()
         : (() => {
-            const dates = R.map(calendarData, d => d.date);
-            const values = R.map(calendarData, d => d.value);
+            // Sort data by date for range calculation and predictable order
+            const sortedData = R.sortBy(calendarData, d => d.date);
+            const minDate = sortedData[0]!.date;
+            const maxDate = sortedData[sortedData.length - 1]!.date;
 
-            // Calculate Min/Max without mutation
-            const sortedDates = R.sortBy(dates, x => x);
-            const minDate = R.first(sortedDates) ?? dates[0]!;
-            const maxDate = R.last(sortedDates) ?? dates[0]!;
+            // Calculate min/max values in one pass using reduce
+            const range = sortedData.reduce((acc, d) => ({
+                min: Math.min(acc.min, d.value),
+                max: Math.max(acc.max, d.value)
+            }), { min: Infinity, max: -Infinity });
 
-            const minVal = values.length > 0 ? Math.min(...values) : 0;
-            const maxVal = values.length > 0 ? Math.max(...values) : 10;
+            const dataMin = range.min === Infinity ? 0 : range.min;
+            const dataMax = range.max === -Infinity ? 10 : range.max;
+
+            const minVal = options?.visualMapMin !== undefined ? options.visualMapMin : dataMin;
+            const maxVal = options?.visualMapMax !== undefined ? options.visualMapMax : dataMax;
 
             // ECharts expects [date, value] array
-            const seriesData = R.map(calendarData, d => [d.date, d.value]);
+            const seriesData = R.map(sortedData, d => [d.date, d.value]);
 
             const calendarItem: CalendarComponentOption = {
                 top: 120,
@@ -75,6 +81,17 @@ export function createCalendarChartOption(
                 data: seriesData as any
             };
 
+            const visualMapOption: VisualMapComponentOption = {
+                min: minVal,
+                max: maxVal,
+                calculable: true,
+                orient: options?.visualMapOrient ?? 'horizontal',
+                left: options?.visualMapLeft ?? 'center',
+                top: options?.visualMapTop ?? 65,
+                type: options?.visualMapType ?? 'continuous',
+                ...(options?.visualMapColor ? { inRange: { color: options.visualMapColor } } : {})
+            };
+
             return {
                 tooltip: {
                     position: 'top',
@@ -85,14 +102,7 @@ export function createCalendarChartOption(
                             : `${p.value[0]} : ${p.value[1]}`;
                     }
                 },
-                visualMap: {
-                    min: minVal,
-                    max: maxVal,
-                    calculable: true,
-                    orient: 'horizontal',
-                    left: 'center',
-                    top: 65
-                },
+                visualMap: visualMapOption,
                 calendar: calendarItem,
                 series: [seriesItem]
             };

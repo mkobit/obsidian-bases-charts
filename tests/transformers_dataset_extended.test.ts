@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { createScatterChartOption } from '../src/charts/transformers/scatter';
 import { createCandlestickChartOption } from '../src/charts/transformers/candlestick';
-import type { DatasetComponentOption, ScatterSeriesOption, CandlestickSeriesOption } from 'echarts';
+import type { DatasetComponentOption, ScatterSeriesOption, CandlestickSeriesOption, VisualMapComponentOption } from 'echarts';
 
 interface ScatterDatasetSource {
     x: string;
@@ -46,15 +46,25 @@ describe('Transformers with Dataset - Extended', () => {
             expect(series[0]?.datasetIndex).toBe(1);
             expect(series[0]?.encode).toEqual({ x: 'x', y: 'y', tooltip: ['x', 'y', 'size', 's'] });
 
-            // Symbol size check
-            const sizeFn = series[0]?.symbolSize;
-            if (typeof sizeFn === 'function') {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-                expect(sizeFn({ size: 20 }, {} as any)).toBe(20);
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-                expect(sizeFn({ size: -5 }, {} as any)).toBe(0); // Should be max(0, val)
+            // Symbol size check - now handled via visualMap if sizeProp is present
+            if (option.visualMap) {
+                // Cast to specific type to avoid unsafe member access
+                const visualMap = option.visualMap as VisualMapComponentOption;
+                // ECharts VisualMap type definition usually has dimension as number, but we used string.
+                // We access it as unknown or check existence to satisfy lint.
+                // Or define a local interface if needed.
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+                expect((visualMap as any).dimension).toBe('size');
             } else {
-                throw new Error('symbolSize should be a function');
+                 const sizeFn = series[0]?.symbolSize;
+                 if (typeof sizeFn === 'function') {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+                    expect(sizeFn({ size: 20 }, {} as any)).toBe(20);
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+                    expect(sizeFn({ size: -5 }, {} as any)).toBe(0); // Should be max(0, val)
+                } else {
+                    throw new Error('symbolSize should be a function or visualMap should be defined');
+                }
             }
         });
     });

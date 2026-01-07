@@ -1,4 +1,4 @@
-import type { EChartsOption, ScatterSeriesOption, DatasetComponentOption } from 'echarts';
+import type { EChartsOption, ScatterSeriesOption, DatasetComponentOption, VisualMapComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
@@ -69,6 +69,35 @@ export function createScatterChartOption(
 
     const datasets: DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
 
+    // Calculate Min/Max for VisualMap if needed
+    const visualMapOption: VisualMapComponentOption | undefined = (!sizeProp && !options?.visualMapType)
+        ? undefined
+        : (() => {
+            const sizes = sizeProp ? R.pipe(normalizedData, R.map(d => d.size), R.filter((d): d is number => d !== undefined)) : [];
+            const dataMin = sizes.length > 0 ? Math.min(...sizes) : 0;
+            const dataMax = sizes.length > 0 ? Math.max(...sizes) : 10;
+
+            const finalMinVal = options?.visualMapMin !== undefined ? options.visualMapMin : dataMin;
+            const finalMaxVal = options?.visualMapMax !== undefined ? options.visualMapMax : dataMax;
+
+            return {
+                min: finalMinVal,
+                max: finalMaxVal,
+                calculable: true,
+                orient: options?.visualMapOrient ?? 'horizontal',
+                left: options?.visualMapLeft ?? 'center',
+                bottom: options?.visualMapTop !== undefined ? undefined : '0%', // Default bottom if top not set
+                top: options?.visualMapTop,
+                type: options?.visualMapType ?? 'continuous',
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+                dimension: (sizeProp ? 'size' : undefined) as any, // Map to the 'size' dimension in the dataset. Cast to any because types expect number but string is valid for object datasets.
+                inRange: {
+                     ...(options?.visualMapColor ? { color: options.visualMapColor } : {}),
+                     ...(sizeProp ? { symbolSize: [10, 50] } : {})
+                }
+            };
+        })();
+
     // 5. Build Series Options
     const seriesOptions: ScatterSeriesOption[] = seriesNames.map((name, idx) => {
         const datasetIndex = idx + 1;
@@ -82,7 +111,7 @@ export function createScatterChartOption(
                 y: 'y',
                 tooltip: sizeProp ? ['x', 'y', 'size', 's'] : ['x', 'y', 's']
             },
-            ...(sizeProp ? {
+            ...(sizeProp && !visualMapOption ? {
                 symbolSize: (val: unknown) => {
                     const point = val as ScatterDataPoint;
                     return (point && typeof point === 'object' && 'size' in point)
@@ -114,7 +143,8 @@ export function createScatterChartOption(
         tooltip: {
             trigger: 'item'
         },
-        ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
+        ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {}),
+        ...(visualMapOption ? { visualMap: visualMapOption } : {})
     };
 
     return opt;
