@@ -90,14 +90,13 @@ export default tseslint.config(
 		"dist",
 		"esbuild.config.mjs",
 		"eslint.config.js",
-		"version-bump.mjs",
 		"versions.json",
 		"main.js",
 		"coverage"
 	]),
     // Node scripts
     {
-        files: ["scripts/**/*.ts", "esbuild.config.mjs", "version-bump.mjs"],
+        files: ["scripts/**/*.ts", "esbuild.config.mjs"],
         languageOptions: {
             globals: {
                 ...globals.node
