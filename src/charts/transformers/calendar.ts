@@ -85,14 +85,9 @@ export function createCalendarChartOption(
                 orient: options?.visualMapOrient ?? 'horizontal',
                 left: options?.visualMapLeft ?? 'center',
                 top: options?.visualMapTop ?? 65,
-                type: options?.visualMapType ?? 'continuous'
+                type: options?.visualMapType ?? 'continuous',
+                ...(options?.visualMapColor ? { inRange: { color: options.visualMapColor } } : {})
             };
-
-            if (options?.visualMapColor) {
-                visualMapOption.inRange = {
-                    color: options.visualMapColor
-                };
-            }
 
             return {
                 tooltip: {
