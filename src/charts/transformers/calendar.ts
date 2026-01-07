@@ -1,4 +1,4 @@
-import type { EChartsOption, CalendarComponentOption, HeatmapSeriesOption } from 'echarts';
+import type { EChartsOption, CalendarComponentOption, HeatmapSeriesOption, VisualMapComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 import * as R from 'remeda';
@@ -35,7 +35,7 @@ export function createCalendarChartOption(
         ? (() => {
             // Return default empty state
             const now = new Date();
-            const minDate = now.toISOString().slice(0, 10);
+            const minDate = now.toISOString().substring(0, 10);
             return {
                  calendar: { range: [minDate, minDate] },
                  series: []
@@ -50,8 +50,11 @@ export function createCalendarChartOption(
             const minDate = R.first(sortedDates) ?? dates[0]!;
             const maxDate = R.last(sortedDates) ?? dates[0]!;
 
-            const minVal = values.length > 0 ? Math.min(...values) : 0;
-            const maxVal = values.length > 0 ? Math.max(...values) : 10;
+            const dataMin = values.length > 0 ? Math.min(...values) : 0;
+            const dataMax = values.length > 0 ? Math.max(...values) : 10;
+
+            const minVal = options?.visualMapMin !== undefined ? options.visualMapMin : dataMin;
+            const maxVal = options?.visualMapMax !== undefined ? options.visualMapMax : dataMax;
 
             // ECharts expects [date, value] array
             const seriesData = R.map(calendarData, d => [d.date, d.value]);
@@ -75,6 +78,22 @@ export function createCalendarChartOption(
                 data: seriesData as any
             };
 
+            const visualMapOption: VisualMapComponentOption = {
+                min: minVal,
+                max: maxVal,
+                calculable: true,
+                orient: options?.visualMapOrient ?? 'horizontal',
+                left: options?.visualMapLeft ?? 'center',
+                top: options?.visualMapTop ?? 65,
+                type: options?.visualMapType ?? 'continuous'
+            };
+
+            if (options?.visualMapColor) {
+                visualMapOption.inRange = {
+                    color: options.visualMapColor
+                };
+            }
+
             return {
                 tooltip: {
                     position: 'top',
@@ -85,14 +104,7 @@ export function createCalendarChartOption(
                             : `${p.value[0]} : ${p.value[1]}`;
                     }
                 },
-                visualMap: {
-                    min: minVal,
-                    max: maxVal,
-                    calculable: true,
-                    orient: 'horizontal',
-                    left: 'center',
-                    top: 65
-                },
+                visualMap: visualMapOption,
                 calendar: calendarItem,
                 series: [seriesItem]
             };

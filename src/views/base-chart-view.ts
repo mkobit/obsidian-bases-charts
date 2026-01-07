@@ -35,6 +35,13 @@ export abstract class BaseChartView extends BasesView {
     public static X_AXIS_LABEL_ROTATE_KEY = 'xAxisLabelRotate';
     public static FLIP_AXIS_KEY = 'flipAxis';
 
+    // Visual Map Config Keys
+    public static VISUAL_MAP_MIN_KEY = 'visualMapMin';
+    public static VISUAL_MAP_MAX_KEY = 'visualMapMax';
+    public static VISUAL_MAP_COLOR_KEY = 'visualMapColor';
+    public static VISUAL_MAP_ORIENT_KEY = 'visualMapOrient';
+    public static VISUAL_MAP_TYPE_KEY = 'visualMapType';
+
     constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
         super(controller);
         this.scrollEl = scrollEl;
@@ -172,6 +179,41 @@ export abstract class BaseChartView extends BasesView {
                 displayName: 'Flip Axis',
                 type: 'toggle',
                 key: BaseChartView.FLIP_AXIS_KEY,
+            }
+        ];
+    }
+
+    static getVisualMapViewOptions(): ViewOption[] {
+        return [
+            {
+                displayName: 'Visual Map Min',
+                type: 'text',
+                key: BaseChartView.VISUAL_MAP_MIN_KEY,
+                placeholder: 'Min value (default: auto)',
+            },
+            {
+                displayName: 'Visual Map Max',
+                type: 'text',
+                key: BaseChartView.VISUAL_MAP_MAX_KEY,
+                placeholder: 'Max value (default: auto)',
+            },
+            {
+                displayName: 'Visual Map Colors',
+                type: 'text',
+                key: BaseChartView.VISUAL_MAP_COLOR_KEY,
+                placeholder: 'Comma-separated hex colors (e.g. #fff,#000)',
+            },
+            {
+                displayName: 'Visual Map Orientation',
+                type: 'text', // Ideally a dropdown, but ViewOption only supports basic types? Or use text with validation.
+                key: BaseChartView.VISUAL_MAP_ORIENT_KEY,
+                placeholder: 'horizontal or vertical (default: horizontal)',
+            },
+             {
+                displayName: 'Visual Map Type',
+                type: 'text',
+                key: BaseChartView.VISUAL_MAP_TYPE_KEY,
+                placeholder: 'continuous or piecewise (default: continuous)',
             }
         ];
     }

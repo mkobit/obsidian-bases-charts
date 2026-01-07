@@ -1,4 +1,4 @@
-import type { EChartsOption, ScatterSeriesOption, DatasetComponentOption } from 'echarts';
+import type { EChartsOption, ScatterSeriesOption, DatasetComponentOption, VisualMapComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 import * as R from 'remeda';
@@ -69,6 +69,40 @@ export function createScatterChartOption(
 
     const datasets: DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
 
+    // Calculate Min/Max for VisualMap if needed
+    let visualMapOption: VisualMapComponentOption | undefined;
+    if (sizeProp || options?.visualMapType) {
+        // If user explicitly asks for visual map or we have sizeProp (which maps to size)
+        // If sizeProp exists, it maps to 'size' property in data
+
+        const sizes = sizeProp ? R.pipe(normalizedData, R.map(d => d.size), R.filter((d): d is number => d !== undefined)) : [];
+        const dataMin = sizes.length > 0 ? Math.min(...sizes) : 0;
+        const dataMax = sizes.length > 0 ? Math.max(...sizes) : 10;
+
+        const finalMinVal = options?.visualMapMin !== undefined ? options.visualMapMin : dataMin;
+        const finalMaxVal = options?.visualMapMax !== undefined ? options.visualMapMax : dataMax;
+
+        visualMapOption = {
+            min: finalMinVal,
+            max: finalMaxVal,
+            calculable: true,
+            orient: options?.visualMapOrient ?? 'horizontal',
+            left: options?.visualMapLeft ?? 'center',
+            bottom: options?.visualMapTop !== undefined ? undefined : '0%', // Default bottom if top not set
+            top: options?.visualMapTop,
+            type: options?.visualMapType ?? 'continuous',
+            dimension: sizeProp ? 'size' : undefined, // Map to the 'size' dimension in the dataset
+            inRange: {
+                 // If visualMapColor provided, use it for color
+                 // If sizeProp provided, we usually want symbolSize mapping.
+                 // The docs say "scatter charts use radius to represent the third dimension"
+                 ...(options?.visualMapColor ? { color: options.visualMapColor } : {}),
+                 ...(sizeProp ? { symbolSize: [10, 50] } : {}) // Default size range if sizeProp is used
+            }
+        };
+    }
+
+
     // 5. Build Series Options
     const seriesOptions: ScatterSeriesOption[] = seriesNames.map((name, idx) => {
         const datasetIndex = idx + 1;
@@ -82,7 +116,11 @@ export function createScatterChartOption(
                 y: 'y',
                 tooltip: sizeProp ? ['x', 'y', 'size', 's'] : ['x', 'y', 's']
             },
-            ...(sizeProp ? {
+            // If visualMap is active and targets 'size' dimension, we don't need manual symbolSize callback usually,
+            // UNLESS visualMap only handles color.
+            // ECharts visualMap can handle symbolSize.
+            // But if visualMap is NOT enabled, we fall back to manual callback.
+            ...(sizeProp && !visualMapOption ? {
                 symbolSize: (val: unknown) => {
                     const point = val as ScatterDataPoint;
                     return (point && typeof point === 'object' && 'size' in point)
@@ -114,7 +152,8 @@ export function createScatterChartOption(
         tooltip: {
             trigger: 'item'
         },
-        ...(options?.legend ? { legend: {} } : {})
+        ...(options?.legend ? { legend: {} } : {}),
+        ...(visualMapOption ? { visualMap: visualMapOption } : {})
     };
 
     return opt;

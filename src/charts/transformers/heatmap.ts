@@ -1,4 +1,4 @@
-import type { EChartsOption, HeatmapSeriesOption, DatasetComponentOption } from 'echarts';
+import type { EChartsOption, HeatmapSeriesOption, DatasetComponentOption, VisualMapComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
 import { safeToString, getNestedValue } from './utils';
 import * as R from 'remeda';
@@ -41,8 +41,14 @@ export function createHeatmapChartOption(
     const yAxisData = R.pipe(normalizedData, R.map(d => d.y), R.unique());
 
     const values = R.map(normalizedData, d => d.value);
-    const finalMinVal = values.length > 0 ? Math.min(...values) : 0;
-    const finalMaxVal = values.length > 0 ? Math.max(...values) : 10;
+
+    // Determine Min/Max
+    // Use user provided option, else calculate from data, else default
+    const dataMin = values.length > 0 ? Math.min(...values) : 0;
+    const dataMax = values.length > 0 ? Math.max(...values) : 10;
+
+    const finalMinVal = options?.visualMapMin !== undefined ? options.visualMapMin : dataMin;
+    const finalMaxVal = options?.visualMapMax !== undefined ? options.visualMapMax : dataMax;
 
     const dataset: DatasetComponentOption = {
         source: normalizedData
@@ -61,6 +67,23 @@ export function createHeatmapChartOption(
             show: true
         }
     };
+
+    const visualMapOption: VisualMapComponentOption = {
+        min: finalMinVal,
+        max: finalMaxVal,
+        calculable: true,
+        orient: options?.visualMapOrient ?? 'horizontal',
+        left: options?.visualMapLeft ?? 'center',
+        bottom: options?.visualMapTop !== undefined ? undefined : '0%', // Default bottom if top not set
+        top: options?.visualMapTop,
+        type: options?.visualMapType ?? 'continuous'
+    };
+
+    if (options?.visualMapColor) {
+        visualMapOption.inRange = {
+            color: options.visualMapColor
+        };
+    }
 
     const opt: EChartsOption = {
         dataset: [dataset],
@@ -85,14 +108,7 @@ export function createHeatmapChartOption(
             name: yAxisLabel,
             splitArea: { show: true }
         },
-        visualMap: {
-            min: finalMinVal,
-            max: finalMaxVal,
-            calculable: true,
-            orient: 'horizontal',
-            left: 'center',
-            bottom: '0%'
-        },
+        visualMap: visualMapOption,
         series: [seriesItem]
     };
 
