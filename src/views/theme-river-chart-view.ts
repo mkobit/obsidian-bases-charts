@@ -15,7 +15,6 @@ export class ThemeRiverChartView extends BaseChartView {
     getDisplayText(): string { return 'Theme river'; }
     getIcon(): string { return 'waves'; }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {

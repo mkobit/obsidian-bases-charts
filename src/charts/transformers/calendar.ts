@@ -7,6 +7,11 @@ export interface CalendarTransformerOptions extends BaseTransformerOptions {
     readonly valueProp?: string;
 }
 
+function asCalendarTooltipParams(params: unknown): { readonly value: readonly (number | string)[] } {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+    return params as any;
+}
+
 export function createCalendarChartOption(
     data: readonly Record<string, unknown>[],
     dateProp: string,
@@ -95,7 +100,7 @@ export function createCalendarChartOption(
                 tooltip: {
                     position: 'top',
                     formatter: (params: unknown) => {
-                         const p = params as { readonly value: readonly (number | string)[] };
+                         const p = asCalendarTooltipParams(params);
                          return (!p || !Array.isArray(p.value))
                             ? ''
                             : `${p.value[0]} : ${p.value[1]}`;

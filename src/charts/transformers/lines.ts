@@ -9,6 +9,11 @@ export interface LinesTransformerOptions extends BaseTransformerOptions {
     readonly seriesProp?: string;
 }
 
+function asCoords(coords: number[][]): [number, number][] {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+    return coords as any;
+}
+
 export function createLinesChartOption(
     data: readonly Record<string, unknown>[],
     xProp: string,
@@ -37,10 +42,9 @@ export function createLinesChartOption(
 
                     return (Number.isNaN(x1) || Number.isNaN(y1) || Number.isNaN(x2) || Number.isNaN(y2))
                         ? null
-                        : { coords: [[x1, y1], [x2, y2]], series };
+                        : { coords: asCoords([[x1, y1], [x2, y2]]), series };
                 }),
-                // eslint-disable-next-line functional/prefer-readonly-type
-                R.filter((d): d is { readonly coords: number[][], readonly series: string } => d !== null)
+                R.filter((d): d is { readonly coords: [number, number][], readonly series: string } => d !== null)
             );
 
             // 2. Group by Series
@@ -48,11 +52,9 @@ export function createLinesChartOption(
             const seriesNames = Object.keys(groupedData);
 
             // 3. Build Series
-            // eslint-disable-next-line functional/prefer-readonly-type
             const seriesOptions: LinesSeriesOption[] = seriesNames.map(name => {
                 const seriesData = groupedData[name]!.map(d => ({
-                    // eslint-disable-next-line functional/prefer-readonly-type
-                    coords: d.coords as unknown as number[][]
+                    coords: d.coords
                 }));
 
                 return {
@@ -81,8 +83,7 @@ export function createLinesChartOption(
                     name: yAxisLabel,
                     splitLine: { show: false }
                 },
-                // eslint-disable-next-line functional/prefer-readonly-type
-                series: seriesOptions as unknown as LinesSeriesOption[],
+                series: seriesOptions,
                 ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
             };
         })();

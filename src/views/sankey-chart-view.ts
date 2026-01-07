@@ -23,7 +23,6 @@ export class SankeyChartView extends BaseChartView {
         });
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         const valueOption: TextOption = {
             displayName: 'Value Property',

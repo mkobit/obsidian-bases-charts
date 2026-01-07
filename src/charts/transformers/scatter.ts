@@ -1,6 +1,6 @@
 import type { EChartsOption, ScatterSeriesOption, DatasetComponentOption, VisualMapComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
-import { safeToString, getNestedValue, getLegendOption } from './utils';
+import { safeToString, getNestedValue, getLegendOption, isRecord } from './utils';
 import * as R from 'remeda';
 
 export interface ScatterTransformerOptions extends BaseTransformerOptions {
@@ -13,6 +13,18 @@ interface ScatterDataPoint {
     readonly y: number | null;
     readonly s: string;
     readonly size?: number;
+}
+
+function isScatterDataPoint(val: unknown): val is ScatterDataPoint {
+    return isRecord(val) && 'x' in val && 'y' in val && 's' in val;
+}
+
+// Isolate cast for dimension
+function getDimension(dimName: string): number {
+    // ECharts types claim dimension must be number (index), but string (name) works for object datasets.
+    // Isolate this lie.
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return dimName as unknown as number;
 }
 
 export function createScatterChartOption(
@@ -60,14 +72,14 @@ export function createScatterChartOption(
     // 4. Create Datasets
     const sourceDataset: DatasetComponentOption = { source: normalizedData };
 
-    const filterDatasets: readonly DatasetComponentOption[] = seriesNames.map(name => ({
+    const filterDatasets: DatasetComponentOption[] = seriesNames.map(name => ({
         transform: {
             type: 'filter',
             config: { dimension: 's', value: name }
         }
     }));
 
-    const datasets: readonly DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
+    const datasets: DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
 
     // Calculate Min/Max for VisualMap if needed
     const visualMapOption: VisualMapComponentOption | undefined = (!sizeProp && !options?.visualMapType)
@@ -89,7 +101,7 @@ export function createScatterChartOption(
                 bottom: options?.visualMapTop !== undefined ? undefined : '0%', // Default bottom if top not set
                 top: options?.visualMapTop,
                 type: options?.visualMapType ?? 'continuous',
-                dimension: (sizeProp ? 'size' : undefined) as unknown as number, // Map to the 'size' dimension in the dataset. Cast to unknown then number because types expect number but string is valid for object datasets.
+                dimension: sizeProp ? getDimension('size') : undefined,
                 inRange: {
                      ...(options?.visualMapColor ? { color: options.visualMapColor } : {}),
                      ...(sizeProp ? { symbolSize: [10, 50] } : {})
@@ -98,7 +110,7 @@ export function createScatterChartOption(
         })();
 
     // 5. Build Series Options
-    const seriesOptions: readonly ScatterSeriesOption[] = seriesNames.map((name, idx) => {
+    const seriesOptions: ScatterSeriesOption[] = seriesNames.map((name, idx) => {
         const datasetIndex = idx + 1;
 
         return {
@@ -112,9 +124,8 @@ export function createScatterChartOption(
             },
             ...(sizeProp && !visualMapOption ? {
                 symbolSize: (val: unknown) => {
-                    const point = val as ScatterDataPoint;
-                    return (point && typeof point === 'object' && 'size' in point)
-                        ? Math.max(0, Number(point.size))
+                    return isScatterDataPoint(val) && val.size !== undefined
+                        ? Math.max(0, Number(val.size))
                         : 10;
                 }
             } : {})
@@ -122,8 +133,7 @@ export function createScatterChartOption(
     });
 
     const opt: EChartsOption = {
-        // eslint-disable-next-line functional/prefer-readonly-type
-        dataset: datasets as unknown as DatasetComponentOption[],
+        dataset: datasets,
         xAxis: {
             type: 'category', // Consistent with bar/line
             data: xAxisData,
@@ -138,8 +148,7 @@ export function createScatterChartOption(
             name: yAxisLabel,
             splitLine: { show: true }
         },
-        // eslint-disable-next-line functional/prefer-readonly-type
-        series: seriesOptions as unknown as ScatterSeriesOption[],
+        series: seriesOptions,
         tooltip: {
             trigger: 'item'
         },

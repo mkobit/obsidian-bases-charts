@@ -2,7 +2,7 @@ import type { EChartsOption, BoxplotSeriesOption } from 'echarts';
 // @ts-expect-error ECharts extension imports can be tricky with type definitions
 import prepareBoxplotData from 'echarts/extension/dataTool/prepareBoxplotData';
 import type { BaseTransformerOptions } from './base';
-import { safeToString, getNestedValue, getLegendOption } from './utils';
+import { safeToString, getNestedValue, getLegendOption, isRecord } from './utils';
 import * as R from 'remeda';
 
 export interface BoxplotTransformerOptions extends BaseTransformerOptions {
@@ -10,16 +10,14 @@ export interface BoxplotTransformerOptions extends BaseTransformerOptions {
 }
 
 interface BoxplotResult {
-    // eslint-disable-next-line functional/prefer-readonly-type
     boxData: number[][];
 }
 
 function isBoxplotResult(data: unknown): data is BoxplotResult {
     return (
-        typeof data === 'object' &&
-        data !== null &&
+        isRecord(data) &&
         'boxData' in data &&
-        Array.isArray((data as { readonly boxData: unknown }).boxData)
+        Array.isArray(data['boxData'])
     );
 }
 
@@ -72,7 +70,7 @@ export function createBoxplotChartOption(
     );
 
     // 3. Transform to ECharts series
-    const seriesOptions: readonly BoxplotSeriesOption[] = R.pipe(
+    const seriesOptions: BoxplotSeriesOption[] = R.pipe(
         seriesMap,
         R.entries(),
         R.map(([sName, catMap]) => {
@@ -123,7 +121,7 @@ export function createBoxplotChartOption(
                 show: true
             }
         },
-        series: [...seriesOptions],
+        series: seriesOptions,
         ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
     };
     return opt;

@@ -13,9 +13,7 @@ export abstract class BaseChartView extends BasesView {
     readonly containerEl: HTMLElement;
     readonly chartEl: HTMLElement;
     readonly plugin: BarePlugin;
-    // eslint-disable-next-line functional/prefer-readonly-type
     protected chart: echarts.ECharts | null = null;
-    // eslint-disable-next-line functional/prefer-readonly-type
     private resizeObserver: ResizeObserver | null = null;
 
     // Common Config Keys
@@ -137,7 +135,6 @@ export abstract class BaseChartView extends BasesView {
         return document.body.classList.contains('theme-dark');
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getCommonViewOptions(): ViewOption[] {
         return [
             {
@@ -192,7 +189,6 @@ export abstract class BaseChartView extends BasesView {
         ];
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getAxisViewOptions(): ViewOption[] {
         return [
             {
@@ -221,7 +217,6 @@ export abstract class BaseChartView extends BasesView {
         ];
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getVisualMapViewOptions(): ViewOption[] {
         return [
             {

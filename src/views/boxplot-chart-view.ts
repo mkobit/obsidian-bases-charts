@@ -27,7 +27,6 @@ export class BoxplotChartView extends BaseChartView {
         });
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {

@@ -36,7 +36,6 @@ export interface TestFile {
  * Implements functional updates internally even if interface is fluent.
  */
 export class ObsidianFileBuilder {
-    // eslint-disable-next-line functional/prefer-readonly-type
     private file: TestFile;
 
     private constructor(name: string) {

@@ -1,6 +1,6 @@
 import type { EChartsOption, EffectScatterSeriesOption, DatasetComponentOption } from 'echarts';
 import type { BaseTransformerOptions } from './base';
-import { safeToString, getNestedValue, getLegendOption } from './utils';
+import { safeToString, getNestedValue, getLegendOption, isRecord } from './utils';
 import * as R from 'remeda';
 
 export interface EffectScatterTransformerOptions extends BaseTransformerOptions {
@@ -13,6 +13,10 @@ interface ScatterDataPoint {
     readonly y: number | null;
     readonly s: string;
     readonly size?: number;
+}
+
+function isScatterDataPoint(val: unknown): val is ScatterDataPoint {
+    return isRecord(val) && 'x' in val && 'y' in val && 's' in val;
 }
 
 export function createEffectScatterChartOption(
@@ -60,17 +64,17 @@ export function createEffectScatterChartOption(
     // 4. Create Datasets
     const sourceDataset: DatasetComponentOption = { source: normalizedData };
 
-    const filterDatasets: readonly DatasetComponentOption[] = seriesNames.map(name => ({
+    const filterDatasets: DatasetComponentOption[] = seriesNames.map(name => ({
         transform: {
             type: 'filter',
             config: { dimension: 's', value: name }
         }
     }));
 
-    const datasets: readonly DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
+    const datasets: DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
 
     // 5. Build Series Options
-    const seriesOptions: readonly EffectScatterSeriesOption[] = seriesNames.map((name, idx) => {
+    const seriesOptions: EffectScatterSeriesOption[] = seriesNames.map((name, idx) => {
         const datasetIndex = idx + 1;
 
         return {
@@ -84,9 +88,8 @@ export function createEffectScatterChartOption(
             },
             ...(sizeProp ? {
                 symbolSize: (val: unknown) => {
-                    const point = val as ScatterDataPoint;
-                    return (point && typeof point === 'object' && 'size' in point)
-                        ? Math.max(0, Number(point.size))
+                    return (isScatterDataPoint(val) && val.size !== undefined)
+                        ? Math.max(0, Number(val.size))
                         : 10;
                 }
             } : {})
@@ -94,8 +97,7 @@ export function createEffectScatterChartOption(
     });
 
     const opt: EChartsOption = {
-        // eslint-disable-next-line functional/prefer-readonly-type
-        dataset: datasets as unknown as DatasetComponentOption[],
+        dataset: datasets,
         xAxis: {
             type: 'category', // Consistent with bar/line
             data: xAxisData,
@@ -110,8 +112,7 @@ export function createEffectScatterChartOption(
             name: yAxisLabel,
             splitLine: { show: true }
         },
-        // eslint-disable-next-line functional/prefer-readonly-type
-        series: seriesOptions as unknown as EffectScatterSeriesOption[],
+        series: seriesOptions,
         tooltip: {
             trigger: 'item'
         },

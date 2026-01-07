@@ -15,7 +15,6 @@ export class CalendarChartView extends BaseChartView {
     getDisplayText(): string { return 'Calendar'; }
     getIcon(): string { return 'calendar'; }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {

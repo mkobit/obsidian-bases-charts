@@ -59,7 +59,7 @@ export function createCartesianChartOption(
 
     // If we have a seriesProp, we create filtered datasets for each series
     // If no seriesProp, we just use the source dataset directly (datasetIndex 0)
-    const filterDatasets: readonly DatasetComponentOption[] = seriesProp
+    const filterDatasets: DatasetComponentOption[] = seriesProp
         ? seriesNames.map(name => ({
             transform: {
                 type: 'filter',
@@ -68,10 +68,10 @@ export function createCartesianChartOption(
         }))
         : [];
 
-    const datasets: readonly DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
+    const datasets: DatasetComponentOption[] = [sourceDataset, ...filterDatasets];
 
     // 5. Build Series Options
-    const seriesOptions: readonly SeriesOption[] = seriesNames.map((name, idx) => {
+    const seriesOptions: SeriesOption[] = seriesNames.map((name, idx) => {
         // If seriesProp exists, we use the filtered datasets (starting at index 1)
         // If not, we use the source dataset (index 0)
         const datasetIndex = seriesProp ? idx + 1 : 0;
@@ -110,8 +110,7 @@ export function createCartesianChartOption(
     });
 
     const opt: EChartsOption = {
-        // eslint-disable-next-line functional/prefer-readonly-type
-        dataset: datasets as unknown as DatasetComponentOption[],
+        dataset: datasets,
         xAxis: flipAxis
             ? {
                 type: 'value',
@@ -138,8 +137,7 @@ export function createCartesianChartOption(
                 type: 'value',
                 name: yAxisLabel
             },
-        // eslint-disable-next-line functional/prefer-readonly-type
-        series: seriesOptions as unknown as SeriesOption[],
+        series: seriesOptions,
         tooltip: {
             trigger: 'axis'
         },

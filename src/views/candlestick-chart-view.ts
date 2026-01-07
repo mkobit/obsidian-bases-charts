@@ -48,7 +48,6 @@ export class CandlestickChartView extends BaseChartView {
         });
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         return [
             {

@@ -24,7 +24,6 @@ export class FunnelChartView extends BaseChartView {
         });
     }
 
-    // eslint-disable-next-line functional/prefer-readonly-type
     static getViewOptions(): ViewOption[] {
         // Funnel doesn't really use "Series Prop" in the same way (usually single series),
         // but we can keep common options or strip Series Prop.

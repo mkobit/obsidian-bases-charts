@@ -11,12 +11,16 @@ export function safeToString(val: unknown): string {
         : JSON.stringify(val);
 }
 
+export function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null;
+}
+
 export function getNestedValue(obj: unknown, path: string): unknown {
     return (typeof obj !== 'object' || obj === null)
         ? undefined
         : path.split('.').reduce((o: unknown, key: string) => {
-            return (typeof o === 'object' && o !== null && key in o)
-                ? (o as Record<string, unknown>)[key]
+            return (isRecord(o) && key in o)
+                ? o[key]
                 : undefined;
         }, obj);
 }

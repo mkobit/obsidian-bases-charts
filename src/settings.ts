@@ -2,9 +2,7 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import BarePlugin from "./main";
 
 export interface BarePluginSettings {
-    // eslint-disable-next-line functional/prefer-readonly-type
 	mySetting: string;
-    // eslint-disable-next-line functional/prefer-readonly-type
 	defaultHeight: string;
 }
 
@@ -14,7 +12,6 @@ export const DEFAULT_SETTINGS: BarePluginSettings = {
 }
 
 export class SettingTab extends PluginSettingTab {
-    // eslint-disable-next-line functional/prefer-readonly-type
 	plugin: BarePlugin;
 
 	constructor(app: App, plugin: BarePlugin) {
