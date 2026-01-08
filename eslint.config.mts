@@ -62,13 +62,13 @@ export default tseslint.config(
             // "functional/prefer-readonly-type": "error", // Deprecated and removed
 
 			// Obsidian Compatibility overrides (Global)
-			"functional/no-classes": "off",
-			"functional/no-this-expressions": "off",
-			"functional/no-return-void": "off",
+			"functional/no-classes": "error",
+			"functional/no-this-expressions": "error",
+			"functional/no-return-void": "error",
 			"functional/no-mixed-types": "error",
-			"functional/functional-parameters": "off",
-			"functional/no-try-statements": "off",
-			"functional/no-throw-statements": "off",
+			"functional/functional-parameters": "error",
+			"functional/no-try-statements": "error",
+			"functional/no-throw-statements": "error",
 
 			// Additional clean code rules
 			"no-console": "warn",
@@ -89,7 +89,15 @@ export default tseslint.config(
             "functional/no-expression-statements": "off",
             "functional/immutable-data": "off", // Tests often need mutation
              // Allow casting in tests and views if necessary, though ideally avoided
-             "@typescript-eslint/consistent-type-assertions": "off"
+             "@typescript-eslint/consistent-type-assertions": "off",
+             // Obsidian API requires classes, this, void returns (lifecycle methods), and specific params
+            "functional/no-classes": "off",
+            "functional/no-this-expressions": "off",
+            "functional/no-return-void": "off",
+            "functional/functional-parameters": "off",
+            "functional/no-try-statements": "off",
+            // Tests might use throw implicitly or test error cases
+            "functional/no-throw-statements": "off"
         }
     },
 	globalIgnores([
@@ -116,7 +124,11 @@ export default tseslint.config(
             "@typescript-eslint/no-unsafe-assignment": "off",
             "@typescript-eslint/no-unsafe-member-access": "off",
             "import/no-nodejs-modules": "off",
-            "no-console": "off"
+            "no-console": "off",
+            "functional/no-return-void": "off",
+            "functional/functional-parameters": "off",
+            "functional/no-throw-statements": "off",
+            "functional/no-try-statements": "off"
         }
     }
 );
