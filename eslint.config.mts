@@ -60,6 +60,15 @@ export default tseslint.config(
 			"functional/no-conditional-statements": "error",
 			"functional/no-expression-statements": ["error", { ignoreVoid: true }],
             // "functional/prefer-readonly-type": "error", // Deprecated and removed
+			"functional/type-declaration-immutability": ["error", {
+                rules: [
+                    {
+                        identifiers: "^.*$",
+                        immutability: "ReadonlyDeep",
+                        comparator: "AtLeast"
+                    }
+                ]
+            }],
 
 			// Obsidian Compatibility overrides (Global)
 			"functional/no-classes": "error",
@@ -97,7 +106,8 @@ export default tseslint.config(
             "functional/functional-parameters": "off",
             "functional/no-try-statements": "off",
             // Tests might use throw implicitly or test error cases
-            "functional/no-throw-statements": "off"
+            "functional/no-throw-statements": "off",
+            "functional/type-declaration-immutability": "off"
         }
     },
 	globalIgnores([

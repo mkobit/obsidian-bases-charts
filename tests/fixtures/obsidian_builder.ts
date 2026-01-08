@@ -18,7 +18,7 @@ export type FrontmatterValue =
 /**
  * A strongly-typed representation of an Obsidian frontmatter block.
  */
-export type Frontmatter = Record<string, FrontmatterValue>;
+export type Frontmatter = Readonly<Record<string, FrontmatterValue>>;
 
 /**
  * Interface representing a test Obsidian file.

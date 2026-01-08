@@ -10,7 +10,7 @@ export interface BoxplotTransformerOptions extends BaseTransformerOptions {
 }
 
 interface BoxplotResult {
-    boxData: number[][];
+    readonly boxData: readonly (readonly number[])[];
 }
 
 function isBoxplotResult(data: unknown): data is BoxplotResult {

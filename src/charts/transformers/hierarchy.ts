@@ -16,8 +16,8 @@ interface HierarchyNode {
 }
 
 interface PathItem {
-    parts: string[];
-    value: number | undefined;
+    readonly parts: readonly string[];
+    readonly value: number | undefined;
 }
 
 function asSunburstData(data: readonly HierarchyNode[]): SunburstSeriesOption['data'] {

@@ -22,7 +22,7 @@ export interface TimePoint {
 /**
  * Interface representing a generic chart data point (dynamic keys).
  */
-export type ChartDataPoint = Record<string, unknown>;
+export type ChartDataPoint = Readonly<Record<string, unknown>>;
 
 export type ChartDataset<T> = readonly T[];
 

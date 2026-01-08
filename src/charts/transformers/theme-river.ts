@@ -10,7 +10,7 @@ export interface ThemeRiverTransformerOptions extends BaseTransformerOptions {
 
 // Define the tuple type explicitly to match usage
 // ECharts ThemeRiver expects [date, value, id]
-type ThemeRiverItem = [string, number, string];
+type ThemeRiverItem = readonly [string, number, string];
 
 export function createThemeRiverChartOption(
     data: readonly Record<string, unknown>[],
