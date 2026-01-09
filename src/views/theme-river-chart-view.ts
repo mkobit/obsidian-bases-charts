@@ -3,6 +3,7 @@ import type BarePlugin from '../main';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type { EChartsOption } from 'echarts';
+import { BasesData } from '../charts/transformers/base';
 
 export class ThemeRiverChartView extends BaseChartView {
     readonly type = 'theme-river-chart';
@@ -43,7 +44,7 @@ export class ThemeRiverChartView extends BaseChartView {
         ];
     }
 
-    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: BasesData): EChartsOption | null {
         const dateProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string;
         const themeProp = this.config.get(BaseChartView.SERIES_PROP_KEY) as string;

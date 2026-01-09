@@ -3,6 +3,7 @@ import type BarePlugin from '../main';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type { EChartsOption } from 'echarts';
+import { BasesData } from '../charts/transformers/base';
 
 export class TreeChartView extends BaseChartView {
     readonly type = 'tree-chart';
@@ -26,7 +27,7 @@ export class TreeChartView extends BaseChartView {
         ];
     }
 
-    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: BasesData): EChartsOption | null {
         const pathProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         if (!pathProp) {return null;}
 

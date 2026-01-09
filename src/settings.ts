@@ -12,10 +12,10 @@ export const DEFAULT_SETTINGS: BarePluginSettings = {
 }
 
 export class SettingTab extends PluginSettingTab {
-	plugin: BarePlugin;
+	plugin: Readonly<BarePlugin>;
 
-	constructor(app: App, plugin: BarePlugin) {
-		super(app, plugin);
+	constructor(app: App, plugin: Readonly<BarePlugin>) {
+		super(app, plugin as BarePlugin);
 		this.plugin = plugin;
 	}
 

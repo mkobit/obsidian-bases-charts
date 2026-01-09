@@ -3,6 +3,7 @@ import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type { ParallelTransformerOptions } from '../charts/transformer';
 import type { EChartsOption } from 'echarts';
+import { BasesData } from '../charts/transformers/base';
 
 export class ParallelChartView extends BaseChartView {
     readonly type = 'parallel';
@@ -25,7 +26,7 @@ export class ParallelChartView extends BaseChartView {
         ];
     }
 
-    getChartOption(data: readonly Record<string, unknown>[]): EChartsOption {
+    getChartOption(data: BasesData): EChartsOption {
         const xProp = this.config.get('xProp') as string;
         const seriesProp = this.config.get('seriesProp') as string;
 

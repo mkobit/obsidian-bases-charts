@@ -1,3 +1,4 @@
+import { BasesData } from '../charts/transformers/base';
 import { ViewOption, TextOption } from 'obsidian';
 import { BaseChartView } from './base-chart-view';
 import { ChartType, transformDataToChartOption } from '../charts/transformer';
@@ -10,7 +11,7 @@ export class SankeyChartView extends BaseChartView {
         return 'sankey';
     }
 
-    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: BasesData): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY) as string;
         const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string;
