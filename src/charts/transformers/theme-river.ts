@@ -48,6 +48,7 @@ export function createThemeRiverChartOption(
     const seriesItem: ThemeRiverSeriesOption = {
         type: 'themeRiver',
         // Pass the properly typed data
+        // Cast to `any` required: internal types are `ReadonlyDeep` (per lint rule) but ECharts types require mutable arrays.
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any
         data: riverData as any,
         emphasis: {
