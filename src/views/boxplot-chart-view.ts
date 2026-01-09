@@ -4,9 +4,9 @@ import {
 } from 'obsidian';
 import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
-import { BasesData } from '../charts/transformers/base';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
+import { BasesData } from '../charts/transformers/base';
 
 export class BoxplotChartView extends BaseChartView {
     constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {

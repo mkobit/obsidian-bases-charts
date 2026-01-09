@@ -72,7 +72,7 @@ import {
     createLinesChartOption,
     LinesTransformerOptions
 } from './transformers/lines';
-import { ChartType, BasesData } from './transformers/base';
+import {  ChartType , BasesData } from './transformers/base';
 
 export type ChartTransformerOptions =
     | CartesianTransformerOptions
@@ -145,7 +145,7 @@ export function transformDataToChartOption(
         : createCartesianChartOption(data, xProp, yProp, 'bar', asOptions(options));
 }
 
-export {type ChartType, type BaseTransformerOptions, type BasesData} from './transformers/base';
+export { type ChartType, type BaseTransformerOptions, type BasesData } from './transformers/base';
 export {type CartesianTransformerOptions} from './transformers/cartesian';
 export {type LinesTransformerOptions} from './transformers/lines';
 export {type PieTransformerOptions} from './transformers/pie';

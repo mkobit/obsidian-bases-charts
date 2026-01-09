@@ -3,10 +3,10 @@ import {
     ViewOption
 } from 'obsidian';
 import type { EChartsOption } from 'echarts';
-import { BasesData } from '../charts/transformers/base';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type BarePlugin from '../main';
+import { BasesData } from '../charts/transformers/base';
 
 export class CandlestickChartView extends BaseChartView {
     // Unique keys for Candlestick

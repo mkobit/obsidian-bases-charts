@@ -1,8 +1,8 @@
-import { BasesData } from '../charts/transformers/base';
 import { ViewOption, TextOption } from 'obsidian';
 import { BaseChartView } from './base-chart-view';
 import { ChartType, transformDataToChartOption } from '../charts/transformer';
 import { EChartsOption } from 'echarts';
+import { BasesData } from '../charts/transformers/base';
 
 export class SankeyChartView extends BaseChartView {
     readonly type = 'sankey';

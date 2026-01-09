@@ -56,6 +56,33 @@ export default tseslint.config(
             // ObsidianMD Rules - Enable ALL rules explicitly or ensure they are covered
             "obsidianmd/prefer-file-manager-trash-file": "error",
 
+			// Functional Rules - STRICTER
+			"functional/no-let": "error",
+			"functional/immutable-data": [
+				"error",
+				{
+					ignoreAccessorPattern: [
+						"**.style**", // DOM style mutation
+						"this.**",     // Allow mutation of class properties (standard in Obsidian plugins)
+						"**.value"     // Allow setting value on inputs/nodes if needed
+					],
+					ignoreClasses: true
+				}
+			],
+			"functional/no-loop-statements": "error",
+			"functional/no-conditional-statements": "error",
+			"functional/no-expression-statements": ["error", { ignoreVoid: true }],
+            // "functional/prefer-readonly-type": "error", // Deprecated and removed
+
+			// Obsidian Compatibility overrides (Global)
+			"functional/no-classes": "error",
+			"functional/no-this-expressions": "error",
+			"functional/no-return-void": "error",
+			"functional/no-mixed-types": "error",
+			"functional/functional-parameters": "error",
+			"functional/no-try-statements": "error",
+			"functional/no-throw-statements": "error",
+
 			// Additional clean code rules
 			"no-console": "warn",
 			"eqeqeq": "error",
@@ -79,6 +106,7 @@ export default tseslint.config(
              // Obsidian API requires classes, this, void returns (lifecycle methods), and specific params
             "functional/no-classes": "off",
             "functional/no-class-inheritance": "off",
+            "functional/prefer-immutable-types": "off",
             "functional/no-this-expressions": "off",
             "functional/no-return-void": "off",
             "functional/functional-parameters": "off",
@@ -98,7 +126,7 @@ export default tseslint.config(
 	]),
     // Node scripts
     {
-        files: ["scripts/**/*.cjs", "scripts/**/*.ts", "esbuild.config.mjs", "version-bump.mjs"],
+        files: ["scripts/**/*.ts", "esbuild.config.mjs"],
         languageOptions: {
             globals: {
                 ...globals.node

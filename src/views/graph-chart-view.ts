@@ -1,8 +1,8 @@
-import { BasesData } from '../charts/transformers/base';
 
 import { ViewOption } from 'obsidian';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption, ChartType } from '../charts/transformer';
+import { BasesData } from '../charts/transformers/base';
 
 export class GraphChartView extends BaseChartView {
     readonly type: ChartType = 'graph';

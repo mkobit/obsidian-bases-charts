@@ -5,9 +5,9 @@ import {
     debounce
 } from 'obsidian';
 import * as echarts from 'echarts';
-import { BasesData } from '../charts/transformers/base';
 import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
+import { BasesData } from '../charts/transformers/base';
 
 export abstract class BaseChartView extends BasesView {
     readonly scrollEl: HTMLElement;
