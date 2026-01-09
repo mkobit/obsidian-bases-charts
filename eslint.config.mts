@@ -27,6 +27,18 @@ export default tseslint.config(
 	},
 	// Recommended configs
 	...obsidianmd.configs.recommended,
+    functional.configs.recommended,
+    functional.configs.noMutations,
+    functional.configs.externalVanillaRecommended,
+    {
+        // Fix for missing @typescript-eslint plugin in functional.configs.externalTypeScriptRecommended
+        ...functional.configs.externalTypeScriptRecommended,
+        // Only apply to TS files
+        files: ["**/*.ts", "**/*.tsx"],
+        plugins: {
+            "@typescript-eslint": tseslint.plugin
+        }
+    },
 
 	// Manual plugin setup
 	{
@@ -35,7 +47,8 @@ export default tseslint.config(
 		plugins: {
             obsidianmd,
 			functional,
-			promise
+			promise,
+            "@typescript-eslint": tseslint.plugin
 		},
 		rules: {
 			...promise.configs.recommended.rules,
@@ -92,6 +105,8 @@ export default tseslint.config(
              "@typescript-eslint/consistent-type-assertions": "off",
              // Obsidian API requires classes, this, void returns (lifecycle methods), and specific params
             "functional/no-classes": "off",
+            "functional/no-class-inheritance": "off",
+            "functional/prefer-immutable-types": "off",
             "functional/no-this-expressions": "off",
             "functional/no-return-void": "off",
             "functional/functional-parameters": "off",
