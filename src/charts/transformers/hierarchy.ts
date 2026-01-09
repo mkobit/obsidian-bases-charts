@@ -56,7 +56,7 @@ function buildHierarchy(
                             // Actually, type { value?: number } allows undefined.
                             const value = Number.isNaN(valNum) ? undefined : valNum;
 
-                            return { parts, value };
+                            return { parts, value } as PathItem;
                         })();
                 })();
         }),

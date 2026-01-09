@@ -92,7 +92,8 @@ export function createBoxplotChartOption(
                 : {
                     name: sName,
                     type: 'boxplot' as const,
-                    data: result.boxData
+                    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any
+                    data: result.boxData as any
                 };
         })
     );
