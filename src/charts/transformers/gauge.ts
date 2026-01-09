@@ -1,5 +1,5 @@
 import type { EChartsOption, GaugeSeriesOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { getNestedValue } from './utils';
 
 export interface GaugeTransformerOptions extends BaseTransformerOptions {
@@ -8,7 +8,7 @@ export interface GaugeTransformerOptions extends BaseTransformerOptions {
 }
 
 export function createGaugeChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     valueProp: string,
     options?: GaugeTransformerOptions
 ): EChartsOption {

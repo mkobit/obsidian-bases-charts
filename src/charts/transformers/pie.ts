@@ -1,5 +1,5 @@
 import type { EChartsOption, PieSeriesOption, DatasetComponentOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
@@ -8,7 +8,7 @@ export interface PieTransformerOptions extends BaseTransformerOptions {
 }
 
 export function createPieChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     nameProp: string,
     valueProp: string,
     options?: PieTransformerOptions

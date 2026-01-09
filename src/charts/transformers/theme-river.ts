@@ -1,5 +1,5 @@
 import type { EChartsOption, ThemeRiverSeriesOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
@@ -13,7 +13,7 @@ export interface ThemeRiverTransformerOptions extends BaseTransformerOptions {
 type ThemeRiverItem = [string, number, string];
 
 export function createThemeRiverChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     dateProp: string,
     options?: ThemeRiverTransformerOptions
 ): EChartsOption {

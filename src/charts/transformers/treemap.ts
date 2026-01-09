@@ -1,11 +1,11 @@
 import type { EChartsOption, TreemapSeriesOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { safeToString, getNestedValue } from './utils';
 
 export type TreemapTransformerOptions = BaseTransformerOptions;
 
 export function createTreemapChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     nameProp: string,
     valueProp: string,
     options?: TreemapTransformerOptions

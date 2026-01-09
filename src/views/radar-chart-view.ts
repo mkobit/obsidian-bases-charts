@@ -3,6 +3,7 @@ import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
+import { BasesData } from '../charts/transformers/base';
 
 export class RadarChartView extends BaseChartView {
     readonly type = 'radar-chart';
@@ -11,7 +12,7 @@ export class RadarChartView extends BaseChartView {
         super(controller, scrollEl, plugin);
     }
 
-    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: BasesData): EChartsOption | null {
         // For Radar:
         // X-Axis Prop -> Indicator (Category)
         // Y-Axis Prop -> Value

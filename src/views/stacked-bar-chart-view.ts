@@ -3,6 +3,7 @@ import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
+import { BasesData } from '../charts/transformers/base';
 
 export class StackedBarChartView extends BaseChartView {
     readonly type = 'stacked-bar-chart';
@@ -11,7 +12,7 @@ export class StackedBarChartView extends BaseChartView {
         super(controller, scrollEl, plugin);
     }
 
-    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: BasesData): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
         const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
         const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;

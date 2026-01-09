@@ -1,5 +1,5 @@
 import type { EChartsOption, SeriesOption, LineSeriesOption, BarSeriesOption, DatasetComponentOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
@@ -12,7 +12,7 @@ export interface CartesianTransformerOptions extends BaseTransformerOptions {
 }
 
 export function createCartesianChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     xProp: string,
     yProp: string,
     chartType: 'bar' | 'line',

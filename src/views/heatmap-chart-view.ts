@@ -3,6 +3,7 @@ import type BarePlugin from '../main';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type { EChartsOption } from 'echarts';
+import { BasesData } from '../charts/transformers/base';
 
 export class HeatmapChartView extends BaseChartView {
     readonly type = 'heatmap-chart';
@@ -37,7 +38,7 @@ export class HeatmapChartView extends BaseChartView {
         ];
     }
 
-    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: BasesData): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY);

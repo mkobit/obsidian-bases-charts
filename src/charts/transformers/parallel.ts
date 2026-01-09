@@ -1,5 +1,5 @@
 import type { EChartsOption, ParallelSeriesOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { getNestedValue, safeToString, getLegendOption } from './utils';
 import * as R from 'remeda';
 
@@ -14,7 +14,7 @@ function asParallelAxis(axis: unknown): EChartsOption['parallelAxis'] {
 }
 
 export function createParallelChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     dimensionsStr: string,
     options?: ParallelTransformerOptions
 ): EChartsOption {

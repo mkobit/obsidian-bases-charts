@@ -2,6 +2,7 @@
 import { ViewOption } from 'obsidian';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption, ChartType } from '../charts/transformer';
+import { BasesData } from '../charts/transformers/base';
 
 export class GraphChartView extends BaseChartView {
     readonly type: ChartType = 'graph';
@@ -36,7 +37,7 @@ export class GraphChartView extends BaseChartView {
         ];
     }
 
-    getChartOption(data: readonly Record<string, unknown>[]) {
+    getChartOption(data: BasesData) {
         const sourceProp = this.config.get('sourceProp') as string;
         const targetProp = this.config.get('targetProp') as string;
         const valueProp = this.config.get('valueProp') as string;

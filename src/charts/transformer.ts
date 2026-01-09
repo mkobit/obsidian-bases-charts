@@ -72,7 +72,7 @@ import {
     createLinesChartOption,
     LinesTransformerOptions
 } from './transformers/lines';
-import { ChartType } from './transformers/base';
+import {  ChartType , BasesData } from './transformers/base';
 
 export type ChartTransformerOptions =
     | CartesianTransformerOptions
@@ -102,7 +102,7 @@ function asOptions<T>(options: unknown): T {
 // Map of chart types to their transformer functions
 const transformerMap: Record<
     string,
-    (data: readonly Record<string, unknown>[], xProp: string, yProp: string, options: unknown) => EChartsOption
+    (data: BasesData, xProp: string, yProp: string, options: unknown) => EChartsOption
 > = {
     bar: (data, xProp, yProp, options) => createCartesianChartOption(data, xProp, yProp, 'bar', asOptions(options)),
     line: (data, xProp, yProp, options) => createCartesianChartOption(data, xProp, yProp, 'line', asOptions(options)),
@@ -132,7 +132,7 @@ const transformerMap: Record<
  * Transforms Bases data into an ECharts option object.
  */
 export function transformDataToChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     xProp: string,
     yProp: string,
     chartType: ChartType = 'bar',
@@ -145,7 +145,7 @@ export function transformDataToChartOption(
         : createCartesianChartOption(data, xProp, yProp, 'bar', asOptions(options));
 }
 
-export {type ChartType, type BaseTransformerOptions} from './transformers/base';
+export { type ChartType, type BaseTransformerOptions, type BasesData } from './transformers/base';
 export {type CartesianTransformerOptions} from './transformers/cartesian';
 export {type LinesTransformerOptions} from './transformers/lines';
 export {type PieTransformerOptions} from './transformers/pie';

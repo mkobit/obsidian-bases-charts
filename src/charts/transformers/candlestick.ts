@@ -1,5 +1,5 @@
 import type { EChartsOption, CandlestickSeriesOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { safeToString, getNestedValue } from './utils';
 import * as R from 'remeda';
 
@@ -11,7 +11,7 @@ export interface CandlestickTransformerOptions extends BaseTransformerOptions {
 }
 
 export function createCandlestickChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     xProp: string,
     options?: CandlestickTransformerOptions
 ): EChartsOption {

@@ -6,6 +6,7 @@ import type { EChartsOption } from 'echarts';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type BarePlugin from '../main';
+import { BasesData } from '../charts/transformers/base';
 
 export class CandlestickChartView extends BaseChartView {
     // Unique keys for Candlestick
@@ -20,7 +21,7 @@ export class CandlestickChartView extends BaseChartView {
         super(controller, containerEl, plugin);
     }
 
-    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: BasesData): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string;
         const yAxisLabel = this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string;

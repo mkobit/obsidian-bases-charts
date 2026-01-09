@@ -6,13 +6,14 @@ import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
+import { BasesData } from '../charts/transformers/base';
 
 export class BoxplotChartView extends BaseChartView {
     constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {
         super(controller, containerEl, plugin);
     }
 
-    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: BasesData): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY) as string;
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY) as string;

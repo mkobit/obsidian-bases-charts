@@ -1,10 +1,10 @@
 import type { EChartsOption, FunnelSeriesOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
 export function createFunnelChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     nameProp: string,
     valueProp: string,
     options?: BaseTransformerOptions

@@ -1,5 +1,5 @@
 import type { EChartsOption, LinesSeriesOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { safeToString, getNestedValue, getLegendOption } from './utils';
 import * as R from 'remeda';
 
@@ -15,7 +15,7 @@ function asCoords(coords: readonly (readonly number[])[]): [number, number][] {
 }
 
 export function createLinesChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     xProp: string,
     yProp: string,
     options?: LinesTransformerOptions

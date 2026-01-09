@@ -1,7 +1,7 @@
 import type { EChartsOption, BoxplotSeriesOption } from 'echarts';
 // @ts-expect-error ECharts extension imports can be tricky with type definitions
 import prepareBoxplotData from 'echarts/extension/dataTool/prepareBoxplotData';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { safeToString, getNestedValue, getLegendOption, isRecord } from './utils';
 import * as R from 'remeda';
 
@@ -22,7 +22,7 @@ function isBoxplotResult(data: unknown): data is BoxplotResult {
 }
 
 export function createBoxplotChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     xProp: string,
     yProp: string,
     options?: BoxplotTransformerOptions

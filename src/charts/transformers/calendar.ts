@@ -1,5 +1,5 @@
 import type { EChartsOption, CalendarComponentOption, HeatmapSeriesOption, VisualMapComponentOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { safeToString, getNestedValue } from './utils';
 import * as R from 'remeda';
 
@@ -13,7 +13,7 @@ function asCalendarTooltipParams(params: unknown): { readonly value: readonly (n
 }
 
 export function createCalendarChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     dateProp: string,
     options?: CalendarTransformerOptions
 ): EChartsOption {

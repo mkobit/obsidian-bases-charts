@@ -1,5 +1,5 @@
 import type { EChartsOption, EffectScatterSeriesOption, DatasetComponentOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { safeToString, getNestedValue, getLegendOption, isRecord } from './utils';
 import * as R from 'remeda';
 
@@ -20,7 +20,7 @@ function isScatterDataPoint(val: unknown): val is ScatterDataPoint {
 }
 
 export function createEffectScatterChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     xProp: string,
     yProp: string,
     options?: EffectScatterTransformerOptions

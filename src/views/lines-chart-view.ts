@@ -3,6 +3,7 @@ import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
+import { BasesData } from '../charts/transformers/base';
 
 export class LinesChartView extends BaseChartView {
     readonly type = 'lines-chart';
@@ -14,7 +15,7 @@ export class LinesChartView extends BaseChartView {
         super(controller, scrollEl, plugin);
     }
 
-    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: BasesData): EChartsOption | null {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY);
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         const x2Prop = this.config.get(LinesChartView.END_X_PROP_KEY);

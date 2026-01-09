@@ -3,6 +3,7 @@ import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
+import { BasesData } from '../charts/transformers/base';
 
 export class GaugeChartView extends BaseChartView {
     readonly type = 'gauge-chart';
@@ -11,7 +12,7 @@ export class GaugeChartView extends BaseChartView {
         super(controller, scrollEl, plugin);
     }
 
-    protected getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null {
+    protected getChartOption(data: BasesData): EChartsOption | null {
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         // Cast BaseChartView to any to access new props
         const minVal = Number(this.config.get(BaseChartView.MIN_VALUE_KEY));

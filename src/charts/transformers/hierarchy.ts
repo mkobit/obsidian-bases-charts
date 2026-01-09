@@ -1,5 +1,5 @@
 import type { EChartsOption, SunburstSeriesOption, TreeSeriesOption } from 'echarts';
-import type { BaseTransformerOptions } from './base';
+import type { BaseTransformerOptions, BasesData } from './base';
 import { getNestedValue } from './utils';
 import * as R from 'remeda';
 
@@ -35,7 +35,7 @@ function asTreeData(data: readonly HierarchyNode[]): TreeSeriesOption['data'] {
  * Refactored to be functional using recursion instead of mutation loops.
  */
 function buildHierarchy(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     pathProp: string,
     valueProp?: string
 ): readonly HierarchyNode[] {
@@ -103,7 +103,7 @@ function buildHierarchy(
 }
 
 export function createSunburstChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     pathProp: string,
     options?: SunburstTransformerOptions
 ): EChartsOption {
@@ -128,7 +128,7 @@ export function createSunburstChartOption(
 }
 
 export function createTreeChartOption(
-    data: readonly Record<string, unknown>[],
+    data: BasesData,
     pathProp: string,
     options?: TreeTransformerOptions
 ): EChartsOption {

@@ -7,6 +7,7 @@ import {
 import * as echarts from 'echarts';
 import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
+import { BasesData } from '../charts/transformers/base';
 
 export abstract class BaseChartView extends BasesView {
     readonly scrollEl: HTMLElement;
@@ -110,7 +111,7 @@ export abstract class BaseChartView extends BasesView {
             this.chart = echarts.init(this.chartEl, this.isDarkMode() ? 'dark' : undefined);
         }
 
-        const data = this.data.data as unknown as readonly Record<string, unknown>[];
+        const data = this.data.data as unknown as BasesData;
         const option = this.getChartOption(data);
 
         if (option) {
@@ -121,7 +122,7 @@ export abstract class BaseChartView extends BasesView {
         }
     }
 
-    protected abstract getChartOption(data: readonly Record<string, unknown>[]): EChartsOption | null;
+    protected abstract getChartOption(data: BasesData): EChartsOption | null;
 
     private readonly updateChartTheme = (): void => {
         if (this.chart) {
