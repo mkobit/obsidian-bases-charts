@@ -27,7 +27,7 @@ export class RoseChartView extends BaseChartView {
         });
     }
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         return BaseChartView.getCommonViewOptions();
     }
 }

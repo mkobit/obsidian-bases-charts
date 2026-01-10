@@ -42,7 +42,7 @@ export class AreaChartView extends BaseChartView {
         return typeof val === 'boolean' ? val : undefined;
     }
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         return [
             ...BaseChartView.getCommonViewOptions(), ...BaseChartView.getAxisViewOptions(),
             {

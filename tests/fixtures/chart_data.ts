@@ -68,6 +68,7 @@ export function chartDatasetArbitrary<T>(
  * Arbitrary for Time Series Data.
  * Generates sorted data by default.
  */
+// eslint-disable-next-line functional/functional-parameters
 export function timeSeriesArbitrary(): fc.Arbitrary<ChartDataset<TimePoint>> {
     return fc.array(
         fc.record({

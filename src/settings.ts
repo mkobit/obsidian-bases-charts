@@ -19,6 +19,7 @@ export class SettingTab extends PluginSettingTab {
 		this.plugin = plugin as BarePlugin;
 	}
 
+	// eslint-disable-next-line functional/functional-parameters
 	display(): void {
 		const { containerEl } = this;
 

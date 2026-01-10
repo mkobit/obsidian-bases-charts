@@ -7,6 +7,7 @@ import { BasesData } from '../charts/transformers/base';
 export class SankeyChartView extends BaseChartView {
     readonly type = 'sankey';
 
+    // eslint-disable-next-line functional/functional-parameters
     getChartType(): ChartType {
         return 'sankey';
     }
@@ -24,7 +25,7 @@ export class SankeyChartView extends BaseChartView {
         });
     }
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         const valueOption: TextOption = {
             displayName: 'Value Property',
             key: BaseChartView.VALUE_PROP_KEY,

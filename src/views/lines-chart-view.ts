@@ -34,7 +34,7 @@ export class LinesChartView extends BaseChartView {
         });
     }
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         return [
             {
                 key: BaseChartView.X_AXIS_PROP_KEY,

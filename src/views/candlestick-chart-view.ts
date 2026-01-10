@@ -49,7 +49,7 @@ export class CandlestickChartView extends BaseChartView {
         });
     }
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         return [
             {
                 displayName: 'X-Axis Property (Date/Time)',
