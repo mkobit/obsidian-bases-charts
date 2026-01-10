@@ -100,7 +100,6 @@ export default tseslint.config(
         rules: {
             "functional/no-conditional-statements": "off",
             "functional/no-expression-statements": "off",
-            "functional/immutable-data": "off", // Tests often need mutation
              // Allow casting in tests and views if necessary, though ideally avoided
              "@typescript-eslint/consistent-type-assertions": "off",
              // Obsidian API requires classes, this, void returns (lifecycle methods), and specific params
