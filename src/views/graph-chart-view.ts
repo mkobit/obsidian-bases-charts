@@ -7,7 +7,7 @@ import { BasesData } from '../charts/transformers/base';
 export class GraphChartView extends BaseChartView {
     readonly type: ChartType = 'graph';
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         return [
             ...BaseChartView.getCommonViewOptions(),
             {

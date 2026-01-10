@@ -12,11 +12,14 @@ export class ThemeRiverChartView extends BaseChartView {
         super(controller, containerEl, plugin);
     }
 
+    // eslint-disable-next-line functional/functional-parameters
     getViewType(): string { return 'theme-river-chart'; }
+    // eslint-disable-next-line functional/functional-parameters
     getDisplayText(): string { return 'Theme river'; }
+    // eslint-disable-next-line functional/functional-parameters
     getIcon(): string { return 'waves'; }
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         return [
             {
                 displayName: 'Date property',

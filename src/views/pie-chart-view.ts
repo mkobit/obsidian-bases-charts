@@ -26,7 +26,7 @@ export class PieChartView extends BaseChartView {
         });
     }
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         // Pie charts don't necessarily need 'Series Property' in the same way stacked bars do,
         // but we can reuse common options.
         // Actually, usually Pie chart is Name vs Value.

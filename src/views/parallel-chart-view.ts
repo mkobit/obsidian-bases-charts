@@ -8,7 +8,7 @@ import { BasesData } from '../charts/transformers/base';
 export class ParallelChartView extends BaseChartView {
     readonly type = 'parallel';
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         return [
             {
                 displayName: 'Dimensions (comma-separated)',

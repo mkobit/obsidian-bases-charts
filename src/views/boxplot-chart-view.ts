@@ -28,7 +28,7 @@ export class BoxplotChartView extends BaseChartView {
         });
     }
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         return [
             {
                 displayName: 'X-Axis Property (Category)',

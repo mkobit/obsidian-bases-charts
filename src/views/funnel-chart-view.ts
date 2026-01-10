@@ -25,7 +25,7 @@ export class FunnelChartView extends BaseChartView {
         });
     }
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         // Funnel doesn't really use "Series Prop" in the same way (usually single series),
         // but we can keep common options or strip Series Prop.
         // Let's strip Series Prop to avoid confusion as our transformer doesn't support multi-funnel yet.

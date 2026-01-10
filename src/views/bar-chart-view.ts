@@ -27,7 +27,7 @@ export class BarChartView extends BaseChartView {
         });
     }
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         return [...BaseChartView.getCommonViewOptions(), ...BaseChartView.getAxisViewOptions()];
     }
 }

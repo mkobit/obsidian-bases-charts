@@ -49,12 +49,14 @@ describe('Transformers with Dataset - Extended', () => {
             // Symbol size check - now handled via visualMap if sizeProp is present
 
             // Refactored to avoid if/else
+            // eslint-disable-next-line functional/functional-parameters
             const checkVisualMap = () => {
                 const visualMap = option.visualMap as VisualMapComponentOption;
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
                 expect((visualMap as any).dimension).toBe('size');
             };
 
+            // eslint-disable-next-line functional/functional-parameters
             const checkSymbolSizeFn = () => {
                 const sizeFn = series[0]?.symbolSize;
                 expect(sizeFn).toBeTypeOf('function');

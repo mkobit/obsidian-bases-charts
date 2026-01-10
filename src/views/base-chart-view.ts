@@ -53,15 +53,17 @@ export abstract class BaseChartView extends BasesView {
         this.chartEl = this.containerEl.createDiv({ cls: 'bases-echarts' });
     }
 
+    // eslint-disable-next-line functional/functional-parameters
     onload(): void {
         this.registerEvent(this.app.workspace.on('css-change', this.updateChartTheme, this));
 
-        this.resizeObserver = new ResizeObserver(() => {
+        this.resizeObserver = new ResizeObserver((_entries) => {
             void this.onResizeDebounce();
         });
         this.resizeObserver.observe(this.containerEl);
     }
 
+    // eslint-disable-next-line functional/functional-parameters
     onunload() {
         this.resizeObserver?.disconnect();
         this.resizeObserver = null;
@@ -73,15 +75,17 @@ export abstract class BaseChartView extends BasesView {
         this.chart?.resize();
     }, 100, true);
 
+    // eslint-disable-next-line functional/functional-parameters
     onResize(): void {
         void this.onResizeDebounce();
     }
 
+    // eslint-disable-next-line functional/functional-parameters
     onDataUpdated(): void {
         this.renderChart();
     }
 
-    protected getCommonTransformerOptions(): import('../charts/transformers/base').BaseTransformerOptions {
+    protected getCommonTransformerOptions(_?: unknown): import('../charts/transformers/base').BaseTransformerOptions {
         return {
             legend: this.config.get(BaseChartView.LEGEND_KEY) as boolean,
             legendPosition: this.config.get(BaseChartView.LEGEND_POSITION_KEY) as 'top' | 'bottom' | 'left' | 'right',
@@ -93,12 +97,12 @@ export abstract class BaseChartView extends BasesView {
         };
     }
 
-    protected renderChart(): void {
+    protected renderChart(_?: unknown): void {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         !this.chartEl ? undefined : this.executeRender();
     }
 
-    private executeRender(): void {
+    private executeRender(_?: unknown): void {
         const height = (this.config.get(BaseChartView.HEIGHT_KEY) as string) || this.plugin.settings.defaultHeight;
         this.chartEl.style.height = height;
 
@@ -118,6 +122,7 @@ export abstract class BaseChartView extends BasesView {
 
     protected abstract getChartOption(data: BasesData): EChartsOption | null;
 
+    // eslint-disable-next-line functional/functional-parameters
     private readonly updateChartTheme = (): void => {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         this.chart && (
@@ -127,11 +132,11 @@ export abstract class BaseChartView extends BasesView {
         );
     }
 
-    private isDarkMode(): boolean {
+    private isDarkMode(_?: unknown): boolean {
         return document.body.classList.contains('theme-dark');
     }
 
-    static getCommonViewOptions(): ViewOption[] {
+    static getCommonViewOptions(_?: unknown): ViewOption[] {
         return [
             {
                 displayName: 'X-Axis Property',
@@ -185,7 +190,7 @@ export abstract class BaseChartView extends BasesView {
         ];
     }
 
-    static getAxisViewOptions(): ViewOption[] {
+    static getAxisViewOptions(_?: unknown): ViewOption[] {
         return [
             {
                 displayName: 'X-Axis Label',
@@ -213,7 +218,7 @@ export abstract class BaseChartView extends BasesView {
         ];
     }
 
-    static getVisualMapViewOptions(): ViewOption[] {
+    static getVisualMapViewOptions(_?: unknown): ViewOption[] {
         return [
             {
                 displayName: 'Visual Map Min',

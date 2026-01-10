@@ -79,7 +79,6 @@ export default tseslint.config(
 			"functional/no-this-expressions": "error",
 			"functional/no-return-void": "error",
 			"functional/no-mixed-types": "error",
-			"functional/functional-parameters": "error",
 			"functional/no-try-statements": "error",
 			"functional/no-throw-statements": "error",
 
@@ -106,7 +105,6 @@ export default tseslint.config(
             "functional/no-class-inheritance": "off",
             "functional/no-this-expressions": "off",
             "functional/no-return-void": "off",
-            "functional/functional-parameters": "off",
             "functional/no-try-statements": "off"
         }
     },
@@ -136,7 +134,6 @@ export default tseslint.config(
             "import/no-nodejs-modules": "off",
             "no-console": "off",
             "functional/no-return-void": "off",
-            "functional/functional-parameters": "off",
             "functional/no-throw-statements": "off",
             "functional/no-try-statements": "off"
         }

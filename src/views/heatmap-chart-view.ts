@@ -12,7 +12,7 @@ export class HeatmapChartView extends BaseChartView {
         super(controller, containerEl, plugin);
     }
 
-    static getViewOptions(): ViewOption[] {
+    static getViewOptions(_?: unknown): ViewOption[] {
         return [
             {
                 displayName: 'X-Axis Property',
