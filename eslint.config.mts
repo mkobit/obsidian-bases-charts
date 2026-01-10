@@ -98,7 +98,6 @@ export default tseslint.config(
     {
         files: ["src/views/**/*.ts", "tests/**/*.ts", "tests/**/*.tsx", "src/main.ts", "src/settings.ts"],
         rules: {
-            "functional/no-conditional-statements": "off",
             "functional/no-expression-statements": "off",
              // Allow casting in tests and views if necessary, though ideally avoided
              "@typescript-eslint/consistent-type-assertions": "off",

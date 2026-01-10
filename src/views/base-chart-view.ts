@@ -63,14 +63,10 @@ export abstract class BaseChartView extends BasesView {
     }
 
     onunload() {
-        if (this.resizeObserver) {
-            this.resizeObserver.disconnect();
-            this.resizeObserver = null;
-        }
-        if (this.chart) {
-            this.chart.dispose();
-            this.chart = null;
-        }
+        this.resizeObserver?.disconnect();
+        this.resizeObserver = null;
+        this.chart?.dispose();
+        this.chart = null;
     }
 
     private readonly onResizeDebounce = debounce(() => {
@@ -98,38 +94,37 @@ export abstract class BaseChartView extends BasesView {
     }
 
     protected renderChart(): void {
-        if (!this.chartEl) {return;}
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        !this.chartEl ? undefined : this.executeRender();
+    }
 
-        // Apply height from config or settings
+    private executeRender(): void {
         const height = (this.config.get(BaseChartView.HEIGHT_KEY) as string) || this.plugin.settings.defaultHeight;
         this.chartEl.style.height = height;
 
-        if (this.chart) {
-             // If height changed, we might need to resize explicitly if not caught by observer yet
-             this.chart.resize();
-        } else {
-            this.chart = echarts.init(this.chartEl, this.isDarkMode() ? 'dark' : undefined);
-        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        this.chart
+            ? this.chart.resize()
+            : (this.chart = echarts.init(this.chartEl, this.isDarkMode() ? 'dark' : undefined));
 
         const data = this.data.data as unknown as BasesData;
         const option = this.getChartOption(data);
 
-        if (option) {
-            // Re-merge with notMerge: true to ensure clean slate for dynamic series
-            this.chart.setOption(option, true);
-        } else {
-            this.chart.clear();
-        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        option
+            ? this.chart.setOption(option, true)
+            : this.chart.clear();
     }
 
     protected abstract getChartOption(data: BasesData): EChartsOption | null;
 
     private readonly updateChartTheme = (): void => {
-        if (this.chart) {
-            this.chart.dispose();
-            this.chart = echarts.init(this.chartEl, this.isDarkMode() ? 'dark' : undefined);
-            this.renderChart();
-        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        this.chart && (
+            this.chart.dispose(),
+            this.chart = echarts.init(this.chartEl, this.isDarkMode() ? 'dark' : undefined),
+            this.renderChart()
+        );
     }
 
     private isDarkMode(): boolean {

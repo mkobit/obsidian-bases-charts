@@ -15,7 +15,6 @@ describe('Treemap Transformer', () => {
         expect(option).toBeDefined();
         const series = option.series as readonly TreemapSeriesOption[];
         expect(series).toBeDefined();
-        if (!series) {return;} // Guard for TS
 
         expect(series.length).toBe(1);
         expect(series[0]!.type).toBe('treemap');
@@ -45,15 +44,8 @@ describe('Treemap Transformer', () => {
         const series = option.series as readonly TreemapSeriesOption[];
 
         // Safety check before access
-        if (series && series[0]) {
-             const seriesData = series[0].data as readonly unknown[];
-             expect(seriesData.length).toBe(0);
-        } else {
-             // If series is missing, that might be valid or invalid depending on impl,
-             // but here we expect empty data array in series
-             // The transformer returns a series even if empty.
-             expect(series).toBeDefined();
-             expect(series.length).toBeGreaterThan(0);
-        }
+        const seriesData = series?.[0]?.data as readonly unknown[];
+        expect(seriesData).toBeDefined();
+        expect(seriesData).toHaveLength(0);
     });
 });

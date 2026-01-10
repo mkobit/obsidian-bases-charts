@@ -35,19 +35,16 @@ describe('createParallelChartOption', () => {
 
         const axes = option.parallelAxis;
         expect(axes).toBeDefined();
-        if (axes) {
-            expect(axes).toHaveLength(3);
-            expect(axes[0]!.name).toBe('price');
-            expect(axes[0]!.type).toBe('value');
-            expect(axes[1]!.name).toBe('rating');
-            expect(axes[2]!.name).toBe('volume');
-        }
+        // Use type assertions or early returns (in test logic, direct assertion is better)
+        expect(axes).toHaveLength(3);
+        expect(axes![0]!.name).toBe('price');
+        expect(axes![0]!.type).toBe('value');
+        expect(axes![1]!.name).toBe('rating');
+        expect(axes![2]!.name).toBe('volume');
 
         expect(Array.isArray(option.series)).toBe(true);
         expect(option.series).toHaveLength(1); // Default series
-        if (option.series && option.series.length > 0) {
-            expect(option.series[0]!.data).toHaveLength(2);
-        }
+        expect(option.series![0]!.data).toHaveLength(2);
     });
 
     it('should handle category dimensions', () => {
@@ -60,14 +57,13 @@ describe('createParallelChartOption', () => {
         const option = createParallelChartOption(data, dimensions) as TestOption;
         const axes = option.parallelAxis;
         expect(axes).toBeDefined();
-        if (axes) {
-            expect(axes[0]!.name).toBe('name');
-            expect(axes[0]!.type).toBe('category');
-            expect(axes[0]!.data).toEqual(expect.arrayContaining(['A', 'B']));
 
-            expect(axes[1]!.name).toBe('value');
-            expect(axes[1]!.type).toBe('value');
-        }
+        expect(axes![0]!.name).toBe('name');
+        expect(axes![0]!.type).toBe('category');
+        expect(axes![0]!.data).toEqual(expect.arrayContaining(['A', 'B']));
+
+        expect(axes![1]!.name).toBe('value');
+        expect(axes![1]!.type).toBe('value');
     });
 
     it('should handle grouping by seriesProp', () => {
@@ -82,15 +78,13 @@ describe('createParallelChartOption', () => {
         const option = createParallelChartOption(data, dimensions, options) as TestOption;
 
         expect(option.series).toHaveLength(2);
-        if (option.series) {
-            const s1 = option.series.find(s => s.name === 'G1');
-            const s2 = option.series.find(s => s.name === 'G2');
+        const s1 = option.series!.find(s => s.name === 'G1');
+        const s2 = option.series!.find(s => s.name === 'G2');
 
-            expect(s1).toBeDefined();
-            expect(s1?.data).toHaveLength(2);
-            expect(s2).toBeDefined();
-            expect(s2?.data).toHaveLength(1);
-        }
+        expect(s1).toBeDefined();
+        expect(s1?.data).toHaveLength(2);
+        expect(s2).toBeDefined();
+        expect(s2?.data).toHaveLength(1);
     });
 
     it('should handle empty data with valid dimensions', () => {
@@ -99,12 +93,10 @@ describe('createParallelChartOption', () => {
 
         const axes = option.parallelAxis;
         expect(axes).toBeDefined();
-        if (axes) {
-            expect(axes).toHaveLength(1);
-            expect(axes[0]!.name).toBe('price');
-            // Defaults to category if no data to infer value
-            expect(axes[0]!.type).toBe('category');
-        }
+        expect(axes).toHaveLength(1);
+        expect(axes![0]!.name).toBe('price');
+        // Defaults to category if no data to infer value
+        expect(axes![0]!.type).toBe('category');
     });
 
     it('should return title message if no dimensions provided', () => {
