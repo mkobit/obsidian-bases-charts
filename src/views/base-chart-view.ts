@@ -45,11 +45,11 @@ export abstract class BaseChartView extends BasesView {
     public static readonly VISUAL_MAP_ORIENT_KEY = 'visualMapOrient';
     public static readonly VISUAL_MAP_TYPE_KEY = 'visualMapType';
 
-    constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
-        super(controller);
-        this.scrollEl = scrollEl;
-        this.plugin = plugin;
-        this.containerEl = scrollEl.createDiv({ cls: 'bases-echarts-container' });
+    constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
+        super(controller as QueryController);
+        this.scrollEl = scrollEl as HTMLElement;
+        this.plugin = plugin as BarePlugin;
+        this.containerEl = this.scrollEl.createDiv({ cls: 'bases-echarts-container' });
         this.chartEl = this.containerEl.createDiv({ cls: 'bases-echarts' });
     }
 
@@ -57,7 +57,7 @@ export abstract class BaseChartView extends BasesView {
         this.registerEvent(this.app.workspace.on('css-change', this.updateChartTheme, this));
 
         this.resizeObserver = new ResizeObserver(() => {
-            this.onResizeDebounce();
+            void this.onResizeDebounce();
         });
         this.resizeObserver.observe(this.containerEl);
     }
@@ -74,7 +74,7 @@ export abstract class BaseChartView extends BasesView {
     }, 100, true);
 
     onResize(): void {
-        this.onResizeDebounce();
+        void this.onResizeDebounce();
     }
 
     onDataUpdated(): void {

@@ -8,7 +8,7 @@ import { BasesData } from '../charts/transformers/base';
 export class RadarChartView extends BaseChartView {
     readonly type = 'radar-chart';
 
-    constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
+    constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
         super(controller, scrollEl, plugin);
     }
 

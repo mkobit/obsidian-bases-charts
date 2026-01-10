@@ -11,7 +11,7 @@ import { BasesData } from '../charts/transformers/base';
 export class SunburstChartView extends BaseChartView {
     readonly type = 'sunburst-chart';
 
-    constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {
+    constructor(controller: Readonly<QueryController>, containerEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
         super(controller, containerEl, plugin);
     }
 

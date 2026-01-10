@@ -14,9 +14,9 @@ export const DEFAULT_SETTINGS: BarePluginSettings = {
 export class SettingTab extends PluginSettingTab {
 	plugin: BarePlugin;
 
-	constructor(app: App, plugin: BarePlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
+	constructor(app: Readonly<App>, plugin: Readonly<BarePlugin>) {
+		super(app as App, plugin as BarePlugin);
+		this.plugin = plugin as BarePlugin;
 	}
 
 	display(): void {

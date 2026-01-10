@@ -11,7 +11,7 @@ import { BasesData } from '../charts/transformers/base';
 export class TreemapChartView extends BaseChartView {
     readonly type = 'treemap-chart';
 
-    constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {
+    constructor(controller: Readonly<QueryController>, containerEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
         super(controller, containerEl, plugin);
     }
 
