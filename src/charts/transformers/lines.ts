@@ -44,7 +44,7 @@ export function createLinesChartOption(
                         ? null
                         : { coords: asCoords([[x1, y1], [x2, y2]]), series };
                 }),
-                R.filter((d): d is { readonly coords: [number, number][], readonly series: string } => d !== null)
+                R.filter((d): d is Readonly<{ coords: [number, number][], series: string }> => d !== null)
             );
 
             // 2. Group by Series

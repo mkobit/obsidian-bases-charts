@@ -12,11 +12,11 @@ export class TreeChartView extends BaseChartView {
         super(controller, containerEl, plugin);
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     getViewType(): string { return 'tree-chart'; }
-    // eslint-disable-next-line functional/functional-parameters
+
     getDisplayText(): string { return 'Tree'; }
-    // eslint-disable-next-line functional/functional-parameters
+
     getIcon(): string { return 'network'; }
 
     static getViewOptions(_?: unknown): ViewOption[] {

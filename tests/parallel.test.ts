@@ -18,7 +18,7 @@ interface TestOption {
     readonly parallel?: unknown;
     readonly parallelAxis?: readonly TestParallelAxis[];
     readonly series?: readonly TestSeries[];
-    readonly title?: { readonly text: string };
+    readonly title?: Readonly<{ text: string }>;
 }
 
 describe('createParallelChartOption', () => {

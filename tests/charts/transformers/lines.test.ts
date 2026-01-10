@@ -23,7 +23,7 @@ describe('createLinesChartOption', () => {
         expect(series[0]!.data).toHaveLength(2);
 
         // Check coords
-        const data0 = series[0]!.data as readonly { readonly coords: readonly (readonly number[])[] }[];
+        const data0 = series[0]!.data as readonly Readonly<{ coords: readonly (readonly number[])[] }>[];
         expect(data0[0]!.coords).toEqual([[10, 10], [20, 20]]);
     });
 

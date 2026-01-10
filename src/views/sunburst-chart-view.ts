@@ -15,17 +15,17 @@ export class SunburstChartView extends BaseChartView {
         super(controller, containerEl, plugin);
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     getViewType(): string {
         return 'sunburst-chart';
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     getDisplayText(): string {
         return 'Sunburst';
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     getIcon(): string {
         return 'disc';
     }
