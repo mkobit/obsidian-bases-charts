@@ -21,26 +21,23 @@ export class RadarChartView extends BaseChartView {
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY);
 
-        if (typeof xProp !== 'string' || typeof yProp !== 'string') {
-            return null;
-        }
-
-        return transformDataToChartOption(data, xProp, yProp, 'radar', {
-            ...this.getCommonTransformerOptions(),
-            seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined
-        });
+        return (typeof xProp !== 'string' || typeof yProp !== 'string')
+            ? null
+            : transformDataToChartOption(data, xProp, yProp, 'radar', {
+                ...this.getCommonTransformerOptions(),
+                seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined
+            });
     }
 
     static getViewOptions(): ViewOption[] {
         // Clone options to avoid side effects on other charts
-        const commonOpts = BaseChartView.getCommonViewOptions().map(opt => ({...opt}));
-
-        const xOpt = commonOpts.find(o => 'key' in o && o.key === BaseChartView.X_AXIS_PROP_KEY);
-        if (xOpt && 'displayName' in xOpt && 'placeholder' in xOpt) {
-            xOpt.displayName = 'Indicator Property';
-            xOpt.placeholder = 'Select indicator/category property';
-        }
-
-        return commonOpts;
+        return BaseChartView.getCommonViewOptions().map(opt => {
+            const isXAxis = 'key' in opt && opt.key === BaseChartView.X_AXIS_PROP_KEY;
+            return isXAxis ? {
+                ...opt,
+                displayName: 'Indicator Property',
+                placeholder: 'Select indicator/category property'
+            } : { ...opt };
+        });
     }
 }

@@ -118,9 +118,9 @@ describe('Obsidian File Builder', () => {
         // Verify it's actually a Temporal object
         const created = file.frontmatter.created;
         expect(created).toBeInstanceOf(Temporal.PlainDate);
-        if (created instanceof Temporal.PlainDate) {
-             expect(created.year).toBe(2023);
-        }
+        // Use type narrowing via assignment or expectation instead of if
+        const createdDate = created as Temporal.PlainDate;
+        expect(createdDate.year).toBe(2023);
     });
 
     it('should generate valid raw string with ISO dates', () => {
