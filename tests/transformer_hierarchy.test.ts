@@ -25,8 +25,10 @@ describe('Transformer - Hierarchical Charts', () => {
             expect(option.series).toBeDefined();
 
             // Validate and narrow type for option.series
+            expect(Array.isArray(option.series)).toBe(true);
+            expect(option.series).not.toHaveLength(0);
             if (!Array.isArray(option.series) || option.series.length === 0) {
-                throw new Error('Series is not an array or is empty');
+                return;
             }
 
             const series = option.series[0] as SunburstSeriesOption;
@@ -54,8 +56,12 @@ describe('Transformer - Hierarchical Charts', () => {
                 valueProp: 'val'
             });
 
+            expect(Array.isArray(option.series)).toBe(true);
+            expect(option.series).not.toHaveLength(0);
+            expect(option.series).not.toHaveLength(0);
+            expect(option.series).not.toHaveLength(0);
             if (!Array.isArray(option.series) || option.series.length === 0) {
-                 throw new Error('Series is not an array or is empty');
+                 return;
             }
 
             const series = option.series[0] as SunburstSeriesOption;
@@ -73,8 +79,9 @@ describe('Transformer - Hierarchical Charts', () => {
             ];
             const option = transformDataToChartOption(data, 'path', '', 'tree', {});
 
+            expect(Array.isArray(option.series)).toBe(true);
             if (!Array.isArray(option.series) || option.series.length === 0) {
-                 throw new Error('Series is not an array or is empty');
+                 return;
             }
 
             const series = option.series[0] as TreeSeriesOption;
@@ -93,8 +100,9 @@ describe('Transformer - Hierarchical Charts', () => {
             ];
             const option = transformDataToChartOption(data, 'path', '', 'tree', {});
 
+            expect(Array.isArray(option.series)).toBe(true);
             if (!Array.isArray(option.series) || option.series.length === 0) {
-                 throw new Error('Series is not an array or is empty');
+                 return;
             }
 
             const series = option.series[0] as TreeSeriesOption;

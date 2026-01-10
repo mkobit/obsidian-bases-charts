@@ -22,8 +22,9 @@ describe('Transformer: Boxplot', () => {
 
         expect(option.series).toBeDefined();
         // Check if series is an array to narrow type and avoid lint errors
+        expect(Array.isArray(option.series)).toBe(true);
         if (!Array.isArray(option.series)) {
-            throw new TypeError('Series expected to be an array');
+            return;
         }
         expect(option.series).toHaveLength(1);
 
@@ -45,8 +46,9 @@ describe('Transformer: Boxplot', () => {
         ];
         const option = transformDataToChartOption(data, 'cat', 'val', 'boxplot');
 
+        expect(Array.isArray(option.series)).toBe(true);
         if (!Array.isArray(option.series)) {
-            throw new TypeError('Series expected to be an array');
+            return;
         }
         const series = option.series[0] as BoxplotSeriesOption;
 
