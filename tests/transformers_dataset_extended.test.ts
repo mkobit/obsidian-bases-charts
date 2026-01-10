@@ -63,7 +63,7 @@ describe('Transformers with Dataset - Extended', () => {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
                     expect(sizeFn({ size: -5 }, {} as any)).toBe(0); // Should be max(0, val)
                 } else {
-                    throw new Error('symbolSize should be a function or visualMap should be defined');
+                    expect(sizeFn).toBeTypeOf('function');
                 }
             }
         });

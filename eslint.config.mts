@@ -110,9 +110,7 @@ export default tseslint.config(
             "functional/no-this-expressions": "off",
             "functional/no-return-void": "off",
             "functional/functional-parameters": "off",
-            "functional/no-try-statements": "off",
-            // Tests might use throw implicitly or test error cases
-            "functional/no-throw-statements": "off"
+            "functional/no-try-statements": "off"
         }
     },
 	globalIgnores([

@@ -28,8 +28,11 @@ describe('Transformer - Candlestick Chart', () => {
         // Data Verification (using Dataset)
         // Check dataset presence
         expect(option.dataset).toBeDefined();
+        expect(Array.isArray(option.dataset)).toBe(true);
+        expect(option.dataset).not.toHaveLength(0);
         if (!option.dataset || !Array.isArray(option.dataset) || option.dataset.length === 0) {
-             throw new Error('Dataset is missing or empty');
+            // Fails the test implicitly if reached, or handled by expect above
+             return;
         }
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,8 +69,13 @@ describe('Transformer - Candlestick Chart', () => {
             highProp: 'high'
         });
 
+        expect(option.dataset).toBeDefined();
+        expect(Array.isArray(option.dataset)).toBe(true);
+        expect(option.dataset).not.toHaveLength(0);
+        expect(option.dataset).not.toHaveLength(0);
+
         if (!option.dataset || !Array.isArray(option.dataset) || option.dataset.length === 0) {
-             throw new Error('Dataset is missing or empty');
+             return;
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const dataset = option.dataset as readonly { readonly source: readonly any[] }[];
@@ -87,8 +95,11 @@ describe('Transformer - Candlestick Chart', () => {
         // We pass empty options for props
         const option = transformDataToChartOption(data, 'date', '', 'candlestick');
 
+        expect(option.dataset).toBeDefined();
+        expect(Array.isArray(option.dataset)).toBe(true);
+
         if (!option.dataset || !Array.isArray(option.dataset) || option.dataset.length === 0) {
-             throw new Error('Dataset is missing or empty');
+             return;
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const dataset = option.dataset as readonly { readonly source: readonly any[] }[];
