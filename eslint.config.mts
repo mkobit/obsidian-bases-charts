@@ -86,11 +86,11 @@ export default tseslint.config(
             "functional/readonly-type": "off"
 		}
 	},
-	// Overrides for Obsidian Plugin Code (Views, Main, Settings, Tests)
+	// Overrides for Obsidian Plugin Code (Views, Main, Settings)
 	{
-		files: ["src/views/**/*.ts", "tests/**/*.ts", "tests/**/*.tsx", "src/main.ts", "src/settings.ts"],
+		files: ["src/views/**/*.ts", "src/main.ts", "src/settings.ts"],
 		rules: {
-            // RELAX Functional Rules for Obsidian API & Tests
+            // RELAX Functional Rules for Obsidian API
             // The Obsidian API necessitates classes, inheritance, side effects, and mutations (of 'this').
 			"functional/no-expression-statements": "off",
 			"@typescript-eslint/consistent-type-assertions": "off",
@@ -110,6 +110,29 @@ export default tseslint.config(
 			}]
 		}
 	},
+    // Overrides for Tests
+    {
+        files: ["tests/**/*.ts", "tests/**/*.tsx"],
+        rules: {
+            // Relax rules for Testing patterns (Assertions, Mocking, Setup/Teardown)
+            "functional/no-expression-statements": "off", // Needed for expect() assertions
+            "@typescript-eslint/consistent-type-assertions": "off", // Needed for mocking
+            "functional/no-return-void": "off", // Needed for test/beforeEach callbacks
+            "functional/no-classes": "off", // Allowed in tests if needed (e.g. mock classes)
+            "functional/no-class-inheritance": "off",
+            "functional/no-this-expressions": "off",
+            "functional/no-try-statements": "off",
+            "functional/no-throw-statements": "off",
+            "functional/no-loop-statements": "off",
+            "functional/no-conditional-statements": "off",
+            "functional/no-mixed-types": "off",
+            "functional/functional-parameters": "off",
+            "functional/immutable-data": ["error", {
+                ignoreClasses: true,
+                ignoreAccessorPattern: ["this.**"]
+            }]
+        }
+    },
     // Scripts
     {
         files: ["scripts/**/*.ts", "scripts/**/*.cjs", "esbuild.config.mjs", "version-bump.mjs"],
