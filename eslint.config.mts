@@ -104,7 +104,6 @@ export default tseslint.config(
              // Obsidian API requires classes, this, void returns (lifecycle methods), and specific params
             "functional/no-classes": "off",
             "functional/no-class-inheritance": "off",
-            "functional/prefer-immutable-types": "off",
             "functional/no-this-expressions": "off",
             "functional/no-return-void": "off",
             "functional/functional-parameters": "off",

@@ -8,7 +8,7 @@ import { BasesData } from '../charts/transformers/base';
 export class StackedBarChartView extends BaseChartView {
     readonly type = 'stacked-bar-chart';
 
-    constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
+    constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
         super(controller, scrollEl, plugin);
     }
 

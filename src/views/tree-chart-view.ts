@@ -8,7 +8,7 @@ import { BasesData } from '../charts/transformers/base';
 export class TreeChartView extends BaseChartView {
     readonly type = 'tree-chart';
 
-    constructor(controller: QueryController, containerEl: HTMLElement, plugin: BarePlugin) {
+    constructor(controller: Readonly<QueryController>, containerEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
         super(controller, containerEl, plugin);
     }
 

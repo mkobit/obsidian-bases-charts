@@ -11,7 +11,7 @@ export class LinesChartView extends BaseChartView {
     static readonly END_X_PROP_KEY = 'end_x_prop';
     static readonly END_Y_PROP_KEY = 'end_y_prop';
 
-    constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
+    constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
         super(controller, scrollEl, plugin);
     }
 

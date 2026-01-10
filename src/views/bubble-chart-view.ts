@@ -8,7 +8,7 @@ import { BasesData } from '../charts/transformers/base';
 export class BubbleChartView extends BaseChartView {
     readonly type = 'bubble-chart';
 
-    constructor(controller: QueryController, scrollEl: HTMLElement, plugin: BarePlugin) {
+    constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
         super(controller, scrollEl, plugin);
     }
 
