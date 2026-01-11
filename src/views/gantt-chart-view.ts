@@ -47,38 +47,36 @@ export class GanttChartView extends BaseChartView {
                 displayName: 'Task property',
                 type: 'dropdown',
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-                options: p?.getProperties?.() ?? {},
-                placeholder: 'Property containing task names'
+                options: p?.getProperties?.() ?? {}
             },
             {
                 key: GanttChartView.START_PROP_KEY,
                 displayName: 'Start time property',
                 type: 'dropdown',
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-                options: p?.getProperties?.() ?? {},
-                placeholder: 'Property containing start timestamps'
+                options: p?.getProperties?.() ?? {}
             },
             {
                 key: GanttChartView.END_PROP_KEY,
                 displayName: 'End time property',
                 type: 'dropdown',
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-                options: p?.getProperties?.() ?? {},
-                placeholder: 'Property containing end timestamps'
+                options: p?.getProperties?.() ?? {}
             },
             {
                 key: BaseChartView.SERIES_PROP_KEY,
                 displayName: 'Group by property',
                 type: 'dropdown',
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-                options: p?.getProperties?.() ?? {},
-                placeholder: 'Property to group tasks by'
+                options: p?.getProperties?.() ?? {}
             },
-            ...BaseChartView.getCommonViewOptions().filter(o =>
-                o.key !== BaseChartView.X_AXIS_PROP_KEY &&
-                o.key !== BaseChartView.Y_AXIS_PROP_KEY &&
-                o.key !== BaseChartView.SERIES_PROP_KEY
-            )
+            ...BaseChartView.getCommonViewOptions().filter(o => {
+                 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+                 const key = (o as any).key;
+                 return key !== BaseChartView.X_AXIS_PROP_KEY &&
+                        key !== BaseChartView.Y_AXIS_PROP_KEY &&
+                        key !== BaseChartView.SERIES_PROP_KEY;
+            })
         ];
     }
 }

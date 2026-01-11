@@ -96,7 +96,7 @@ export function createGanttChartOption(
                 return null;
             }
 
-            return {
+            const point: GanttDataPoint = {
                 task,
                 start,
                 end,
@@ -104,6 +104,7 @@ export function createGanttChartOption(
                 seriesName,
                 dataIndex: idx
             };
+            return point;
         }),
         R.filter((x): x is GanttDataPoint => x !== null)
     );
