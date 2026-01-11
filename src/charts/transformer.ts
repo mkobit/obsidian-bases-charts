@@ -81,8 +81,7 @@ import {
     GanttTransformerOptions
 } from './transformers/gantt';
 import {
-    createWaterfallChartOption,
-    WaterfallTransformerOptions
+    createWaterfallChartOption
 } from './transformers/waterfall';
 import {  ChartType , BasesData } from './transformers/base';
 
@@ -105,8 +104,7 @@ export type ChartTransformerOptions =
     | CalendarTransformerOptions
     | ParallelTransformerOptions
     | PictorialBarTransformerOptions
-    | GanttTransformerOptions
-    | WaterfallTransformerOptions;
+    | GanttTransformerOptions;
 
 // Helper to cast options
 function asOptions<T>(options: unknown): T {

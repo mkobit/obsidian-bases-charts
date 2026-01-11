@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { describe, it, expect } from 'vitest';
 import { createWaterfallChartOption } from '../../../src/charts/transformers/waterfall';
 
@@ -20,7 +21,7 @@ describe('createWaterfallChartOption', () => {
         expect(option.xAxis).toBeDefined();
         const xAxis = Array.isArray(option.xAxis) ? option.xAxis[0] : option.xAxis;
         expect(xAxis).toBeDefined();
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
         expect((xAxis as any).data).toEqual(['A', 'B', 'C', 'D']);
 
         // Check Series
@@ -63,7 +64,7 @@ describe('createWaterfallChartOption', () => {
         expect(option.xAxis).toBeDefined();
         const xAxis = Array.isArray(option.xAxis) ? option.xAxis[0] : option.xAxis;
         expect(xAxis).toBeDefined();
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
         expect((xAxis as any).data).toEqual(['A', 'C']);
 
         const series = option.series as any[];

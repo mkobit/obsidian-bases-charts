@@ -15,10 +15,14 @@ export class WaterfallChartView extends BaseChartView {
 
         // Customize display names
         const xOption = options.find(o => 'key' in o && o.key === BaseChartView.X_AXIS_PROP_KEY);
-        if (xOption) xOption.displayName = 'Category Property';
+        if (xOption) {
+            xOption.displayName = 'Category Property';
+        }
 
         const yOption = options.find(o => 'key' in o && o.key === BaseChartView.Y_AXIS_PROP_KEY);
-        if (yOption) yOption.displayName = 'Value Property';
+        if (yOption) {
+            yOption.displayName = 'Value Property';
+        }
 
         return [
             ...options,
