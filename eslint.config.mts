@@ -86,6 +86,13 @@ export default tseslint.config(
             "functional/readonly-type": "off"
 		}
 	},
+	// Overrides for Configuration Files
+	{
+		files: ["package.json"],
+		rules: {
+			"depend/ban-dependencies": "off"
+		}
+	},
 	// Overrides for Obsidian Plugin Code (Views, Main, Settings)
 	{
 		files: ["src/views/**/*.ts", "src/main.ts", "src/settings.ts"],
