@@ -80,6 +80,9 @@ import {
     createGanttChartOption,
     GanttTransformerOptions
 } from './transformers/gantt';
+import {
+    createWaterfallChartOption
+} from './transformers/waterfall';
 import {  ChartType , BasesData } from './transformers/base';
 
 export type ChartTransformerOptions =
@@ -138,6 +141,7 @@ const transformerMap: Record<
     parallel: (data, xProp, _, options) => createParallelChartOption(data, xProp, asOptions(options)),
     pictorialBar: (data, xProp, yProp, options) => createPictorialBarChartOption(data, xProp, yProp, asOptions(options)),
     gantt: (data, _, __, options) => createGanttChartOption(data, asOptions(options)),
+    waterfall: (data, xProp, yProp, options) => createWaterfallChartOption(data, xProp, yProp, asOptions(options)),
 };
 
 /**
@@ -176,3 +180,4 @@ export {type ThemeRiverTransformerOptions} from './transformers/theme-river';
 export {type CalendarTransformerOptions} from './transformers/calendar';
 export {type ParallelTransformerOptions} from './transformers/parallel';
 export {type GanttTransformerOptions} from './transformers/gantt';
+export {type WaterfallTransformerOptions} from './transformers/waterfall';

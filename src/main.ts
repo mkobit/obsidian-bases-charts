@@ -26,6 +26,7 @@ import { ParallelChartView } from './views/parallel-chart-view';
 import { RoseChartView } from './views/rose-chart-view';
 import { PictorialBarChartView } from './views/pictorial-bar-chart-view';
 import { GanttChartView } from './views/gantt-chart-view';
+import { WaterfallChartView } from './views/waterfall-chart-view';
 
 export default class BarePlugin extends Plugin {
 	public settings: BarePluginSettings = DEFAULT_SETTINGS;
@@ -214,6 +215,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'calendar-clock',
 			factory: (controller, containerEl) => new GanttChartView(controller, containerEl, this),
 			options: (_?: unknown) => GanttChartView.getViewOptions(this),
+		});
+
+		this.registerBasesView('waterfall-chart', {
+			name: 'Waterfall Chart',
+			icon: 'trending-down',
+			factory: (controller, containerEl) => new WaterfallChartView(controller, containerEl, this),
+			options: (_?: unknown) => WaterfallChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));
