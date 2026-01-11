@@ -20,8 +20,12 @@ The goal is to build an assortment of views using:
 
 ## Strictness & Quality
 -   **TypeScript**: `"strict": true` is enabled in `tsconfig.json`. No implicit `any` allowed.
--   **Linting**: ESLint is configured with strict functional programming rules. Run `pnpm run lint` before committing.
--   **CI**: GitHub Actions workflow (`ci.yml`) enforces build success, type safety, and linting on every push.
+-   **Linting**: ESLint is configured with strict functional programming rules.
+-   **Pre-commit Protocol**: We use **Husky** and **lint-staged** to enforce quality standards automatically.
+    -   When you commit, `eslint --fix` runs on staged files to fix style issues and enforce rules.
+    -   `tsc-files` runs to ensure staged files pass type checking.
+    -   `pnpm dedupe` ensures dependencies are clean.
+-   **CI**: GitHub Actions workflow (`ci.yml`) enforces build success, type safety, and linting on every push, acting as a final gate.
 
 ## Functional programming protocol
 
@@ -73,6 +77,6 @@ We strictly enforce functional programming principles to ensure code clarity, pr
 1.  **Maintain Strictness**: Do not relax TypeScript rules or linter rules.
 2.  **Verify**: Always run the following commands locally to verify your changes before opening a pull request:
     - `pnpm run build`
-    - `pnpm run lint`
     - `pnpm run test`
+    *Note: Linting and Type Checking are automatically verified on commit via Husky.*
 3.  **Clean Code**: Keep `main.ts` focused on lifecycle management. Move heavy logic to separate modules/components.
