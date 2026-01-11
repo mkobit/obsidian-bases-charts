@@ -31,6 +31,7 @@ import { ParetoChartView } from './views/pareto-chart-view';
 import { HistogramChartView } from './views/histogram-chart-view';
 import { BulletChartView } from './views/bullet-chart-view';
 import { RadialBarChartView } from './views/radial-bar-chart-view';
+import { PolarLineChartView } from './views/polar-line-chart-view';
 
 export default class BarePlugin extends Plugin {
 	public settings: BarePluginSettings = DEFAULT_SETTINGS;
@@ -254,6 +255,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'circle-dot',
 			factory: (controller, containerEl) => new RadialBarChartView(controller, containerEl, this),
 			options: (_?: unknown) => RadialBarChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('polar-line-chart', {
+			name: 'Polar Line Chart',
+			icon: 'activity',
+			factory: (controller, containerEl) => new PolarLineChartView(controller, containerEl, this),
+			options: (_?: unknown) => PolarLineChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));
