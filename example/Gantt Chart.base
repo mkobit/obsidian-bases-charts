@@ -1,0 +1,5 @@
+type: gantt-chart
+taskProp: note.Task
+startProp: note.Start
+endProp: note.End
+seriesProp: note.Project
