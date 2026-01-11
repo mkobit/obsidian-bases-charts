@@ -1,4 +1,4 @@
-export type ChartType = 'bar' | 'line' | 'lines' | 'pie' | 'scatter' | 'effectScatter' | 'bubble' | 'radar' | 'funnel' | 'gauge' | 'heatmap' | 'candlestick' | 'treemap' | 'boxplot' | 'sankey' | 'graph' | 'sunburst' | 'tree' | 'themeRiver' | 'calendar' | 'parallel' | 'rose' | 'pictorialBar';
+export type ChartType = 'bar' | 'line' | 'lines' | 'pie' | 'scatter' | 'effectScatter' | 'bubble' | 'radar' | 'funnel' | 'gauge' | 'heatmap' | 'candlestick' | 'treemap' | 'boxplot' | 'sankey' | 'graph' | 'sunburst' | 'tree' | 'themeRiver' | 'calendar' | 'parallel' | 'rose' | 'pictorialBar' | 'gantt';
 
 export type BasesData = ReadonlyArray<Readonly<Record<string, unknown>>>;
 

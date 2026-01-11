@@ -25,6 +25,7 @@ import { CalendarChartView } from './views/calendar-chart-view';
 import { ParallelChartView } from './views/parallel-chart-view';
 import { RoseChartView } from './views/rose-chart-view';
 import { PictorialBarChartView } from './views/pictorial-bar-chart-view';
+import { GanttChartView } from './views/gantt-chart-view';
 
 export default class BarePlugin extends Plugin {
 	public settings: BarePluginSettings = DEFAULT_SETTINGS;
@@ -206,6 +207,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'sliders-horizontal',
 			factory: (controller, containerEl) => new ParallelChartView(controller, containerEl, this),
 			options: (_?: unknown) => ParallelChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('gantt-chart', {
+			name: 'Gantt Chart',
+			icon: 'calendar-clock',
+			factory: (controller, containerEl) => new GanttChartView(controller, containerEl, this),
+			options: (_?: unknown) => GanttChartView.getViewOptions(this),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));

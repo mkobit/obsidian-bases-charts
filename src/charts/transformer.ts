@@ -76,6 +76,10 @@ import {
     createPictorialBarChartOption,
     PictorialBarTransformerOptions
 } from './transformers/pictorial-bar';
+import {
+    createGanttChartOption,
+    GanttTransformerOptions
+} from './transformers/gantt';
 import {  ChartType , BasesData } from './transformers/base';
 
 export type ChartTransformerOptions =
@@ -96,7 +100,8 @@ export type ChartTransformerOptions =
     | ThemeRiverTransformerOptions
     | CalendarTransformerOptions
     | ParallelTransformerOptions
-    | PictorialBarTransformerOptions;
+    | PictorialBarTransformerOptions
+    | GanttTransformerOptions;
 
 // Helper to cast options
 function asOptions<T>(options: unknown): T {
@@ -132,6 +137,7 @@ const transformerMap: Record<
     calendar: (data, xProp, _, options) => createCalendarChartOption(data, xProp, asOptions(options)),
     parallel: (data, xProp, _, options) => createParallelChartOption(data, xProp, asOptions(options)),
     pictorialBar: (data, xProp, yProp, options) => createPictorialBarChartOption(data, xProp, yProp, asOptions(options)),
+    gantt: (data, _, __, options) => createGanttChartOption(data, asOptions(options)),
 };
 
 /**
@@ -169,3 +175,4 @@ export {type SunburstTransformerOptions, type TreeTransformerOptions} from './tr
 export {type ThemeRiverTransformerOptions} from './transformers/theme-river';
 export {type CalendarTransformerOptions} from './transformers/calendar';
 export {type ParallelTransformerOptions} from './transformers/parallel';
+export {type GanttTransformerOptions} from './transformers/gantt';
