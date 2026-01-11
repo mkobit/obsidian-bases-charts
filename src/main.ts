@@ -28,6 +28,7 @@ import { PictorialBarChartView } from './views/pictorial-bar-chart-view';
 import { GanttChartView } from './views/gantt-chart-view';
 import { WaterfallChartView } from './views/waterfall-chart-view';
 import { ParetoChartView } from './views/pareto-chart-view';
+import { HistogramChartView } from './views/histogram-chart-view';
 
 export default class BarePlugin extends Plugin {
 	public settings: BarePluginSettings = DEFAULT_SETTINGS;
@@ -230,6 +231,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'bar-chart-horizontal',
 			factory: (controller, containerEl) => new ParetoChartView(controller, containerEl, this),
 			options: (_?: unknown) => ParetoChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('histogram-chart', {
+			name: 'Histogram Chart',
+			icon: 'bar-chart-big',
+			factory: (controller, containerEl) => new HistogramChartView(controller, containerEl, this),
+			options: (_?: unknown) => HistogramChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));
