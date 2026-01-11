@@ -60,7 +60,7 @@ export function createHistogramChartOption(
                         ? (v >= binMin && v <= binMax)
                         : (v >= binMin && v < binMax)
                 ),
-                R.length
+                (vals) => vals.length
             );
 
             const label = `${binMin.toFixed(2)} - ${binMax.toFixed(2)}`;

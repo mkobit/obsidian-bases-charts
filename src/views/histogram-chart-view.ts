@@ -11,10 +11,14 @@ export class HistogramChartView extends BaseChartView {
     public static readonly BIN_COUNT_KEY = 'binCount';
 
     protected getChartOption(data: BasesData): EChartsOption | null {
-        if (!data || data.length === 0) return null;
+        if (!data || data.length === 0) {
+            return null;
+        }
 
         const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string;
-        if (!valueProp) return null;
+        if (!valueProp) {
+            return null;
+        }
 
         const binCountStr = this.config.get(HistogramChartView.BIN_COUNT_KEY) as string;
         // Validate binCount: must be a valid positive integer.
