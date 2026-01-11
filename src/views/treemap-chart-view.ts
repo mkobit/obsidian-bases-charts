@@ -15,17 +15,17 @@ export class TreemapChartView extends BaseChartView {
         super(controller, containerEl, plugin);
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     getViewType(): string {
         return 'treemap-chart';
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     getDisplayText(): string {
         return 'Treemap';
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     getIcon(): string {
         return 'layout-grid'; // Use an icon that looks like a treemap
     }

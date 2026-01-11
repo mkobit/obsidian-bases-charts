@@ -59,7 +59,7 @@ export function createCandlestickChartOption(
                 })()
                 : null;
         }),
-        R.filter((x): x is { readonly x: string, readonly open: number, readonly close: number, readonly low: number, readonly high: number } => x !== null)
+        R.filter((x): x is Readonly<{ x: string, open: number, close: number, low: number, high: number }> => x !== null)
     );
 
     // 2. Get X Axis Data

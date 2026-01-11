@@ -10,7 +10,6 @@ export default tseslint.config(
 		languageOptions: {
 			globals: {
 				...globals.browser,
-				// Ensure global objects like Number are known
 				Number: "readonly",
 			},
 			parserOptions: {
@@ -27,99 +26,116 @@ export default tseslint.config(
 	},
 	// Recommended configs
 	...obsidianmd.configs.recommended,
-    functional.configs.recommended,
-    functional.configs.noMutations,
-    functional.configs.externalVanillaRecommended,
-    {
-        // Fix for missing @typescript-eslint plugin in functional.configs.externalTypeScriptRecommended
-        ...functional.configs.externalTypeScriptRecommended,
-        // Only apply to TS files
-        files: ["**/*.ts", "**/*.tsx"],
-        plugins: {
-            "@typescript-eslint": tseslint.plugin
-        }
-    },
+	functional.configs.strict,
+	functional.configs.stylistic,
+	{
+		...functional.configs.externalTypeScriptRecommended,
+		files: ["**/*.ts", "**/*.tsx"],
+		plugins: {
+			"@typescript-eslint": tseslint.plugin
+		}
+	},
 
 	// Manual plugin setup
 	{
-        // Only apply strict obsidian rules to TS files where we have type info
-        files: ["**/*.ts", "**/*.tsx"],
+		files: ["**/*.ts", "**/*.tsx"],
 		plugins: {
-            obsidianmd,
+			obsidianmd,
 			functional,
 			promise,
-            "@typescript-eslint": tseslint.plugin
+			"@typescript-eslint": tseslint.plugin
 		},
 		rules: {
 			...promise.configs.recommended.rules,
 
-            // ObsidianMD Rules - Enable ALL rules explicitly or ensure they are covered
-            "obsidianmd/prefer-file-manager-trash-file": "error",
-
-			// Functional Rules - STRICTER
-			"functional/no-let": "error",
-			"functional/immutable-data": [
-				"error",
-				{
-					ignoreAccessorPattern: [
-						"**.style**", // DOM style mutation
-						"this.**",     // Allow mutation of class properties (standard in Obsidian plugins)
-						"**.value"     // Allow setting value on inputs/nodes if needed
-					],
-					ignoreClasses: true
-				}
-			],
-			"functional/no-loop-statements": "error",
-			"functional/no-conditional-statements": "error",
-			"functional/no-expression-statements": ["error", { ignoreVoid: true }],
-            // "functional/prefer-readonly-type": "error", // Deprecated and removed
-
-			// Obsidian Compatibility overrides (Global)
-			"functional/no-classes": "error",
-			"functional/no-this-expressions": "error",
-			"functional/no-return-void": "error",
-			"functional/no-mixed-types": "error",
-			"functional/no-try-statements": "error",
-			"functional/no-throw-statements": "error",
+			// ObsidianMD Rules
+			"obsidianmd/prefer-file-manager-trash-file": "error",
 
 			// Additional clean code rules
 			"no-console": "warn",
 			"eqeqeq": "error",
 			"curly": "error",
 
-            // Type Safety Rules
-            "@typescript-eslint/consistent-type-assertions": ["error", {
-                assertionStyle: "never"
-            }]
+			// Type Safety Rules
+			"@typescript-eslint/consistent-type-assertions": ["error", {
+				assertionStyle: "never"
+			}],
+
+            // Ensure strictness explicitly (reinforcing 'strict' config)
+            "functional/no-let": "error",
+            "functional/no-loop-statements": "error",
+            "functional/no-conditional-statements": "error",
+            "functional/no-expression-statements": ["error", { ignoreVoid: true }],
+            "functional/no-classes": "error",
+            "functional/no-this-expressions": "error",
+            "functional/no-return-void": "error",
+            "functional/no-mixed-types": "error",
+            "functional/no-try-statements": "error",
+            "functional/no-throw-statements": "error",
+            "functional/immutable-data": ["error", {
+                ignoreClasses: true,
+                ignoreAccessorPattern: ["this.**"]
+            }],
+
+            // DISABLE Strict Type Immutability Rules Globally
+            // These rules (from 'stylistic' and 'strict') are too aggressive for the current codebase,
+            // especially when interacting with ECharts (mutable types) and Obsidian APIs.
+            // Enabling them requires significant refactoring or deep type wrappers.
+            "functional/prefer-immutable-types": "off",
+            "functional/type-declaration-immutability": "off",
+            "functional/readonly-type": "off"
 		}
 	},
-    // Overrides
+	// Overrides for Obsidian Plugin Code (Views, Main, Settings)
+	{
+		files: ["src/views/**/*.ts", "src/main.ts", "src/settings.ts"],
+		rules: {
+            // RELAX Functional Rules for Obsidian API
+            // The Obsidian API necessitates classes, inheritance, side effects, and mutations (of 'this').
+			"functional/no-expression-statements": "off",
+			"@typescript-eslint/consistent-type-assertions": "off",
+			"functional/no-classes": "off",
+			"functional/no-class-inheritance": "off",
+			"functional/no-this-expressions": "off",
+			"functional/no-return-void": "off",
+			"functional/no-try-statements": "off",
+			"functional/no-throw-statements": "off",
+            "functional/no-loop-statements": "off",
+            "functional/no-conditional-statements": "off",
+            "functional/no-mixed-types": "off",
+            "functional/functional-parameters": "off",
+			"functional/immutable-data": ["error", {
+				ignoreClasses: true,
+				ignoreAccessorPattern: ["this.**"]
+			}]
+		}
+	},
+    // Overrides for Tests
     {
-        files: ["src/views/**/*.ts", "tests/**/*.ts", "tests/**/*.tsx", "src/main.ts", "src/settings.ts"],
+        files: ["tests/**/*.ts", "tests/**/*.tsx"],
         rules: {
-            "functional/no-expression-statements": "off",
-             // Allow casting in tests and views if necessary, though ideally avoided
-             "@typescript-eslint/consistent-type-assertions": "off",
-             // Obsidian API requires classes, this, void returns (lifecycle methods), and specific params
-            "functional/no-classes": "off",
+            // Relax rules for Testing patterns (Assertions, Mocking, Setup/Teardown)
+            "functional/no-expression-statements": "off", // Needed for expect() assertions
+            "@typescript-eslint/consistent-type-assertions": "off", // Needed for mocking
+            "functional/no-return-void": "off", // Needed for test/beforeEach callbacks
+            "functional/no-classes": "off", // Allowed in tests if needed (e.g. mock classes)
             "functional/no-class-inheritance": "off",
             "functional/no-this-expressions": "off",
-            "functional/no-return-void": "off",
-            "functional/no-try-statements": "off"
+            "functional/no-try-statements": "off",
+            "functional/no-throw-statements": "off",
+            "functional/no-loop-statements": "off",
+            "functional/no-conditional-statements": "off",
+            "functional/no-mixed-types": "off",
+            "functional/functional-parameters": "off",
+            "functional/immutable-data": ["error", {
+                ignoreClasses: true,
+                ignoreAccessorPattern: ["this.**"]
+            }]
         }
     },
-	globalIgnores([
-		"node_modules",
-		"dist",
-		"esbuild.config.mjs",
-		"eslint.config.js",
-		"versions.json",
-		"main.js",
-		"coverage"
-	]),
-    // Node scripts
+    // Scripts
     {
-        files: ["scripts/**/*.ts", "esbuild.config.mjs"],
+        files: ["scripts/**/*.ts", "scripts/**/*.cjs", "esbuild.config.mjs", "version-bump.mjs"],
         languageOptions: {
             globals: {
                 ...globals.node
@@ -131,11 +147,26 @@ export default tseslint.config(
             "functional/immutable-data": "off",
             "@typescript-eslint/no-unsafe-assignment": "off",
             "@typescript-eslint/no-unsafe-member-access": "off",
+            "@typescript-eslint/no-var-requires": "off",
             "import/no-nodejs-modules": "off",
             "no-console": "off",
             "functional/no-return-void": "off",
             "functional/no-throw-statements": "off",
-            "functional/no-try-statements": "off"
+            "functional/no-try-statements": "off",
+            "functional/no-classes": "off",
+            "functional/no-this-expressions": "off",
+            "functional/prefer-immutable-types": "off",
+            "functional/type-declaration-immutability": "off",
+            "functional/readonly-type": "off"
         }
-    }
+    },
+	globalIgnores([
+		"node_modules",
+		"dist",
+		"esbuild.config.mjs",
+		"eslint.config.js",
+		"versions.json",
+		"main.js",
+		"coverage"
+	])
 );

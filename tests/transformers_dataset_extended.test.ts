@@ -33,7 +33,7 @@ describe('Transformers with Dataset - Extended', () => {
             expect(Array.isArray(option.dataset)).toBe(true);
 
             const datasets = option.dataset as readonly DatasetComponentOption[];
-            const sourceDataset = datasets[0] as { readonly source: readonly ScatterDatasetSource[] };
+            const sourceDataset = datasets[0] as Readonly<{ source: readonly ScatterDatasetSource[] }>;
             expect(sourceDataset.source).toHaveLength(3);
 
             // Check normalization
@@ -49,14 +49,14 @@ describe('Transformers with Dataset - Extended', () => {
             // Symbol size check - now handled via visualMap if sizeProp is present
 
             // Refactored to avoid if/else
-            // eslint-disable-next-line functional/functional-parameters
+
             const checkVisualMap = () => {
                 const visualMap = option.visualMap as VisualMapComponentOption;
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
                 expect((visualMap as any).dimension).toBe('size');
             };
 
-            // eslint-disable-next-line functional/functional-parameters
+
             const checkSymbolSizeFn = () => {
                 const sizeFn = series[0]?.symbolSize;
                 expect(sizeFn).toBeTypeOf('function');
@@ -78,7 +78,7 @@ describe('Transformers with Dataset - Extended', () => {
 
             expect(option.dataset).toBeDefined();
             const datasets = option.dataset as readonly DatasetComponentOption[];
-            const sourceDataset = datasets[0] as { readonly source: readonly CandlestickDatasetSource[] };
+            const sourceDataset = datasets[0] as Readonly<{ source: readonly CandlestickDatasetSource[] }>;
 
             expect(sourceDataset.source).toEqual([{ x: '2023-01-01', open: 10, close: 20, low: 5, high: 25 }]);
 

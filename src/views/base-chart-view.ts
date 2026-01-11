@@ -53,7 +53,7 @@ export abstract class BaseChartView extends BasesView {
         this.chartEl = this.containerEl.createDiv({ cls: 'bases-echarts' });
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     onload(): void {
         this.registerEvent(this.app.workspace.on('css-change', this.updateChartTheme, this));
 
@@ -63,7 +63,7 @@ export abstract class BaseChartView extends BasesView {
         this.resizeObserver.observe(this.containerEl);
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     onunload() {
         this.resizeObserver?.disconnect();
         this.resizeObserver = null;
@@ -75,12 +75,12 @@ export abstract class BaseChartView extends BasesView {
         this.chart?.resize();
     }, 100, true);
 
-    // eslint-disable-next-line functional/functional-parameters
+
     onResize(): void {
         void this.onResizeDebounce();
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     onDataUpdated(): void {
         this.renderChart();
     }
@@ -122,7 +122,7 @@ export abstract class BaseChartView extends BasesView {
 
     protected abstract getChartOption(data: BasesData): EChartsOption | null;
 
-    // eslint-disable-next-line functional/functional-parameters
+
     private readonly updateChartTheme = (): void => {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         this.chart && (

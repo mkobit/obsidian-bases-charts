@@ -23,7 +23,7 @@ describe('Graph Transformer', () => {
         expect(series.layout).toBe('force');
 
         // Nodes should include A, B, C, D
-        const nodeNames = (series.data as readonly { readonly name: string }[]).map((n) => n.name).sort();
+        const nodeNames = (series.data as readonly Readonly<{ name: string }>[]).map((n) => n.name).sort();
         expect(nodeNames).toEqual(['A', 'B', 'C', 'D']);
 
         // Links
@@ -63,7 +63,7 @@ describe('Graph Transformer', () => {
         // Node C ... depends. If it was never a source with category, it remains undefined.
         // Wait, C appears as target in row 2 (cat2 applies to B), and source in row 3 (no cat).
 
-        const nodes = series.data as readonly { readonly name: string; readonly category?: string }[];
+        const nodes = series.data as readonly Readonly<{ name: string; category?: string }>[];
         const nodeA = nodes.find(n => n.name === 'A');
         const nodeB = nodes.find(n => n.name === 'B');
 

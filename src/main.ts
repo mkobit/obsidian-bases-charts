@@ -28,7 +28,7 @@ import { RoseChartView } from './views/rose-chart-view';
 export default class BarePlugin extends Plugin {
 	public settings: BarePluginSettings = DEFAULT_SETTINGS;
 
-	// eslint-disable-next-line functional/functional-parameters
+
 	async onload() {
 		await this.loadSettings();
 
@@ -203,7 +203,7 @@ export default class BarePlugin extends Plugin {
 		this.addSettingTab(new SettingTab(this.app, this));
 	}
 
-	// eslint-disable-next-line functional/functional-parameters
+
 	onunload() {}
 
 	async loadSettings(_?: unknown) {

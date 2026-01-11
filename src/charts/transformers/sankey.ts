@@ -33,7 +33,7 @@ export function createSankeyChartOption(
                 })()
                 : null;
         }),
-        R.filter((x): x is { readonly source: string; readonly target: string; readonly value: number } => x !== null)
+        R.filter((x): x is Readonly<{ source: string; target: string; value: number }> => x !== null)
     );
 
     const nodes = R.pipe(

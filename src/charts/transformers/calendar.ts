@@ -7,7 +7,7 @@ export interface CalendarTransformerOptions extends BaseTransformerOptions {
     readonly valueProp?: string;
 }
 
-function asCalendarTooltipParams(params: unknown): { readonly value: readonly (number | string)[] } {
+function asCalendarTooltipParams(params: unknown): Readonly<{ value: readonly (number | string)[] }> {
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
     return params as any;
 }
@@ -33,7 +33,7 @@ export function createCalendarChartOption(
                     return { date: dateVal, value: finalVal };
                 })();
         }),
-        R.filter((d): d is { readonly date: string; readonly value: number } => d !== null)
+        R.filter((d): d is Readonly<{ date: string; value: number }> => d !== null)
     );
 
     return calendarData.length === 0

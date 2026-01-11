@@ -71,7 +71,7 @@ export class ObsidianFileBuilder {
         return this;
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     build(): TestFile {
         return {
             ...this.file,
@@ -80,7 +80,7 @@ export class ObsidianFileBuilder {
         };
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     toRawString(): string {
         const fmKeys = Object.keys(this.file.frontmatter);
         const yamlBlock = fmKeys.length > 0

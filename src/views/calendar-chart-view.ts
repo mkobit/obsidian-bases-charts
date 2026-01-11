@@ -12,11 +12,11 @@ export class CalendarChartView extends BaseChartView {
         super(controller, containerEl, plugin);
     }
 
-    // eslint-disable-next-line functional/functional-parameters
+
     getViewType(): string { return 'calendar-chart'; }
-    // eslint-disable-next-line functional/functional-parameters
+
     getDisplayText(): string { return 'Calendar'; }
-    // eslint-disable-next-line functional/functional-parameters
+
     getIcon(): string { return 'calendar'; }
 
     static getViewOptions(_?: unknown): ViewOption[] {

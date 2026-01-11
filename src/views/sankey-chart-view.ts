@@ -7,7 +7,7 @@ import { BasesData } from '../charts/transformers/base';
 export class SankeyChartView extends BaseChartView {
     readonly type = 'sankey';
 
-    // eslint-disable-next-line functional/functional-parameters
+
     getChartType(): ChartType {
         return 'sankey';
     }
