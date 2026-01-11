@@ -5,7 +5,7 @@ properties:
     displayName: Body Weight (kg)
 views:
   - type: line-chart
-    name: Weight Progress
+    name: Weight Trend
     xAxisProp: note.Date
     yAxisProp: note.Weight
     showLegend: true
