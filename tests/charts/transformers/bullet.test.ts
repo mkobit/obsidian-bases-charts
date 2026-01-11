@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createBulletChartOption } from '../../../src/charts/transformers/bullet';
-import type { BarSeriesOption, ScatterSeriesOption } from 'echarts';
+import type { BarSeriesOption, ScatterSeriesOption, DatasetComponentOption } from 'echarts';
 
 describe('createBulletChartOption', () => {
     const data = [
@@ -46,8 +46,12 @@ describe('createBulletChartOption', () => {
     it('should normalize data correctly', () => {
         const option = createBulletChartOption(data, 'category', 'value', { targetProp: 'target' });
 
-        // @ts-expect-error - testing private/internal structure
-        const source = option.dataset?.[0].source as Array<{ x: string, y: number | null, t: number | null }>;
+        const dataset = option.dataset as DatasetComponentOption[];
+        expect(dataset).toBeDefined();
+        expect(dataset).toHaveLength(1);
+
+        // Use type narrowing via casting to satisfy strict lint rules
+        const source = (dataset[0] as DatasetComponentOption).source as Array<{ x: string, y: number | null, t: number | null }>;
 
         expect(source).toEqual([
             { x: 'A', y: 10, t: 12 },
