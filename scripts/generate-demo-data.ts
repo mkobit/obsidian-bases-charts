@@ -2,38 +2,29 @@ import * as fs from 'fs';
 import * as path from 'path';
 import fc from 'fast-check';
 import { Temporal } from 'temporal-polyfill';
+import yaml from 'js-yaml';
+import minimist from 'minimist';
 
-const BASE_DIR = path.join(process.cwd(), 'example', 'Charts', 'Gen');
+const BASE_DIR = path.join(process.cwd(), 'example', 'generated');
 
 // Parse command line arguments
-const args = process.argv.slice(2);
-let seed = Date.now();
-const seedArgIndex = args.indexOf('--seed');
-if (seedArgIndex !== -1 && args[seedArgIndex + 1]) {
-    const parsed = parseInt(args[seedArgIndex + 1], 10);
-    if (!isNaN(parsed)) {
-        seed = parsed;
-    }
-}
+const argv = minimist(process.argv.slice(2));
+const seed = argv.seed ? parseInt(argv.seed, 10) : Date.now();
 
 console.log(`Using seed: ${seed}`);
 
 // Configure fast-check with the seed
 const fcConfig = { seed: seed, numRuns: 1 }; // We only need 1 run of "generating a list of items"
 
-function ensureDir(dir: string) {
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-}
-
 function writeMarkdownFile(dir: string, filename: string, data: Record<string, any>, meta: string) {
-    const filePath = path.join(dir, filename);
-    const frontmatter = Object.entries(data)
-        .map(([k, v]) => `${k}: ${JSON.stringify(v)}`)
-        .join('\n');
+    fs.mkdirSync(dir, { recursive: true });
 
-    const content = `---\n${frontmatter}\n---\n\n# ${filename.replace('.md', '')}\n${meta}`;
+    const filePath = path.join(dir, filename);
+    const frontmatter = yaml.dump(data, {
+        lineWidth: -1 // Disable line wrapping
+    });
+
+    const content = `---\n${frontmatter}---\n\n# ${filename.replace('.md', '')}\n${meta}`;
     fs.writeFileSync(filePath, content);
 }
 
@@ -42,8 +33,7 @@ function writeMarkdownFile(dir: string, filename: string, data: Record<string, a
 // 1. Categorical Data (e.g. Sales by Day)
 // Generates: { Category: string, Value: number }
 function generateCategorical() {
-    const dir = path.join(BASE_DIR, 'Categorical');
-    ensureDir(dir);
+    const dir = path.join(BASE_DIR, 'categorical');
 
     const arbitrary = fc.array(
         fc.record({
@@ -82,8 +72,7 @@ function generateCategorical() {
 // 2. Time Series Data (e.g. Server Load)
 // Generates: { Date: ISOString, Load: number, Users: number }
 function generateTimeSeries() {
-    const dir = path.join(BASE_DIR, 'TimeSeries');
-    ensureDir(dir);
+    const dir = path.join(BASE_DIR, 'timeseries');
 
     // Generate a sequence of 20 days
     const startDate = Temporal.Now.plainDateISO();
@@ -122,8 +111,7 @@ function generateTimeSeries() {
 // 3. Scatter Data (e.g. Height vs Weight)
 // Generates: { Height: number, Weight: number, Group: string }
 function generateScatter() {
-    const dir = path.join(BASE_DIR, 'Scatter');
-    ensureDir(dir);
+    const dir = path.join(BASE_DIR, 'scatter');
 
     const arbitrary = fc.array(
         fc.record({
