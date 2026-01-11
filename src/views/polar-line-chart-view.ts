@@ -2,6 +2,7 @@ import { ViewOption } from 'obsidian';
 import { BaseChartView } from './base-chart-view';
 import { EChartsOption } from 'echarts';
 import { transformDataToChartOption } from '../charts/transformer';
+import { BasesData } from '../charts/transformers/base';
 
 export class PolarLineChartView extends BaseChartView {
     type = 'polar_line';
@@ -14,7 +15,7 @@ export class PolarLineChartView extends BaseChartView {
         return 'Polar Line Chart';
     }
 
-    getChartOption(): EChartsOption {
+    getChartOption(data: BasesData): EChartsOption {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const yProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string;
         const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY) as string;
@@ -22,7 +23,7 @@ export class PolarLineChartView extends BaseChartView {
         const hasAreaStyle = this.config.get('areaStyle') === 'true';
         const isStacked = this.config.get('stack') === 'true';
 
-        return transformDataToChartOption(this.data, xProp, yProp, 'polarLine', {
+        return transformDataToChartOption(data, xProp, yProp, 'polarLine', {
             ...this.getCommonTransformerOptions(),
             seriesProp,
             smooth: isSmooth,
@@ -34,32 +35,32 @@ export class PolarLineChartView extends BaseChartView {
     static getViewOptions(): ViewOption[] {
         return [
             {
-                name: BaseChartView.X_AXIS_PROP_KEY,
+                key: BaseChartView.X_AXIS_PROP_KEY,
                 displayName: 'Angle Property',
                 type: 'property',
             },
             {
-                name: BaseChartView.VALUE_PROP_KEY,
+                key: BaseChartView.VALUE_PROP_KEY,
                 displayName: 'Radius Property',
                 type: 'property',
             },
             {
-                name: BaseChartView.SERIES_PROP_KEY,
+                key: BaseChartView.SERIES_PROP_KEY,
                 displayName: 'Series Property',
                 type: 'property',
             },
             {
-                name: 'smooth',
+                key: 'smooth',
                 displayName: 'Smooth',
                 type: 'toggle',
             },
             {
-                name: 'areaStyle',
+                key: 'areaStyle',
                 displayName: 'Area Style',
                 type: 'toggle',
             },
             {
-                name: 'stack',
+                key: 'stack',
                 displayName: 'Stack',
                 type: 'toggle',
             },
