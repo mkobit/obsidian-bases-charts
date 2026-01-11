@@ -1,10 +1,10 @@
 ---
 Name: "Product 24"
-Price: 1714
+Price: 971
 Weight: 1.2
-Rating: 3.6
-BatteryLife: 5
-Series: "Series B"
+Rating: 4.8
+BatteryLife: 15
+Series: "Series C"
 ---
 
 # Product-24

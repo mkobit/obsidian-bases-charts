@@ -1,9 +1,9 @@
 ---
-Route: "New York -> Sydney"
-StartX: -74
-StartY: 40.71
-EndX: 151.2
-EndY: -33.86
+Route: "Sydney -> Tokyo"
+StartX: 151.2
+StartY: -33.86
+EndX: 139.69
+EndY: 35.68
 Type: "Flight"
 ---
 

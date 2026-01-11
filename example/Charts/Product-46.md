@@ -1,9 +1,9 @@
 ---
 Name: "Product 45"
-Price: 1435
-Weight: 3.0
-Rating: 4.3
-BatteryLife: 10
+Price: 1486
+Weight: 1.8
+Rating: 3.7
+BatteryLife: 20
 Series: "Series A"
 ---
 

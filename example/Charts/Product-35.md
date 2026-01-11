@@ -1,10 +1,10 @@
 ---
 Name: "Product 34"
-Price: 1608
-Weight: 2.5
-Rating: 3.1
-BatteryLife: 15
-Series: "Series A"
+Price: 872
+Weight: 2.9
+Rating: 3.4
+BatteryLife: 14
+Series: "Series C"
 ---
 
 # Product-34

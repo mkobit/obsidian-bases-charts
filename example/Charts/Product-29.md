@@ -1,10 +1,10 @@
 ---
 Name: "Product 28"
-Price: 1103
-Weight: 2.5
-Rating: 3.6
-BatteryLife: 23
-Series: "Series A"
+Price: 1284
+Weight: 1.2
+Rating: 4.4
+BatteryLife: 7
+Series: "Series C"
 ---
 
 # Product-28

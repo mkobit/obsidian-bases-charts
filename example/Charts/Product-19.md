@@ -1,10 +1,10 @@
 ---
 Name: "Product 18"
-Price: 635
-Weight: 1.2
-Rating: 4.2
-BatteryLife: 6
-Series: "Series A"
+Price: 660
+Weight: 2.0
+Rating: 3.1
+BatteryLife: 19
+Series: "Series B"
 ---
 
 # Product-18

@@ -2,7 +2,7 @@
 Date: "2023-01-27"
 Exercise: "Bench Press"
 Weight: 90
-RPE: 7
+RPE: 8
 ---
 
 # Lift-Log-13

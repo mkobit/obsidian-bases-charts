@@ -1,6 +1,6 @@
 ---
 Category: "Problem Solving"
-Score: 92
+Score: 80
 ---
 
 # Survey-3

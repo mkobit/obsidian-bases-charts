@@ -1,9 +1,9 @@
 ---
-Route: "London -> Beijing"
-StartX: -0.12
-StartY: 51.5
-EndX: 116.4
-EndY: 39.9
+Route: "Tokyo -> Sydney"
+StartX: 139.69
+StartY: 35.68
+EndX: 151.2
+EndY: -33.86
 Type: "Flight"
 ---
 

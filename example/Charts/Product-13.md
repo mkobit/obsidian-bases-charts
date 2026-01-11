@@ -1,10 +1,10 @@
 ---
 Name: "Product 12"
-Price: 1769
-Weight: 1.0
-Rating: 4.9
-BatteryLife: 14
-Series: "Series B"
+Price: 1012
+Weight: 1.5
+Rating: 3.1
+BatteryLife: 13
+Series: "Series A"
 ---
 
 # Product-12

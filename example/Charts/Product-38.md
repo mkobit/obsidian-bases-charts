@@ -1,10 +1,10 @@
 ---
 Name: "Product 37"
-Price: 524
-Weight: 2.9
-Rating: 3.3
-BatteryLife: 19
-Series: "Series A"
+Price: 1060
+Weight: 1.8
+Rating: 3.8
+BatteryLife: 13
+Series: "Series B"
 ---
 
 # Product-37

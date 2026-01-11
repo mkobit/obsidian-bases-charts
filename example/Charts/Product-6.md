@@ -1,9 +1,9 @@
 ---
 Name: "Product 5"
-Price: 1277
-Weight: 2.5
-Rating: 3.2
-BatteryLife: 21
+Price: 1966
+Weight: 2.2
+Rating: 4.8
+BatteryLife: 9
 Series: "Series C"
 ---
 

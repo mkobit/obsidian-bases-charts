@@ -1,10 +1,10 @@
 ---
 Name: "Product 42"
-Price: 1408
-Weight: 2.2
-Rating: 4.0
-BatteryLife: 12
-Series: "Series A"
+Price: 1994
+Weight: 2.3
+Rating: 4.7
+BatteryLife: 17
+Series: "Series B"
 ---
 
 # Product-42

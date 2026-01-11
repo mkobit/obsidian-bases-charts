@@ -1,10 +1,10 @@
 ---
 Name: "Product 8"
-Price: 829
-Weight: 1.3
-Rating: 3.4
-BatteryLife: 11
-Series: "Series A"
+Price: 1139
+Weight: 1.1
+Rating: 4.6
+BatteryLife: 18
+Series: "Series C"
 ---
 
 # Product-8

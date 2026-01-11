@@ -1,10 +1,10 @@
 ---
 Name: "Product 31"
-Price: 959
-Weight: 2.8
-Rating: 4.3
-BatteryLife: 18
-Series: "Series A"
+Price: 1527
+Weight: 2.4
+Rating: 4.0
+BatteryLife: 13
+Series: "Series B"
 ---
 
 # Product-31

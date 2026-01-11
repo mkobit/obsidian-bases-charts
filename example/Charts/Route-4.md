@@ -1,9 +1,9 @@
 ---
-Route: "New York -> London"
-StartX: -74
-StartY: 40.71
-EndX: -0.12
-EndY: 51.5
+Route: "Beijing -> New York"
+StartX: 116.4
+StartY: 39.9
+EndX: -74
+EndY: 40.71
 Type: "Flight"
 ---
 

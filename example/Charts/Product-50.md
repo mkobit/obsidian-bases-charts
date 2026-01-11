@@ -1,9 +1,9 @@
 ---
 Name: "Product 49"
-Price: 1068
-Weight: 2.0
-Rating: 4.5
-BatteryLife: 5
+Price: 1526
+Weight: 3.0
+Rating: 3.5
+BatteryLife: 4
 Series: "Series B"
 ---
 

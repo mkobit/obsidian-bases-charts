@@ -1,9 +1,9 @@
 ---
 Name: "Product 14"
-Price: 1666
-Weight: 2.4
-Rating: 4.4
-BatteryLife: 19
+Price: 1120
+Weight: 1.1
+Rating: 4.0
+BatteryLife: 20
 Series: "Series A"
 ---
 

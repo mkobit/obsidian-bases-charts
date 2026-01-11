@@ -1,36 +1,54 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { Temporal } from 'temporal-polyfill';
 
 const CHARTS_DIR = path.join(process.cwd(), 'example/Charts');
 
-// Helper to ensure directory exists
-if (!fs.existsSync(CHARTS_DIR)) {
-    fs.mkdirSync(CHARTS_DIR, { recursive: true });
+// Simple LCG for seeded randomness
+class Random {
+    private m = 0x80000000;
+    private a = 1103515245;
+    private c = 12345;
+    private state: number;
+
+    constructor(seed: number) {
+        this.state = seed;
+    }
+
+    // Returns a float between 0 and 1
+    next(): number {
+        this.state = (this.a * this.state + this.c) % this.m;
+        return this.state / (this.m - 1);
+    }
+
+    range(min: number, max: number): number {
+        return this.next() * (max - min) + min;
+    }
+
+    int(min: number, max: number): number {
+        return Math.floor(this.range(min, max));
+    }
+
+    choice<T>(arr: T[]): T {
+        return arr[this.int(0, arr.length)]!;
+    }
 }
 
-// Helper for randoms
-const random = (min: number, max: number): number => Math.random() * (max - min) + min;
-const randomInt = (min: number, max: number): number => Math.floor(random(min, max));
-const randomChoice = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)]!;
+interface DemoFile {
+    filename: string;
+    content: string;
+}
 
-// Helper for dates
-const addDays = (date: Date, days: number): Date => {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-};
-
-const toISODate = (date: Date): string => date.toISOString().split('T')[0]!; // YYYY-MM-DD
-
-// 1. Weight Tracking (Line Chart)
-function generateWeightTracking() {
-    let currentDate = new Date('2023-01-01T08:00:00.000Z');
+// 1. Weight Tracking
+const generateWeightTracking = (rng: Random): DemoFile[] => {
+    let currentDate = Temporal.PlainDate.from('2023-01-01');
     let currentWeight = 80.0;
+    const files: DemoFile[] = [];
 
     for (let i = 0; i < 30; i++) {
-        currentWeight += random(-0.5, 0.4);
+        currentWeight += rng.range(-0.5, 0.4);
         const content = `---
-Date: "${toISODate(currentDate)}"
+Date: "${currentDate.toString()}"
 Weight: ${currentWeight.toFixed(1)}
 ---
 
@@ -38,15 +56,17 @@ Weight: ${currentWeight.toFixed(1)}
 
 Daily weight log.
 `;
-        fs.writeFileSync(path.join(CHARTS_DIR, `Weight-Log-${i}.md`), content);
-        currentDate = addDays(currentDate, 1);
+        files.push({ filename: `Weight-Log-${i}.md`, content });
+        currentDate = currentDate.add({ days: 1 });
     }
-}
+    return files;
+};
 
-// 2. Gym Punch Card (Heatmap/Scatter)
-function generateGymPunchCard() {
+// 2. Gym Punch Card
+const generateGymPunchCard = (rng: Random): DemoFile[] => {
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const hours = Array.from({length: 24}, (_, i) => i);
+    const hours = Array.from({ length: 24 }, (_, i) => i);
+    const files: DemoFile[] = [];
 
     let count = 0;
     days.forEach(day => {
@@ -56,8 +76,8 @@ function generateGymPunchCard() {
                 chance = 0.6;
             }
 
-            if (Math.random() < chance) {
-                const activity = randomInt(1, 10);
+            if (rng.next() < chance) {
+                const activity = rng.int(1, 10);
                 const content = `---
 Day: "${day}"
 Hour: ${hour}
@@ -68,14 +88,15 @@ Activity: ${activity}
 
 Activity log.
 `;
-                fs.writeFileSync(path.join(CHARTS_DIR, `Gym-Visit-${count}.md`), content);
+                files.push({ filename: `Gym-Visit-${count}.md`, content });
             }
         });
     });
-}
+    return files;
+};
 
-// 3. Nutrition (Pie / Rose)
-function generateNutrition() {
+// 3. Nutrition
+const generateNutrition = (): DemoFile[] => {
     const nutrients = [
         { name: 'Protein', value: 150 },
         { name: 'Carbs', value: 200 },
@@ -84,8 +105,9 @@ function generateNutrition() {
         { name: 'Sugar', value: 40 }
     ];
 
-    nutrients.forEach((n, i) => {
-        const content = `---
+    return nutrients.map((n, i) => ({
+        filename: `Nutrient-${i}.md`,
+        content: `---
 Nutrient: "${n.name}"
 Amount: ${n.value}
 ---
@@ -93,16 +115,16 @@ Amount: ${n.value}
 # Nutrient-${i}
 
 Dietary info.
-`;
-        fs.writeFileSync(path.join(CHARTS_DIR, `Nutrient-${i}.md`), content);
-    });
-}
+`
+    }));
+};
 
-// 4. Lift Progress (Scatter / Effect Scatter)
-function generateLiftProgress() {
-    let currentDate = new Date('2023-01-01T08:00:00.000Z');
+// 4. Lift Progress
+const generateLiftProgress = (rng: Random): DemoFile[] => {
+    let currentDate = Temporal.PlainDate.from('2023-01-01');
     const exercises = ['Squat', 'Bench Press', 'Deadlift'];
     const baseWeights: Record<string, number> = { 'Squat': 100, 'Bench Press': 80, 'Deadlift': 120 };
+    const files: DemoFile[] = [];
 
     let count = 0;
     for (let i = 0; i < 20; i++) {
@@ -110,51 +132,52 @@ function generateLiftProgress() {
         const weight = baseWeights[exercise]! + (Math.floor(i / 3) * 2.5);
 
         const content = `---
-Date: "${toISODate(currentDate)}"
+Date: "${currentDate.toString()}"
 Exercise: "${exercise}"
 Weight: ${weight}
-RPE: ${randomInt(7, 10)}
+RPE: ${rng.int(7, 10)}
 ---
 
 # Lift-Log-${count++}
 
 Workout log.
 `;
-        fs.writeFileSync(path.join(CHARTS_DIR, `Lift-Log-${count}.md`), content);
-        currentDate = addDays(currentDate, 2);
+        files.push({ filename: `Lift-Log-${count}.md`, content });
+        currentDate = currentDate.add({ days: 2 });
     }
-}
+    return files;
+};
 
-// 5. Survey Analysis (Rose Chart)
-function generateSurveyAnalysis() {
+// 5. Survey Analysis
+const generateSurveyAnalysis = (rng: Random): DemoFile[] => {
     const categories = ['Data Analysis', 'Visualization', 'Communication', 'Problem Solving', 'Coding', 'Management'];
 
-    categories.forEach((cat, i) => {
-        const score = randomInt(60, 100);
-        const content = `---
+    return categories.map((cat, i) => ({
+        filename: `Survey-${i}.md`,
+        content: `---
 Category: "${cat}"
-Score: ${score}
+Score: ${rng.int(60, 100)}
 ---
 
 # Survey-${i}
 
 Skill assessment.
-`;
-        fs.writeFileSync(path.join(CHARTS_DIR, `Survey-${i}.md`), content);
-    });
-}
+`
+    }));
+};
 
-// 6. Product Comparison (Parallel Chart)
-function generateProductComparison() {
+// 6. Product Comparison
+const generateProductComparison = (rng: Random): DemoFile[] => {
     const series = ['Series A', 'Series B', 'Series C'];
+    const files: DemoFile[] = [];
 
     let count = 0;
     for (let i = 0; i < 50; i++) {
-        const s = randomChoice(series);
-        const price = randomInt(500, 2000);
-        const weight = random(1.0, 3.0).toFixed(1);
-        const rating = random(3.0, 5.0).toFixed(1);
-        const battery = randomInt(4, 24);
+        const s = rng.choice(series);
+        const price = rng.int(500, 2000);
+        const weight = rng.range(1.0, 3.0).toFixed(1);
+        const rating = rng.range(3.0, 5.0).toFixed(1);
+        const battery = rng.int(4, 24);
 
         const content = `---
 Name: "Product ${i}"
@@ -169,13 +192,13 @@ Series: "${s}"
 
 Product spec.
 `;
-        fs.writeFileSync(path.join(CHARTS_DIR, `Product-${count}.md`), content);
+        files.push({ filename: `Product-${count}.md`, content });
     }
-}
+    return files;
+};
 
-// 7. Travel Routes (Lines Chart)
-function generateTravelRoutes() {
-    // Simple mock coordinates
+// 7. Travel Routes
+const generateTravelRoutes = (rng: Random): DemoFile[] => {
     const cities = [
         { name: 'London', lon: -0.12, lat: 51.50 },
         { name: 'New York', lon: -74.00, lat: 40.71 },
@@ -183,13 +206,13 @@ function generateTravelRoutes() {
         { name: 'Beijing', lon: 116.40, lat: 39.90 },
         { name: 'Sydney', lon: 151.20, lat: -33.86 }
     ];
+    const files: DemoFile[] = [];
 
     let count = 0;
     cities.forEach(start => {
         cities.forEach(end => {
             if (start.name !== end.name) {
-                // Generate flight if distance is reasonable (mock logic)
-                if (Math.random() > 0.5) {
+                if (rng.next() > 0.5) {
                     const content = `---
 Route: "${start.name} -> ${end.name}"
 StartX: ${start.lon}
@@ -203,16 +226,16 @@ Type: "Flight"
 
 Flight path.
 `;
-                    fs.writeFileSync(path.join(CHARTS_DIR, `Route-${count}.md`), content);
+                    files.push({ filename: `Route-${count}.md`, content });
                 }
             }
         });
     });
-}
+    return files;
+};
 
-// 8. City Locations (Effect Scatter)
-function generateCityLocations() {
-    const regions = ['Europe', 'North America', 'Asia', 'Oceania'];
+// 8. City Locations
+const generateCityLocations = (): DemoFile[] => {
     const cities = [
         { name: 'London', lon: -0.12, lat: 51.50, pop: 9, region: 'Europe' },
         { name: 'New York', lon: -74.00, lat: 40.71, pop: 8.4, region: 'North America' },
@@ -224,8 +247,9 @@ function generateCityLocations() {
         { name: 'Los Angeles', lon: -118.24, lat: 34.05, pop: 3.9, region: 'North America' }
     ];
 
-    cities.forEach((c, i) => {
-        const content = `---
+    return cities.map((c, i) => ({
+        filename: `City-${i}.md`,
+        content: `---
 City: "${c.name}"
 Lon: ${c.lon}
 Lat: ${c.lat}
@@ -236,28 +260,50 @@ Region: "${c.region}"
 # City-${i}
 
 Major city.
-`;
-        fs.writeFileSync(path.join(CHARTS_DIR, `City-${i}.md`), content);
+`
+    }));
+};
+
+const writeFiles = (files: DemoFile[]) => {
+    if (!fs.existsSync(CHARTS_DIR)) {
+        fs.mkdirSync(CHARTS_DIR, { recursive: true });
+    }
+
+    // Clear directory
+    fs.readdirSync(CHARTS_DIR).forEach(f => fs.unlinkSync(path.join(CHARTS_DIR, f)));
+
+    files.forEach(f => {
+        fs.writeFileSync(path.join(CHARTS_DIR, f.filename), f.content);
     });
-}
+};
+
+const parseSeed = (): number => {
+    const args = process.argv.slice(2);
+    const seedIndex = args.indexOf('--seed');
+    if (seedIndex !== -1 && args[seedIndex + 1]) {
+        return parseInt(args[seedIndex + 1]!, 10);
+    }
+    return 12345; // Default seed
+};
 
 function main() {
-    console.log('Generating Weight Tracking data...');
-    generateWeightTracking();
-    console.log('Generating Gym Punch Card data...');
-    generateGymPunchCard();
-    console.log('Generating Nutrition data...');
-    generateNutrition();
-    console.log('Generating Lifting data...');
-    generateLiftProgress();
-    console.log('Generating Survey data...');
-    generateSurveyAnalysis();
-    console.log('Generating Product data...');
-    generateProductComparison();
-    console.log('Generating Route data...');
-    generateTravelRoutes();
-    console.log('Generating City data...');
-    generateCityLocations();
+    const seed = parseSeed();
+    console.log(`Generating data with seed: ${seed}`);
+    const rng = new Random(seed);
+
+    const allFiles = [
+        ...generateWeightTracking(rng),
+        ...generateGymPunchCard(rng),
+        ...generateNutrition(),
+        ...generateLiftProgress(rng),
+        ...generateSurveyAnalysis(rng),
+        ...generateProductComparison(rng),
+        ...generateTravelRoutes(rng),
+        ...generateCityLocations()
+    ];
+
+    console.log(`Writing ${allFiles.length} files...`);
+    writeFiles(allFiles);
     console.log('Done.');
 }
 

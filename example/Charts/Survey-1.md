@@ -1,6 +1,6 @@
 ---
 Category: "Visualization"
-Score: 99
+Score: 80
 ---
 
 # Survey-1

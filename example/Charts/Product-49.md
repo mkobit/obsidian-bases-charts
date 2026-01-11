@@ -1,10 +1,10 @@
 ---
 Name: "Product 48"
-Price: 1919
-Weight: 1.6
-Rating: 4.0
-BatteryLife: 19
-Series: "Series A"
+Price: 770
+Weight: 2.5
+Rating: 3.6
+BatteryLife: 7
+Series: "Series B"
 ---
 
 # Product-48

@@ -1,6 +1,6 @@
 ---
 Date: "2023-01-30"
-Weight: 78.3
+Weight: 76.3
 ---
 
 # Weight-Log-29

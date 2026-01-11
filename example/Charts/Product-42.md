@@ -1,8 +1,8 @@
 ---
 Name: "Product 41"
-Price: 1976
-Weight: 1.1
-Rating: 3.7
+Price: 1988
+Weight: 2.5
+Rating: 4.9
 BatteryLife: 11
 Series: "Series B"
 ---

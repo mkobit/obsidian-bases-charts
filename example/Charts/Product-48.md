@@ -1,9 +1,9 @@
 ---
 Name: "Product 47"
-Price: 748
-Weight: 2.0
-Rating: 3.7
-BatteryLife: 13
+Price: 1902
+Weight: 2.2
+Rating: 3.3
+BatteryLife: 4
 Series: "Series C"
 ---
 

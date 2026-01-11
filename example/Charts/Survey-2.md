@@ -1,6 +1,6 @@
 ---
 Category: "Communication"
-Score: 73
+Score: 72
 ---
 
 # Survey-2

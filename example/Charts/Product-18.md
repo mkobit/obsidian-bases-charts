@@ -1,10 +1,10 @@
 ---
 Name: "Product 17"
-Price: 1806
-Weight: 2.9
-Rating: 3.2
-BatteryLife: 9
-Series: "Series C"
+Price: 850
+Weight: 1.9
+Rating: 4.9
+BatteryLife: 21
+Series: "Series B"
 ---
 
 # Product-17

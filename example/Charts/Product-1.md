@@ -1,9 +1,9 @@
 ---
 Name: "Product 0"
-Price: 1635
-Weight: 1.9
-Rating: 3.8
-BatteryLife: 5
+Price: 917
+Weight: 2.6
+Rating: 4.8
+BatteryLife: 4
 Series: "Series C"
 ---
 

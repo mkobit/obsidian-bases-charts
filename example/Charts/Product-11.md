@@ -1,9 +1,9 @@
 ---
 Name: "Product 10"
-Price: 987
-Weight: 2.6
-Rating: 4.3
-BatteryLife: 5
+Price: 1594
+Weight: 1.2
+Rating: 4.4
+BatteryLife: 16
 Series: "Series B"
 ---
 

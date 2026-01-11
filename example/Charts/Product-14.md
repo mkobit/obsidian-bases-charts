@@ -1,10 +1,10 @@
 ---
 Name: "Product 13"
-Price: 1375
-Weight: 2.1
-Rating: 4.3
-BatteryLife: 15
-Series: "Series A"
+Price: 1867
+Weight: 1.9
+Rating: 3.9
+BatteryLife: 6
+Series: "Series C"
 ---
 
 # Product-13

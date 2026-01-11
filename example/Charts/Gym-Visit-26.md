@@ -1,6 +1,6 @@
 ---
-Day: "Thursday"
-Hour: 20
+Day: "Friday"
+Hour: 6
 Activity: 2
 ---
 

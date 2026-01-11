@@ -1,7 +1,7 @@
 ---
-Route: "New York -> Tokyo"
-StartX: -74
-StartY: 40.71
+Route: "Beijing -> Tokyo"
+StartX: 116.4
+StartY: 39.9
 EndX: 139.69
 EndY: 35.68
 Type: "Flight"
