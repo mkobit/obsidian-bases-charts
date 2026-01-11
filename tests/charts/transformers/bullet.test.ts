@@ -37,10 +37,10 @@ describe('createBulletChartOption', () => {
         expect(option.series).toHaveLength(5); // 3 ranges + 1 measure + 1 target
         const series = option.series as BarSeriesOption[];
 
-        const range1 = series[0];
-        const range2 = series[1];
-        const range3 = series[2];
-        const measure = series[3];
+        const range1 = series[0]!;
+        const range2 = series[1]!;
+        const range3 = series[2]!;
+        const measure = series[3]!;
 
         expect(range1.stack).toBe('range');
         expect(range1.z).toBe(0);
@@ -70,8 +70,8 @@ describe('createBulletChartOption', () => {
         });
 
         const dataset = option.dataset as DatasetComponentOption[];
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any
-        const source = (dataset[0] as any).source as any[];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const source = (dataset[0] as DatasetComponentOption).source as any[];
 
         // A: low=5, mid=15, high=20
         // r1=5, r2=10 (15-5), r3=5 (20-15)
@@ -94,7 +94,7 @@ describe('createBulletChartOption', () => {
         // So 3 range series created.
 
         expect(option.series).toHaveLength(5);
-        const [r1, r2, r3, measure, target] = option.series as [BarSeriesOption, BarSeriesOption, BarSeriesOption, BarSeriesOption, ScatterSeriesOption];
+        const [r1, , , measure, target] = option.series as [BarSeriesOption, BarSeriesOption, BarSeriesOption, BarSeriesOption, ScatterSeriesOption];
 
         expect(r1.encode).toEqual({ x: 'r1', y: 'x' });
         expect(measure.encode).toEqual({ x: 'y', y: 'x' });

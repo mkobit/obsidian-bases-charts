@@ -30,9 +30,9 @@ export function createBulletChartOption(
         const targetVal = targetProp ? Number(getNestedValue(item, targetProp)) : undefined;
 
         // Range Values
-        const r1Raw = rangeLowProp ? Number(getNestedValue(item, rangeLowProp)) : 0;
-        const r2Raw = rangeMidProp ? Number(getNestedValue(item, rangeMidProp)) : 0;
-        const r3Raw = rangeHighProp ? Number(getNestedValue(item, rangeHighProp)) : 0;
+        const r1Raw = (rangeLowProp !== undefined) ? Number(getNestedValue(item, rangeLowProp)) : 0;
+        const r2Raw = (rangeMidProp !== undefined) ? Number(getNestedValue(item, rangeMidProp)) : 0;
+        const r3Raw = (rangeHighProp !== undefined) ? Number(getNestedValue(item, rangeHighProp)) : 0;
 
         const r1Safe = !Number.isNaN(r1Raw) ? r1Raw : 0;
         const r2Safe = !Number.isNaN(r2Raw) ? r2Raw : 0;
@@ -81,9 +81,9 @@ export function createBulletChartOption(
     });
 
     const rangeSeries: BarSeriesOption[] = hasRanges ? [
-        createRangeSeries('r1', rangeColors[0]),
-        createRangeSeries('r2', rangeColors[1]),
-        createRangeSeries('r3', rangeColors[2])
+        createRangeSeries('r1', rangeColors[0]!),
+        createRangeSeries('r2', rangeColors[1]!),
+        createRangeSeries('r3', rangeColors[2]!)
     ] : [];
 
     const barSeries: BarSeriesOption = {
