@@ -1,17 +1,27 @@
 import { ViewOption } from 'obsidian';
 import { BaseChartView } from './base-chart-view';
-import { ChartType } from '../charts/transformers/base';
+import { ChartType, BasesData } from '../charts/transformers/base';
 import { PictorialBarTransformerOptions } from '../charts/transformers/pictorial-bar';
+import { transformDataToChartOption } from '../charts/transformer';
 
-export class PictorialBarChartView extends BaseChartView<PictorialBarTransformerOptions> {
+export class PictorialBarChartView extends BaseChartView {
     type: ChartType = 'pictorialBar';
 
-    getChartOption(data: any) {
-        // Access config via this.config.get()
+    getChartOption(data: BasesData) {
         const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
         const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY) as string;
 
-        return this.transformData(data, xProp, yProp);
+        const options: PictorialBarTransformerOptions = {
+            ...this.getCommonTransformerOptions(),
+            seriesProp: this.config.get(BaseChartView.SERIES_PROP_KEY) as string,
+            symbol: this.config.get('symbol') as string,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            symbolRepeat: this.config.get('symbolRepeat') as any,
+            symbolClip: this.config.get('symbolClip') as boolean,
+            symbolSize: this.config.get('symbolSize') as string | number,
+        };
+
+        return transformDataToChartOption(data, xProp, yProp, 'pictorialBar', options);
     }
 
     static getViewOptions(): ViewOption[] {
@@ -22,7 +32,7 @@ export class PictorialBarChartView extends BaseChartView<PictorialBarTransformer
                 key: 'symbol',
                 displayName: 'Symbol',
                 type: 'dropdown',
-                description: 'The shape of the bar.',
+                // description removed as it is not supported
                 options: {
                     circle: 'Circle',
                     rect: 'Rectangle',
@@ -33,29 +43,27 @@ export class PictorialBarChartView extends BaseChartView<PictorialBarTransformer
                     arrow: 'Arrow',
                     none: 'None'
                 }
-            },
+            } as ViewOption,
             {
                 key: 'symbolRepeat',
                 displayName: 'Symbol Repeat',
                 type: 'dropdown',
-                description: 'Whether to repeat the symbol.',
                 options: {
                     'false': 'No Repeat',
                     'true': 'Repeat to Fit',
                     'fixed': 'Fixed Repeat'
                 }
-            },
+            } as ViewOption,
             {
                 key: 'symbolClip',
                 displayName: 'Symbol Clip',
                 type: 'toggle',
-                description: 'Whether to clip the symbol.'
             },
             {
                 key: 'symbolSize',
                 displayName: 'Symbol Size',
                 type: 'text',
-                description: 'Size of the symbol (number or percentage).'
+                placeholder: 'Size of the symbol (number or percentage)',
             }
         ];
     }
