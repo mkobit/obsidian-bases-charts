@@ -27,6 +27,7 @@ import { RoseChartView } from './views/rose-chart-view';
 import { PictorialBarChartView } from './views/pictorial-bar-chart-view';
 import { GanttChartView } from './views/gantt-chart-view';
 import { WaterfallChartView } from './views/waterfall-chart-view';
+import { ParetoChartView } from './views/pareto-chart-view';
 
 export default class BarePlugin extends Plugin {
 	public settings: BarePluginSettings = DEFAULT_SETTINGS;
@@ -222,6 +223,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'trending-down',
 			factory: (controller, containerEl) => new WaterfallChartView(controller, containerEl, this),
 			options: (_?: unknown) => WaterfallChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('pareto-chart', {
+			name: 'Pareto Chart',
+			icon: 'bar-chart-horizontal',
+			factory: (controller, containerEl) => new ParetoChartView(controller, containerEl, this),
+			options: (_?: unknown) => ParetoChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));
