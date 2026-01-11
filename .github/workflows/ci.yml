@@ -22,20 +22,25 @@ jobs:
                   node-version: 22.x
                   cache: "pnpm"
             - run: pnpm install --frozen-lockfile
+              id: install
             - name: Check types
+              if: (success() || failure()) && steps.install.outcome == 'success'
               run: pnpm tsc --noEmit
             - name: Build
-              run: pnpm run build
+              if: (success() || failure()) && steps.install.outcome == 'success'
+              run: node esbuild.config.mjs production
             - name: Lint
+              if: (success() || failure()) && steps.install.outcome == 'success'
               run: pnpm run lint
             - name: Test
+              if: (success() || failure()) && steps.install.outcome == 'success'
               run: pnpm run test:coverage
             - name: Upload coverage
               uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4
-              if: always()
+              if: (success() || failure()) && steps.install.outcome == 'success'
               with:
                   name: coverage
                   path: coverage/
             - name: Report coverage
-              if: always()
+              if: (success() || failure()) && steps.install.outcome == 'success'
               run: pnpm tsx scripts/report-coverage.ts
