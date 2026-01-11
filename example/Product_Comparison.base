@@ -1,0 +1,20 @@
+properties:
+  note.Price:
+    displayName: Price
+  note.Weight:
+    displayName: Weight
+  note.Rating:
+    displayName: Rating
+  note.BatteryLife:
+    displayName: Battery Life
+  note.Series:
+    displayName: Product Type
+views:
+  - type: parallel
+    name: Product Comparison
+    xProp: note.Price, note.Weight, note.Rating, note.BatteryLife
+    seriesProp: note.Series
+    showLegend: true
+    filters:
+      and:
+        - note.Price != null

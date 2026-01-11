@@ -1,0 +1,31 @@
+properties:
+  note.Date:
+    displayName: Date
+  note.Exercise:
+    displayName: Exercise Name
+  note.Weight:
+    displayName: Weight (kg)
+  note.Reps:
+    displayName: Repetitions
+  note.RPE:
+    displayName: Rate of Perceived Exertion
+views:
+  - type: scatter-chart
+    name: Workout Volume
+    xAxisProp: note.Date
+    yAxisProp: note.Weight
+    seriesProp: note.Exercise
+    showLegend: true
+    filters:
+      and:
+        - note.Exercise != null
+  - type: bubble-chart
+    name: Intensity Analysis
+    xAxisProp: note.Date
+    yAxisProp: note.Weight
+    sizeProp: note.RPE
+    seriesProp: note.Exercise
+    showLegend: true
+    filters:
+      and:
+        - note.Exercise != null

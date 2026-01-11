@@ -1,7 +1,7 @@
 ---
 Server: "Server-A"
-Time: "16:00"
-Load: 18
+Time: "2023-01-01T16:00:00"
+Load: 85
 Status: "Active"
 ---
 

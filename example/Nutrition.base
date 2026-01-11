@@ -1,0 +1,31 @@
+properties:
+  note.Date:
+    displayName: Date
+  note.Type:
+    displayName: Meal Type
+  note.Calories:
+    displayName: Calories
+  note.Protein:
+    displayName: Protein (g)
+  note.Carbs:
+    displayName: Carbs (g)
+  note.Fat:
+    displayName: Fat (g)
+views:
+  - type: pie-chart
+    name: Calories Breakdown
+    xAxisProp: note.Type
+    yAxisProp: note.Calories
+    showLegend: true
+    filters:
+      and:
+        - note.Type != null
+  - type: stacked-bar-chart
+    name: Daily Nutrition Stack
+    xAxisProp: note.Date
+    yAxisProp: note.Calories
+    seriesProp: note.Type
+    showLegend: true
+    filters:
+      and:
+        - note.Type != null

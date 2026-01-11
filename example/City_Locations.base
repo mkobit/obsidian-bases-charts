@@ -1,0 +1,20 @@
+properties:
+  note.Lon:
+    displayName: Longitude
+  note.Lat:
+    displayName: Latitude
+  note.Population:
+    displayName: Population (Millions)
+  note.Region:
+    displayName: Region
+views:
+  - type: effect-scatter-chart
+    name: Major Cities Ripple
+    xAxisProp: note.Lon
+    yAxisProp: note.Lat
+    sizeProp: note.Population
+    seriesProp: note.Region
+    showLegend: true
+    filters:
+      and:
+        - note.Population != null

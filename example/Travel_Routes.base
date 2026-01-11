@@ -1,0 +1,23 @@
+properties:
+  note.StartX:
+    displayName: Start Longitude
+  note.StartY:
+    displayName: Start Latitude
+  note.EndX:
+    displayName: End Longitude
+  note.EndY:
+    displayName: End Latitude
+  note.Type:
+    displayName: Route Type
+views:
+  - type: lines-chart
+    name: Global Flight Routes
+    xAxisProp: note.StartX
+    yAxisProp: note.StartY
+    end_x_prop: note.EndX
+    end_y_prop: note.EndY
+    seriesProp: note.Type
+    showLegend: true
+    filters:
+      and:
+        - note.Type == "Flight"

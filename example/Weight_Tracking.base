@@ -1,0 +1,14 @@
+properties:
+  note.Date:
+    displayName: Date
+  note.Weight:
+    displayName: Body Weight (kg)
+views:
+  - type: line-chart
+    name: Weight Progress
+    xAxisProp: note.Date
+    yAxisProp: note.Weight
+    showLegend: true
+    filters:
+      and:
+        - note.Weight != null
