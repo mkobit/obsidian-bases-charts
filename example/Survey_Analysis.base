@@ -1,0 +1,14 @@
+properties:
+  note.Category:
+    displayName: Skill Category
+  note.Score:
+    displayName: Proficiency Score
+views:
+  - type: rose-chart
+    name: Skill Proficiency Rose Chart
+    xAxisProp: note.Category
+    yAxisProp: note.Score
+    showLegend: true
+    filters:
+      and:
+        - note.Score != null

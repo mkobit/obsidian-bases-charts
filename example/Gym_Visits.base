@@ -1,0 +1,26 @@
+properties:
+  note.Day:
+    displayName: Day of Week
+  note.Hour:
+    displayName: Hour of Day
+  note.Activity:
+    displayName: Activity Level
+views:
+  - type: heatmap-chart
+    name: Gym Activity Heatmap
+    xAxisProp: note.Hour
+    yAxisProp: note.Day
+    valueProp: note.Activity
+    showLegend: true
+    filters:
+      and:
+        - note.Activity != null
+  - type: scatter-chart
+    name: Gym Activity Scatter
+    xAxisProp: note.Hour
+    yAxisProp: note.Day
+    sizeProp: note.Activity
+    showLegend: true
+    filters:
+      and:
+        - note.Activity != null

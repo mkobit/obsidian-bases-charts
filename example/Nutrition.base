@@ -1,0 +1,22 @@
+properties:
+  note.Nutrient:
+    displayName: Nutrient
+  note.Amount:
+    displayName: Amount (g)
+views:
+  - type: pie-chart
+    name: Macro Distribution
+    xAxisProp: note.Nutrient
+    yAxisProp: note.Amount
+    showLegend: true
+    filters:
+      and:
+        - note.Nutrient != null
+  - type: rose-chart
+    name: Macro Rose Chart
+    xAxisProp: note.Nutrient
+    yAxisProp: note.Amount
+    showLegend: true
+    filters:
+      and:
+        - note.Nutrient != null

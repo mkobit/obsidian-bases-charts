@@ -1,0 +1,29 @@
+properties:
+  note.Date:
+    displayName: Date
+  note.Weight:
+    displayName: Weight Lifted (kg)
+  note.Exercise:
+    displayName: Exercise
+  note.RPE:
+    displayName: RPE
+views:
+  - type: scatter-chart
+    name: Lift Progress
+    xAxisProp: note.Date
+    yAxisProp: note.Weight
+    seriesProp: note.Exercise
+    showLegend: true
+    filters:
+      and:
+        - note.Exercise != null
+  - type: effect-scatter-chart
+    name: Personal Records
+    xAxisProp: note.Date
+    yAxisProp: note.Weight
+    seriesProp: note.Exercise
+    sizeProp: note.RPE
+    showLegend: true
+    filters:
+      and:
+        - note.RPE >= 9
