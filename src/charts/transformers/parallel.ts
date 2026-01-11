@@ -49,7 +49,7 @@ export function createParallelChartOption(
                     : (() => {
                         const uniqueVals = R.pipe(
                             nonNullValues,
-                            R.map(v => safeToString(v)),
+                            R.map(safeToString),
                             R.unique()
                         );
                         return {
@@ -73,8 +73,8 @@ export function createParallelChartOption(
                         })()
                         : 'Series 1';
                 }),
-                R.mapValues(items => {
-                    return R.map(items, item => {
+                R.mapValues(items =>
+                    R.map(items, item => {
                         return R.map(dims, dim => {
                              const valRaw = getNestedValue(item, dim);
 
@@ -86,8 +86,8 @@ export function createParallelChartOption(
                                      return isNum ? Number(valRaw) : safeToString(valRaw);
                                 })();
                         });
-                    });
-                })
+                    })
+                )
             );
 
             const series: ParallelSeriesOption[] = R.pipe(
