@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { QueryController, ViewOption } from 'obsidian';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
@@ -38,7 +41,6 @@ export class GanttChartView extends BaseChartView {
     }
 
     static getViewOptions(plugin?: unknown): ViewOption[] {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any
         const p = plugin as any;
 
         return [
@@ -71,7 +73,7 @@ export class GanttChartView extends BaseChartView {
                 options: p?.getProperties?.() ?? {}
             },
             ...BaseChartView.getCommonViewOptions().filter(o => {
-                 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                  const key = (o as any).key;
                  return key !== BaseChartView.X_AXIS_PROP_KEY &&
                         key !== BaseChartView.Y_AXIS_PROP_KEY &&

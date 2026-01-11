@@ -77,10 +77,13 @@ describe('createGanttChartOption', () => {
         // Wait, 01-05 usually means start of day.
         // 2023-01-05 - 2023-01-01 = 4 * 24 * 3600 * 1000
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
         const data0 = (durationSeries.data as any[])[0];
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(data0.value).toBeGreaterThan(0);
 
         // 4 days in ms
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(data0.value).toBe(4 * 24 * 60 * 60 * 1000);
     });
 
@@ -91,8 +94,11 @@ describe('createGanttChartOption', () => {
             endProp: 'end'
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
         const yAxis = option.yAxis as any;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(yAxis.data).not.toContain('Invalid');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(yAxis.data).not.toContain('Negative');
     });
 });
