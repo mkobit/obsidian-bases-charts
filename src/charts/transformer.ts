@@ -83,6 +83,10 @@ import {
 import {
     createWaterfallChartOption
 } from './transformers/waterfall';
+import {
+    createParetoChartOption,
+    ParetoTransformerOptions
+} from './transformers/pareto';
 import {  ChartType , BasesData } from './transformers/base';
 
 export type ChartTransformerOptions =
@@ -104,7 +108,8 @@ export type ChartTransformerOptions =
     | CalendarTransformerOptions
     | ParallelTransformerOptions
     | PictorialBarTransformerOptions
-    | GanttTransformerOptions;
+    | GanttTransformerOptions
+    | ParetoTransformerOptions;
 
 // Helper to cast options
 function asOptions<T>(options: unknown): T {
@@ -142,6 +147,7 @@ const transformerMap: Record<
     pictorialBar: (data, xProp, yProp, options) => createPictorialBarChartOption(data, xProp, yProp, asOptions(options)),
     gantt: (data, _, __, options) => createGanttChartOption(data, asOptions(options)),
     waterfall: (data, xProp, yProp, options) => createWaterfallChartOption(data, xProp, yProp, asOptions(options)),
+    pareto: (data, xProp, yProp, options) => createParetoChartOption(data, xProp, yProp, asOptions(options)),
 };
 
 /**
@@ -181,3 +187,4 @@ export {type CalendarTransformerOptions} from './transformers/calendar';
 export {type ParallelTransformerOptions} from './transformers/parallel';
 export {type GanttTransformerOptions} from './transformers/gantt';
 export {type WaterfallTransformerOptions} from './transformers/waterfall';
+export {type ParetoTransformerOptions} from './transformers/pareto';
