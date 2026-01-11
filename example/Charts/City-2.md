@@ -1,11 +1,11 @@
 ---
-City: "London"
-Lat: 51.5
-Lon: -0.1
-Population: 9
-Region: "Europe"
+City: "Tokyo"
+Lon: 139.69
+Lat: 35.68
+Population: 14
+Region: "Asia"
 ---
 
 # City-2
 
-This is a sample file for demonstration.
+Major city.

@@ -1,12 +1,12 @@
 ---
-Name: "Product B"
-Price: 800
-Weight: 2.2
-Rating: 4.0
-BatteryLife: 8
-Series: "Laptop"
+Name: "Product 0"
+Price: 1635
+Weight: 1.9
+Rating: 3.8
+BatteryLife: 5
+Series: "Series C"
 ---
 
-# Product-1
+# Product-0
 
-This is a sample file for demonstration.
+Product spec.

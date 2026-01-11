@@ -2,7 +2,7 @@
 Date: "2023-01-07"
 Exercise: "Squat"
 Weight: 102.5
-RPE: 9
+RPE: 8
 ---
 
 # Lift-Log-3

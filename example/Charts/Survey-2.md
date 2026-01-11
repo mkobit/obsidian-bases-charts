@@ -1,9 +1,8 @@
 ---
 Category: "Communication"
-Score: 78
-Group: "Team A"
+Score: 73
 ---
 
 # Survey-2
 
-This is a sample file for demonstration.
+Skill assessment.

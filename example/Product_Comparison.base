@@ -8,7 +8,7 @@ properties:
   note.BatteryLife:
     displayName: Battery Life
   note.Series:
-    displayName: Product Type
+    displayName: Product Series
 views:
   - type: parallel
     name: Product Comparison

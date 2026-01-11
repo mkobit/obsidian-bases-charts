@@ -2,7 +2,7 @@
 Date: "2023-01-29"
 Exercise: "Deadlift"
 Weight: 130
-RPE: 8
+RPE: 9
 ---
 
 # Lift-Log-14

@@ -1,7 +1,7 @@
 ---
 Day: "Thursday"
-Hour: 15
-Activity: 3
+Hour: 7
+Activity: 7
 ---
 
 # Gym-Visit-20

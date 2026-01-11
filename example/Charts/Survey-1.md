@@ -1,9 +1,8 @@
 ---
 Category: "Visualization"
-Score: 92
-Group: "Team A"
+Score: 99
 ---
 
 # Survey-1
 
-This is a sample file for demonstration.
+Skill assessment.

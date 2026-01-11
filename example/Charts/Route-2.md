@@ -1,14 +1,12 @@
 ---
-Route: "Route 3"
-StartCity: "Paris"
-EndCity: "Tokyo"
-StartX: 2
-StartY: 48
-EndX: 139
-EndY: 35
+Route: "London -> Beijing"
+StartX: -0.12
+StartY: 51.5
+EndX: 116.4
+EndY: 39.9
 Type: "Flight"
 ---
 
-# Route-2
+# Route-1
 
-This is a sample file for demonstration.
+Flight path.

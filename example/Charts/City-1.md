@@ -1,11 +1,11 @@
 ---
 City: "New York"
-Lat: 40.7
-Lon: -74.0
-Population: 20
+Lon: -74
+Lat: 40.71
+Population: 8.4
 Region: "North America"
 ---
 
 # City-1
 
-This is a sample file for demonstration.
+Major city.
