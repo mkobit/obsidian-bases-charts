@@ -30,6 +30,7 @@ import { WaterfallChartView } from './views/waterfall-chart-view';
 import { ParetoChartView } from './views/pareto-chart-view';
 import { HistogramChartView } from './views/histogram-chart-view';
 import { BulletChartView } from './views/bullet-chart-view';
+import { RadialBarChartView } from './views/radial-bar-chart-view';
 
 export default class BarePlugin extends Plugin {
 	public settings: BarePluginSettings = DEFAULT_SETTINGS;
@@ -246,6 +247,13 @@ export default class BarePlugin extends Plugin {
 			icon: 'crosshair',
 			factory: (controller, containerEl) => new BulletChartView(controller, containerEl, this),
 			options: (_?: unknown) => BulletChartView.getViewOptions(),
+		});
+
+		this.registerBasesView('radial-bar-chart', {
+			name: 'Radial Bar Chart',
+			icon: 'circle-dot',
+			factory: (controller, containerEl) => new RadialBarChartView(controller, containerEl, this),
+			options: (_?: unknown) => RadialBarChartView.getViewOptions(),
 		});
 
 		this.addSettingTab(new SettingTab(this.app, this));

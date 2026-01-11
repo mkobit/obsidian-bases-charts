@@ -95,6 +95,10 @@ import {
     createBulletChartOption,
     BulletTransformerOptions
 } from './transformers/bullet';
+import {
+    createRadialBarChartOption,
+    RadialBarTransformerOptions
+} from './transformers/radial-bar';
 import {  ChartType , BasesData } from './transformers/base';
 
 export type ChartTransformerOptions =
@@ -119,7 +123,8 @@ export type ChartTransformerOptions =
     | GanttTransformerOptions
     | ParetoTransformerOptions
     | HistogramTransformerOptions
-    | BulletTransformerOptions;
+    | BulletTransformerOptions
+    | RadialBarTransformerOptions;
 
 // Helper to cast options
 function asOptions<T>(options: unknown): T {
@@ -160,6 +165,7 @@ const transformerMap: Record<
     pareto: (data, xProp, yProp, options) => createParetoChartOption(data, xProp, yProp, asOptions(options)),
     histogram: (data, _, yProp, options) => createHistogramChartOption(data, yProp, asOptions(options)),
     bullet: (data, xProp, yProp, options) => createBulletChartOption(data, xProp, yProp, asOptions(options)),
+    radialBar: (data, xProp, yProp, options) => createRadialBarChartOption(data, xProp, yProp, asOptions(options)),
 };
 
 /**
@@ -202,3 +208,4 @@ export {type WaterfallTransformerOptions} from './transformers/waterfall';
 export {type ParetoTransformerOptions} from './transformers/pareto';
 export {type HistogramTransformerOptions} from './transformers/histogram';
 export {type BulletTransformerOptions} from './transformers/bullet';
+export {type RadialBarTransformerOptions} from './transformers/radial-bar';
