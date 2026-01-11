@@ -11,13 +11,13 @@ export class WaterfallChartView extends BaseChartView {
         const common = BaseChartView.getCommonViewOptions();
 
         // Remove seriesProp as waterfall currently doesn't support grouping by series
-        const options = common.filter(o => o.key !== BaseChartView.SERIES_PROP_KEY);
+        const options = common.filter(o => 'key' in o && o.key !== BaseChartView.SERIES_PROP_KEY);
 
         // Customize display names
-        const xOption = options.find(o => o.key === BaseChartView.X_AXIS_PROP_KEY);
+        const xOption = options.find(o => 'key' in o && o.key === BaseChartView.X_AXIS_PROP_KEY);
         if (xOption) xOption.displayName = 'Category Property';
 
-        const yOption = options.find(o => o.key === BaseChartView.Y_AXIS_PROP_KEY);
+        const yOption = options.find(o => 'key' in o && o.key === BaseChartView.Y_AXIS_PROP_KEY);
         if (yOption) yOption.displayName = 'Value Property';
 
         return [

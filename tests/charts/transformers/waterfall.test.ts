@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect } from 'vitest';
 import { createWaterfallChartOption } from '../../../src/charts/transformers/waterfall';
 
@@ -17,7 +19,9 @@ describe('createWaterfallChartOption', () => {
         // Check X Axis
         expect(option.xAxis).toBeDefined();
         const xAxis = Array.isArray(option.xAxis) ? option.xAxis[0] : option.xAxis;
-        expect(xAxis).toHaveProperty('data', ['A', 'B', 'C', 'D']);
+        expect(xAxis).toBeDefined();
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        expect((xAxis as any).data).toEqual(['A', 'B', 'C', 'D']);
 
         // Check Series
         expect(option.series).toBeDefined();
@@ -33,25 +37,12 @@ describe('createWaterfallChartOption', () => {
         expect(decreaseSeries).toBeDefined();
 
         // Check Base Data (Accumulated)
-        // A: Val 100. Prev 0. Rising. Base 0.
-        // B: Val -20. Prev 100. Falling. Base 100 + (-20) = 80.
-        // C: Val 30. Prev 80. Rising. Base 80.
-        // D: Val -10. Prev 110. Falling. Base 110 + (-10) = 100.
-        // So baseData should be [0, 80, 80, 100]
         expect(baseSeries.data).toEqual([0, 80, 80, 100]);
 
         // Check Increase Data
-        // A: 100
-        // B: '-'
-        // C: 30
-        // D: '-'
         expect(increaseSeries.data).toEqual([100, '-', 30, '-']);
 
         // Check Decrease Data
-        // A: '-'
-        // B: 20 (abs(-20))
-        // C: '-'
-        // D: 10 (abs(-10))
         expect(decreaseSeries.data).toEqual(['-', 20, '-', 10]);
 
         // Check Styling
@@ -69,14 +60,15 @@ describe('createWaterfallChartOption', () => {
 
         const option = createWaterfallChartOption(dirtyData, 'category', 'value');
 
+        expect(option.xAxis).toBeDefined();
         const xAxis = Array.isArray(option.xAxis) ? option.xAxis[0] : option.xAxis;
-        expect(xAxis.data).toEqual(['A', 'C']);
+        expect(xAxis).toBeDefined();
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        expect((xAxis as any).data).toEqual(['A', 'C']);
 
         const series = option.series as any[];
         const baseSeries = series.find(s => s.name === '_base');
 
-        // A: 100. Base 0. Next 100.
-        // C: -50. Prev 100. Base 100 + (-50) = 50.
         expect(baseSeries.data).toEqual([0, 50]);
     });
 
