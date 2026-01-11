@@ -45,6 +45,7 @@ describe('createPictorialBarChartOption', () => {
     it('should handle string booleans for symbolRepeat', () => {
         // Test "true" string
         const optionTrue = createPictorialBarChartOption(data, 'category', 'value', {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
             symbolRepeat: 'true' as any
         });
         const seriesTrue = optionTrue.series as PictorialBarSeriesOption[];
@@ -52,6 +53,7 @@ describe('createPictorialBarChartOption', () => {
 
         // Test "false" string
         const optionFalse = createPictorialBarChartOption(data, 'category', 'value', {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
             symbolRepeat: 'false' as any
         });
         const seriesFalse = optionFalse.series as PictorialBarSeriesOption[];
@@ -91,7 +93,9 @@ describe('createPictorialBarChartOption', () => {
         expect(series[0]!.encode).toEqual({ x: 'y', y: 'x', tooltip: ['x', 'y', 's'] });
 
         // yAxis should be category
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
         const yAxis = option.yAxis as any;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(yAxis.type).toBe('category');
     });
 });

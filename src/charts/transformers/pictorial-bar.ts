@@ -71,7 +71,7 @@ export function createPictorialBarChartOption(
 
         // Handle string booleans from ViewOption dropdowns
         const rawRepeat = options?.symbolRepeat;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/consistent-type-assertions
         const symbolRepeat = (rawRepeat as any) === 'true' ? true : (rawRepeat as any) === 'false' ? false : rawRepeat;
 
         return {
