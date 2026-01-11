@@ -72,6 +72,10 @@ import {
     createLinesChartOption,
     LinesTransformerOptions
 } from './transformers/lines';
+import {
+    createPictorialBarChartOption,
+    PictorialBarTransformerOptions
+} from './transformers/pictorial-bar';
 import {  ChartType , BasesData } from './transformers/base';
 
 export type ChartTransformerOptions =
@@ -91,7 +95,8 @@ export type ChartTransformerOptions =
     | SunburstTransformerOptions
     | ThemeRiverTransformerOptions
     | CalendarTransformerOptions
-    | ParallelTransformerOptions;
+    | ParallelTransformerOptions
+    | PictorialBarTransformerOptions;
 
 // Helper to cast options
 function asOptions<T>(options: unknown): T {
@@ -126,6 +131,7 @@ const transformerMap: Record<
     themeRiver: (data, xProp, _, options) => createThemeRiverChartOption(data, xProp, asOptions(options)),
     calendar: (data, xProp, _, options) => createCalendarChartOption(data, xProp, asOptions(options)),
     parallel: (data, xProp, _, options) => createParallelChartOption(data, xProp, asOptions(options)),
+    pictorialBar: (data, xProp, yProp, options) => createPictorialBarChartOption(data, xProp, yProp, asOptions(options)),
 };
 
 /**
