@@ -194,6 +194,16 @@ export default tseslint.config(
              "@stylistic/indent": ["error", "tab"]
         }
     },
+    // Specific override for legacy script
+    {
+        files: ["scripts/generate.ts"],
+        rules: {
+             "@stylistic/indent": "off",
+             "@stylistic/function-call-argument-newline": "off",
+             "@stylistic/comma-dangle": "off",
+             "@stylistic/array-element-newline": "off"
+        }
+    },
 	globalIgnores([
 		"node_modules",
 		"dist",
