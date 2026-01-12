@@ -27,6 +27,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^4.0.16
         version: 4.0.16(vitest@4.0.16(@types/node@25.0.3)(happy-dom@20.0.11)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
+      commander:
+        specifier: ^14.0.2
+        version: 14.0.2
       esbuild:
         specifier: 0.27.2
         version: 0.27.2

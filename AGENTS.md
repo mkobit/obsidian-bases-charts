@@ -64,6 +64,11 @@ We strictly enforce functional programming principles to ensure code clarity, pr
 ### 4. Pure functions
 -   **No Side Effects**: Functions, especially transformers, must be pure. They should take input and return output without modifying external state.
 
+## Date and Time Protocol
+-   **Temporal**: Use the `Temporal` API (via `temporal-polyfill`) for all date and time logic within the plugin's core logic and scripts.
+-   **Avoid Date**: Avoid using the native `Date` class whenever possible.
+-   **Moment.js**: Only use `moment` (which Obsidian depends on) when interacting directly with Obsidian APIs that require it or when formatting dates for Obsidian UI where `moment` is the standard. Isolate these usages.
+
 ## Development Commands
 
 | Command | Description |
