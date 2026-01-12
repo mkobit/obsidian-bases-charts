@@ -10,46 +10,72 @@ import { scatterChartArbitrary } from './generators/scatter';
 const program = new Command();
 
 program
-    .name('generate')
-    .description('Generate chart examples')
-    .option('-s, --seed <seed>', 'Seed for random generation')
-    .option('--skip-confirm', 'Skip confirmation prompt', false)
-    .action(async (options: { seed?: string; skipConfirm: boolean }) => {
-        let seed: number;
-        if (options.seed) {
-            seed = parseInt(options.seed, 10);
-            if (Number.isNaN(seed)) {
-                console.error('Invalid seed provided. Must be an integer.');
-                process.exit(1);
-            }
-        } else {
-            seed = Date.now();
-        }
+	.name('generate')
+	.description('Generate chart examples')
+	.option(
+		'-s, --seed <seed>',
+		'Seed for random generation',
+	)
+	.option(
+		'--skip-confirm',
+		'Skip confirmation prompt',
+		false,
+	)
+	.action(async (options: { seed?: string;
+		skipConfirm: boolean }) => {
+		const seed = options.seed
+			? parseInt(
+				options.seed,
+				10,
+			)
+			: Date.now();
 
-        const commandString = generateCommandString(seed);
+		if (Number.isNaN(seed)) {
+			console.error('Invalid seed provided. Must be an integer.');
+			process.exit(1);
+		}
 
-        if (!options.skipConfirm) {
-            console.log(`This will generate examples using seed: ${seed}`);
-            console.log('Proceed? (y/N)');
-            const rl = readline.createInterface({ input, output });
-            const answer = await rl.question('> ');
-            rl.close();
-            if (answer.trim().toLowerCase() !== 'y') {
-                console.log('Aborted.');
-                process.exit(0);
-            }
-        }
+		const commandString = generateCommandString(seed);
 
-        console.log(`Command: ${commandString}`);
+		if (!options.skipConfirm) {
+			console.log(`This will generate examples using seed: ${seed}`);
+			console.log('Proceed? (y/N)');
+			const rl = readline.createInterface({ input,
+				output });
+			const answer = await rl.question('> ');
+			rl.close();
+			if (answer.trim().toLowerCase() !== 'y') {
+				console.log('Aborted.');
+				process.exit(0);
+			}
+		}
 
-        const results = {
-            bar: getDeterministicSample(barChartArbitrary, seed),
-            line: getDeterministicSample(lineChartArbitrary, seed),
-            pie: getDeterministicSample(pieChartArbitrary, seed),
-            scatter: getDeterministicSample(scatterChartArbitrary, seed),
-        };
+		console.log(`Command: ${commandString}`);
 
-        console.log(JSON.stringify(results, null, 2));
-    });
+		const results = {
+			bar: getDeterministicSample(
+				barChartArbitrary,
+				seed,
+			),
+			line: getDeterministicSample(
+				lineChartArbitrary,
+				seed,
+			),
+			pie: getDeterministicSample(
+				pieChartArbitrary,
+				seed,
+			),
+			scatter: getDeterministicSample(
+				scatterChartArbitrary,
+				seed,
+			),
+		};
+
+		console.log(JSON.stringify(
+			results,
+			null,
+			2,
+		));
+	});
 
 program.parse();
