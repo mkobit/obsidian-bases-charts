@@ -1,6 +1,7 @@
 import { Command, InvalidArgumentError } from 'commander';
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
+import { Temporal } from 'temporal-polyfill';
 import { generateCommandString, getDeterministicSample } from './generators/utils';
 import { barChartArbitrary } from './generators/bar';
 import { lineChartArbitrary } from './generators/line';
@@ -8,6 +9,7 @@ import { pieChartArbitrary } from './generators/pie';
 import { scatterChartArbitrary } from './generators/scatter';
 
 const program = new Command();
+
 
 function parseInteger(value: string) {
 	const parsedValue = parseInt(
@@ -36,7 +38,7 @@ program
 	)
 	.action(async (options: { seed?: number;
 		skipConfirm: boolean }) => {
-		const seed = options.seed ?? Date.now();
+		const seed = options.seed ?? Temporal.Now.instant().epochMilliseconds;
 
 		const commandString = generateCommandString(seed);
 
