@@ -1,31 +1,55 @@
 import { Command } from 'commander';
-import * as fc from 'fast-check';
-import { Temporal } from 'temporal-polyfill';
+import * as readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
+import { generateCommandString, getDeterministicSample } from './generators/utils';
+import { barChartArbitrary } from './generators/bar';
+import { lineChartArbitrary } from './generators/line';
+import { pieChartArbitrary } from './generators/pie';
+import { scatterChartArbitrary } from './generators/scatter';
 
 const program = new Command();
 
 program
-	.name('generate')
-	.description('Generate hello world samples')
-	.action((_?: unknown) => {
-		// Simple hello world arbitrary
-		// Using Temporal to demonstrate compliance (e.g. including a timestamp)
-		const helloArbitrary = fc.record({
-			message: fc.constant('Hello World'),
-			timestamp: fc.constant(Temporal.Now.plainDateTimeISO().toString()),
-			randomInt: fc.integer(),
-		});
+    .name('generate')
+    .description('Generate chart examples')
+    .option('-s, --seed <seed>', 'Seed for random generation')
+    .option('--skip-confirm', 'Skip confirmation prompt', false)
+    .action(async (options: { seed?: string; skipConfirm: boolean }) => {
+        let seed: number;
+        if (options.seed) {
+            seed = parseInt(options.seed, 10);
+            if (Number.isNaN(seed)) {
+                console.error('Invalid seed provided. Must be an integer.');
+                process.exit(1);
+            }
+        } else {
+            seed = Date.now();
+        }
 
-		const data = fc.sample(
-			helloArbitrary,
-			1,
-		);
+        const commandString = generateCommandString(seed);
 
-		console.log(JSON.stringify(
-			data,
-			null,
-			2,
-		));
-	});
+        if (!options.skipConfirm) {
+            console.log(`This will generate examples using seed: ${seed}`);
+            console.log('Proceed? (y/N)');
+            const rl = readline.createInterface({ input, output });
+            const answer = await rl.question('> ');
+            rl.close();
+            if (answer.trim().toLowerCase() !== 'y') {
+                console.log('Aborted.');
+                process.exit(0);
+            }
+        }
+
+        console.log(`Command: ${commandString}`);
+
+        const results = {
+            bar: getDeterministicSample(barChartArbitrary, seed),
+            line: getDeterministicSample(lineChartArbitrary, seed),
+            pie: getDeterministicSample(pieChartArbitrary, seed),
+            scatter: getDeterministicSample(scatterChartArbitrary, seed),
+        };
+
+        console.log(JSON.stringify(results, null, 2));
+    });
 
 program.parse();
