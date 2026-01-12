@@ -6,6 +6,7 @@ import {
 	debounce,
 } from 'obsidian';
 import * as echarts from 'echarts';
+import { t } from '../lang/helpers';
 import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
 import type { BasesData, BaseTransformerOptions } from '../charts/transformers/base';
@@ -157,53 +158,53 @@ export abstract class BaseChartView extends BasesView {
 	static getCommonViewOptions(_?: unknown): ViewOption[] {
 		return [
 			{
-				displayName: 'X-Axis Property',
+				displayName: t('X-Axis Property'),
 				type: 'property',
 				key: BaseChartView.X_AXIS_PROP_KEY,
-				placeholder: 'Select category property',
+				placeholder: t('Select category property'),
 			},
 			{
-				displayName: 'Y-Axis Property',
+				displayName: t('Y-Axis Property'),
 				type: 'property',
 				key: BaseChartView.Y_AXIS_PROP_KEY,
-				placeholder: 'Select value property',
+				placeholder: t('Select value property'),
 			},
 			{
-				displayName: 'Series Property (Optional)',
+				displayName: t('Series Property (Optional)'),
 				type: 'property',
 				key: BaseChartView.SERIES_PROP_KEY,
-				placeholder: 'Select series/group property',
+				placeholder: t('Select series/group property'),
 			},
 			{
-				displayName: 'Show Legend',
+				displayName: t('Show Legend'),
 				type: 'toggle',
 				key: BaseChartView.LEGEND_KEY,
 			},
 			{
-				displayName: 'Legend Position',
+				displayName: t('Legend Position'),
 				type: 'dropdown',
 				key: BaseChartView.LEGEND_POSITION_KEY,
 				options: {
-					'top': 'Top',
-					'bottom': 'Bottom',
-					'left': 'Left',
-					'right': 'Right',
+					'top': t('Top'),
+					'bottom': t('Bottom'),
+					'left': t('Left'),
+					'right': t('Right'),
 				},
 			} as ViewOption,
 			{
-				displayName: 'Legend Orientation',
+				displayName: t('Legend Orientation'),
 				type: 'dropdown',
 				key: BaseChartView.LEGEND_ORIENT_KEY,
 				options: {
-					'horizontal': 'Horizontal',
-					'vertical': 'Vertical',
+					'horizontal': t('Horizontal'),
+					'vertical': t('Vertical'),
 				},
 			} as ViewOption,
 			{
-				displayName: 'Height',
+				displayName: t('Height'),
 				type: 'text',
 				key: BaseChartView.HEIGHT_KEY,
-				placeholder: 'e.g., 500px, 50vh',
+				placeholder: t('e.g., 500px, 50vh'),
 			},
 		];
 	}
@@ -211,25 +212,25 @@ export abstract class BaseChartView extends BasesView {
 	static getAxisViewOptions(_?: unknown): ViewOption[] {
 		return [
 			{
-				displayName: 'X-Axis Label',
+				displayName: t('X-Axis Label'),
 				type: 'text',
 				key: BaseChartView.X_AXIS_LABEL_KEY,
-				placeholder: 'Override X-Axis label',
+				placeholder: t('Override X-Axis label'),
 			},
 			{
-				displayName: 'Y-Axis Label',
+				displayName: t('Y-Axis Label'),
 				type: 'text',
 				key: BaseChartView.Y_AXIS_LABEL_KEY,
-				placeholder: 'Override Y-Axis label',
+				placeholder: t('Override Y-Axis label'),
 			},
 			{
-				displayName: 'X-Axis Label Rotation',
+				displayName: t('X-Axis Label Rotation'),
 				type: 'text',
 				key: BaseChartView.X_AXIS_LABEL_ROTATE_KEY,
-				placeholder: 'Degrees (e.g. 45)',
+				placeholder: t('Degrees (e.g. 45)'),
 			},
 			{
-				displayName: 'Flip Axis',
+				displayName: t('Flip Axis'),
 				type: 'toggle',
 				key: BaseChartView.FLIP_AXIS_KEY,
 			},
@@ -239,34 +240,34 @@ export abstract class BaseChartView extends BasesView {
 	static getVisualMapViewOptions(_?: unknown): ViewOption[] {
 		return [
 			{
-				displayName: 'Visual Map Min',
+				displayName: t('Visual Map Min'),
 				type: 'text',
 				key: BaseChartView.VISUAL_MAP_MIN_KEY,
-				placeholder: 'Min value (default: auto)',
+				placeholder: t('Min value (default: auto)'),
 			},
 			{
-				displayName: 'Visual Map Max',
+				displayName: t('Visual Map Max'),
 				type: 'text',
 				key: BaseChartView.VISUAL_MAP_MAX_KEY,
-				placeholder: 'Max value (default: auto)',
+				placeholder: t('Max value (default: auto)'),
 			},
 			{
-				displayName: 'Visual Map Colors',
+				displayName: t('Visual Map Colors'),
 				type: 'text',
 				key: BaseChartView.VISUAL_MAP_COLOR_KEY,
-				placeholder: 'Comma-separated hex colors (e.g. #fff,#000)',
+				placeholder: t('Comma-separated hex colors (e.g. #fff,#000)'),
 			},
 			{
-				displayName: 'Visual Map Orientation',
+				displayName: t('Visual Map Orientation'),
 				type: 'text', // Ideally a dropdown, but ViewOption only supports basic types? Or use text with validation.
 				key: BaseChartView.VISUAL_MAP_ORIENT_KEY,
-				placeholder: 'horizontal or vertical (default: horizontal)',
+				placeholder: t('horizontal or vertical (default: horizontal)'),
 			},
 			{
-				displayName: 'Visual Map Type',
+				displayName: t('Visual Map Type'),
 				type: 'text',
 				key: BaseChartView.VISUAL_MAP_TYPE_KEY,
-				placeholder: 'continuous or piecewise (default: continuous)',
+				placeholder: t('continuous or piecewise (default: continuous)'),
 			},
 		];
 	}

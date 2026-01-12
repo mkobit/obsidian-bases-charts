@@ -1,5 +1,6 @@
 
 import type { ViewOption } from 'obsidian';
+import { t } from '../lang/helpers';
 import { BaseChartView } from './base-chart-view';
 import type { ChartType } from '../charts/transformer';
 import { transformDataToChartOption } from '../charts/transformer';
@@ -13,27 +14,27 @@ export class GraphChartView extends BaseChartView {
 			...BaseChartView.getCommonViewOptions(),
 			{
 				key: 'sourceProp',
-				displayName: 'Source Property',
+				displayName: t('Source Property'),
 				type: 'property',
-				placeholder: 'Property for the source node name',
+				placeholder: t('Property for the source node name'),
 			},
 			{
 				key: 'targetProp',
-				displayName: 'Target Property',
+				displayName: t('Target Property'),
 				type: 'property',
-				placeholder: 'Property for the target node name',
+				placeholder: t('Property for the target node name'),
 			},
 			{
 				key: 'valueProp',
-				displayName: 'Value Property (Optional)',
+				displayName: t('Value Property (Optional)'),
 				type: 'property',
-				placeholder: 'Optional property for link weight/value',
+				placeholder: t('Optional property for link weight/value'),
 			},
 			{
 				key: 'categoryProp',
-				displayName: 'Category Property (Optional)',
+				displayName: t('Category Property (Optional)'),
 				type: 'property',
-				placeholder: 'Optional property for node grouping/color',
+				placeholder: t('Optional property for node grouping/color'),
 			},
 		];
 	}

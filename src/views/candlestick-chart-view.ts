@@ -3,6 +3,7 @@ import type {
 	ViewOption,
 } from 'obsidian';
 import type { EChartsOption } from 'echarts';
+import { t } from '../lang/helpers';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type BarePlugin from '../main';
@@ -62,34 +63,34 @@ export class CandlestickChartView extends BaseChartView {
 	static getViewOptions(_?: unknown): ViewOption[] {
 		return [
 			{
-				displayName: 'X-Axis Property (Date/Time)',
+				displayName: t('X-Axis Property (Date/Time)'),
 				type: 'property',
 				key: BaseChartView.X_AXIS_PROP_KEY,
-				placeholder: 'Select date property',
+				placeholder: t('Select date property'),
 			},
 			{
-				displayName: 'Open Property',
+				displayName: t('Open Property'),
 				type: 'property',
 				key: CandlestickChartView.OPEN_PROP_KEY,
-				placeholder: 'Select Open price property',
+				placeholder: t('Select Open price property'),
 			},
 			{
-				displayName: 'Close Property',
+				displayName: t('Close Property'),
 				type: 'property',
 				key: CandlestickChartView.CLOSE_PROP_KEY,
-				placeholder: 'Select Close price property',
+				placeholder: t('Select Close price property'),
 			},
 			{
-				displayName: 'Lowest Property',
+				displayName: t('Lowest Property'),
 				type: 'property',
 				key: CandlestickChartView.LOW_PROP_KEY,
-				placeholder: 'Select Low price property',
+				placeholder: t('Select Low price property'),
 			},
 			{
-				displayName: 'Highest Property',
+				displayName: t('Highest Property'),
 				type: 'property',
 				key: CandlestickChartView.HIGH_PROP_KEY,
-				placeholder: 'Select High price property',
+				placeholder: t('Select High price property'),
 			},
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
 			...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY),

@@ -1,4 +1,5 @@
 import type { QueryController, ViewOption } from 'obsidian';
+import { t } from '../lang/helpers';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type BarePlugin from '../main';
@@ -41,22 +42,22 @@ export class GaugeChartView extends BaseChartView {
 	static getViewOptions(_?: unknown): ViewOption[] {
 		return [
 			{
-				displayName: 'Value Property',
+				displayName: t('Value Property'),
 				type: 'property',
 				key: BaseChartView.Y_AXIS_PROP_KEY,
-				placeholder: 'Select value property',
+				placeholder: t('Select value property'),
 			},
 			{
-				displayName: 'Min Value',
+				displayName: t('Min Value'),
 				type: 'text',
 				key: BaseChartView.MIN_VALUE_KEY,
-				placeholder: '0',
+				placeholder: t('0'),
 			},
 			{
-				displayName: 'Max Value',
+				displayName: t('Max Value'),
 				type: 'text',
 				key: BaseChartView.MAX_VALUE_KEY,
-				placeholder: '100',
+				placeholder: t('100'),
 			},
 		];
 	}

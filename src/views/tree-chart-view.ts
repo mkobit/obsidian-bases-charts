@@ -1,5 +1,6 @@
 import type { QueryController, ViewOption } from 'obsidian';
 import type BarePlugin from '../main';
+import { t } from '../lang/helpers';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type { EChartsOption } from 'echarts';
@@ -26,10 +27,10 @@ export class TreeChartView extends BaseChartView {
 	static getViewOptions(_?: unknown): ViewOption[] {
 		return [
 			{
-				displayName: 'Path property (e.g. "Folder/Subfolder")',
+				displayName: t('Path property (e.g. "Folder/Subfolder")'),
 				type: 'property',
 				key: BaseChartView.X_AXIS_PROP_KEY,
-				placeholder: 'Select path property',
+				placeholder: t('Select path property'),
 			},
 		];
 	}

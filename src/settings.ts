@@ -1,5 +1,6 @@
 import type { App } from 'obsidian';
 import { PluginSettingTab, Setting } from 'obsidian';
+import { t } from './lang/helpers';
 import type BarePlugin from './main';
 
 export interface BarePluginSettings {
@@ -30,8 +31,8 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('Default chart height')
-			.setDesc('The default height for charts (e.g. 500px, 50vh).')
+			.setName(t('Default chart height'))
+			.setDesc(t('The default height for charts (e.g. 500px, 50vh).'))
 			.addText(text => text
 				.setPlaceholder('500px')
 				.setValue(this.plugin.settings.defaultHeight)
