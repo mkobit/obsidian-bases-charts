@@ -4,6 +4,7 @@ import globals from "globals";
 import functional from "eslint-plugin-functional";
 import promise from "eslint-plugin-promise";
 import stylistic from "@stylistic/eslint-plugin";
+import unicorn from "eslint-plugin-unicorn";
 import { globalIgnores } from "eslint/config";
 
 export default tseslint.config(
@@ -45,7 +46,8 @@ export default tseslint.config(
 			functional,
 			promise,
 			"@typescript-eslint": tseslint.plugin,
-            "@stylistic": stylistic
+            "@stylistic": stylistic,
+            unicorn
 		},
 		rules: {
 			...promise.configs.recommended.rules,
@@ -90,6 +92,8 @@ export default tseslint.config(
             // Semi (implied by good style)
             "@stylistic/semi": ["error", "always"],
 
+            // Unicorn Rules
+            "unicorn/numeric-separators-style": "error",
 
             // Ensure strictness explicitly (reinforcing 'strict' config)
             "functional/no-let": "error",
