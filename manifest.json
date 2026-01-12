@@ -1,6 +1,6 @@
 {
 	"id": "obsidian-bases-charts",
-	"name": "Bases Charts",
+	"name": "Bases Charts Plugin",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Integration of Apache ECharts into Obsidian via the Bases API.",
