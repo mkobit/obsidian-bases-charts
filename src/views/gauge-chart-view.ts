@@ -1,53 +1,63 @@
-import { QueryController, ViewOption } from 'obsidian';
+import type { QueryController, ViewOption } from 'obsidian';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type BarePlugin from '../main';
 import type { EChartsOption } from 'echarts';
-import { BasesData } from '../charts/transformers/base';
+import type { BasesData } from '../charts/transformers/base';
 
 export class GaugeChartView extends BaseChartView {
-    readonly type = 'gauge-chart';
+	readonly type = 'gauge-chart';
 
-    constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-        super(controller, scrollEl, plugin);
-    }
+	constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
+		super(
+			controller,
+			scrollEl,
+			plugin,
+		);
+	}
 
-    protected getChartOption(data: BasesData): EChartsOption | null {
-        const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
-        // Cast BaseChartView to any to access new props
-        const minVal = Number(this.config.get(BaseChartView.MIN_VALUE_KEY));
-        const maxVal = Number(this.config.get(BaseChartView.MAX_VALUE_KEY));
+	protected getChartOption(data: BasesData): EChartsOption | null {
+		const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY);
+		// Cast BaseChartView to any to access new props
+		const minVal = Number(this.config.get(BaseChartView.MIN_VALUE_KEY));
+		const maxVal = Number(this.config.get(BaseChartView.MAX_VALUE_KEY));
 
-        if (typeof yProp !== 'string') {
-            return null;
-        }
+		if (typeof yProp !== 'string') {
+			return null;
+		}
 
-        return transformDataToChartOption(data, '', yProp, 'gauge', {
-            min: isNaN(minVal) ? 0 : minVal,
-            max: isNaN(maxVal) ? 100 : maxVal
-        });
-    }
+		return transformDataToChartOption(
+			data,
+			'',
+			yProp,
+			'gauge',
+			{
+				min: isNaN(minVal) ? 0 : minVal,
+				max: isNaN(maxVal) ? 100 : maxVal,
+			},
+		);
+	}
 
-    static getViewOptions(_?: unknown): ViewOption[] {
-        return [
-            {
-                displayName: 'Value Property',
-                type: 'property',
-                key: BaseChartView.Y_AXIS_PROP_KEY,
-                placeholder: 'Select value property',
-            },
-            {
-                displayName: 'Min Value',
-                type: 'text',
-                key: BaseChartView.MIN_VALUE_KEY,
-                placeholder: '0',
-            },
-            {
-                displayName: 'Max Value',
-                type: 'text',
-                key: BaseChartView.MAX_VALUE_KEY,
-                placeholder: '100',
-            }
-        ];
-    }
+	static getViewOptions(_?: unknown): ViewOption[] {
+		return [
+			{
+				displayName: 'Value Property',
+				type: 'property',
+				key: BaseChartView.Y_AXIS_PROP_KEY,
+				placeholder: 'Select value property',
+			},
+			{
+				displayName: 'Min Value',
+				type: 'text',
+				key: BaseChartView.MIN_VALUE_KEY,
+				placeholder: '0',
+			},
+			{
+				displayName: 'Max Value',
+				type: 'text',
+				key: BaseChartView.MAX_VALUE_KEY,
+				placeholder: '100',
+			},
+		];
+	}
 }

@@ -1,5 +1,6 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
-import BarePlugin from "./main";
+import type { App } from 'obsidian';
+import { PluginSettingTab, Setting } from 'obsidian';
+import type BarePlugin from './main';
 
 export interface BarePluginSettings {
 	mySetting: string;
@@ -8,14 +9,17 @@ export interface BarePluginSettings {
 
 export const DEFAULT_SETTINGS: BarePluginSettings = {
 	mySetting: 'default',
-	defaultHeight: '500px'
-}
+	defaultHeight: '500px',
+};
 
 export class SettingTab extends PluginSettingTab {
 	plugin: BarePlugin;
 
 	constructor(app: Readonly<App>, plugin: Readonly<BarePlugin>) {
-		super(app as App, plugin as BarePlugin);
+		super(
+			app as App,
+			plugin as BarePlugin,
+		);
 		this.plugin = plugin as BarePlugin;
 	}
 

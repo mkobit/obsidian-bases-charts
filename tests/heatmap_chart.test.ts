@@ -3,90 +3,137 @@ import { transformDataToChartOption } from '../src/charts/transformer';
 import type { DatasetComponentOption } from 'echarts';
 
 interface HeatmapSourceItem {
-    readonly x: string;
-    readonly y: string;
-    readonly value: number;
+	readonly x: string;
+	readonly y: string;
+	readonly value: number;
 }
 
-describe('Heatmap Transformer', () => {
-    it('should create a valid heatmap option', () => {
-        const data = [
-            { x: 'Mon', y: 'Morning', val: 5 },
-            { x: 'Mon', y: 'Evening', val: 10 },
-            { x: 'Tue', y: 'Morning', val: 2 },
-            { x: 'Tue', y: 'Evening', val: 20 },
-        ];
+describe(
+	'Heatmap Transformer',
+	() => {
+		it(
+			'should create a valid heatmap option',
+			() => {
+				const data = [
+					{ x: 'Mon',
+						y: 'Morning',
+						val: 5 },
+					{ x: 'Mon',
+						y: 'Evening',
+						val: 10 },
+					{ x: 'Tue',
+						y: 'Morning',
+						val: 2 },
+					{ x: 'Tue',
+						y: 'Evening',
+						val: 20 },
+				];
 
-        const option = transformDataToChartOption(data, 'x', 'y', 'heatmap', { valueProp: 'val' });
+				const option = transformDataToChartOption(
+					data,
+					'x',
+					'y',
+					'heatmap',
+					{ valueProp: 'val' },
+				);
 
-        expect(option).toBeDefined();
-        // Check X Axis
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-        const xAxis = option.xAxis as any;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(xAxis.type).toBe('category');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(xAxis.data).toContain('Mon');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(xAxis.data).toContain('Tue');
+				expect(option).toBeDefined();
+				// Check X Axis
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+				const xAxis = option.xAxis as any;
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				expect(xAxis.type).toBe('category');
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				expect(xAxis.data).toContain('Mon');
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				expect(xAxis.data).toContain('Tue');
 
-        // Check Y Axis
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-        const yAxis = option.yAxis as any;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(yAxis.type).toBe('category');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(yAxis.data).toContain('Morning');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(yAxis.data).toContain('Evening');
+				// Check Y Axis
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+				const yAxis = option.yAxis as any;
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				expect(yAxis.type).toBe('category');
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				expect(yAxis.data).toContain('Morning');
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				expect(yAxis.data).toContain('Evening');
 
-        // Check Series
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const series = option.series as readonly any[];
-        expect(series).toHaveLength(1);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(series[0]?.type).toBe('heatmap');
+				// Check Series
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				const series = option.series as readonly any[];
+				expect(series).toHaveLength(1);
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				expect(series[0]?.type).toBe('heatmap');
 
-        // Check Data Mapping
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(series[0].datasetIndex).toBe(0);
-        const dataset = option.dataset as readonly DatasetComponentOption[];
-        expect(dataset).toBeDefined();
+				// Check Data Mapping
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				expect(series[0].datasetIndex).toBe(0);
+				const dataset = option.dataset as readonly DatasetComponentOption[];
+				expect(dataset).toBeDefined();
 
-        const source = dataset[0]!.source as readonly HeatmapSourceItem[];
-        expect(source).toHaveLength(4);
-        expect(source[0]).toEqual({ x: 'Mon', y: 'Morning', value: 5 });
-    });
+				const source = dataset[0]!.source as readonly HeatmapSourceItem[];
+				expect(source).toHaveLength(4);
+				expect(source[0]).toEqual({ x: 'Mon',
+					y: 'Morning',
+					value: 5 });
+			},
+		);
 
-    it('should handle missing values gracefully', () => {
-        const data = [
-            { x: 'Mon', y: 'Morning', val: 5 },
-            { x: 'Mon', y: 'Evening' }, // Missing val
-        ];
+		it(
+			'should handle missing values gracefully',
+			() => {
+				const data = [
+					{ x: 'Mon',
+						y: 'Morning',
+						val: 5 },
+					{ x: 'Mon',
+						y: 'Evening' }, // Missing val
+				];
 
-        const option = transformDataToChartOption(data, 'x', 'y', 'heatmap', { valueProp: 'val' });
-        const dataset = option.dataset as readonly DatasetComponentOption[];
+				const option = transformDataToChartOption(
+					data,
+					'x',
+					'y',
+					'heatmap',
+					{ valueProp: 'val' },
+				);
+				const dataset = option.dataset as readonly DatasetComponentOption[];
 
-        const source = dataset[0]!.source as readonly HeatmapSourceItem[];
+				const source = dataset[0]!.source as readonly HeatmapSourceItem[];
 
-        // Should produce 0 for missing value based on current logic
-        const missingPoint = source.find(d => d.value === 0);
-        expect(missingPoint).toBeDefined();
-    });
+				// Should produce 0 for missing value based on current logic
+				const missingPoint = source.find(d => d.value === 0);
+				expect(missingPoint).toBeDefined();
+			},
+		);
 
-    it('should calculate visualMap min/max correctly', () => {
-        const data = [
-            { x: 'A', y: '1', val: 10 },
-            { x: 'B', y: '2', val: 100 },
-        ];
+		it(
+			'should calculate visualMap min/max correctly',
+			() => {
+				const data = [
+					{ x: 'A',
+						y: '1',
+						val: 10 },
+					{ x: 'B',
+						y: '2',
+						val: 100 },
+				];
 
-        const option = transformDataToChartOption(data, 'x', 'y', 'heatmap', { valueProp: 'val' });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-        const visualMap = option.visualMap as any;
+				const option = transformDataToChartOption(
+					data,
+					'x',
+					'y',
+					'heatmap',
+					{ valueProp: 'val' },
+				);
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+				const visualMap = option.visualMap as any;
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(visualMap.min).toBe(10);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(visualMap.max).toBe(100);
-    });
-});
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				expect(visualMap.min).toBe(10);
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				expect(visualMap.max).toBe(100);
+			},
+		);
+	},
+);
