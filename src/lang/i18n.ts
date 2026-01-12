@@ -1,28 +1,44 @@
-import { PLUGIN_ID } from '../constants';
-import en from './locale/en';
+import { moment } from 'obsidian';
+import * as i18next from 'i18next';
+import en from './locales/en.json';
 
-export function initTranslations(): void {
-    // Check if i18next is available (provided by Obsidian)
-    if (typeof i18next !== 'undefined') {
-        i18next.addResourceBundle('en', PLUGIN_ID, en);
+let isInitialized = false;
+
+// Get Obsidian language settings
+const getObsidianLanguage = (): string => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    return (moment as any).locale() as string || 'en';
+};
+
+// Define a function to initialize i18next
+export const initializeI18n = async () => {
+    if (!isInitialized) {
+        await i18next.init({
+            lng: getObsidianLanguage(),
+            fallbackLng: 'en',
+            returnEmptyString: false,
+            resources: {
+                en: { translation: en },
+            },
+            interpolation: {
+                escapeValue: false,
+            },
+        });
+
+        isInitialized = true;
     }
-}
+};
 
-export function t(key: string): string {
-    if (typeof i18next !== 'undefined') {
-        return i18next.t(key, { ns: PLUGIN_ID });
-    }
-    // Fallback for tests or if i18next is missing
-    return resolveKey(key, en);
-}
-
-function resolveKey(path: string, obj: Record<string, unknown>): string {
-    const result = path.split('.').reduce((prev: unknown, curr: string) => {
-        if (prev && typeof prev === 'object' && curr in prev) {
-            return (prev as Record<string, unknown>)[curr];
+export const i18n = new Proxy(i18next, {
+    get(target, prop) {
+        if (!isInitialized && prop === 't') {
+            throw new Error('i18n.t() called before initialization. Call initializeI18n() first.');
         }
-        return undefined;
-    }, obj);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return Reflect.get(target, prop) as any;
+    },
+});
 
-    return (typeof result === 'string' ? result : path);
+export function t(key: string, options?: Record<string, unknown>): string {
+    return i18n.t(key, options);
 }

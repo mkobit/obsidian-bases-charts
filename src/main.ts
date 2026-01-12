@@ -1,5 +1,5 @@
 import { Plugin } from 'obsidian';
-import { initTranslations, t } from './lang/i18n';
+import { initializeI18n, t } from './lang/i18n';
 import type { BarePluginSettings } from './settings';
 import { DEFAULT_SETTINGS, SettingTab } from './settings';
 import { BarChartView } from './views/bar-chart-view';
@@ -41,7 +41,7 @@ export default class BarePlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		initTranslations();
+		await initializeI18n();
 
 		this.registerBasesView(
 			'treemap-chart',
