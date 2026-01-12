@@ -202,6 +202,16 @@ export default tseslint.config(
              "@stylistic/no-mixed-spaces-and-tabs": "off" // Scripts might use mixed, can relax if issues arise
         }
     },
+    // Specific override for legacy script
+    {
+        files: ["scripts/generate.ts"],
+        rules: {
+             "@stylistic/indent": "off",
+             "@stylistic/function-call-argument-newline": "off",
+             "@stylistic/comma-dangle": "off",
+             "@stylistic/array-element-newline": "off"
+        }
+    },
 	globalIgnores([
 		"node_modules",
 		"dist",

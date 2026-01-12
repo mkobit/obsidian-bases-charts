@@ -19,7 +19,7 @@ export class PolarBarChartView extends BaseChartView {
 		const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
 		const yProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string;
 		const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY) as string;
-		const isStacked = this.config.get('stack') === 'true';
+		const isStacked = String(this.config.get('stack')) === 'true';
 
 		return transformDataToChartOption(
 			data,
