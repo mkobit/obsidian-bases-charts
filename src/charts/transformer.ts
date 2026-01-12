@@ -156,10 +156,17 @@ import type {
 import {
 	createPolarBarChartOption,
 } from './transformers/polar-bar';
+import type {
+	MapTransformerOptions,
+} from './transformers/map';
+import {
+	createMapChartOption,
+} from './transformers/map';
 import type {  ChartType , BasesData } from './transformers/base';
 
 export type ChartTransformerOptions =
     | CartesianTransformerOptions
+    | MapTransformerOptions
     | LinesTransformerOptions
     | PieTransformerOptions
     | ScatterTransformerOptions
@@ -375,6 +382,14 @@ const transformerMap: Record<
 		yProp,
 		asOptions(options),
 	),
+	map: (data, _, yProp, options) => {
+		const opts = asOptions<MapTransformerOptions>(options);
+		return createMapChartOption(
+			data,
+			opts.mapName,
+			opts,
+		);
+	},
 };
 
 /**
@@ -431,3 +446,4 @@ export { type BulletTransformerOptions } from './transformers/bullet';
 export { type RadialBarTransformerOptions } from './transformers/radial-bar';
 export { type PolarLineTransformerOptions } from './transformers/polar-line';
 export { type PolarBarTransformerOptions } from './transformers/polar-bar';
+export { type MapTransformerOptions } from './transformers/map';
