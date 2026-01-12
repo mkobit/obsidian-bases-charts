@@ -103,6 +103,10 @@ import {
     createPolarLineChartOption,
     PolarLineTransformerOptions
 } from './transformers/polar-line';
+import {
+    createPolarBarChartOption,
+    PolarBarTransformerOptions
+} from './transformers/polar-bar';
 import {  ChartType , BasesData } from './transformers/base';
 
 export type ChartTransformerOptions =
@@ -129,7 +133,8 @@ export type ChartTransformerOptions =
     | HistogramTransformerOptions
     | BulletTransformerOptions
     | RadialBarTransformerOptions
-    | PolarLineTransformerOptions;
+    | PolarLineTransformerOptions
+    | PolarBarTransformerOptions;
 
 // Helper to cast options
 function asOptions<T>(options: unknown): T {
@@ -172,6 +177,7 @@ const transformerMap: Record<
     bullet: (data, xProp, yProp, options) => createBulletChartOption(data, xProp, yProp, asOptions(options)),
     radialBar: (data, xProp, yProp, options) => createRadialBarChartOption(data, xProp, yProp, asOptions(options)),
     polarLine: (data, xProp, yProp, options) => createPolarLineChartOption(data, xProp, yProp, asOptions(options)),
+    polarBar: (data, xProp, yProp, options) => createPolarBarChartOption(data, xProp, yProp, asOptions(options)),
 };
 
 /**
@@ -216,3 +222,4 @@ export {type HistogramTransformerOptions} from './transformers/histogram';
 export {type BulletTransformerOptions} from './transformers/bullet';
 export {type RadialBarTransformerOptions} from './transformers/radial-bar';
 export {type PolarLineTransformerOptions} from './transformers/polar-line';
+export {type PolarBarTransformerOptions} from './transformers/polar-bar';
