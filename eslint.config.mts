@@ -3,6 +3,7 @@ import obsidianmd from "eslint-plugin-obsidianmd";
 import globals from "globals";
 import functional from "eslint-plugin-functional";
 import promise from "eslint-plugin-promise";
+import stylistic from "@stylistic/eslint-plugin";
 import { globalIgnores } from "eslint/config";
 
 export default tseslint.config(
@@ -43,7 +44,8 @@ export default tseslint.config(
 			obsidianmd,
 			functional,
 			promise,
-			"@typescript-eslint": tseslint.plugin
+			"@typescript-eslint": tseslint.plugin,
+            "@stylistic": stylistic
 		},
 		rules: {
 			...promise.configs.recommended.rules,
@@ -60,6 +62,34 @@ export default tseslint.config(
 			"@typescript-eslint/consistent-type-assertions": ["error", {
 				assertionStyle: "never"
 			}],
+            // Enforce separate type imports (User Request)
+            "@typescript-eslint/consistent-type-imports": ["error", {
+                "prefer": "type-imports",
+                "fixStyle": "separate-type-imports"
+            }],
+
+            // Stylistic Rules (User Request)
+            // Indentation (Tab based as per .editorconfig)
+            "@stylistic/indent": ["error", "tab"],
+            "@stylistic/no-mixed-spaces-and-tabs": "error",
+
+            // Trailing commas
+            "@stylistic/comma-dangle": ["error", "always-multiline"],
+            // Single arg per line (for call arguments)
+            "@stylistic/function-call-argument-newline": ["error", "always"],
+            // Single parameter per line (for function definitions)
+            "@stylistic/function-paren-newline": ["error", "multiline"],
+            // Single array element per line
+            "@stylistic/array-element-newline": ["error", "always"],
+            // Single object property per line
+            "@stylistic/object-property-newline": ["error", { "allowAllPropertiesOnSameLine": false }],
+             // Consistent object curly spacing
+            "@stylistic/object-curly-spacing": ["error", "always"],
+            // Quote style (usually desirable with stylistic)
+            "@stylistic/quotes": ["error", "single", { "avoidEscape": true }],
+            // Semi (implied by good style)
+            "@stylistic/semi": ["error", "always"],
+
 
             // Ensure strictness explicitly (reinforcing 'strict' config)
             "functional/no-let": "error",
@@ -164,7 +194,12 @@ export default tseslint.config(
             "functional/no-this-expressions": "off",
             "functional/prefer-immutable-types": "off",
             "functional/type-declaration-immutability": "off",
-            "functional/readonly-type": "off"
+            "functional/readonly-type": "off",
+            // Allow require in scripts
+             "@typescript-eslint/no-require-imports": "off",
+             // Relax stylistic indent for scripts if mixed content, but generally enforce tab
+             "@stylistic/indent": ["error", "tab"],
+             "@stylistic/no-mixed-spaces-and-tabs": "off" // Scripts might use mixed, can relax if issues arise
         }
     },
 	globalIgnores([

@@ -1,109 +1,156 @@
 import type { EChartsOption } from 'echarts';
 
-import {
-    createPieChartOption,
-    PieTransformerOptions
+import type {
+	PieTransformerOptions,
 } from './transformers/pie';
 import {
-    createFunnelChartOption
-} from './transformers/funnel';
+	createPieChartOption,
+} from './transformers/pie';
 import {
-    createRadarChartOption,
-    RadarTransformerOptions
+	createFunnelChartOption,
+} from './transformers/funnel';
+import type {
+	RadarTransformerOptions,
 } from './transformers/radar';
 import {
-    createGaugeChartOption,
-    GaugeTransformerOptions
+	createRadarChartOption,
+} from './transformers/radar';
+import type {
+	GaugeTransformerOptions,
 } from './transformers/gauge';
 import {
-    createScatterChartOption,
-    ScatterTransformerOptions
+	createGaugeChartOption,
+} from './transformers/gauge';
+import type {
+	ScatterTransformerOptions,
 } from './transformers/scatter';
 import {
-    createEffectScatterChartOption,
-    EffectScatterTransformerOptions
+	createScatterChartOption,
+} from './transformers/scatter';
+import type {
+	EffectScatterTransformerOptions,
 } from './transformers/effect-scatter';
 import {
-    createHeatmapChartOption,
-    HeatmapTransformerOptions
+	createEffectScatterChartOption,
+} from './transformers/effect-scatter';
+import type {
+	HeatmapTransformerOptions,
 } from './transformers/heatmap';
 import {
-    createCandlestickChartOption,
-    CandlestickTransformerOptions
+	createHeatmapChartOption,
+} from './transformers/heatmap';
+import type {
+	CandlestickTransformerOptions,
 } from './transformers/candlestick';
 import {
-    createTreemapChartOption,
-    TreemapTransformerOptions
+	createCandlestickChartOption,
+} from './transformers/candlestick';
+import type {
+	TreemapTransformerOptions,
 } from './transformers/treemap';
 import {
-    createBoxplotChartOption,
-    BoxplotTransformerOptions
+	createTreemapChartOption,
+} from './transformers/treemap';
+import type {
+	BoxplotTransformerOptions,
 } from './transformers/boxplot';
 import {
-    createSankeyChartOption,
-    SankeyTransformerOptions
+	createBoxplotChartOption,
+} from './transformers/boxplot';
+import type {
+	SankeyTransformerOptions,
 } from './transformers/sankey';
 import {
-    createGraphChartOption,
-    GraphTransformerOptions
+	createSankeyChartOption,
+} from './transformers/sankey';
+import type {
+	GraphTransformerOptions,
 } from './transformers/graph';
 import {
-    createSunburstChartOption,
-    createTreeChartOption,
-    SunburstTransformerOptions,
-} from './transformers/hierarchy';
+	createGraphChartOption,
+} from './transformers/graph';
+import type {
+	SunburstTransformerOptions } from './transformers/hierarchy';
 import {
-    createThemeRiverChartOption,
-    ThemeRiverTransformerOptions
+	createSunburstChartOption,
+	createTreeChartOption,
+} from './transformers/hierarchy';
+import type {
+	ThemeRiverTransformerOptions,
 } from './transformers/theme-river';
 import {
-    createCalendarChartOption,
-    CalendarTransformerOptions
+	createThemeRiverChartOption,
+} from './transformers/theme-river';
+import type {
+	CalendarTransformerOptions,
 } from './transformers/calendar';
 import {
-    createParallelChartOption,
-    ParallelTransformerOptions
+	createCalendarChartOption,
+} from './transformers/calendar';
+import type {
+	ParallelTransformerOptions,
 } from './transformers/parallel';
 import {
-    createCartesianChartOption,
-    CartesianTransformerOptions
+	createParallelChartOption,
+} from './transformers/parallel';
+import type {
+	CartesianTransformerOptions,
 } from './transformers/cartesian';
 import {
-    createLinesChartOption,
-    LinesTransformerOptions
+	createCartesianChartOption,
+} from './transformers/cartesian';
+import type {
+	LinesTransformerOptions,
 } from './transformers/lines';
 import {
-    createPictorialBarChartOption,
-    PictorialBarTransformerOptions
+	createLinesChartOption,
+} from './transformers/lines';
+import type {
+	PictorialBarTransformerOptions,
 } from './transformers/pictorial-bar';
 import {
-    createGanttChartOption,
-    GanttTransformerOptions
+	createPictorialBarChartOption,
+} from './transformers/pictorial-bar';
+import type {
+	GanttTransformerOptions,
 } from './transformers/gantt';
 import {
-    createWaterfallChartOption
-} from './transformers/waterfall';
+	createGanttChartOption,
+} from './transformers/gantt';
 import {
-    createParetoChartOption,
-    ParetoTransformerOptions
+	createWaterfallChartOption,
+} from './transformers/waterfall';
+import type {
+	ParetoTransformerOptions,
 } from './transformers/pareto';
 import {
-    createHistogramChartOption,
-    HistogramTransformerOptions
+	createParetoChartOption,
+} from './transformers/pareto';
+import type {
+	HistogramTransformerOptions,
 } from './transformers/histogram';
 import {
-    createBulletChartOption,
-    BulletTransformerOptions
+	createHistogramChartOption,
+} from './transformers/histogram';
+import type {
+	BulletTransformerOptions,
 } from './transformers/bullet';
 import {
-    createRadialBarChartOption,
-    RadialBarTransformerOptions
+	createBulletChartOption,
+} from './transformers/bullet';
+import type {
+	RadialBarTransformerOptions,
 } from './transformers/radial-bar';
 import {
-    createPolarLineChartOption,
-    PolarLineTransformerOptions
+	createRadialBarChartOption,
+} from './transformers/radial-bar';
+import type {
+	PolarLineTransformerOptions,
 } from './transformers/polar-line';
-import {  ChartType , BasesData } from './transformers/base';
+import {
+	createPolarLineChartOption,
+} from './transformers/polar-line';
+import type {  ChartType , BasesData } from './transformers/base';
 
 export type ChartTransformerOptions =
     | CartesianTransformerOptions
@@ -133,86 +180,240 @@ export type ChartTransformerOptions =
 
 // Helper to cast options
 function asOptions<T>(options: unknown): T {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
-    return options as any;
+	// eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+	return options as any;
 }
 
 // Map of chart types to their transformer functions
 const transformerMap: Record<
-    string,
-    (data: BasesData, xProp: string, yProp: string, options: unknown) => EChartsOption
+	string,
+	(data: BasesData, xProp: string, yProp: string, options: unknown) => EChartsOption
 > = {
-    bar: (data, xProp, yProp, options) => createCartesianChartOption(data, xProp, yProp, 'bar', asOptions(options)),
-    line: (data, xProp, yProp, options) => createCartesianChartOption(data, xProp, yProp, 'line', asOptions(options)),
-    lines: (data, xProp, yProp, options) => createLinesChartOption(data, xProp, yProp, asOptions(options)),
-    pie: (data, xProp, yProp, options) => createPieChartOption(data, xProp, yProp, asOptions(options)),
-    rose: (data, xProp, yProp, options) => createPieChartOption(data, xProp, yProp, { ...(asOptions<PieTransformerOptions>(options)), roseType: 'area' }),
-    funnel: (data, xProp, yProp, options) => createFunnelChartOption(data, xProp, yProp, asOptions(options)),
-    radar: (data, xProp, yProp, options) => createRadarChartOption(data, xProp, yProp, asOptions(options)),
-    gauge: (data, _, yProp, options) => createGaugeChartOption(data, yProp, asOptions(options)),
-    bubble: (data, xProp, yProp, options) => createScatterChartOption(data, xProp, yProp, asOptions(options)),
-    scatter: (data, xProp, yProp, options) => createScatterChartOption(data, xProp, yProp, asOptions(options)),
-    effectScatter: (data, xProp, yProp, options) => createEffectScatterChartOption(data, xProp, yProp, asOptions(options)),
-    heatmap: (data, xProp, yProp, options) => createHeatmapChartOption(data, xProp, yProp, asOptions(options)),
-    candlestick: (data, xProp, _, options) => createCandlestickChartOption(data, xProp, asOptions(options)),
-    treemap: (data, xProp, yProp, options) => createTreemapChartOption(data, xProp, yProp, asOptions(options)),
-    boxplot: (data, xProp, yProp, options) => createBoxplotChartOption(data, xProp, yProp, asOptions(options)),
-    sankey: (data, xProp, yProp, options) => createSankeyChartOption(data, xProp, yProp, asOptions(options)),
-    graph: (data, xProp, yProp, options) => createGraphChartOption(data, xProp, yProp, asOptions(options)),
-    sunburst: (data, xProp, _, options) => createSunburstChartOption(data, xProp, asOptions(options)),
-    tree: (data, xProp, _, options) => createTreeChartOption(data, xProp, asOptions(options)),
-    themeRiver: (data, xProp, _, options) => createThemeRiverChartOption(data, xProp, asOptions(options)),
-    calendar: (data, xProp, _, options) => createCalendarChartOption(data, xProp, asOptions(options)),
-    parallel: (data, xProp, _, options) => createParallelChartOption(data, xProp, asOptions(options)),
-    pictorialBar: (data, xProp, yProp, options) => createPictorialBarChartOption(data, xProp, yProp, asOptions(options)),
-    gantt: (data, _, __, options) => createGanttChartOption(data, asOptions(options)),
-    waterfall: (data, xProp, yProp, options) => createWaterfallChartOption(data, xProp, yProp, asOptions(options)),
-    pareto: (data, xProp, yProp, options) => createParetoChartOption(data, xProp, yProp, asOptions(options)),
-    histogram: (data, _, yProp, options) => createHistogramChartOption(data, yProp, asOptions(options)),
-    bullet: (data, xProp, yProp, options) => createBulletChartOption(data, xProp, yProp, asOptions(options)),
-    radialBar: (data, xProp, yProp, options) => createRadialBarChartOption(data, xProp, yProp, asOptions(options)),
-    polarLine: (data, xProp, yProp, options) => createPolarLineChartOption(data, xProp, yProp, asOptions(options)),
+	bar: (data, xProp, yProp, options) => createCartesianChartOption(
+		data,
+		xProp,
+		yProp,
+		'bar',
+		asOptions(options),
+	),
+	line: (data, xProp, yProp, options) => createCartesianChartOption(
+		data,
+		xProp,
+		yProp,
+		'line',
+		asOptions(options),
+	),
+	lines: (data, xProp, yProp, options) => createLinesChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	pie: (data, xProp, yProp, options) => createPieChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	rose: (data, xProp, yProp, options) => createPieChartOption(
+		data,
+		xProp,
+		yProp,
+		{ ...(asOptions<PieTransformerOptions>(options)),
+			roseType: 'area' },
+	),
+	funnel: (data, xProp, yProp, options) => createFunnelChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	radar: (data, xProp, yProp, options) => createRadarChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	gauge: (data, _, yProp, options) => createGaugeChartOption(
+		data,
+		yProp,
+		asOptions(options),
+	),
+	bubble: (data, xProp, yProp, options) => createScatterChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	scatter: (data, xProp, yProp, options) => createScatterChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	effectScatter: (data, xProp, yProp, options) => createEffectScatterChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	heatmap: (data, xProp, yProp, options) => createHeatmapChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	candlestick: (data, xProp, _, options) => createCandlestickChartOption(
+		data,
+		xProp,
+		asOptions(options),
+	),
+	treemap: (data, xProp, yProp, options) => createTreemapChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	boxplot: (data, xProp, yProp, options) => createBoxplotChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	sankey: (data, xProp, yProp, options) => createSankeyChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	graph: (data, xProp, yProp, options) => createGraphChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	sunburst: (data, xProp, _, options) => createSunburstChartOption(
+		data,
+		xProp,
+		asOptions(options),
+	),
+	tree: (data, xProp, _, options) => createTreeChartOption(
+		data,
+		xProp,
+		asOptions(options),
+	),
+	themeRiver: (data, xProp, _, options) => createThemeRiverChartOption(
+		data,
+		xProp,
+		asOptions(options),
+	),
+	calendar: (data, xProp, _, options) => createCalendarChartOption(
+		data,
+		xProp,
+		asOptions(options),
+	),
+	parallel: (data, xProp, _, options) => createParallelChartOption(
+		data,
+		xProp,
+		asOptions(options),
+	),
+	pictorialBar: (data, xProp, yProp, options) => createPictorialBarChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	gantt: (data, _, __, options) => createGanttChartOption(
+		data,
+		asOptions(options),
+	),
+	waterfall: (data, xProp, yProp, options) => createWaterfallChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	pareto: (data, xProp, yProp, options) => createParetoChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	histogram: (data, _, yProp, options) => createHistogramChartOption(
+		data,
+		yProp,
+		asOptions(options),
+	),
+	bullet: (data, xProp, yProp, options) => createBulletChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	radialBar: (data, xProp, yProp, options) => createRadialBarChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
+	polarLine: (data, xProp, yProp, options) => createPolarLineChartOption(
+		data,
+		xProp,
+		yProp,
+		asOptions(options),
+	),
 };
 
 /**
  * Transforms Bases data into an ECharts option object.
  */
 export function transformDataToChartOption(
-    data: BasesData,
-    xProp: string,
-    yProp: string,
-    chartType: ChartType = 'bar',
-    options?: ChartTransformerOptions
+	data: BasesData,
+	xProp: string,
+	yProp: string,
+	chartType: ChartType = 'bar',
+	options?: ChartTransformerOptions,
 ): EChartsOption {
-    const transformer = transformerMap[chartType];
+	const transformer = transformerMap[chartType];
 
-    return transformer
-        ? transformer(data, xProp, yProp, options)
-        : createCartesianChartOption(data, xProp, yProp, 'bar', asOptions(options));
+	return transformer
+		? transformer(
+			data,
+			xProp,
+			yProp,
+			options,
+		)
+		: createCartesianChartOption(
+			data,
+			xProp,
+			yProp,
+			'bar',
+			asOptions(options),
+		);
 }
 
 export { type ChartType, type BaseTransformerOptions, type BasesData } from './transformers/base';
-export {type CartesianTransformerOptions} from './transformers/cartesian';
-export {type LinesTransformerOptions} from './transformers/lines';
-export {type PieTransformerOptions} from './transformers/pie';
-export {type ScatterTransformerOptions} from './transformers/scatter';
-export {type EffectScatterTransformerOptions} from './transformers/effect-scatter';
-export {type RadarTransformerOptions} from './transformers/radar';
-export {type GaugeTransformerOptions} from './transformers/gauge';
-export {type HeatmapTransformerOptions} from './transformers/heatmap';
-export {type CandlestickTransformerOptions} from './transformers/candlestick';
-export {type TreemapTransformerOptions} from './transformers/treemap';
-export {type BoxplotTransformerOptions} from './transformers/boxplot';
-export {type SankeyTransformerOptions} from './transformers/sankey';
-export {type GraphTransformerOptions} from './transformers/graph';
-export {type SunburstTransformerOptions, type TreeTransformerOptions} from './transformers/hierarchy';
-export {type ThemeRiverTransformerOptions} from './transformers/theme-river';
-export {type CalendarTransformerOptions} from './transformers/calendar';
-export {type ParallelTransformerOptions} from './transformers/parallel';
-export {type GanttTransformerOptions} from './transformers/gantt';
-export {type WaterfallTransformerOptions} from './transformers/waterfall';
-export {type ParetoTransformerOptions} from './transformers/pareto';
-export {type HistogramTransformerOptions} from './transformers/histogram';
-export {type BulletTransformerOptions} from './transformers/bullet';
-export {type RadialBarTransformerOptions} from './transformers/radial-bar';
-export {type PolarLineTransformerOptions} from './transformers/polar-line';
+export { type CartesianTransformerOptions } from './transformers/cartesian';
+export { type LinesTransformerOptions } from './transformers/lines';
+export { type PieTransformerOptions } from './transformers/pie';
+export { type ScatterTransformerOptions } from './transformers/scatter';
+export { type EffectScatterTransformerOptions } from './transformers/effect-scatter';
+export { type RadarTransformerOptions } from './transformers/radar';
+export { type GaugeTransformerOptions } from './transformers/gauge';
+export { type HeatmapTransformerOptions } from './transformers/heatmap';
+export { type CandlestickTransformerOptions } from './transformers/candlestick';
+export { type TreemapTransformerOptions } from './transformers/treemap';
+export { type BoxplotTransformerOptions } from './transformers/boxplot';
+export { type SankeyTransformerOptions } from './transformers/sankey';
+export { type GraphTransformerOptions } from './transformers/graph';
+export { type SunburstTransformerOptions, type TreeTransformerOptions } from './transformers/hierarchy';
+export { type ThemeRiverTransformerOptions } from './transformers/theme-river';
+export { type CalendarTransformerOptions } from './transformers/calendar';
+export { type ParallelTransformerOptions } from './transformers/parallel';
+export { type GanttTransformerOptions } from './transformers/gantt';
+export { type WaterfallTransformerOptions } from './transformers/waterfall';
+export { type ParetoTransformerOptions } from './transformers/pareto';
+export { type HistogramTransformerOptions } from './transformers/histogram';
+export { type BulletTransformerOptions } from './transformers/bullet';
+export { type RadialBarTransformerOptions } from './transformers/radial-bar';
+export { type PolarLineTransformerOptions } from './transformers/polar-line';
