@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import { Command, InvalidArgumentError } from 'commander';
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import { generateCommandString, getDeterministicSample } from './generators/utils';
@@ -9,31 +9,34 @@ import { scatterChartArbitrary } from './generators/scatter';
 
 const program = new Command();
 
+function parseInteger(value: string) {
+	const parsedValue = parseInt(
+		value,
+		10,
+	);
+	if (isNaN(parsedValue)) {
+		// eslint-disable-next-line functional/no-throw-statements
+		throw new InvalidArgumentError('Not a number.');
+	}
+	return parsedValue;
+}
+
 program
 	.name('generate')
 	.description('Generate chart examples')
 	.option(
 		'-s, --seed <seed>',
 		'Seed for random generation',
+		parseInteger,
 	)
 	.option(
 		'--skip-confirm',
 		'Skip confirmation prompt',
 		false,
 	)
-	.action(async (options: { seed?: string;
+	.action(async (options: { seed?: number;
 		skipConfirm: boolean }) => {
-		const seed = options.seed
-			? parseInt(
-				options.seed,
-				10,
-			)
-			: Date.now();
-
-		if (Number.isNaN(seed)) {
-			console.error('Invalid seed provided. Must be an integer.');
-			process.exit(1);
-		}
+		const seed = options.seed ?? Date.now();
 
 		const commandString = generateCommandString(seed);
 

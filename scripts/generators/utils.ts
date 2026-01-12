@@ -1,12 +1,6 @@
 import type { Temporal } from 'temporal-polyfill';
 import * as fc from 'fast-check';
 
-export type ChartGeneratorResult = {
-	type: string;
-	data: Record<string, unknown> | unknown[];
-	config?: Record<string, unknown>;
-};
-
 /**
  * Generates the command string that reproduces this generation.
  */
