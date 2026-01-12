@@ -6,8 +6,8 @@ import * as R from 'remeda';
  * Interface representing a simple data point (x, y).
  */
 export interface XYPoint {
-    readonly x: number;
-    readonly y: number;
+	readonly x: number;
+	readonly y: number;
 }
 
 /**
@@ -15,8 +15,8 @@ export interface XYPoint {
  * Using Temporal.PlainDate or ZonedDateTime for date.
  */
 export interface TimePoint {
-    readonly date: Temporal.PlainDate | Temporal.ZonedDateTime;
-    readonly value: number;
+	readonly date: Temporal.PlainDate | Temporal.ZonedDateTime;
+	readonly value: number;
 }
 
 /**
@@ -32,36 +32,40 @@ export type ChartDataset<T> = readonly T[];
  * Arbitrary for a generic chart data point with specific keys.
  */
 export function chartDataPointArbitrary(keys: readonly string[]): fc.Arbitrary<ChartDataPoint> {
-    const pairs = keys.map(key => [
-        key,
-        fc.oneof(
-            fc.integer(),
-            fc.float(),
-            fc.string(),
-            fc.constant(null)
-        )
-    ] as readonly [string, fc.Arbitrary<unknown>]);
+	const pairs = keys.map(key => [
+		key,
+		fc.oneof(
+			fc.integer(),
+			fc.float(),
+			fc.string(),
+			fc.constant(null),
+		),
+	] as readonly [string, fc.Arbitrary<unknown>]);
 
-    const keyArbs = Object.fromEntries(pairs);
-    return fc.record(keyArbs);
+	const keyArbs = Object.fromEntries(pairs);
+	return fc.record(keyArbs);
 }
 
 /**
  * Arbitrary for a dataset (array of points).
  */
 export function chartDatasetArbitrary<T>(
-    pointArbitrary: fc.Arbitrary<T> | readonly string[],
-    minLength = 0,
-    maxLength = 20
+	pointArbitrary: fc.Arbitrary<T> | readonly string[],
+	minLength = 0,
+	maxLength = 20,
 ): fc.Arbitrary<ChartDataset<T>> {
-    // Array.isArray(readonly array) is strict in TS, but runtime works.
-    // Casting pointArbitrary to any[] or readonly string[] for the check is tricky if generics involved.
-    // But Array.isArray(pointArbitrary) acts as type guard if T matches.
-    const arb = (Array.isArray(pointArbitrary) || Object.prototype.toString.call(pointArbitrary) === '[object Array]')
-        ? chartDataPointArbitrary(pointArbitrary as readonly string[]) as unknown as fc.Arbitrary<T>
-        : pointArbitrary as fc.Arbitrary<T>;
+	// Array.isArray(readonly array) is strict in TS, but runtime works.
+	// Casting pointArbitrary to any[] or readonly string[] for the check is tricky if generics involved.
+	// But Array.isArray(pointArbitrary) acts as type guard if T matches.
+	const arb = (Array.isArray(pointArbitrary) || Object.prototype.toString.call(pointArbitrary) === '[object Array]')
+		? chartDataPointArbitrary(pointArbitrary as readonly string[]) as unknown as fc.Arbitrary<T>
+		: pointArbitrary as fc.Arbitrary<T>;
 
-    return fc.array(arb, { minLength, maxLength });
+	return fc.array(
+		arb,
+		{ minLength,
+			maxLength },
+	);
 }
 
 /**
@@ -70,26 +74,31 @@ export function chartDatasetArbitrary<T>(
  */
 
 export function timeSeriesArbitrary(): fc.Arbitrary<ChartDataset<TimePoint>> {
-    return fc.array(
-        fc.record({
-            // Generate Temporal ZonedDateTime safely from JS Date
-            // Restrict range to avoid extreme dates, though Instant should handle most.
-            // Using 1970-2099 covers typical use cases.
-            // Ensure no NaN dates are passed by filtering valid timestamps if necessary
-            date: fc.date({ min: new Date('1970-01-01T00:00:00.000Z'), max: new Date('2099-12-31T23:59:59.999Z') })
-                .map(d => {
-                    const time = d.getTime();
-                    // Fallback to epoch if somehow invalid (should not happen with fc.date constraints but safe for Temporal)
-                    const safeTime = Number.isNaN(time) ? 0 : time;
-                    return Temporal.Instant.fromEpochMilliseconds(safeTime).toZonedDateTimeISO('UTC');
-                }),
-            value: fc.float()
-        }),
-        { minLength: 1, maxLength: 50 }
-    ).map(data => {
-        // Sort safely using Remeda (non-mutating)
-        return R.sortBy(data, (item) => item.date.epochNanoseconds);
-    });
+	return fc.array(
+		fc.record({
+			// Generate Temporal ZonedDateTime safely from JS Date
+			// Restrict range to avoid extreme dates, though Instant should handle most.
+			// Using 1970-2099 covers typical use cases.
+			// Ensure no NaN dates are passed by filtering valid timestamps if necessary
+			date: fc.date({ min: new Date('1970-01-01T00:00:00.000Z'),
+				max: new Date('2099-12-31T23:59:59.999Z') })
+				.map(d => {
+					const time = d.getTime();
+					// Fallback to epoch if somehow invalid (should not happen with fc.date constraints but safe for Temporal)
+					const safeTime = Number.isNaN(time) ? 0 : time;
+					return Temporal.Instant.fromEpochMilliseconds(safeTime).toZonedDateTimeISO('UTC');
+				}),
+			value: fc.float(),
+		}),
+		{ minLength: 1,
+			maxLength: 50 },
+	).map(data => {
+		// Sort safely using Remeda (non-mutating)
+		return R.sortBy(
+			data,
+			(item) => item.date.epochNanoseconds,
+		);
+	});
 }
 
 // --- Fixed Generators (Deterministic) ---
@@ -98,50 +107,59 @@ export function timeSeriesArbitrary(): fc.Arbitrary<ChartDataset<TimePoint>> {
  * Creates a simple linear dataset.
  */
 export function generateLinearData(
-    count = 10,
-    slope = 1,
-    intercept = 0
+	count = 10,
+	slope = 1,
+	intercept = 0,
 ): ChartDataset<XYPoint> {
-    return Array.from({ length: count }, (_, i) => ({
-        x: i,
-        y: i * slope + intercept
-    }));
+	return Array.from(
+		{ length: count },
+		(_, i) => ({
+			x: i,
+			y: i * slope + intercept,
+		}),
+	);
 }
 
 /**
  * Creates a sine wave dataset.
  */
 export function generateSineData(
-    count = 50,
-    frequency = 0.1,
-    amplitude = 10
+	count = 50,
+	frequency = 0.1,
+	amplitude = 10,
 ): ChartDataset<XYPoint> {
-    return Array.from({ length: count }, (_, i) => ({
-        x: i,
-        y: Math.sin(i * frequency) * amplitude
-    }));
+	return Array.from(
+		{ length: count },
+		(_, i) => ({
+			x: i,
+			y: Math.sin(i * frequency) * amplitude,
+		}),
+	);
 }
 
 /**
  * Creates a time series with daily increments using Temporal.
  */
 export function generateDailyTimeSeries(
-    count = 10,
-    startDateStr = '2023-01-01',
-    startValue = 100,
-    volatility = 5
+	count = 10,
+	startDateStr = '2023-01-01',
+	startValue = 100,
+	volatility = 5,
 ): ChartDataset<TimePoint> {
-    const startDate = Temporal.PlainDate.from(startDateStr);
+	const startDate = Temporal.PlainDate.from(startDateStr);
 
-    return R.range(0, count).map(i => {
-        const date = startDate.add({ days: i });
-        // Create deterministic pseudo-random value based on index
-        const change = Math.sin(i * 1337) * volatility;
-        const value = startValue + change;
+	return R.range(
+		0,
+		count,
+	).map(i => {
+		const date = startDate.add({ days: i });
+		// Create deterministic pseudo-random value based on index
+		const change = Math.sin(i * 1337) * volatility;
+		const value = startValue + change;
 
-        return {
-            date,
-            value: Number(value.toFixed(2))
-        };
-    });
+		return {
+			date,
+			value: Number(value.toFixed(2)),
+		};
+	});
 }

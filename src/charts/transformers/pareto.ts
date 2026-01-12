@@ -9,137 +9,155 @@ export interface ParetoTransformerOptions extends BaseTransformerOptions {}
 type EChartsValue = string | number | Date | null | undefined;
 
 export function createParetoChartOption(
-    data: BasesData,
-    xProp: string,
-    yProp: string,
-    options?: ParetoTransformerOptions
+	data: BasesData,
+	xProp: string,
+	yProp: string,
+	options?: ParetoTransformerOptions,
 ): EChartsOption {
-    const xAxisLabel = options?.xAxisLabel ?? xProp;
-    const yAxisLabel = options?.yAxisLabel ?? yProp;
-    const xAxisRotate = options?.xAxisLabelRotate ?? 0;
+	const xAxisLabel = options?.xAxisLabel ?? xProp;
+	const yAxisLabel = options?.yAxisLabel ?? yProp;
+	const xAxisRotate = options?.xAxisLabelRotate ?? 0;
 
-    // 1. Normalize and Sort Data
-    const normalizedData = R.pipe(
-        data,
-        R.map((item) => ({
-            name: safeToString(getNestedValue(item, xProp)),
-            value: Number(getNestedValue(item, yProp))
-        })),
-        // Filter out invalid values
-        R.filter(item => !Number.isNaN(item.value)),
-        // Sort descending by value
-        R.sortBy([(item) => item.value, 'desc'])
-    );
+	// 1. Normalize and Sort Data
+	const normalizedData = R.pipe(
+		data,
+		R.map((item) => ({
+			name: safeToString(getNestedValue(
+				item,
+				xProp,
+			)),
+			value: Number(getNestedValue(
+				item,
+				yProp,
+			)),
+		})),
+		// Filter out invalid values
+		R.filter(item => !Number.isNaN(item.value)),
+		// Sort descending by value
+		R.sortBy([(item) => item.value,
+			'desc']),
+	);
 
-    // 2. Calculate Total for Cumulative Percentage
-    const totalValue = R.sumBy(normalizedData, item => item.value);
+	// 2. Calculate Total for Cumulative Percentage
+	const totalValue = R.sumBy(
+		normalizedData,
+		item => item.value,
+	);
 
-    // 3. Calculate Cumulative Percentage
-    interface ParetoAccumulator {
-        readonly sum: number;
-        readonly result: ReadonlyArray<{
-            readonly name: string;
-            readonly value: number;
-            readonly cumulative: number;
-        }>;
-    }
+	// 3. Calculate Cumulative Percentage
+	interface ParetoAccumulator {
+		readonly sum: number;
+		readonly result: ReadonlyArray<{
+			readonly name: string;
+			readonly value: number;
+			readonly cumulative: number;
+		}>;
+	}
 
-    const initialAcc: ParetoAccumulator = { sum: 0, result: [] };
+	const initialAcc: ParetoAccumulator = { sum: 0,
+		result: [] };
 
-    // Using reduce to build the final dataset with cumulative values
-    const finalData = R.pipe(
-        normalizedData,
-        R.reduce((acc: ParetoAccumulator, item) => {
-            const currentSum = acc.sum + item.value;
-            const cumulativePercentage = totalValue === 0 ? 0 : (currentSum / totalValue) * 100;
-            return {
-                sum: currentSum,
-                result: [...acc.result, {
-                    name: item.name,
-                    value: item.value,
-                    cumulative: cumulativePercentage
-                }]
-            };
-        }, initialAcc),
-        x => x.result
-    );
+	// Using reduce to build the final dataset with cumulative values
+	const finalData = R.pipe(
+		normalizedData,
+		R.reduce(
+			(acc: ParetoAccumulator, item) => {
+				const currentSum = acc.sum + item.value;
+				const cumulativePercentage = totalValue === 0 ? 0 : (currentSum / totalValue) * 100;
+				return {
+					sum: currentSum,
+					result: [...acc.result,
+						{
+							name: item.name,
+							value: item.value,
+							cumulative: cumulativePercentage,
+						}],
+				};
+			},
+			initialAcc,
+		),
+		x => x.result,
+	);
 
-    const barSeries: BarSeriesOption = {
-        name: yAxisLabel,
-        type: 'bar',
-        yAxisIndex: 0, // Left Axis
-        encode: { x: 'name', y: 'value' }
-    };
+	const barSeries: BarSeriesOption = {
+		name: yAxisLabel,
+		type: 'bar',
+		yAxisIndex: 0, // Left Axis
+		encode: { x: 'name',
+			y: 'value' },
+	};
 
-    const lineSeries: LineSeriesOption = {
-        name: 'Cumulative %',
-        type: 'line',
-        yAxisIndex: 1, // Right Axis
-        symbol: 'circle',
-        symbolSize: 6,
-        encode: { x: 'name', y: 'cumulative' },
-        tooltip: {
-            valueFormatter: (value: EChartsValue | EChartsValue[]) => {
-                const v = Array.isArray(value) ? value[0] : value;
-                return (typeof v === 'number' ? v.toFixed(1) : String(v)) + ' %';
-            }
-        }
-    };
+	const lineSeries: LineSeriesOption = {
+		name: 'Cumulative %',
+		type: 'line',
+		yAxisIndex: 1, // Right Axis
+		symbol: 'circle',
+		symbolSize: 6,
+		encode: { x: 'name',
+			y: 'cumulative' },
+		tooltip: {
+			valueFormatter: (value: EChartsValue | EChartsValue[]) => {
+				const v = Array.isArray(value) ? value[0] : value;
+				return (typeof v === 'number' ? v.toFixed(1) : String(v)) + ' %';
+			},
+		},
+	};
 
-    // 4. Construct ECharts Option
-    const chartOption: EChartsOption = {
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'cross'
-            }
-        },
-        grid: {
-            containLabel: true
-        },
-        xAxis: {
-            type: 'category',
-            name: xAxisLabel,
-            axisLabel: {
-                interval: 0,
-                rotate: xAxisRotate
-            }
-        },
-        yAxis: [
-            {
-                type: 'value',
-                name: yAxisLabel,
-                position: 'left',
-                alignTicks: true,
-                axisLine: {
-                    show: true,
-                },
-                axisLabel: {
-                    formatter: '{value}'
-                }
-            },
-            {
-                type: 'value',
-                name: 'Cumulative %',
-                min: 0,
-                max: 100,
-                position: 'right',
-                alignTicks: true,
-                axisLine: {
-                    show: true,
-                },
-                axisLabel: {
-                    formatter: '{value} %'
-                }
-            }
-        ],
-        dataset: {
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-            source: finalData as any
-        },
-        series: [barSeries, lineSeries],
-        ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {})
-    };
+	// 4. Construct ECharts Option
+	const chartOption: EChartsOption = {
+		tooltip: {
+			trigger: 'axis',
+			axisPointer: {
+				type: 'cross',
+			},
+		},
+		grid: {
+			containLabel: true,
+		},
+		xAxis: {
+			type: 'category',
+			name: xAxisLabel,
+			axisLabel: {
+				interval: 0,
+				rotate: xAxisRotate,
+			},
+		},
+		yAxis: [
+			{
+				type: 'value',
+				name: yAxisLabel,
+				position: 'left',
+				alignTicks: true,
+				axisLine: {
+					show: true,
+				},
+				axisLabel: {
+					formatter: '{value}',
+				},
+			},
+			{
+				type: 'value',
+				name: 'Cumulative %',
+				min: 0,
+				max: 100,
+				position: 'right',
+				alignTicks: true,
+				axisLine: {
+					show: true,
+				},
+				axisLabel: {
+					formatter: '{value} %',
+				},
+			},
+		],
+		dataset: {
+			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+			source: finalData as any,
+		},
+		series: [barSeries,
+			lineSeries],
+		...(getLegendOption(options) ? { legend: getLegendOption(options) } : {}),
+	};
 
-    return chartOption;
+	return chartOption;
 }
