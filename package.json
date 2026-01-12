@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-bases-charts",
 	"version": "1.0.0",
-	"description": "Integration of Apache ECharts into Obsidian via the Bases API.",
+	"description": "Advanced visualization for Obsidian via the Bases API.",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {
