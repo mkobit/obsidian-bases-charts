@@ -34,6 +34,7 @@ import { BulletChartView } from './views/bullet-chart-view';
 import { RadialBarChartView } from './views/radial-bar-chart-view';
 import { PolarLineChartView } from './views/polar-line-chart-view';
 import { PolarBarChartView } from './views/polar-bar-chart-view';
+import { MapChartView } from './views/map-chart-view';
 
 export default class BarePlugin extends Plugin {
 	public settings: BarePluginSettings = DEFAULT_SETTINGS;
@@ -501,6 +502,20 @@ export default class BarePlugin extends Plugin {
 					this,
 				),
 				options: (_?: unknown) => PolarBarChartView.getViewOptions(),
+			},
+		);
+
+		this.registerBasesView(
+			'map-chart',
+			{
+				name: 'Map Chart',
+				icon: 'map',
+				factory: (controller, containerEl) => new MapChartView(
+					controller,
+					containerEl,
+					this,
+				),
+				options: (_?: unknown) => MapChartView.getViewOptions(),
 			},
 		);
 

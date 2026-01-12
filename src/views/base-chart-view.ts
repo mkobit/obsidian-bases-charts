@@ -111,7 +111,7 @@ export abstract class BaseChartView extends BasesView {
 		!this.chartEl ? undefined : this.executeRender();
 	}
 
-	private executeRender(_?: unknown): void {
+	protected executeRender(_?: unknown): void {
 		const height = (this.config.get(BaseChartView.HEIGHT_KEY) as string) || this.plugin.settings.defaultHeight;
 		this.chartEl.style.height = height;
 
