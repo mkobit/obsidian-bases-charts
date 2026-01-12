@@ -47,12 +47,13 @@ export class MapChartView extends BaseChartView {
 				}
 
 				const content = await adapter.read(mapFile);
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				const geoJson = JSON.parse(content);
 
 				echarts.registerMap(
 					mapFile,
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
-					geoJson as any,
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+					geoJson,
 				);
 				this.registeredMapName = mapFile;
 				this.executeRender();

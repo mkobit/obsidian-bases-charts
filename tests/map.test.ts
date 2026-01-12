@@ -4,116 +4,133 @@ import type { MapTransformerOptions } from '../src/charts/transformers/map';
 import type { BasesData } from '../src/charts/transformers/base';
 import type { MapSeriesOption } from 'echarts';
 
-describe('Map Chart Transformer', () => {
-	const data: BasesData = [
-		{ Country: 'USA',
-			Population: 330,
-			Unrelated: 'foo' },
-		{ Country: 'Canada',
-			Population: 38 },
-		{ Country: 'Mexico',
-			Population: 126 },
-		{ Country: '',
-			Population: 0 }, // Should be filtered out
-	];
-
-	const mapName = 'world';
-
-	it('should create basic map chart options', () => {
-		const options: MapTransformerOptions = {
-			mapName: mapName,
-			regionProp: 'Country',
-			valueProp: 'Population',
-		};
-
-		const result = createMapChartOption(
-			data,
-			mapName,
-			options,
-		);
-
-		expect(result.series).toBeDefined();
-		const series = result.series as MapSeriesOption[];
-		expect(series).toHaveLength(1);
-		expect(series[0]!.type).toBe('map');
-		expect(series[0]!.map).toBe(mapName);
-
-		const mapData = series[0]!.data as { name: string; value: number }[];
-		expect(mapData).toHaveLength(3);
-		expect(mapData).toContainEqual({ name: 'USA',
-			value: 330 });
-		expect(mapData).toContainEqual({ name: 'Canada',
-			value: 38 });
-		expect(mapData).toContainEqual({ name: 'Mexico',
-			value: 126 });
-	});
-
-	it('should handle visual map configuration', () => {
-		const options: MapTransformerOptions = {
-			mapName: mapName,
-			regionProp: 'Country',
-			valueProp: 'Population',
-			visualMapMin: 0,
-			visualMapMax: 500,
-			visualMapColor: ['#ff0000',
-				'#0000ff'],
-		};
-
-		const result = createMapChartOption(
-			data,
-			mapName,
-			options,
-		);
-
-		expect(result.visualMap).toBeDefined();
-		expect(result.visualMap).toMatchObject({
-			min: 0,
-			max: 500,
-			inRange: {
-				color: ['#ff0000',
-					'#0000ff'],
-			},
-		});
-	});
-
-	it('should auto-calculate min/max if not provided', () => {
-		const options: MapTransformerOptions = {
-			mapName: mapName,
-			regionProp: 'Country',
-			valueProp: 'Population',
-		};
-
-		const result = createMapChartOption(
-			data,
-			mapName,
-			options,
-		);
-
-		expect(result.visualMap).toBeDefined();
-		// Min should be min value (38), Max should be max value (330)
-		expect(result.visualMap!.min).toBe(38);
-		expect(result.visualMap!.max).toBe(330);
-	});
-
-	it('should handle missing values gracefully', () => {
-		const dirtyData: BasesData = [
-			{ Country: 'A' }, // No value
-			{ Country: 'B',
-				Population: 'invalid' },
+describe(
+	'Map Chart Transformer',
+	() => {
+		const data: BasesData = [
+			{ Country: 'USA',
+				Population: 330,
+				Unrelated: 'foo' },
+			{ Country: 'Canada',
+				Population: 38 },
+			{ Country: 'Mexico',
+				Population: 126 },
+			{ Country: '',
+				Population: 0 }, // Should be filtered out
 		];
 
-		const result = createMapChartOption(
-			dirtyData,
-			mapName,
-			{ mapName,
-				regionProp: 'Country',
-				valueProp: 'Population' },
-		);
-		const mapData = (result.series![0] as MapSeriesOption).data as { name: string; value: number }[];
+		const mapName = 'world';
 
-		expect(mapData).toContainEqual({ name: 'A',
-			value: 0 });
-		expect(mapData).toContainEqual({ name: 'B',
-			value: 0 }); // Number('invalid') -> NaN -> 0 logic in transformer? Check transformer logic.
-	});
-});
+		it(
+			'should create basic map chart options',
+			() => {
+				const options: MapTransformerOptions = {
+					mapName: mapName,
+					regionProp: 'Country',
+					valueProp: 'Population',
+				};
+
+				const result = createMapChartOption(
+					data,
+					mapName,
+					options,
+				);
+
+				expect(result.series).toBeDefined();
+				const series = result.series as MapSeriesOption[];
+				expect(series).toHaveLength(1);
+				expect(series[0]!.type).toBe('map');
+				expect(series[0]!.map).toBe(mapName);
+
+				const mapData = series[0]!.data as { name: string;
+					value: number }[];
+				expect(mapData).toHaveLength(3);
+				expect(mapData).toContainEqual({ name: 'USA',
+					value: 330 });
+				expect(mapData).toContainEqual({ name: 'Canada',
+					value: 38 });
+				expect(mapData).toContainEqual({ name: 'Mexico',
+					value: 126 });
+			},
+		);
+
+		it(
+			'should handle visual map configuration',
+			() => {
+				const options: MapTransformerOptions = {
+					mapName: mapName,
+					regionProp: 'Country',
+					valueProp: 'Population',
+					visualMapMin: 0,
+					visualMapMax: 500,
+					visualMapColor: ['#ff0000',
+						'#0000ff'],
+				};
+
+				const result = createMapChartOption(
+					data,
+					mapName,
+					options,
+				);
+
+				expect(result.visualMap).toBeDefined();
+				expect(result.visualMap).toMatchObject({
+					min: 0,
+					max: 500,
+					inRange: {
+						color: ['#ff0000',
+							'#0000ff'],
+					},
+				});
+			},
+		);
+
+		it(
+			'should auto-calculate min/max if not provided',
+			() => {
+				const options: MapTransformerOptions = {
+					mapName: mapName,
+					regionProp: 'Country',
+					valueProp: 'Population',
+				};
+
+				const result = createMapChartOption(
+					data,
+					mapName,
+					options,
+				);
+
+				expect(result.visualMap).toBeDefined();
+				// Min should be min value (38), Max should be max value (330)
+				expect(result.visualMap!.min).toBe(38);
+				expect(result.visualMap!.max).toBe(330);
+			},
+		);
+
+		it(
+			'should handle missing values gracefully',
+			() => {
+				const dirtyData: BasesData = [
+					{ Country: 'A' }, // No value
+					{ Country: 'B',
+						Population: 'invalid' },
+				];
+
+				const result = createMapChartOption(
+					dirtyData,
+					mapName,
+					{ mapName,
+						regionProp: 'Country',
+						valueProp: 'Population' },
+				);
+				const mapData = (result.series![0] as MapSeriesOption).data as { name: string;
+					value: number }[];
+
+				expect(mapData).toContainEqual({ name: 'A',
+					value: 0 });
+				expect(mapData).toContainEqual({ name: 'B',
+					value: 0 }); // Number('invalid') -> NaN -> 0 logic in transformer? Check transformer logic.
+			},
+		);
+	},
+);
