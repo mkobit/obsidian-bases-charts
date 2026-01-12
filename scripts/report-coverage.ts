@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { z } from 'zod';
 
 const coveragePath = path.resolve(
 	process.cwd(),
@@ -14,12 +15,29 @@ if (!fs.existsSync(coveragePath)) {
 	process.exit(1);
 }
 
+const CoverageMetricSchema = z.object({
+	pct: z.number(),
+});
+
+const CoverageTotalSchema = z.object({
+	statements: CoverageMetricSchema,
+	branches: CoverageMetricSchema,
+	functions: CoverageMetricSchema,
+	lines: CoverageMetricSchema,
+});
+
+const CoverageReportSchema = z.object({
+	total: CoverageTotalSchema,
+});
+
 try {
 	const content = fs.readFileSync(
 		coveragePath,
 		'utf-8',
 	);
-	const coverage = JSON.parse(content);
+	const json: unknown = JSON.parse(content);
+	const coverage = CoverageReportSchema.parse(json);
+
 	const total = coverage.total;
 
 	const summary = `
