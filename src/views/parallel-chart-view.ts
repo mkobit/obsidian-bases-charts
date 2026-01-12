@@ -1,5 +1,5 @@
 import type { ViewOption } from 'obsidian';
-import { t } from '../lang/helpers';
+import { t } from '../lang/i18n';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type { ParallelTransformerOptions } from '../charts/transformer';
@@ -12,16 +12,16 @@ export class ParallelChartView extends BaseChartView {
 	static getViewOptions(_?: unknown): ViewOption[] {
 		return [
 			{
-				displayName: t('Dimensions (comma-separated)'),
+				displayName: t('view_options.specific.dimensions'),
 				key: 'xProp', // repurpose xProp for dimensions list
 				type: 'text',
-				placeholder: t('e.g. price,rating,volume'),
+				placeholder: t('view_options.specific.dimensions_placeholder'),
 			},
 			{
-				displayName: t('Series property'),
+				displayName: t('view_options.specific.series'),
 				key: 'seriesProp',
 				type: 'property',
-				placeholder: t('Property to group by'),
+				placeholder: t('view_options.specific.series_group_placeholder'),
 			},
 			...BaseChartView.getCommonViewOptions(),
 		];

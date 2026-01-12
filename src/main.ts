@@ -1,5 +1,5 @@
 import { Plugin } from 'obsidian';
-import { t } from './lang/helpers';
+import { initTranslations, t } from './lang/i18n';
 import type { BarePluginSettings } from './settings';
 import { DEFAULT_SETTINGS, SettingTab } from './settings';
 import { BarChartView } from './views/bar-chart-view';
@@ -41,11 +41,12 @@ export default class BarePlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
+		initTranslations();
 
 		this.registerBasesView(
 			'treemap-chart',
 			{
-				name: t('Treemap'),
+				name: t('charts.treemap'),
 				icon: 'layout-grid',
 				factory: (controller, containerEl) => new TreemapChartView(
 					controller,
@@ -59,7 +60,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'bar-chart',
 			{
-				name: t('Bar Chart'),
+				name: t('charts.bar'),
 				icon: 'bar-chart',
 				factory: (controller, containerEl) => new BarChartView(
 					controller,
@@ -73,7 +74,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'line-chart',
 			{
-				name: t('Line Chart'),
+				name: t('charts.line'),
 				icon: 'activity',
 				factory: (controller, containerEl) => new LineChartView(
 					controller,
@@ -87,7 +88,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'lines-chart',
 			{
-				name: t('Lines Chart'),
+				name: t('charts.lines'),
 				icon: 'route', // Using route icon if available, or similar
 				factory: (controller, containerEl) => new LinesChartView(
 					controller,
@@ -101,7 +102,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'pie-chart',
 			{
-				name: t('Pie Chart'),
+				name: t('charts.pie'),
 				icon: 'pie-chart',
 				factory: (controller, containerEl) => new PieChartView(
 					controller,
@@ -115,7 +116,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'rose-chart',
 			{
-				name: t('Rose Chart'),
+				name: t('charts.rose'),
 				icon: 'aperture',
 				factory: (controller, containerEl) => new RoseChartView(
 					controller,
@@ -129,7 +130,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'pictorial-bar-chart',
 			{
-				name: t('Pictorial Bar Chart'),
+				name: t('charts.pictorial_bar'),
 				icon: 'image',
 				factory: (controller, containerEl) => new PictorialBarChartView(
 					controller,
@@ -143,7 +144,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'stacked-bar-chart',
 			{
-				name: t('Stacked Bar Chart'),
+				name: t('charts.stacked_bar'),
 				icon: 'bar-chart-2', // Using a variation of bar chart icon
 				factory: (controller, containerEl) => new StackedBarChartView(
 					controller,
@@ -157,7 +158,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'area-chart',
 			{
-				name: t('Area Chart'),
+				name: t('charts.area'),
 				icon: 'mountain', // Often used for area charts or similar
 				factory: (controller, containerEl) => new AreaChartView(
 					controller,
@@ -171,7 +172,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'scatter-chart',
 			{
-				name: t('Scatter Chart'),
+				name: t('charts.scatter'),
 				icon: 'crosshair', // or dot-network
 				factory: (controller, containerEl) => new ScatterChartView(
 					controller,
@@ -185,7 +186,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'effect-scatter-chart',
 			{
-				name: t('Effect Scatter Chart'),
+				name: t('charts.effect_scatter'),
 				icon: 'disc', // Similar to scatter but with effects
 				factory: (controller, containerEl) => new EffectScatterChartView(
 					controller,
@@ -199,7 +200,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'bubble-chart',
 			{
-				name: t('Bubble Chart'),
+				name: t('charts.bubble'),
 				icon: 'circle',
 				factory: (controller, containerEl) => new BubbleChartView(
 					controller,
@@ -213,7 +214,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'radar-chart',
 			{
-				name: t('Radar Chart'),
+				name: t('charts.radar'),
 				icon: 'hexagon',
 				factory: (controller, containerEl) => new RadarChartView(
 					controller,
@@ -227,7 +228,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'funnel-chart',
 			{
-				name: t('Funnel Chart'),
+				name: t('charts.funnel'),
 				icon: 'filter',
 				factory: (controller, containerEl) => new FunnelChartView(
 					controller,
@@ -241,7 +242,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'gauge-chart',
 			{
-				name: t('Gauge Chart'),
+				name: t('charts.gauge'),
 				icon: 'gauge',
 				factory: (controller, containerEl) => new GaugeChartView(
 					controller,
@@ -255,7 +256,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'heatmap-chart',
 			{
-				name: t('Heatmap'),
+				name: t('charts.heatmap'),
 				icon: 'grid',
 				factory: (controller, containerEl) => new HeatmapChartView(
 					controller,
@@ -269,7 +270,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'candlestick-chart',
 			{
-				name: t('Candlestick Chart'),
+				name: t('charts.candlestick'),
 				icon: 'bar-chart', // Using bar-chart as placeholder or we could find a better one
 				factory: (controller, containerEl) => new CandlestickChartView(
 					controller,
@@ -283,7 +284,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'boxplot-chart',
 			{
-				name: t('Boxplot Chart'),
+				name: t('charts.boxplot'),
 				icon: 'box-select', // Using box-select from lucide
 				factory: (controller, containerEl) => new BoxplotChartView(
 					controller,
@@ -297,7 +298,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'sankey-chart',
 			{
-				name: t('Sankey Chart'),
+				name: t('charts.sankey'),
 				icon: 'git-merge', // Using git-merge as it represents flow/splitting
 				factory: (controller, containerEl) => new SankeyChartView(
 					controller,
@@ -311,7 +312,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'graph-chart',
 			{
-				name: t('Graph Chart'),
+				name: t('charts.graph'),
 				icon: 'git-fork', // Using git-fork for graph/network
 				factory: (controller, containerEl) => new GraphChartView(
 					controller,
@@ -325,7 +326,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'sunburst-chart',
 			{
-				name: t('Sunburst Chart'),
+				name: t('charts.sunburst'),
 				icon: 'disc',
 				factory: (controller, containerEl) => new SunburstChartView(
 					controller,
@@ -339,7 +340,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'tree-chart',
 			{
-				name: t('Tree Chart'),
+				name: t('charts.tree'),
 				icon: 'network',
 				factory: (controller, containerEl) => new TreeChartView(
 					controller,
@@ -353,7 +354,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'theme-river-chart',
 			{
-				name: t('ThemeRiver Chart'),
+				name: t('charts.theme_river'),
 				icon: 'waves',
 				factory: (controller, containerEl) => new ThemeRiverChartView(
 					controller,
@@ -367,7 +368,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'calendar-chart',
 			{
-				name: t('Calendar Chart'),
+				name: t('charts.calendar'),
 				icon: 'calendar',
 				factory: (controller, containerEl) => new CalendarChartView(
 					controller,
@@ -381,7 +382,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'parallel-chart',
 			{
-				name: t('Parallel Chart'),
+				name: t('charts.parallel'),
 				icon: 'sliders-horizontal',
 				factory: (controller, containerEl) => new ParallelChartView(
 					controller,
@@ -395,7 +396,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'gantt-chart',
 			{
-				name: t('Gantt Chart'),
+				name: t('charts.gantt'),
 				icon: 'calendar-clock',
 				factory: (controller, containerEl) => new GanttChartView(
 					controller,
@@ -409,7 +410,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'waterfall-chart',
 			{
-				name: t('Waterfall Chart'),
+				name: t('charts.waterfall'),
 				icon: 'trending-down',
 				factory: (controller, containerEl) => new WaterfallChartView(
 					controller,
@@ -423,7 +424,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'pareto-chart',
 			{
-				name: t('Pareto Chart'),
+				name: t('charts.pareto'),
 				icon: 'bar-chart-horizontal',
 				factory: (controller, containerEl) => new ParetoChartView(
 					controller,
@@ -437,7 +438,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'histogram-chart',
 			{
-				name: t('Histogram Chart'),
+				name: t('charts.histogram'),
 				icon: 'bar-chart-big',
 				factory: (controller, containerEl) => new HistogramChartView(
 					controller,
@@ -451,7 +452,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'bullet-chart',
 			{
-				name: t('Bullet Chart'),
+				name: t('charts.bullet'),
 				icon: 'crosshair',
 				factory: (controller, containerEl) => new BulletChartView(
 					controller,
@@ -465,7 +466,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'radial-bar-chart',
 			{
-				name: t('Radial Bar Chart'),
+				name: t('charts.radial_bar'),
 				icon: 'circle-dot',
 				factory: (controller, containerEl) => new RadialBarChartView(
 					controller,
@@ -479,7 +480,7 @@ export default class BarePlugin extends Plugin {
 		this.registerBasesView(
 			'polar-line-chart',
 			{
-				name: t('Polar Line Chart'),
+				name: t('charts.polar_line'),
 				icon: 'activity',
 				factory: (controller, containerEl) => new PolarLineChartView(
 					controller,

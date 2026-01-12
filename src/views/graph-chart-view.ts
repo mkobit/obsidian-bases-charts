@@ -1,6 +1,6 @@
 
 import type { ViewOption } from 'obsidian';
-import { t } from '../lang/helpers';
+import { t } from '../lang/i18n';
 import { BaseChartView } from './base-chart-view';
 import type { ChartType } from '../charts/transformer';
 import { transformDataToChartOption } from '../charts/transformer';
@@ -14,27 +14,27 @@ export class GraphChartView extends BaseChartView {
 			...BaseChartView.getCommonViewOptions(),
 			{
 				key: 'sourceProp',
-				displayName: t('Source Property'),
+				displayName: t('view_options.specific.source'),
 				type: 'property',
-				placeholder: t('Property for the source node name'),
+				placeholder: t('view_options.specific.source_placeholder'),
 			},
 			{
 				key: 'targetProp',
-				displayName: t('Target Property'),
+				displayName: t('view_options.specific.target'),
 				type: 'property',
-				placeholder: t('Property for the target node name'),
+				placeholder: t('view_options.specific.target_placeholder'),
 			},
 			{
 				key: 'valueProp',
-				displayName: t('Value Property (Optional)'),
+				displayName: t('view_options.specific.value_optional'),
 				type: 'property',
-				placeholder: t('Optional property for link weight/value'),
+				placeholder: t('view_options.specific.value_weight_placeholder'),
 			},
 			{
 				key: 'categoryProp',
-				displayName: t('Category Property (Optional)'),
+				displayName: t('view_options.specific.category_optional'),
 				type: 'property',
-				placeholder: t('Optional property for node grouping/color'),
+				placeholder: t('view_options.specific.category_group_placeholder'),
 			},
 		];
 	}

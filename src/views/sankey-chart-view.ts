@@ -1,5 +1,5 @@
 import type { ViewOption, TextOption } from 'obsidian';
-import { t } from '../lang/helpers';
+import { t } from '../lang/i18n';
 import { BaseChartView } from './base-chart-view';
 import type { ChartType } from '../charts/transformer';
 import { transformDataToChartOption } from '../charts/transformer';
@@ -35,10 +35,10 @@ export class SankeyChartView extends BaseChartView {
 
 	static getViewOptions(_?: unknown): ViewOption[] {
 		const valueOption: TextOption = {
-			displayName: t('Value Property'),
+			displayName: t('view_options.specific.value'),
 			key: BaseChartView.VALUE_PROP_KEY,
 			type: 'text',
-			placeholder: t('Property to use for link value'),
+			placeholder: t('view_options.specific.value_link_placeholder'),
 		};
 
 		return [

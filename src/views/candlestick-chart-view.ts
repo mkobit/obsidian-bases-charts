@@ -3,7 +3,7 @@ import type {
 	ViewOption,
 } from 'obsidian';
 import type { EChartsOption } from 'echarts';
-import { t } from '../lang/helpers';
+import { t } from '../lang/i18n';
 import { BaseChartView } from './base-chart-view';
 import { transformDataToChartOption } from '../charts/transformer';
 import type BarePlugin from '../main';
@@ -63,34 +63,34 @@ export class CandlestickChartView extends BaseChartView {
 	static getViewOptions(_?: unknown): ViewOption[] {
 		return [
 			{
-				displayName: t('X-Axis Property (Date/Time)'),
+				displayName: t('view_options.specific.x_date'),
 				type: 'property',
 				key: BaseChartView.X_AXIS_PROP_KEY,
-				placeholder: t('Select date property'),
+				placeholder: t('view_options.specific.x_date_placeholder'),
 			},
 			{
-				displayName: t('Open Property'),
+				displayName: t('view_options.specific.open'),
 				type: 'property',
 				key: CandlestickChartView.OPEN_PROP_KEY,
-				placeholder: t('Select Open price property'),
+				placeholder: t('view_options.specific.open_placeholder'),
 			},
 			{
-				displayName: t('Close Property'),
+				displayName: t('view_options.specific.close'),
 				type: 'property',
 				key: CandlestickChartView.CLOSE_PROP_KEY,
-				placeholder: t('Select Close price property'),
+				placeholder: t('view_options.specific.close_placeholder'),
 			},
 			{
-				displayName: t('Lowest Property'),
+				displayName: t('view_options.specific.low'),
 				type: 'property',
 				key: CandlestickChartView.LOW_PROP_KEY,
-				placeholder: t('Select Low price property'),
+				placeholder: t('view_options.specific.low_placeholder'),
 			},
 			{
-				displayName: t('Highest Property'),
+				displayName: t('view_options.specific.high'),
 				type: 'property',
 				key: CandlestickChartView.HIGH_PROP_KEY,
-				placeholder: t('Select High price property'),
+				placeholder: t('view_options.specific.high_placeholder'),
 			},
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
 			...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY),
