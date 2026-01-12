@@ -1,6 +1,5 @@
+import { PLUGIN_ID } from '../constants';
 import en from './locale/en';
-
-const PLUGIN_ID = 'obsidian-sample-plugin';
 
 export function initTranslations(): void {
     // Check if i18next is available (provided by Obsidian)
