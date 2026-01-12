@@ -181,25 +181,17 @@ export default tseslint.config(
         rules: {
             "functional/no-conditional-statements": "off",
             "functional/no-expression-statements": "off",
-            "functional/immutable-data": "off",
-            "@typescript-eslint/no-unsafe-assignment": "off",
-            "@typescript-eslint/no-unsafe-member-access": "off",
-            "@typescript-eslint/no-var-requires": "off",
             "import/no-nodejs-modules": "off",
             "no-console": "off",
             "functional/no-return-void": "off",
-            "functional/no-throw-statements": "off",
             "functional/no-try-statements": "off",
-            "functional/no-classes": "off",
-            "functional/no-this-expressions": "off",
             "functional/prefer-immutable-types": "off",
             "functional/type-declaration-immutability": "off",
             "functional/readonly-type": "off",
             // Allow require in scripts
              "@typescript-eslint/no-require-imports": "off",
              // Relax stylistic indent for scripts if mixed content, but generally enforce tab
-             "@stylistic/indent": ["error", "tab"],
-             "@stylistic/no-mixed-spaces-and-tabs": "off" // Scripts might use mixed, can relax if issues arise
+             "@stylistic/indent": ["error", "tab"]
         }
     },
 	globalIgnores([
