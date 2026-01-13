@@ -1,33 +1,33 @@
-import type { EChartsOption, SunburstSeriesOption, TreeSeriesOption } from 'echarts';
-import type { BaseTransformerOptions, BasesData } from './base';
-import { getNestedValue } from './utils';
-import * as R from 'remeda';
+import type { EChartsOption, SunburstSeriesOption, TreeSeriesOption } from 'echarts'
+import type { BaseTransformerOptions, BasesData } from './base'
+import { getNestedValue } from './utils'
+import * as R from 'remeda'
 
 export interface SunburstTransformerOptions extends BaseTransformerOptions {
-	readonly valueProp?: string;
+  readonly valueProp?: string
 }
 
-export type TreeTransformerOptions = BaseTransformerOptions;
+export type TreeTransformerOptions = BaseTransformerOptions
 
 interface HierarchyNode {
-	readonly name: string;
-	readonly value?: number;
-	readonly children?: readonly HierarchyNode[];
+  readonly name: string
+  readonly value?: number
+  readonly children?: readonly HierarchyNode[]
 }
 
 interface PathItem {
-	parts: string[];
-	value: number | undefined;
+  parts: string[]
+  value: number | undefined
 }
 
 function asSunburstData(data: readonly HierarchyNode[]): SunburstSeriesOption['data'] {
-	// eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
-	return data as any;
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+  return data as any
 }
 
 function asTreeData(data: readonly HierarchyNode[]): TreeSeriesOption['data'] {
-	// eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
-	return data as any;
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+  return data as any
 }
 
 /**
@@ -35,165 +35,167 @@ function asTreeData(data: readonly HierarchyNode[]): TreeSeriesOption['data'] {
  * Refactored to be functional using recursion instead of mutation loops.
  */
 function buildHierarchy(
-	data: BasesData,
-	pathProp: string,
-	valueProp?: string,
+  data: BasesData,
+  pathProp: string,
+  valueProp?: string,
 ): readonly HierarchyNode[] {
-	// 1. Transform data into paths and values
-	const paths = R.pipe(
-		data,
-		R.map(item => {
-			const pathRaw = getNestedValue(
-				item,
-				pathProp,
-			);
-			return (typeof pathRaw !== 'string' || !pathRaw)
-				? null
-				: (() => {
-					const parts = pathRaw.split('/').filter(p => p.length > 0);
-					return parts.length === 0
-						? null
-						: (() => {
-							const valNum = valueProp ? Number(getNestedValue(
-								item,
-								valueProp,
-							)) : Number.NaN;
-							// Explicitly use undefined if NaN, so it matches optional type better?
-							// Actually, type { value?: number } allows undefined.
-							const value = Number.isNaN(valNum) ? undefined : valNum;
+  // 1. Transform data into paths and values
+  const paths = R.pipe(
+    data,
+    R.map((item) => {
+      const pathRaw = getNestedValue(
+        item,
+        pathProp,
+      )
+      return (typeof pathRaw !== 'string' || !pathRaw)
+        ? null
+        : (() => {
+            const parts = pathRaw.split('/').filter(p => p.length > 0)
+            return parts.length === 0
+              ? null
+              : (() => {
+                  const valNum = valueProp
+                    ? Number(getNestedValue(
+                        item,
+                        valueProp,
+                      ))
+                    : Number.NaN
+                  // Explicitly use undefined if NaN, so it matches optional type better?
+                  // Actually, type { value?: number } allows undefined.
+                  const value = Number.isNaN(valNum) ? undefined : valNum
 
-							return { parts,
-								value };
-						})();
-				})();
-		}),
-		R.filter((x): x is PathItem => x !== null),
-	);
+                  return { parts,
+                    value }
+                })()
+          })()
+    }),
+    R.filter((x): x is PathItem => x !== null),
+  )
 
-	// 2. Recursive builder
-	const buildLevel = (items: readonly PathItem[]): readonly HierarchyNode[] => {
-		return R.pipe(
-			items,
-			R.groupBy(item => item.parts[0]!), // Group by current level name
-			R.entries(),
-			R.map(([name,
-				group]) => {
-				// Check if any item in this group is a leaf at this level (length 1)
-				const leafItems = group.filter(item => item.parts.length === 1);
-				const leafValue = leafItems.length > 0
-					? R.sumBy(
-						leafItems,
-						item => item.value ?? 0,
-					)
-					: undefined;
+  // 2. Recursive builder
+  const buildLevel = (items: readonly PathItem[]): readonly HierarchyNode[] => {
+    return R.pipe(
+      items,
+      R.groupBy(item => item.parts[0]!), // Group by current level name
+      R.entries(),
+      R.map(([name,
+        group]) => {
+        // Check if any item in this group is a leaf at this level (length 1)
+        const leafItems = group.filter(item => item.parts.length === 1)
+        const leafValue = leafItems.length > 0
+          ? R.sumBy(
+              leafItems,
+              item => item.value ?? 0,
+            )
+          : undefined
 
-				// Get children items (length > 1), slicing off the first part
-				const childrenItems = group
-					.filter(item => item.parts.length > 1)
-					.map(item => ({ parts: item.parts.slice(1),
-						value: item.value }));
+        // Get children items (length > 1), slicing off the first part
+        const childrenItems = group
+          .filter(item => item.parts.length > 1)
+          .map(item => ({ parts: item.parts.slice(1),
+            value: item.value }))
 
-				const children = childrenItems.length > 0 ? buildLevel(childrenItems) : undefined;
+        const children = childrenItems.length > 0 ? buildLevel(childrenItems) : undefined
 
-				// Construct node without mutation
-				const node: HierarchyNode = { name };
+        // Construct node without mutation
+        const node: HierarchyNode = { name }
 
-				const nodeWithValue = (leafValue !== undefined && leafValue > 0)
-					? { ...node,
-						value: leafValue }
-					: node;
+        const nodeWithValue = (leafValue !== undefined && leafValue > 0)
+          ? { ...node,
+              value: leafValue }
+          : node
 
-				const nodeWithChildren = children
-					? { ...nodeWithValue,
-						children }
-					: nodeWithValue;
+        const nodeWithChildren = children
+          ? { ...nodeWithValue,
+              children }
+          : nodeWithValue
 
-				return nodeWithChildren;
-			}),
-		);
-	};
+        return nodeWithChildren
+      }),
+    )
+  }
 
-	return buildLevel(paths);
+  return buildLevel(paths)
 }
 
 export function createSunburstChartOption(
-	data: BasesData,
-	pathProp: string,
-	options?: SunburstTransformerOptions,
+  data: BasesData,
+  pathProp: string,
+  options?: SunburstTransformerOptions,
 ): EChartsOption {
-	const valueProp = options?.valueProp;
-	const hierarchyData = buildHierarchy(
-		data,
-		pathProp,
-		valueProp,
-	);
+  const valueProp = options?.valueProp
+  const hierarchyData = buildHierarchy(
+    data,
+    pathProp,
+    valueProp,
+  )
 
-	const seriesItem: SunburstSeriesOption = {
-		type: 'sunburst',
-		data: asSunburstData(hierarchyData),
-		radius: [0,
-			'90%'],
-		label: {
-			rotate: 'radial',
-		},
-	};
+  const seriesItem: SunburstSeriesOption = {
+    type: 'sunburst',
+    data: asSunburstData(hierarchyData),
+    radius: [0,
+      '90%'],
+    label: {
+      rotate: 'radial',
+    },
+  }
 
-	return {
-		series: [seriesItem],
-		tooltip: {
-			trigger: 'item',
-		},
-	};
+  return {
+    series: [seriesItem],
+    tooltip: {
+      trigger: 'item',
+    },
+  }
 }
 
 export function createTreeChartOption(
-	data: BasesData,
-	pathProp: string,
-	options?: TreeTransformerOptions,
+  data: BasesData,
+  pathProp: string,
+  options?: TreeTransformerOptions,
 ): EChartsOption {
-	const hierarchyDataRaw = buildHierarchy(
-		data,
-		pathProp,
-	);
+  const hierarchyDataRaw = buildHierarchy(
+    data,
+    pathProp,
+  )
 
-	const hierarchyData = hierarchyDataRaw.length > 1
-		? [{ name: 'Root',
-			children: hierarchyDataRaw }]
-		: hierarchyDataRaw;
+  const hierarchyData = hierarchyDataRaw.length > 1
+    ? [{ name: 'Root',
+        children: hierarchyDataRaw }]
+    : hierarchyDataRaw
 
-	const seriesItem: TreeSeriesOption = {
-		type: 'tree',
-		data: asTreeData(hierarchyData),
-		top: '10%',
-		bottom: '10%',
-		layout: 'orthogonal',
-		symbol: 'emptyCircle',
-		symbolSize: 7,
-		initialTreeDepth: 3,
-		animationDurationUpdate: 750,
-		label: {
-			position: 'left',
-			verticalAlign: 'middle',
-			align: 'right',
-			fontSize: 9,
-		},
-		leaves: {
-			label: {
-				position: 'right',
-				verticalAlign: 'middle',
-				align: 'left',
-			},
-		},
-		expandAndCollapse: true,
-		animationDuration: 550,
-		animationEasing: 'cubicOut',
-	};
+  const seriesItem: TreeSeriesOption = {
+    type: 'tree',
+    data: asTreeData(hierarchyData),
+    top: '10%',
+    bottom: '10%',
+    layout: 'orthogonal',
+    symbol: 'emptyCircle',
+    symbolSize: 7,
+    initialTreeDepth: 3,
+    animationDurationUpdate: 750,
+    label: {
+      position: 'left',
+      verticalAlign: 'middle',
+      align: 'right',
+      fontSize: 9,
+    },
+    leaves: {
+      label: {
+        position: 'right',
+        verticalAlign: 'middle',
+        align: 'left',
+      },
+    },
+    expandAndCollapse: true,
+    animationDuration: 550,
+    animationEasing: 'cubicOut',
+  }
 
-	return {
-		series: [seriesItem],
-		tooltip: {
-			trigger: 'item',
-			triggerOn: 'mousemove',
-		},
-	};
+  return {
+    series: [seriesItem],
+    tooltip: {
+      trigger: 'item',
+      triggerOn: 'mousemove',
+    },
+  }
 }
