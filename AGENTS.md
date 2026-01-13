@@ -16,6 +16,7 @@ The goal is to build an assortment of views using:
     -   **ECharts**: We use Apache ECharts for rendering charts.
     -   **Separation of Concerns**: View logic (`ChartView`) is separated from data transformation logic (`transformer.ts`) to facilitate testing and maintenance.
 -   **Styles**: `styles.css` (Currently empty, reserved for view styles).
+-   **Localization**: `src/lang/` (i18next with type-safe wrappers).
 -   **Manifest**: `manifest.json` (Synced via automation).
 
 ## Strictness & Quality
@@ -68,6 +69,16 @@ We strictly enforce functional programming principles to ensure code clarity, pr
 -   **Temporal**: Use the `Temporal` API (via `temporal-polyfill`) for all date and time logic within the plugin's core logic and scripts.
 -   **Avoid Date**: Avoid using the native `Date` class whenever possible.
 -   **Moment.js**: Only use `moment` (which Obsidian depends on) when interacting directly with Obsidian APIs that require it or when formatting dates for Obsidian UI where `moment` is the standard. Isolate these usages.
+
+## Localization protocol
+-   **Library**: We use `i18next` for localization.
+-   **Type Safety**: We enforce strict type safety for translation keys.
+    -   Keys are derived from `src/lang/locales/en.json`.
+    -   Accessing a missing key will result in a TypeScript error.
+-   **Workflow**:
+    1.  Add the key to `src/lang/locales/en.json`.
+    2.  Use `i18next.t('your.key')` in the code.
+-   **Reference**: See `src/lang/AGENTS.md` for detailed instructions.
 
 ## Development Commands
 
