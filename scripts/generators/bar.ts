@@ -1,22 +1,20 @@
 import * as fc from 'fast-check';
+import { WEEK_DAYS, themeSubset } from './themes';
 
 /**
  * Arbitrary for a basic Bar chart dataset.
- * Generates a list of categories and corresponding numerical values.
+ * Generates a list of categories (Days) and corresponding numerical values.
  */
-export const barChartArbitrary = fc.record({
-	categories: fc.array(
-		fc.string({ minLength: 1 }),
-		{ minLength: 3,
-			maxLength: 10 },
-	),
-	values: fc.array(
-		fc.integer({ min: 0,
-			max: 1000 }),
-		{ minLength: 3,
-			maxLength: 10 },
-	),
-}).filter(data => data.categories.length === data.values.length)
+export const barChartArbitrary = themeSubset(WEEK_DAYS, 5)
+	.chain(categories => {
+		return fc.record({
+			categories: fc.constant(categories),
+			values: fc.array(
+				fc.integer({ min: 10, max: 300 }),
+				{ minLength: categories.length, maxLength: categories.length },
+			),
+		});
+	})
 	.map(data => ({
 		type: 'bar',
 		data: data.categories.map((cat, i) => ({

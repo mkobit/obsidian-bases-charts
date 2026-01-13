@@ -3,33 +3,39 @@ import { Temporal } from 'temporal-polyfill';
 
 /**
  * Arbitrary for a basic Line chart dataset.
- * Generates a list of dates and corresponding numerical values.
+ * Simulates a random walk trend (e.g., stock price or temperature).
  */
 export const lineChartArbitrary = fc.record({
-	start: fc.integer({ min: 0,
-		max: 1_000_000_000 }), // Offset from epoch in seconds
-	count: fc.integer({ min: 5,
-		max: 20 }),
-	values: fc.array(
-		fc.integer({ min: 0,
-			max: 100 }),
-		{ minLength: 5,
-			maxLength: 20 },
-	),
-}).chain(input => {
-	// Ensure values match count
-	const values = input.values.slice(
-		0,
-		input.count,
-	);
-	return fc.constant({
-		type: 'line',
-		data: values.map((val, i) => {
-			const instant = Temporal.Instant.fromEpochMilliseconds((input.start + (i * 86_400)) * 1000); // Daily intervals
+	startValue: fc.integer({ min: 50, max: 100 }),
+	days: fc.integer({ min: 14, max: 30 }),
+	trend: fc.constantFrom(-2, 0, 2), // Overall bias
+	volatility: fc.integer({ min: 1, max: 5 }),
+}).chain(config => {
+	// Generate a sequence of deltas
+	return fc.array(
+		fc.integer({ min: -config.volatility, max: config.volatility }),
+		{ minLength: config.days, maxLength: config.days },
+	).map(deltas => {
+		let currentValue = config.startValue;
+		const today = Temporal.Now.plainDateISO();
+
+		const data = deltas.map((delta, i) => {
+			currentValue += delta + config.trend;
+			// Ensure value stays positive
+			if (currentValue < 0) currentValue = 0;
+
+			// Generate date string
+			const date = today.subtract({ days: config.days - i }).toString();
+
 			return {
-				date: instant,
-				value: val,
+				date,
+				value: currentValue,
 			};
-		}),
+		});
+
+		return {
+			type: 'line',
+			data,
+		};
 	});
 });
