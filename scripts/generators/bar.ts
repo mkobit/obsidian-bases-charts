@@ -5,13 +5,18 @@ import { WEEK_DAYS, themeSubset } from './themes';
  * Arbitrary for a basic Bar chart dataset.
  * Generates a list of categories (Days) and corresponding numerical values.
  */
-export const barChartArbitrary = themeSubset(WEEK_DAYS, 5)
+export const barChartArbitrary = themeSubset(
+	WEEK_DAYS,
+	5,
+)
 	.chain(categories => {
 		return fc.record({
 			categories: fc.constant(categories),
 			values: fc.array(
-				fc.integer({ min: 10, max: 300 }),
-				{ minLength: categories.length, maxLength: categories.length },
+				fc.integer({ min: 10,
+					max: 300 }),
+				{ minLength: categories.length,
+					maxLength: categories.length },
 			),
 		});
 	})

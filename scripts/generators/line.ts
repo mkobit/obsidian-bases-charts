@@ -6,32 +6,44 @@ import { Temporal } from 'temporal-polyfill';
  * Simulates a random walk trend (e.g., stock price or temperature).
  */
 export const lineChartArbitrary = fc.record({
-	startValue: fc.integer({ min: 50, max: 100 }),
-	days: fc.integer({ min: 14, max: 30 }),
-	trend: fc.constantFrom(-2, 0, 2), // Overall bias
-	volatility: fc.integer({ min: 1, max: 5 }),
+	startValue: fc.integer({ min: 50,
+		max: 100 }),
+	days: fc.integer({ min: 14,
+		max: 30 }),
+	trend: fc.constantFrom(
+		-2,
+		0,
+		2,
+	), // Overall bias
+	volatility: fc.integer({ min: 1,
+		max: 5 }),
 }).chain(config => {
 	// Generate a sequence of deltas
 	return fc.array(
-		fc.integer({ min: -config.volatility, max: config.volatility }),
-		{ minLength: config.days, maxLength: config.days },
+		fc.integer({ min: -config.volatility,
+			max: config.volatility }),
+		{ minLength: config.days,
+			maxLength: config.days },
 	).map(deltas => {
-		let currentValue = config.startValue;
 		const today = Temporal.Now.plainDateISO();
 
-		const data = deltas.map((delta, i) => {
-			currentValue += delta + config.trend;
-			// Ensure value stays positive
-			if (currentValue < 0) currentValue = 0;
+		const data = deltas.reduce<Array<{ date: string;
+			value: number }>>(
+			(acc, delta, i) => {
+				const prevValue = i === 0 ? config.startValue : acc[i - 1]!.value;
+				const nextValue = Math.max(
+					0,
+					prevValue + delta + config.trend,
+				);
 
-			// Generate date string
-			const date = today.subtract({ days: config.days - i }).toString();
+				const date = today.subtract({ days: config.days - i }).toString();
 
-			return {
-				date,
-				value: currentValue,
-			};
-		});
+				return [...acc,
+					{ date,
+						value: nextValue }];
+			},
+			[],
+		);
 
 		return {
 			type: 'line',
