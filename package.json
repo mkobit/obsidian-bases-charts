@@ -5,12 +5,12 @@
 	"main": "main.js",
 	"type": "module",
 	"scripts": {
-		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit && node esbuild.config.mjs production",
+		"dev": "node esbuild.config.mjs",
 		"lint": "eslint .",
+		"prepare": "husky",
 		"test": "vitest run",
-		"test:coverage": "vitest run --coverage",
-		"prepare": "husky"
+		"test:coverage": "vitest run --coverage"
 	},
 	"keywords": [],
 	"license": "MIT",

@@ -25,7 +25,7 @@ const packageJsonPlugin = {
 						if (
 							node.name &&
 							node.name.type === "String" &&
-							["dependencies", "devDependencies", "peerDependencies"].includes(node.name.value)
+							["dependencies", "devDependencies", "peerDependencies", "scripts"].includes(node.name.value)
 						) {
 							if (node.value && node.value.type === "Object") {
 								const members = node.value.members;
