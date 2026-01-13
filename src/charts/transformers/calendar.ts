@@ -1,7 +1,8 @@
 import type { EChartsOption, CalendarComponentOption, HeatmapSeriesOption, VisualMapComponentOption } from 'echarts';
+import { Temporal } from 'temporal-polyfill';
+import * as R from 'remeda';
 import type { BaseTransformerOptions, BasesData } from './base';
 import { safeToString, getNestedValue } from './utils';
-import * as R from 'remeda';
 
 export interface CalendarTransformerOptions extends BaseTransformerOptions {
 	readonly valueProp?: string;
@@ -47,11 +48,7 @@ export function createCalendarChartOption(
 	return calendarData.length === 0
 		? (() => {
 			// Return default empty state
-			const now = new Date();
-			const minDate = now.toISOString().slice(
-				0,
-				10,
-			);
+			const minDate = Temporal.Now.plainDateISO().toString();
 			return {
 				calendar: { range: [minDate,
 					minDate] },

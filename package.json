@@ -32,7 +32,6 @@
 		"husky": "^9.1.7",
 		"jiti": "2.6.1",
 		"lint-staged": "^16.2.7",
-		"temporal-polyfill": "^0.3.0",
 		"tsc-files": "^1.1.4",
 		"tslib": "2.8.1",
 		"tsx": "^4.21.0",
@@ -46,6 +45,7 @@
 		"echarts": "6.0.0",
 		"i18next": "^25.7.4",
 		"obsidian": "1.10.3",
-		"remeda": "^2.33.1"
+		"remeda": "^2.33.1",
+		"temporal-polyfill": "^0.3.0"
 	}
 }

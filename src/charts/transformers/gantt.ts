@@ -7,6 +7,7 @@
 /* eslint-disable functional/no-expression-statements */
 
 import type { BarSeriesOption, EChartsOption } from 'echarts';
+import { Temporal } from 'temporal-polyfill';
 import * as R from 'remeda';
 import type { BaseTransformerOptions, BasesData } from './base';
 import { getLegendOption, getNestedValue, safeToString } from './utils';
@@ -29,10 +30,27 @@ interface GanttDataPoint {
 
 function normalizeDate(val: unknown): number | null {
 	if (typeof val === 'number') { return val; }
-	if (val instanceof Date) { return val.getTime(); }
+	// Handle Date objects if they slip through (though restricted), or general objects with getTime
+	// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+	if (val && typeof val === 'object' && 'getTime' in val && typeof (val as { getTime: unknown }).getTime === 'function') {
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+		return (val as { getTime: () => number }).getTime();
+	}
 	if (typeof val === 'string') {
-		const d = new Date(val);
-		return Number.isNaN(d.getTime()) ? null : d.getTime();
+		// eslint-disable-next-line functional/no-try-statements
+		try {
+			// Try ISO 8601 first (Temporal strict)
+			return Temporal.Instant.from(val).epochMilliseconds;
+		} catch {
+			// Fallback to legacy parsing via basic ISO check or assume invalid if not simple ISO
+			// Since we can't use Date, we might try Temporal.PlainDate if it's just a date string
+			// eslint-disable-next-line functional/no-try-statements
+			try {
+				return Temporal.PlainDate.from(val).toZonedDateTime('UTC').epochMilliseconds;
+			} catch {
+				return null;
+			}
+		}
 	}
 	return null;
 }
@@ -50,14 +68,8 @@ function formatTooltip(params: any): string {
 		const data = item.data as { value: number,
 			start: number,
 			end: number };
-		const startStr = new Date(data.start).toISOString().substring(
-			0,
-			10,
-		);
-		const endStr = new Date(data.end).toISOString().substring(
-			0,
-			10,
-		);
+		const startStr = Temporal.Instant.fromEpochMilliseconds(data.start).toZonedDateTimeISO('UTC').toPlainDate().toString();
+		const endStr = Temporal.Instant.fromEpochMilliseconds(data.end).toZonedDateTimeISO('UTC').toPlainDate().toString();
 
 		const marker = item.marker || '';
 		const seriesName = item.seriesName || '';
