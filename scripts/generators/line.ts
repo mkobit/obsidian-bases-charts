@@ -7,7 +7,7 @@ import { Temporal } from 'temporal-polyfill';
  */
 export const lineChartArbitrary = fc.record({
 	start: fc.integer({ min: 0,
-		max: 1000000000 }), // Offset from epoch in seconds
+		max: 1_000_000_000 }), // Offset from epoch in seconds
 	count: fc.integer({ min: 5,
 		max: 20 }),
 	values: fc.array(
@@ -25,7 +25,7 @@ export const lineChartArbitrary = fc.record({
 	return fc.constant({
 		type: 'line',
 		data: values.map((val, i) => {
-			const instant = Temporal.Instant.fromEpochMilliseconds((input.start + (i * 86400)) * 1000); // Daily intervals
+			const instant = Temporal.Instant.fromEpochMilliseconds((input.start + (i * 86_400)) * 1000); // Daily intervals
 			return {
 				date: instant,
 				value: val,

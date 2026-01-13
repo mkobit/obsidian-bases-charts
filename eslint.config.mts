@@ -60,6 +60,11 @@ export default tseslint.config(
 			"eqeqeq": "error",
 			"curly": "error",
 
+			"no-restricted-globals": ["error", {
+				"name": "Date",
+				"message": "Use Temporal (from temporal-polyfill) instead of Date. In Obsidian code, use moment."
+			}],
+
 			// Type Safety Rules
 			"@typescript-eslint/consistent-type-assertions": ["error", {
 				assertionStyle: "never"

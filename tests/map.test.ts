@@ -37,13 +37,12 @@ describe(
 				);
 
 				expect(result.series).toBeDefined();
-				// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 				const series = result.series as MapSeriesOption[];
 				expect(series).toHaveLength(1);
 				expect(series[0]!.type).toBe('map');
 				expect(series[0]!.map).toBe(mapName);
 
-				// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 				const mapData = series[0]!.data as { name: string;
 					value: number }[];
 				expect(mapData).toHaveLength(3);
@@ -103,7 +102,7 @@ describe(
 				);
 
 				expect(result.visualMap).toBeDefined();
-				// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 				const visualMap = result.visualMap as VisualMapComponentOption;
 				// Min should be min value (38), Max should be max value (330)
 				expect(visualMap.min).toBe(38);
@@ -128,10 +127,8 @@ describe(
 						valueProp: 'Population' },
 				);
 
-				// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 				const series = result.series as MapSeriesOption[];
 
-				// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 				const mapData = series[0]!.data as { name: string;
 					value: number }[];
 
