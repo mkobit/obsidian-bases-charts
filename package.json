@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-bases-charts",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"description": "Advanced visualization for Obsidian via the Bases API.",
 	"main": "main.js",
 	"type": "module",
@@ -44,7 +44,7 @@
 	"dependencies": {
 		"echarts": "6.0.0",
 		"i18next": "^25.7.4",
-		"obsidian": "1.10.3",
+		"obsidian": "1.11.4",
 		"remeda": "^2.33.1",
 		"temporal-polyfill": "^0.3.0"
 	}
