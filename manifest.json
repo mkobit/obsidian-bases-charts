@@ -2,7 +2,7 @@
 	"id": "obsidian-bases-charts",
 	"name": "Bases Charts Plugin",
 	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
+	"minAppVersion": "1.10.0",
 	"description": "Advanced visualization for Obsidian via the Bases API.",
 	"author": "mkobit",
 	"authorUrl": "https://obsidian.md",
