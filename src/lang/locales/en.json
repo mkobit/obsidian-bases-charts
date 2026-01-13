@@ -1,0 +1,106 @@
+{
+	"views": {
+		"treemap": {
+			"name": "Treemap"
+		},
+		"bar": {
+			"name": "Bar Chart"
+		},
+		"line": {
+			"name": "Line Chart"
+		},
+		"lines": {
+			"name": "Lines Chart"
+		},
+		"pie": {
+			"name": "Pie Chart"
+		},
+		"rose": {
+			"name": "Rose Chart"
+		},
+		"pictorial_bar": {
+			"name": "Pictorial Bar Chart"
+		},
+		"stacked_bar": {
+			"name": "Stacked Bar Chart"
+		},
+		"area": {
+			"name": "Area Chart"
+		},
+		"scatter": {
+			"name": "Scatter Chart"
+		},
+		"effect_scatter": {
+			"name": "Effect Scatter Chart"
+		},
+		"bubble": {
+			"name": "Bubble Chart"
+		},
+		"radar": {
+			"name": "Radar Chart"
+		},
+		"funnel": {
+			"name": "Funnel Chart"
+		},
+		"gauge": {
+			"name": "Gauge Chart"
+		},
+		"heatmap": {
+			"name": "Heatmap"
+		},
+		"candlestick": {
+			"name": "Candlestick Chart"
+		},
+		"boxplot": {
+			"name": "Boxplot Chart"
+		},
+		"sankey": {
+			"name": "Sankey Chart"
+		},
+		"graph": {
+			"name": "Graph Chart"
+		},
+		"sunburst": {
+			"name": "Sunburst Chart"
+		},
+		"tree": {
+			"name": "Tree Chart"
+		},
+		"theme_river": {
+			"name": "ThemeRiver Chart"
+		},
+		"calendar": {
+			"name": "Calendar Chart"
+		},
+		"parallel": {
+			"name": "Parallel Chart"
+		},
+		"gantt": {
+			"name": "Gantt Chart"
+		},
+		"waterfall": {
+			"name": "Waterfall Chart"
+		},
+		"pareto": {
+			"name": "Pareto Chart"
+		},
+		"histogram": {
+			"name": "Histogram Chart"
+		},
+		"bullet": {
+			"name": "Bullet Chart"
+		},
+		"radial_bar": {
+			"name": "Radial Bar Chart"
+		},
+		"polar_line": {
+			"name": "Polar Line Chart"
+		},
+		"polar_bar": {
+			"name": "Polar Bar Chart"
+		},
+		"map": {
+			"name": "Map Chart"
+		}
+	}
+}
