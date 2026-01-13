@@ -99,6 +99,9 @@
 		"polar_bar": {
 			"name": "Polar Bar Chart"
 		},
+		"polar_scatter": {
+			"name": "Polar Scatter Chart"
+		},
 		"map": {
 			"name": "Map Chart"
 		}
