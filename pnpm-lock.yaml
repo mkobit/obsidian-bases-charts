@@ -17,6 +17,9 @@ importers:
       remeda:
         specifier: ^2.33.1
         version: 2.33.1
+      temporal-polyfill:
+        specifier: ^0.3.0
+        version: 0.3.0
     devDependencies:
       '@eslint/js':
         specifier: 9.39.2
@@ -69,9 +72,6 @@ importers:
       lint-staged:
         specifier: ^16.2.7
         version: 16.2.7
-      temporal-polyfill:
-        specifier: ^0.3.0
-        version: 0.3.0
       tsc-files:
         specifier: ^1.1.4
         version: 1.1.4(typescript@5.8.3)

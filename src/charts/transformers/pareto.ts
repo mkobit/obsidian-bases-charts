@@ -6,8 +6,6 @@ import * as R from 'remeda';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ParetoTransformerOptions extends BaseTransformerOptions {}
 
-type EChartsValue = string | number | Date | null | undefined;
-
 export function createParetoChartOption(
 	data: BasesData,
 	xProp: string,
@@ -96,9 +94,12 @@ export function createParetoChartOption(
 		encode: { x: 'name',
 			y: 'cumulative' },
 		tooltip: {
-			valueFormatter: (value: EChartsValue | EChartsValue[]) => {
+			valueFormatter: (value: unknown) => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				const v = Array.isArray(value) ? value[0] : value;
-				return (typeof v === 'number' ? v.toFixed(1) : String(v)) + ' %';
+				// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+				const val = v as number | string | null | undefined;
+				return (typeof val === 'number' ? val.toFixed(1) : String(val)) + ' %';
 			},
 		},
 	};
