@@ -44,6 +44,7 @@
 	},
 	"dependencies": {
 		"echarts": "6.0.0",
+		"i18next": "^25.7.4",
 		"obsidian": "latest",
 		"remeda": "^2.33.1"
 	}
