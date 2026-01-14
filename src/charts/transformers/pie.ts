@@ -7,6 +7,11 @@ export interface PieTransformerOptions extends BaseTransformerOptions {
   readonly roseType?: 'radius' | 'area'
 }
 
+interface PieDataPoint {
+  readonly name: string
+  readonly value: number
+}
+
 export function createPieChartOption(
   data: BasesData,
   nameProp: string,
@@ -15,9 +20,9 @@ export function createPieChartOption(
 ): EChartsOption {
   // 1. Normalize Data for Dataset
   // Structure: { name, value }
-  const normalizedData = R.map(
+  const normalizedData: ReadonlyArray<PieDataPoint> = R.map(
     data,
-    (item) => {
+    (item): PieDataPoint => {
       const valRaw = getNestedValue(
         item,
         nameProp,
@@ -36,7 +41,8 @@ export function createPieChartOption(
   )
 
   const dataset: DatasetComponentOption = {
-    source: normalizedData,
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    source: normalizedData as unknown as Record<string, unknown>[],
   }
 
   const seriesItem: PieSeriesOption = {

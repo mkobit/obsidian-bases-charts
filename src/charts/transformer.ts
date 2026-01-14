@@ -206,196 +206,196 @@ function asOptions<T>(options: unknown): T {
 }
 
 // Map of chart types to their transformer functions
-const transformerMap: Record<
+const transformerMap: Readonly<Record<
   string,
   (data: BasesData, xProp: string, yProp: string, options: unknown) => EChartsOption
-> = {
-  bar: (data, xProp, yProp, options) => createCartesianChartOption(
+>> = {
+  bar: (data, xProp, yProp, options): EChartsOption => createCartesianChartOption(
     data,
     xProp,
     yProp,
     'bar',
     asOptions(options),
   ),
-  line: (data, xProp, yProp, options) => createCartesianChartOption(
+  line: (data, xProp, yProp, options): EChartsOption => createCartesianChartOption(
     data,
     xProp,
     yProp,
     'line',
     asOptions(options),
   ),
-  lines: (data, xProp, yProp, options) => createLinesChartOption(
+  lines: (data, xProp, yProp, options): EChartsOption => createLinesChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  pie: (data, xProp, yProp, options) => createPieChartOption(
+  pie: (data, xProp, yProp, options): EChartsOption => createPieChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  rose: (data, xProp, yProp, options) => createPieChartOption(
+  rose: (data, xProp, yProp, options): EChartsOption => createPieChartOption(
     data,
     xProp,
     yProp,
     { ...(asOptions<PieTransformerOptions>(options)),
       roseType: 'area' },
   ),
-  funnel: (data, xProp, yProp, options) => createFunnelChartOption(
+  funnel: (data, xProp, yProp, options): EChartsOption => createFunnelChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  radar: (data, xProp, yProp, options) => createRadarChartOption(
+  radar: (data, xProp, yProp, options): EChartsOption => createRadarChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  gauge: (data, _, yProp, options) => createGaugeChartOption(
+  gauge: (data, _, yProp, options): EChartsOption => createGaugeChartOption(
     data,
     yProp,
     asOptions(options),
   ),
-  bubble: (data, xProp, yProp, options) => createScatterChartOption(
-    data,
-    xProp,
-    yProp,
-    asOptions(options),
-  ),
-  scatter: (data, xProp, yProp, options) => createScatterChartOption(
+  bubble: (data, xProp, yProp, options): EChartsOption => createScatterChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  effectScatter: (data, xProp, yProp, options) => createEffectScatterChartOption(
+  scatter: (data, xProp, yProp, options): EChartsOption => createScatterChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  heatmap: (data, xProp, yProp, options) => createHeatmapChartOption(
+  effectScatter: (data, xProp, yProp, options): EChartsOption => createEffectScatterChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  candlestick: (data, xProp, _, options) => createCandlestickChartOption(
-    data,
-    xProp,
-    asOptions(options),
-  ),
-  treemap: (data, xProp, yProp, options) => createTreemapChartOption(
+  heatmap: (data, xProp, yProp, options): EChartsOption => createHeatmapChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  boxplot: (data, xProp, yProp, options) => createBoxplotChartOption(
+  candlestick: (data, xProp, _, options): EChartsOption => createCandlestickChartOption(
+    data,
+    xProp,
+    asOptions(options),
+  ),
+  treemap: (data, xProp, yProp, options): EChartsOption => createTreemapChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  sankey: (data, xProp, yProp, options) => createSankeyChartOption(
+  boxplot: (data, xProp, yProp, options): EChartsOption => createBoxplotChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  graph: (data, xProp, yProp, options) => createGraphChartOption(
+  sankey: (data, xProp, yProp, options): EChartsOption => createSankeyChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  sunburst: (data, xProp, _, options) => createSunburstChartOption(
-    data,
-    xProp,
-    asOptions(options),
-  ),
-  tree: (data, xProp, _, options) => createTreeChartOption(
-    data,
-    xProp,
-    asOptions(options),
-  ),
-  themeRiver: (data, xProp, _, options) => createThemeRiverChartOption(
-    data,
-    xProp,
-    asOptions(options),
-  ),
-  calendar: (data, xProp, _, options) => createCalendarChartOption(
-    data,
-    xProp,
-    asOptions(options),
-  ),
-  parallel: (data, xProp, _, options) => createParallelChartOption(
-    data,
-    xProp,
-    asOptions(options),
-  ),
-  pictorialBar: (data, xProp, yProp, options) => createPictorialBarChartOption(
+  graph: (data, xProp, yProp, options): EChartsOption => createGraphChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  gantt: (data, _, __, options) => createGanttChartOption(
+  sunburst: (data, xProp, _, options): EChartsOption => createSunburstChartOption(
     data,
+    xProp,
     asOptions(options),
   ),
-  waterfall: (data, xProp, yProp, options) => createWaterfallChartOption(
+  tree: (data, xProp, _, options): EChartsOption => createTreeChartOption(
+    data,
+    xProp,
+    asOptions(options),
+  ),
+  themeRiver: (data, xProp, _, options): EChartsOption => createThemeRiverChartOption(
+    data,
+    xProp,
+    asOptions(options),
+  ),
+  calendar: (data, xProp, _, options): EChartsOption => createCalendarChartOption(
+    data,
+    xProp,
+    asOptions(options),
+  ),
+  parallel: (data, xProp, _, options): EChartsOption => createParallelChartOption(
+    data,
+    xProp,
+    asOptions(options),
+  ),
+  pictorialBar: (data, xProp, yProp, options): EChartsOption => createPictorialBarChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  pareto: (data, xProp, yProp, options) => createParetoChartOption(
+  gantt: (data, _, __, options): EChartsOption => createGanttChartOption(
+    data,
+    asOptions(options),
+  ),
+  waterfall: (data, xProp, yProp, options): EChartsOption => createWaterfallChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  histogram: (data, _, yProp, options) => createHistogramChartOption(
-    data,
-    yProp,
-    asOptions(options),
-  ),
-  bullet: (data, xProp, yProp, options) => createBulletChartOption(
+  pareto: (data, xProp, yProp, options): EChartsOption => createParetoChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  radialBar: (data, xProp, yProp, options) => createRadialBarChartOption(
+  histogram: (data, _, yProp, options): EChartsOption => createHistogramChartOption(
+    data,
+    yProp,
+    asOptions(options),
+  ),
+  bullet: (data, xProp, yProp, options): EChartsOption => createBulletChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  polarLine: (data, xProp, yProp, options) => createPolarLineChartOption(
+  radialBar: (data, xProp, yProp, options): EChartsOption => createRadialBarChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  polarBar: (data, xProp, yProp, options) => createPolarBarChartOption(
+  polarLine: (data, xProp, yProp, options): EChartsOption => createPolarLineChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  polarScatter: (data, xProp, yProp, options) => createPolarScatterChartOption(
+  polarBar: (data, xProp, yProp, options): EChartsOption => createPolarBarChartOption(
     data,
     xProp,
     yProp,
     asOptions(options),
   ),
-  map: (data, _, yProp, options) => {
+  polarScatter: (data, xProp, yProp, options): EChartsOption => createPolarScatterChartOption(
+    data,
+    xProp,
+    yProp,
+    asOptions(options),
+  ),
+  map: (data, _, yProp, options): EChartsOption => {
     const opts = asOptions<MapTransformerOptions>(options)
     return createMapChartOption(
       data,

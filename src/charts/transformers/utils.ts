@@ -19,7 +19,7 @@ export function getNestedValue(obj: unknown, path: string): unknown {
   return (typeof obj !== 'object' || obj === null)
     ? undefined
     : path.split('.').reduce(
-        (o: unknown, key: string) => {
+        (o: unknown, key: string): unknown => {
           return (isRecord(o) && key in o)
             ? o[key]
             : undefined
@@ -28,7 +28,7 @@ export function getNestedValue(obj: unknown, path: string): unknown {
       )
 }
 
-export function getLegendOption(options?: BaseTransformerOptions): LegendComponentOption | undefined {
+export function getLegendOption(options?: BaseTransformerOptions): Readonly<LegendComponentOption> | undefined {
   const showLegend = options?.legend ?? false
   const position = options?.legendPosition ?? 'top'
 
@@ -38,12 +38,12 @@ export function getLegendOption(options?: BaseTransformerOptions): LegendCompone
   const defaultOrient = (position === 'left' || position === 'right') ? 'vertical' : 'horizontal'
   const orient = options?.legendOrient ?? defaultOrient
 
-  const base: LegendComponentOption = {
+  const base: Readonly<LegendComponentOption> = {
     orient,
     type: 'scroll',
   }
 
-  const positionMap: Record<string, LegendComponentOption> = {
+  const positionMap: Readonly<Record<string, Readonly<LegendComponentOption>>> = {
     bottom: { bottom: 0,
       left: 'center' },
     left: { left: 0,
@@ -57,7 +57,8 @@ export function getLegendOption(options?: BaseTransformerOptions): LegendCompone
   const posConfig = positionMap[position] ?? positionMap['top']!
 
   return showLegend
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     ? { ...base,
-        ...posConfig }
+        ...posConfig } as Readonly<LegendComponentOption>
     : undefined
 }
