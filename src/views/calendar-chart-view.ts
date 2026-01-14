@@ -44,7 +44,9 @@ export class CalendarChartView extends BaseChartView {
     const dateProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string
     const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string
 
-    if (!dateProp) { return null }
+    if (!dateProp) {
+      return null
+    }
 
     const visualMapMin = this.config.get(BaseChartView.VISUAL_MAP_MIN_KEY) ? Number(this.config.get(BaseChartView.VISUAL_MAP_MIN_KEY)) : undefined
     const visualMapMax = this.config.get(BaseChartView.VISUAL_MAP_MAX_KEY) ? Number(this.config.get(BaseChartView.VISUAL_MAP_MAX_KEY)) : undefined

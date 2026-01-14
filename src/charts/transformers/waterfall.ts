@@ -48,7 +48,9 @@ export function createWaterfallChartOption(
             yVal }
     }),
     items => items.map((item) => {
-      if (item === null) { return null }
+      if (item === null) {
+        return null
+      }
       const name = safeToString(item.xVal)
       const val = Number(item.yVal)
       return (!name || Number.isNaN(val))
@@ -164,7 +166,9 @@ export function createWaterfallChartOption(
         const pList = params as TooltipParam[]
 
         const firstParam = pList[0]
-        if (!firstParam) { return '' }
+        if (!firstParam) {
+          return ''
+        }
 
         const name = firstParam.name ?? ''
 

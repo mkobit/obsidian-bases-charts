@@ -29,7 +29,9 @@ interface GanttDataPoint {
 }
 
 function normalizeDate(val: unknown): number | null {
-  if (typeof val === 'number') { return val }
+  if (typeof val === 'number') {
+    return val
+  }
   // Handle Date objects if they slip through (though restricted), or general objects with getTime
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   if (val && typeof val === 'object' && 'getTime' in val && typeof (val as { getTime: unknown }).getTime === 'function') {
@@ -61,7 +63,9 @@ function formatTooltip(params: any): string {
   const p = Array.isArray(params) ? params : [params]
   const visibleItems = p.filter((item: any) => item.seriesName !== '_start')
 
-  if (visibleItems.length === 0) { return '' }
+  if (visibleItems.length === 0) {
+    return ''
+  }
 
   const category = visibleItems[0].name
 
@@ -156,7 +160,9 @@ export function createGanttChartOption(
 
     const startSeriesData = tasks.map((t) => {
       const item = dataMap[t]
-      if (!item) { return '-' }
+      if (!item) {
+        return '-'
+      }
       return {
         value: item.start,
         itemStyle: { color: 'transparent' },
@@ -165,7 +171,9 @@ export function createGanttChartOption(
 
     const durationSeriesData = tasks.map((t) => {
       const item = dataMap[t]
-      if (!item) { return '-' }
+      if (!item) {
+        return '-'
+      }
       return {
         value: item.duration,
         start: item.start,
