@@ -6,6 +6,74 @@ import promise from "eslint-plugin-promise";
 import stylistic from "@stylistic/eslint-plugin";
 import unicorn from "eslint-plugin-unicorn";
 import { globalIgnores } from "eslint/config";
+import json from "@eslint/json";
+
+// Define custom rule for package.json dependency sorting
+const packageJsonPlugin = {
+	rules: {
+		"sort-dependencies": {
+			meta: {
+				type: "suggestion",
+				docs: {
+					description: "Sort dependencies alphabetically",
+				},
+				fixable: "code",
+			},
+			create(context: any) {
+				return {
+					"Member"(node: any) {
+						if (
+							node.name &&
+							node.name.type === "String" &&
+							["dependencies", "devDependencies", "peerDependencies", "scripts"].includes(node.name.value)
+						) {
+							if (node.value && node.value.type === "Object") {
+								const members = node.value.members;
+								const memberNames = members.map((m: any) => m.name.value);
+								const sortedMemberNames = [...memberNames].sort();
+
+								const isSorted = memberNames.every((name: string, index: number) => name === sortedMemberNames[index]);
+
+								if (!isSorted) {
+									context.report({
+										node: node.value,
+										message: `Dependencies in '${node.name.value}' should be sorted alphabetically.`,
+										fix(fixer: any) {
+											// Extract member pairs (key: value)
+											const memberPairs = members.map((m: any) => {
+												return {
+													name: m.name.value,
+													// We reconstruct the JSON string for the member
+													// Assuming simple key-value pairs for deps
+													key: JSON.stringify(m.name.value),
+													value: JSON.stringify(m.value.value)
+												};
+											});
+
+											// Sort pairs
+											memberPairs.sort((a: any, b: any) => a.name.localeCompare(b.name));
+
+											// Reconstruct the object content with indentation
+											// Assuming standard package.json indentation (tabs)
+											// The object itself is indented by 1 tab, so members are 2 tabs.
+											const indentation = "\t\t";
+											const content = memberPairs.map((p: any) => `${indentation}${p.key}: ${p.value}`).join(",\n");
+
+											// Wrap in braces with correct outer indentation
+											const newText = `{\n${content}\n\t}`;
+
+											return fixer.replaceText(node.value, newText);
+										}
+									});
+								}
+							}
+						}
+					}
+				};
+			}
+		}
+	}
+};
 
 export default tseslint.config(
 	{
@@ -125,13 +193,23 @@ export default tseslint.config(
             "functional/readonly-type": "off"
 		}
 	},
-	// Overrides for Configuration Files
-	{
-		files: ["package.json"],
-		rules: {
-			"depend/ban-dependencies": "off"
-		}
-	},
+    // Configuration for package.json
+    {
+        files: ["package.json"],
+        language: "json/json",
+        plugins: {
+            json,
+            "package-json": packageJsonPlugin
+        },
+        rules: {
+            "package-json/sort-dependencies": "error",
+            // Enable recommended JSON rules
+            "json/no-duplicate-keys": "error",
+            "json/no-empty-keys": "error",
+             // Restore override for depend/ban-dependencies
+             "depend/ban-dependencies": "off"
+        }
+    },
 	// Overrides for Obsidian Plugin Code (Views, Main, Settings)
 	{
 		files: ["src/views/**/*.ts", "src/main.ts", "src/settings.ts"],
