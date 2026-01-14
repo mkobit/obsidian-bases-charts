@@ -27,6 +27,7 @@ export default tseslint.config(
 		},
 	},
 	// Recommended configs
+	stylistic.configs.recommended,
 	...obsidianmd.configs.recommended,
 	functional.configs.strict,
 	functional.configs.stylistic,
@@ -75,28 +76,6 @@ export default tseslint.config(
                 "fixStyle": "separate-type-imports"
             }],
 
-            // Stylistic Rules (User Request)
-            // Indentation (Tab based as per .editorconfig)
-            "@stylistic/indent": ["error", "tab"],
-            "@stylistic/no-mixed-spaces-and-tabs": "error",
-
-            // Trailing commas
-            "@stylistic/comma-dangle": ["error", "always-multiline"],
-            // Single arg per line (for call arguments)
-            "@stylistic/function-call-argument-newline": ["error", "always"],
-            // Single parameter per line (for function definitions)
-            "@stylistic/function-paren-newline": ["error", "multiline"],
-            // Single array element per line
-            "@stylistic/array-element-newline": ["error", "always"],
-            // Single object property per line
-            "@stylistic/object-property-newline": ["error", { "allowAllPropertiesOnSameLine": false }],
-             // Consistent object curly spacing
-            "@stylistic/object-curly-spacing": ["error", "always"],
-            // Quote style (usually desirable with stylistic)
-            "@stylistic/quotes": ["error", "single", { "avoidEscape": true }],
-            // Semi (implied by good style)
-            "@stylistic/semi": ["error", "always"],
-
             // Unicorn Rules
             "unicorn/numeric-separators-style": "error",
 
@@ -129,9 +108,19 @@ export default tseslint.config(
 	{
 		files: ["package.json"],
 		rules: {
-			"depend/ban-dependencies": "off"
+			"depend/ban-dependencies": "off",
+            "@stylistic/indent": "off",
+            "@stylistic/comma-dangle": "off",
+            "@stylistic/quotes": "off",
+            "@stylistic/quote-props": "off"
 		}
 	},
+    {
+        files: ["**/*.json"],
+        rules: {
+            "@stylistic/indent": "off"
+        }
+    },
 	// Overrides for Obsidian Plugin Code (Views, Main, Settings)
 	{
 		files: ["src/views/**/*.ts", "src/main.ts", "src/settings.ts"],
@@ -199,18 +188,6 @@ export default tseslint.config(
             "functional/readonly-type": "off",
             // Allow require in scripts
              "@typescript-eslint/no-require-imports": "off",
-             // Relax stylistic indent for scripts if mixed content, but generally enforce tab
-             "@stylistic/indent": ["error", "tab"]
-        }
-    },
-    // Specific override for legacy script
-    {
-        files: ["scripts/generate.ts"],
-        rules: {
-             "@stylistic/indent": "off",
-             "@stylistic/function-call-argument-newline": "off",
-             "@stylistic/comma-dangle": "off",
-             "@stylistic/array-element-newline": "off"
         }
     },
 	globalIgnores([

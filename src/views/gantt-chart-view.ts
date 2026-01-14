@@ -1,94 +1,93 @@
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import type { QueryController, ViewOption } from 'obsidian';
-import { BaseChartView } from './base-chart-view';
-import { transformDataToChartOption } from '../charts/transformer';
-import type BarePlugin from '../main';
-import type { EChartsOption } from 'echarts';
-import type { BasesData } from '../charts/transformers/base';
+import type { QueryController, ViewOption } from 'obsidian'
+import { BaseChartView } from './base-chart-view'
+import { transformDataToChartOption } from '../charts/transformer'
+import type BarePlugin from '../main'
+import type { EChartsOption } from 'echarts'
+import type { BasesData } from '../charts/transformers/base'
 
 export class GanttChartView extends BaseChartView {
-	readonly type = 'gantt-chart';
+  readonly type = 'gantt-chart'
 
-	static readonly TASK_PROP_KEY = 'taskProp';
-	static readonly START_PROP_KEY = 'startProp';
-	static readonly END_PROP_KEY = 'endProp';
+  static readonly TASK_PROP_KEY = 'taskProp'
+  static readonly START_PROP_KEY = 'startProp'
+  static readonly END_PROP_KEY = 'endProp'
 
-	constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-		super(
-			controller,
-			scrollEl,
-			plugin,
-		);
-	}
+  constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
+    super(
+      controller,
+      scrollEl,
+      plugin,
+    )
+  }
 
-	protected getChartOption(data: BasesData): EChartsOption | null {
-		const taskProp = this.config.get(GanttChartView.TASK_PROP_KEY);
-		const startProp = this.config.get(GanttChartView.START_PROP_KEY);
-		const endProp = this.config.get(GanttChartView.END_PROP_KEY);
-		const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY); // Optional grouping
+  protected getChartOption(data: BasesData): EChartsOption | null {
+    const taskProp = this.config.get(GanttChartView.TASK_PROP_KEY)
+    const startProp = this.config.get(GanttChartView.START_PROP_KEY)
+    const endProp = this.config.get(GanttChartView.END_PROP_KEY)
+    const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY) // Optional grouping
 
-		const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean;
+    const showLegend = this.config.get(BaseChartView.LEGEND_KEY) as boolean
 
-		if (typeof taskProp !== 'string' || typeof startProp !== 'string' || typeof endProp !== 'string') {
-			return null;
-		}
+    if (typeof taskProp !== 'string' || typeof startProp !== 'string' || typeof endProp !== 'string') {
+      return null
+    }
 
-		return transformDataToChartOption(
-			data,
-			taskProp,
-			'',
-			'gantt',
-			{
-				taskProp,
-				startProp,
-				endProp,
-				seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined,
-				legend: showLegend,
-			},
-		);
-	}
+    return transformDataToChartOption(
+      data,
+      taskProp,
+      '',
+      'gantt',
+      {
+        taskProp,
+        startProp,
+        endProp,
+        seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined,
+        legend: showLegend,
+      },
+    )
+  }
 
-	static getViewOptions(plugin?: unknown): ViewOption[] {
-		const p = plugin as any;
+  static getViewOptions(plugin?: unknown): ViewOption[] {
+    const p = plugin as any
 
-		return [
-			{
-				key: GanttChartView.TASK_PROP_KEY,
-				displayName: 'Task property',
-				type: 'dropdown',
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-				options: p?.getProperties?.() ?? {},
-			},
-			{
-				key: GanttChartView.START_PROP_KEY,
-				displayName: 'Start time property',
-				type: 'dropdown',
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-				options: p?.getProperties?.() ?? {},
-			},
-			{
-				key: GanttChartView.END_PROP_KEY,
-				displayName: 'End time property',
-				type: 'dropdown',
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-				options: p?.getProperties?.() ?? {},
-			},
-			{
-				key: BaseChartView.SERIES_PROP_KEY,
-				displayName: 'Group by property',
-				type: 'dropdown',
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-				options: p?.getProperties?.() ?? {},
-			},
-			...BaseChartView.getCommonViewOptions().filter(o => {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				const key = (o as any).key;
-				return key !== BaseChartView.X_AXIS_PROP_KEY &&
-                        key !== BaseChartView.Y_AXIS_PROP_KEY &&
-                        key !== BaseChartView.SERIES_PROP_KEY;
-			}),
-		];
-	}
+    return [
+      {
+        key: GanttChartView.TASK_PROP_KEY,
+        displayName: 'Task property',
+        type: 'dropdown',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        options: p?.getProperties?.() ?? {},
+      },
+      {
+        key: GanttChartView.START_PROP_KEY,
+        displayName: 'Start time property',
+        type: 'dropdown',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        options: p?.getProperties?.() ?? {},
+      },
+      {
+        key: GanttChartView.END_PROP_KEY,
+        displayName: 'End time property',
+        type: 'dropdown',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        options: p?.getProperties?.() ?? {},
+      },
+      {
+        key: BaseChartView.SERIES_PROP_KEY,
+        displayName: 'Group by property',
+        type: 'dropdown',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        options: p?.getProperties?.() ?? {},
+      },
+      ...BaseChartView.getCommonViewOptions().filter((o) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const key = (o as any).key
+        return key !== BaseChartView.X_AXIS_PROP_KEY
+          && key !== BaseChartView.Y_AXIS_PROP_KEY
+          && key !== BaseChartView.SERIES_PROP_KEY
+      }),
+    ]
+  }
 }
