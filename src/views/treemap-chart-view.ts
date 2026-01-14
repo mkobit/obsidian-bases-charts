@@ -1,70 +1,67 @@
 import type {
-	QueryController,
-	ViewOption,
-} from 'obsidian';
-import type BarePlugin from '../main';
-import { BaseChartView } from './base-chart-view';
-import { transformDataToChartOption } from '../charts/transformer';
-import type { EChartsOption } from 'echarts';
-import type { BasesData } from '../charts/transformers/base';
+  QueryController,
+  ViewOption,
+} from 'obsidian'
+import type BarePlugin from '../main'
+import { BaseChartView } from './base-chart-view'
+import { transformDataToChartOption } from '../charts/transformer'
+import type { EChartsOption } from 'echarts'
+import type { BasesData } from '../charts/transformers/base'
 
 export class TreemapChartView extends BaseChartView {
-	readonly type = 'treemap-chart';
+  readonly type = 'treemap-chart'
 
-	constructor(controller: Readonly<QueryController>, containerEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-		super(
-			controller,
-			containerEl,
-			plugin,
-		);
-	}
+  constructor(controller: Readonly<QueryController>, containerEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
+    super(
+      controller,
+      containerEl,
+      plugin,
+    )
+  }
 
+  getViewType(): string {
+    return 'treemap-chart'
+  }
 
-	getViewType(): string {
-		return 'treemap-chart';
-	}
+  getDisplayText(): string {
+    return 'Treemap'
+  }
 
+  getIcon(): string {
+    return 'layout-grid' // Use an icon that looks like a treemap
+  }
 
-	getDisplayText(): string {
-		return 'Treemap';
-	}
+  static getViewOptions(_?: unknown): ViewOption[] {
+    return [
+      {
+        displayName: 'Name Property',
+        type: 'property',
+        key: BaseChartView.X_AXIS_PROP_KEY, // Map to Name
+        placeholder: 'Select name property',
+      },
+      {
+        displayName: 'Value Property',
+        type: 'property',
+        key: BaseChartView.Y_AXIS_PROP_KEY, // Map to Value
+        placeholder: 'Select value property',
+      },
+    ]
+  }
 
+  protected getChartOption(data: BasesData): EChartsOption | null {
+    const nameProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string
+    const valueProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY) as string
 
-	getIcon(): string {
-		return 'layout-grid'; // Use an icon that looks like a treemap
-	}
+    if (!nameProp || !valueProp) {
+      return null
+    }
 
-	static getViewOptions(_?: unknown): ViewOption[] {
-		return [
-			{
-				displayName: 'Name Property',
-				type: 'property',
-				key: BaseChartView.X_AXIS_PROP_KEY, // Map to Name
-				placeholder: 'Select name property',
-			},
-			{
-				displayName: 'Value Property',
-				type: 'property',
-				key: BaseChartView.Y_AXIS_PROP_KEY, // Map to Value
-				placeholder: 'Select value property',
-			},
-		];
-	}
-
-	protected getChartOption(data: BasesData): EChartsOption | null {
-		const nameProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string;
-		const valueProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY) as string;
-
-		if (!nameProp || !valueProp) {
-			return null;
-		}
-
-		return transformDataToChartOption(
-			data,
-			nameProp,
-			valueProp,
-			'treemap',
-			{},
-		);
-	}
+    return transformDataToChartOption(
+      data,
+      nameProp,
+      valueProp,
+      'treemap',
+      {},
+    )
+  }
 }
