@@ -11,6 +11,12 @@ export interface CartesianTransformerOptions extends BaseTransformerOptions {
   readonly seriesProp?: string
 }
 
+interface CartesianDataPoint {
+  readonly x: string
+  readonly y: number | null
+  readonly s: string
+}
+
 export function createCartesianChartOption(
   data: BasesData,
   xProp: string,
@@ -27,9 +33,9 @@ export function createCartesianChartOption(
 
   // 1. Normalize Data for Dataset
   // Structure: { x, y, s }
-  const normalizedData = R.map(
+  const normalizedData: ReadonlyArray<CartesianDataPoint> = R.map(
     data,
-    (item) => {
+    (item): CartesianDataPoint => {
       const xValRaw = getNestedValue(
         item,
         xProp,
@@ -55,26 +61,29 @@ export function createCartesianChartOption(
 
   // 2. Get unique X values (categories) for the axis
   // This ensures the axis has all categories even if filtered out in some series
-  const xAxisData = R.pipe(
+  const xAxisData: readonly string[] = R.pipe(
     normalizedData,
     R.map(d => d.x),
     R.unique(),
   )
 
   // 3. Identify Series
-  const seriesNames = R.pipe(
+  const seriesNames: readonly string[] = R.pipe(
     normalizedData,
     R.map(d => d.s),
     R.unique(),
   )
 
   // 4. Create Datasets
-  const sourceDataset: DatasetComponentOption = { source: normalizedData }
+  const sourceDataset: DatasetComponentOption = {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    source: normalizedData as unknown as Record<string, unknown>[],
+  }
 
   // If we have a seriesProp, we create filtered datasets for each series
   // If no seriesProp, we just use the source dataset directly (datasetIndex 0)
-  const filterDatasets: DatasetComponentOption[] = seriesProp
-    ? seriesNames.map(name => ({
+  const filterDatasets: ReadonlyArray<DatasetComponentOption> = seriesProp
+    ? seriesNames.map((name): DatasetComponentOption => ({
         transform: {
           type: 'filter',
           config: { dimension: 's',
@@ -83,11 +92,11 @@ export function createCartesianChartOption(
       }))
     : []
 
-  const datasets: DatasetComponentOption[] = [sourceDataset,
+  const datasets: ReadonlyArray<DatasetComponentOption> = [sourceDataset,
     ...filterDatasets]
 
   // 5. Build Series Options
-  const seriesOptions: SeriesOption[] = seriesNames.map((name, idx) => {
+  const seriesOptions: ReadonlyArray<SeriesOption> = seriesNames.map((name, idx): SeriesOption => {
     // If seriesProp exists, we use the filtered datasets (starting at index 1)
     // If not, we use the source dataset (index 0)
     const datasetIndex = seriesProp ? idx + 1 : 0
@@ -109,10 +118,10 @@ export function createCartesianChartOption(
             tooltip: ['x',
               'y',
               's'] },
-    }
+    } as const
 
     return chartType === 'line'
-      ? (() => {
+      ? ((): LineSeriesOption => {
           const lineItem: LineSeriesOption = {
             ...base,
             type: 'line',
@@ -123,7 +132,7 @@ export function createCartesianChartOption(
           }
           return lineItem
         })()
-      : (() => {
+      : ((): BarSeriesOption => {
           const barItem: BarSeriesOption = {
             ...base,
             type: 'bar',
@@ -134,7 +143,7 @@ export function createCartesianChartOption(
   })
 
   const opt: EChartsOption = {
-    dataset: datasets,
+    dataset: [...datasets],
     xAxis: flipAxis
       ? {
           type: 'value',
@@ -142,7 +151,7 @@ export function createCartesianChartOption(
         }
       : {
           type: 'category',
-          data: xAxisData,
+          data: [...xAxisData],
           name: xAxisLabel,
           axisLabel: {
             rotate: xAxisRotate,
@@ -151,7 +160,7 @@ export function createCartesianChartOption(
     yAxis: flipAxis
       ? {
           type: 'category',
-          data: xAxisData,
+          data: [...xAxisData],
           name: xAxisLabel,
           axisLabel: {
             rotate: xAxisRotate,
@@ -161,7 +170,7 @@ export function createCartesianChartOption(
           type: 'value',
           name: yAxisLabel,
         },
-    series: seriesOptions,
+    series: [...seriesOptions],
     tooltip: {
       trigger: 'axis',
     },

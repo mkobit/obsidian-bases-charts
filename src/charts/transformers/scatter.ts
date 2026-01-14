@@ -41,9 +41,9 @@ export function createScatterChartOption(
 
   // 1. Normalize Data for Dataset
   // Structure: { x, y, s (series), size? }
-  const normalizedData = R.map(
+  const normalizedData: ReadonlyArray<ScatterDataPoint> = R.map(
     data,
-    (item) => {
+    (item): ScatterDataPoint => {
       const xRaw = getNestedValue(
         item,
         xProp,
@@ -75,23 +75,27 @@ export function createScatterChartOption(
   )
 
   // 2. Get unique X values (categories)
-  const xAxisData = R.pipe(
+  const xAxisData: readonly string[] = R.pipe(
     normalizedData,
     R.map(d => d.x),
     R.unique(),
   )
 
   // 3. Get unique Series
-  const seriesNames = R.pipe(
+  const seriesNames: readonly string[] = R.pipe(
     normalizedData,
     R.map(d => d.s),
     R.unique(),
   )
 
   // 4. Create Datasets
-  const sourceDataset: DatasetComponentOption = { source: normalizedData }
+  // Dataset source accepts array, so we might need to cast to mutable or spread
+  const sourceDataset: DatasetComponentOption = {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    source: normalizedData as unknown as Record<string, unknown>[],
+  }
 
-  const filterDatasets: DatasetComponentOption[] = seriesNames.map(name => ({
+  const filterDatasets: ReadonlyArray<DatasetComponentOption> = seriesNames.map((name): DatasetComponentOption => ({
     transform: {
       type: 'filter',
       config: { dimension: 's',
@@ -99,14 +103,14 @@ export function createScatterChartOption(
     },
   }))
 
-  const datasets: DatasetComponentOption[] = [sourceDataset,
+  const datasets: ReadonlyArray<DatasetComponentOption> = [sourceDataset,
     ...filterDatasets]
 
   // Calculate Min/Max for VisualMap if needed
-  const visualMapOption: VisualMapComponentOption | undefined = (!sizeProp && !options?.visualMapType)
+  const visualMapOption: Readonly<VisualMapComponentOption> | undefined = (!sizeProp && !options?.visualMapType)
     ? undefined
-    : (() => {
-        const sizes = sizeProp
+    : ((): Readonly<VisualMapComponentOption> => {
+        const sizes: readonly number[] = sizeProp
           ? R.pipe(
               normalizedData,
               R.map(d => d.size),
@@ -130,7 +134,7 @@ export function createScatterChartOption(
           type: options?.visualMapType ?? 'continuous',
           dimension: sizeProp ? getDimension('size') : undefined,
           inRange: {
-            ...(options?.visualMapColor ? { color: options.visualMapColor } : {}),
+            ...(options?.visualMapColor ? { color: [...options.visualMapColor] } : {}),
             ...(sizeProp
               ? { symbolSize: [10,
                   50] }
@@ -140,7 +144,7 @@ export function createScatterChartOption(
       })()
 
   // 5. Build Series Options
-  const seriesOptions: ScatterSeriesOption[] = seriesNames.map((name, idx) => {
+  const seriesOptions: ReadonlyArray<ScatterSeriesOption> = seriesNames.map((name, idx): ScatterSeriesOption => {
     const datasetIndex = idx + 1
 
     return {
@@ -175,10 +179,10 @@ export function createScatterChartOption(
   })
 
   const opt: EChartsOption = {
-    dataset: datasets,
+    dataset: [...datasets],
     xAxis: {
       type: 'category', // Consistent with bar/line
-      data: xAxisData,
+      data: [...xAxisData],
       name: xAxisLabel,
       splitLine: { show: true },
       axisLabel: {
@@ -190,12 +194,13 @@ export function createScatterChartOption(
       name: yAxisLabel,
       splitLine: { show: true },
     },
-    series: seriesOptions,
+    series: [...seriesOptions],
     tooltip: {
       trigger: 'item',
     },
     ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {}),
-    ...(visualMapOption ? { visualMap: visualMapOption } : {}),
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    ...(visualMapOption ? { visualMap: visualMapOption as VisualMapComponentOption } : {}),
   }
 
   return opt

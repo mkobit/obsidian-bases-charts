@@ -161,14 +161,27 @@ export default tseslint.config(
 				ignoreClasses: true,
 				ignoreAccessorPattern: ["this.**"]
 			}],
+			"functional/prefer-immutable-types": ["error", {
+				enforcement: "ReadonlyShallow",
+				ignoreClasses: true,
+				ignoreTypePattern: ["^.*Option$"]
+			}],
+			"functional/type-declaration-immutability": ["error", {
+				rules: [
+					{
+						identifiers: "^I?Mutable.+",
+						immutability: "Mutable",
+						comparator: "AtLeast"
+					},
+					{
+						identifiers: "^(?!I?Mutable).+",
+						immutability: "ReadonlyDeep",
+						comparator: "AtLeast"
+					}
+				],
+				ignoreInterfaces: false
+			}],
 
-			// DISABLE Strict Type Immutability Rules Globally
-			// These rules (from 'stylistic' and 'strict') are too aggressive for the current codebase,
-			// especially when interacting with ECharts (mutable types) and Obsidian APIs.
-			// Enabling them requires significant refactoring or deep type wrappers.
-			"functional/prefer-immutable-types": "off",
-			"functional/type-declaration-immutability": "off",
-			"functional/readonly-type": "off"
 		}
 	},
 	// Configuration for package.json
@@ -207,6 +220,8 @@ export default tseslint.config(
 			"functional/no-conditional-statements": "off",
 			"functional/no-mixed-types": "off",
 			"functional/functional-parameters": "off",
+			"functional/prefer-immutable-types": "off",
+			"functional/type-declaration-immutability": "off",
 			"functional/immutable-data": ["error", {
 				ignoreClasses: true,
 				ignoreAccessorPattern: ["this.**"]
@@ -230,9 +245,53 @@ export default tseslint.config(
 			"functional/no-conditional-statements": "off",
 			"functional/no-mixed-types": "off",
 			"functional/functional-parameters": "off",
+			"functional/prefer-immutable-types": "off",
+			"functional/type-declaration-immutability": "off",
 			"functional/immutable-data": ["error", {
 				ignoreClasses: true,
 				ignoreAccessorPattern: ["this.**"]
+			}]
+		}
+	},
+	// Legacy Transformers (Pending Refactor)
+	{
+		files: ["src/charts/transformers/**/*.ts", "src/@types/**/*.ts"],
+		rules: {
+			"functional/prefer-immutable-types": "off",
+			"functional/type-declaration-immutability": "off",
+			"functional/readonly-type": "off"
+		}
+	},
+	// Refactored Transformers (Strict)
+	{
+		files: [
+			"src/charts/transformer.ts",
+			"src/charts/transformers/base.ts",
+			"src/charts/transformers/cartesian.ts",
+			"src/charts/transformers/pie.ts",
+			"src/charts/transformers/scatter.ts",
+			"src/charts/transformers/utils.ts"
+		],
+		rules: {
+			"functional/prefer-immutable-types": ["error", {
+				enforcement: "ReadonlyShallow",
+				ignoreClasses: true,
+				ignoreTypePattern: ["^.*Option$"]
+			}],
+			"functional/type-declaration-immutability": ["error", {
+				rules: [
+					{
+						identifiers: "^I?Mutable.+",
+						immutability: "Mutable",
+						comparator: "AtLeast"
+					},
+					{
+						identifiers: "^(?!I?Mutable).+",
+						immutability: "ReadonlyShallow",
+						comparator: "AtLeast"
+					}
+				],
+				ignoreInterfaces: false
 			}]
 		}
 	},
@@ -258,16 +317,6 @@ export default tseslint.config(
 			"@typescript-eslint/no-require-imports": "off",
 			// Relax stylistic indent for scripts if mixed content, but generally enforce tab
 			"@stylistic/indent": ["error", 2]
-		}
-	},
-	// Specific override for legacy script
-	{
-		files: ["scripts/generate.ts"],
-		rules: {
-			"@stylistic/indent": "off",
-			"@stylistic/function-call-argument-newline": "off",
-			"@stylistic/comma-dangle": "off",
-			"@stylistic/array-element-newline": "off"
 		}
 	},
 	globalIgnores([
