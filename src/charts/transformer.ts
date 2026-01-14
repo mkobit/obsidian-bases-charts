@@ -157,6 +157,12 @@ import {
   createPolarBarChartOption,
 } from './transformers/polar-bar'
 import type {
+  PolarScatterTransformerOptions,
+} from './transformers/polar-scatter'
+import {
+  createPolarScatterChartOption,
+} from './transformers/polar-scatter'
+import type {
   MapTransformerOptions,
 } from './transformers/map'
 import {
@@ -191,6 +197,7 @@ export type ChartTransformerOptions
     | RadialBarTransformerOptions
     | PolarLineTransformerOptions
     | PolarBarTransformerOptions
+    | PolarScatterTransformerOptions
 
 // Helper to cast options
 function asOptions<T>(options: unknown): T {
@@ -382,6 +389,12 @@ const transformerMap: Record<
     yProp,
     asOptions(options),
   ),
+  polarScatter: (data, xProp, yProp, options) => createPolarScatterChartOption(
+    data,
+    xProp,
+    yProp,
+    asOptions(options),
+  ),
   map: (data, _, yProp, options) => {
     const opts = asOptions<MapTransformerOptions>(options)
     return createMapChartOption(
@@ -446,4 +459,5 @@ export { type BulletTransformerOptions } from './transformers/bullet'
 export { type RadialBarTransformerOptions } from './transformers/radial-bar'
 export { type PolarLineTransformerOptions } from './transformers/polar-line'
 export { type PolarBarTransformerOptions } from './transformers/polar-bar'
+export { type PolarScatterTransformerOptions } from './transformers/polar-scatter'
 export { type MapTransformerOptions } from './transformers/map'

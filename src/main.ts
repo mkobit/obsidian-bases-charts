@@ -34,6 +34,7 @@ import { BulletChartView } from './views/bullet-chart-view'
 import { RadialBarChartView } from './views/radial-bar-chart-view'
 import { PolarLineChartView } from './views/polar-line-chart-view'
 import { PolarBarChartView } from './views/polar-bar-chart-view'
+import { PolarScatterChartView } from './views/polar-scatter-chart-view'
 import { MapChartView } from './views/map-chart-view'
 import { initializeI18n } from './lang/i18n'
 import i18next from 'i18next'
@@ -504,6 +505,20 @@ export default class BarePlugin extends Plugin {
           this,
         ),
         options: (_?: unknown) => PolarBarChartView.getViewOptions(),
+      },
+    )
+
+    this.registerBasesView(
+      'polar-scatter-chart',
+      {
+        name: i18next.t('views.polar_scatter.name'),
+        icon: 'crosshair',
+        factory: (controller, containerEl) => new PolarScatterChartView(
+          controller,
+          containerEl,
+          this,
+        ),
+        options: (_?: unknown) => PolarScatterChartView.getViewOptions(),
       },
     )
 
