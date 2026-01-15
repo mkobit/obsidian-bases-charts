@@ -104,6 +104,12 @@
 		},
 		"map": {
 			"name": "Map Chart"
+		},
+		"word_cloud": {
+			"name": "Word Cloud"
+		},
+		"liquid": {
+			"name": "Liquid Chart"
 		}
 	}
 }
