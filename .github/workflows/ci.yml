@@ -12,12 +12,12 @@ jobs:
         if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
 
         steps:
-            - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-            - uses: pnpm/action-setup@fe02b34fdd1deb87bd3e79d9ea5d2b571aa58f55 # v4
+            - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+            - uses: pnpm/action-setup@fe02b34fdd1deb87bd3e79d9ea5d2b571aa58f55
               with:
                   version: 9
             - name: Use Node.js 22.x
-              uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+              uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a
               with:
                   node-version: 22.x
                   cache: "pnpm"
@@ -36,7 +36,7 @@ jobs:
               if: (success() || failure()) && steps.install.outcome == 'success'
               run: pnpm run test:coverage
             - name: Upload coverage
-              uses: actions/upload-artifact@65c4cd1a9c4b296962f743c9b6313390f2d8c280 # v4.6.0
+              uses: actions/upload-artifact@65c4cd1a9c4b296962f743c9b6313390f2d8c280
               if: (success() || failure()) && steps.install.outcome == 'success'
               with:
                   name: coverage
