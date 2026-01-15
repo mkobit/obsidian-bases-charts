@@ -36,6 +36,8 @@ import { PolarLineChartView } from './views/polar-line-chart-view'
 import { PolarBarChartView } from './views/polar-bar-chart-view'
 import { PolarScatterChartView } from './views/polar-scatter-chart-view'
 import { MapChartView } from './views/map-chart-view'
+import { WordCloudChartView } from './views/word-cloud-chart-view'
+// import { LiquidChartView } from './views/liquid-chart-view'
 import { initializeI18n } from './lang/i18n'
 import i18next from 'i18next'
 
@@ -535,6 +537,36 @@ export default class BarePlugin extends Plugin {
         options: (_?: unknown) => MapChartView.getViewOptions(),
       },
     )
+
+    this.registerBasesView(
+      'word-cloud-chart',
+      {
+        name: i18next.t('views.word_cloud.name'),
+        icon: 'cloud',
+        factory: (controller, containerEl) => new WordCloudChartView(
+          controller,
+          containerEl,
+          this,
+        ),
+        options: (_?: unknown) => WordCloudChartView.getViewOptions(),
+      },
+    )
+
+    /*
+    this.registerBasesView(
+      'liquid-chart',
+      {
+        name: i18next.t('views.liquid.name'),
+        icon: 'droplet',
+        factory: (controller, containerEl) => new LiquidChartView(
+          controller,
+          containerEl,
+          this,
+        ),
+        options: (_?: unknown) => LiquidChartView.getViewOptions(),
+      },
+    )
+    */
 
     this.addSettingTab(new SettingTab(
       this.app,
