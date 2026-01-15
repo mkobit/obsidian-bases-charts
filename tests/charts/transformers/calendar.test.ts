@@ -28,10 +28,10 @@ describe(
         expect(option).toBeDefined()
 
         // Check Calendar Component
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+
         const calendar = option.calendar as CalendarComponentOption
         expect(calendar).toBeDefined()
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(calendar.range).toEqual(['2023-01-01',
           '2023-02-01'])
 
@@ -119,7 +119,6 @@ describe(
           { valueProp: 'val' },
         )
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
         const visualMap = option.visualMap as VisualMapComponentOption
 
         expect(visualMap.min).toBe(10)
@@ -130,7 +129,7 @@ describe(
     it(
       'should handle empty data',
       () => {
-        const data: unknown[] = []
+        const data: [] = []
         const option = transformDataToChartOption(
           data,
           'date',
