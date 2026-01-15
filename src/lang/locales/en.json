@@ -106,10 +106,13 @@
 			"name": "Map Chart"
 		},
 		"word_cloud": {
-			"name": "Word Cloud"
-		},
-		"liquid": {
-			"name": "Liquid Chart"
+			"name": "Word Cloud",
+			"options": {
+				"shape": "Shape",
+				"grid_size": "Grid size",
+				"min_font_size": "Min font size",
+				"max_font_size": "Max font size"
+			}
 		}
 	}
 }

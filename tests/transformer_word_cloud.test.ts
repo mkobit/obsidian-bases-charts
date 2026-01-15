@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect } from 'vitest'
 import { transformDataToChartOption } from '../src/charts/transformer'
 
@@ -29,7 +32,6 @@ describe(
         )
 
         expect(option).toBeDefined()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const series = option.series as any[]
         expect(series).toBeDefined()
         expect(series.length).toBe(1)
@@ -38,7 +40,6 @@ describe(
         expect(series[0].sizeRange).toEqual([10,
           50])
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const seriesData = series[0].data as any[]
         expect(seriesData.length).toBe(2)
 

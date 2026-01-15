@@ -6,6 +6,7 @@ import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
 import type { WordCloudTransformerOptions } from '../charts/transformers/extensions/word-cloud'
+import i18next from 'i18next'
 
 export class WordCloudChartView extends BaseChartView {
   readonly type = 'word-cloud-chart'
@@ -49,33 +50,33 @@ export class WordCloudChartView extends BaseChartView {
     return [
       ...BaseChartView.getCommonViewOptions(),
       {
-        displayName: 'Shape',
+        displayName: i18next.t('views.word_cloud.options.shape'),
         type: 'dropdown',
         key: 'shape',
         options: {
-          circle: 'Circle',
-          cardioid: 'Cardioid',
-          diamond: 'Diamond',
+          'circle': 'Circle',
+          'cardioid': 'Cardioid',
+          'diamond': 'Diamond',
           'triangle-forward': 'Triangle Forward',
-          triangle: 'Triangle',
-          pentagon: 'Pentagon',
-          star: 'Star',
+          'triangle': 'Triangle',
+          'pentagon': 'Pentagon',
+          'star': 'Star',
         },
       },
       {
-        displayName: 'Grid Size',
+        displayName: i18next.t('views.word_cloud.options.grid_size'),
         type: 'text',
         key: 'gridSize',
         placeholder: 'Grid size (default: 2)',
       },
       {
-        displayName: 'Min Font Size',
+        displayName: i18next.t('views.word_cloud.options.min_font_size'),
         type: 'text',
         key: 'sizeRangeMin',
         placeholder: 'Min font size (default: 12)',
       },
       {
-        displayName: 'Max Font Size',
+        displayName: i18next.t('views.word_cloud.options.max_font_size'),
         type: 'text',
         key: 'sizeRangeMax',
         placeholder: 'Max font size (default: 60)',
