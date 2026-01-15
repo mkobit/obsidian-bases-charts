@@ -32,6 +32,7 @@
 	"include": [
 		"src/**/*.ts",
 		"tests/**/*.ts",
+		"sandbox/**/*.ts",
 		"vitest.config.ts",
 		"scripts/**/*.ts",
 		"playwright.config.ts"

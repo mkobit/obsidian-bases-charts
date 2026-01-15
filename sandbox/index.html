@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bases Charts Sandbox</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #202020;
+        color: #dcddde;
+        display: flex;
+        height: 100vh;
+        font-family: sans-serif;
+      }
+      #sidebar {
+        width: 250px;
+        background-color: #1a1a1a;
+        border-right: 1px solid #333;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      #sidebar h2 {
+        margin-top: 0;
+        font-size: 1.2rem;
+        color: #999;
+      }
+      .controls {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #333;
+      }
+      button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background: #333;
+        color: #ccc;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-bottom: 5px;
+      }
+      button:hover {
+        background: #444;
+        color: #fff;
+      }
+      button.active {
+        background: #7b68ee; /* Obsidian purple-ish */
+        color: #fff;
+      }
+      #main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        position: relative;
+      }
+      .bases-echarts-container {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #333;
+        background: #202020;
+      }
+      .bases-echarts {
+        width: 100%;
+        height: 100%;
+      }
+      label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="sidebar">
+      <h2>Bases Sandbox</h2>
+      <div class="controls">
+        <label>
+          <input type="checkbox" id="mobile-toggle"> Simulate Mobile
+        </label>
+      </div>
+      <div id="chart-list">
+        <!-- Buttons injected by JS -->
+      </div>
+    </div>
+    <div id="main">
+      <div class="bases-echarts-container">
+        <div id="chart" class="bases-echarts"></div>
+      </div>
+    </div>
+    <script type="module" src="./sandbox.ts"></script>
+  </body>
+</html>

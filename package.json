@@ -7,11 +7,12 @@
 	"scripts": {
 		"build": "tsc -noEmit && node esbuild.config.mjs production",
 		"dev": "node esbuild.config.mjs",
+		"dev:sandbox": "vite serve sandbox",
 		"lint": "eslint .",
 		"prepare": "husky",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
-		"test:visual": "playwright test"
+		"test:smoke": "playwright test"
 	},
 	"keywords": [],
 	"license": "MIT",
