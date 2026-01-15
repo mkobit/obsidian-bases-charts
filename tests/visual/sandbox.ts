@@ -11,22 +11,26 @@ declare global {
       data: BasesData,
       xProp: string,
       yProp: string,
-      options?: Record<string, unknown>
+      options?: Record<string, unknown>,
     ) => void
   }
 }
 
+// eslint-disable-next-line functional/no-let
 let chartInstance: echarts.ECharts | null = null
 
+// eslint-disable-next-line functional/immutable-data
 window.renderChart = (
   type: ChartType,
   data: BasesData,
   xProp: string,
   yProp: string,
-  options: Record<string, unknown> = {}
+  options: Record<string, unknown> = {},
 ) => {
   const chartDom = document.getElementById('chart')
-  if (!chartDom) throw new Error('Chart DOM not found')
+  if (!chartDom) {
+    throw new Error('Chart DOM not found')
+  }
 
   if (chartInstance) {
     chartInstance.dispose()
