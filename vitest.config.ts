@@ -16,7 +16,8 @@ export default defineConfig({
         'src/**/*.d.ts',
         'tests/**',
         'src/settings.ts',
-        'src/views/base-chart-view.ts'], // exclude files with parse errors in coverage-v8
+        'src/views/base-chart-view.ts',
+        'src/views/map-chart-view.ts'], // exclude files with parse errors in coverage-v8
     },
   },
 })
