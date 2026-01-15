@@ -23,3 +23,8 @@ coverage
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
+
+# Playwright
+playwright-report/
+test-results/
+vite.log

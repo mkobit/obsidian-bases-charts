@@ -76,7 +76,17 @@ export abstract class BaseChartView extends BasesView {
 
   private readonly onResizeDebounce = debounce(
     () => {
+      if (this.chartEl.clientWidth === 0 || this.chartEl.clientHeight === 0) {
+        return
+      }
       this.chart?.resize()
+
+      // Re-render to update responsive options (like legend visibility)
+      // This is expensive but necessary for "smart" responsiveness
+      // Actually, just resizing handles layout, but if we want to toggle legend, we need setOption again.
+      // Let's just resize for now, as re-calculating options might be too heavy for resize.
+      // But if we want the legend to disappear on small screens, we need to update options.
+      // Let's defer that optimization for now to avoid flicker/loop.
     },
     100,
     true,
@@ -90,7 +100,24 @@ export abstract class BaseChartView extends BasesView {
     this.renderChart()
   }
 
+  protected isCompact(): boolean {
+    return (this.containerEl.clientWidth || 0) < 500
+  }
+
   protected getCommonTransformerOptions(_?: unknown): BaseTransformerOptions {
+    const isCompact = this.isCompact()
+    // Prioritize user config, but fallback to smart defaults if not explicitly set?
+    // BasesView config.get returns undefined/null if not set?
+    // Assuming boolean toggles might be explicitly false.
+    // For simplicity: If compact, default legend to false unless user explicitly turned it on?
+    // Current logic: config.get returns the stored value.
+
+    // Better logic: Respect user choice if present.
+    // But config is just a Map.
+
+    // Let's just use the config value for now, but auto-rotate labels if compact.
+    const userRotate = this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY)
+
     return {
       legend: this.config.get(BaseChartView.LEGEND_KEY) as boolean,
       legendPosition: this.config.get(BaseChartView.LEGEND_POSITION_KEY) as 'top' | 'bottom' | 'left' | 'right',
@@ -98,7 +125,7 @@ export abstract class BaseChartView extends BasesView {
       flipAxis: this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean,
       xAxisLabel: this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string,
       yAxisLabel: this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string,
-      xAxisLabelRotate: Number(this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY) || 0),
+      xAxisLabelRotate: Number(userRotate !== undefined && userRotate !== '' ? userRotate : (isCompact ? 45 : 0)),
     }
   }
 
@@ -109,6 +136,7 @@ export abstract class BaseChartView extends BasesView {
 
   protected executeRender(_?: unknown): void {
     const height = (this.config.get(BaseChartView.HEIGHT_KEY) as string) || this.plugin.settings.defaultHeight
+    this.chartEl.style.width = '100%'
     this.chartEl.style.height = height
 
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
