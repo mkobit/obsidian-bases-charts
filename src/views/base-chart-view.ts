@@ -136,9 +136,7 @@ export abstract class BaseChartView extends BasesView {
 
   protected executeRender(_?: unknown): void {
     const height = (this.config.get(BaseChartView.HEIGHT_KEY) as string) || this.plugin.settings.defaultHeight
-    // eslint-disable-next-line obsidianmd/no-static-styles-assignment
-    this.chartEl.style.width = '100%'
-    this.chartEl.style.height = height
+    this.chartEl.setCssStyles({ width: '100%', height })
 
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.chart
