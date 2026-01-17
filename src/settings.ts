@@ -1,8 +1,8 @@
-/* eslint-disable obsidianmd/ui/sentence-case */
 import type { App } from 'obsidian'
 import { PluginSettingTab, Setting, Notice } from 'obsidian'
 import i18next from 'i18next'
 import type BarePlugin from './main'
+import { validateTheme } from './theme-validation'
 
 export interface CustomTheme {
   name: string
@@ -55,7 +55,7 @@ export class SettingTab extends PluginSettingTab {
       .setName(i18next.t('settings.global_theme.name'))
       .setDesc(i18next.t('settings.global_theme.desc'))
       .addDropdown((dropdown) => {
-        dropdown.addOption('', 'Default (Obsidian Theme)')
+        dropdown.addOption('', i18next.t('settings.global_theme.default_option'))
         this.plugin.settings.customThemes.forEach((theme) => {
           dropdown.addOption(theme.name, theme.name)
         })
@@ -72,10 +72,10 @@ export class SettingTab extends PluginSettingTab {
     this.plugin.settings.customThemes.forEach((theme, index) => {
       new Setting(containerEl)
         .setName(theme.name)
-        .setDesc('Custom ECharts Theme')
+        .setDesc(i18next.t('settings.custom_themes.desc'))
         .addExtraButton(button => button
           .setIcon('trash')
-          .setTooltip('Delete Theme')
+          .setTooltip(i18next.t('settings.custom_themes.delete_tooltip'))
           .onClick(async () => {
             this.plugin.settings.customThemes.splice(index, 1)
             if (this.plugin.settings.selectedTheme === theme.name) {
@@ -95,7 +95,7 @@ export class SettingTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName(i18next.t('settings.add_theme.name_label'))
       .addText(text => text
-        .setPlaceholder('My Custom Theme')
+        .setPlaceholder('My custom theme')
         .onChange((value) => {
           newThemeState.name = value
         }))
@@ -120,15 +120,12 @@ export class SettingTab extends PluginSettingTab {
           }
 
           if (this.plugin.settings.customThemes.some(t => t.name === newThemeState.name)) {
-            new Notice('A theme with this name already exists.')
+            new Notice(i18next.t('settings.add_theme.exists_error'))
             return
           }
 
-          try {
-            JSON.parse(newThemeState.json)
-          }
-          catch {
-            new Notice('Invalid JSON provided.')
+          if (!validateTheme(newThemeState.json)) {
+            new Notice(i18next.t('settings.add_theme.invalid_json_error'))
             return
           }
 
@@ -137,7 +134,7 @@ export class SettingTab extends PluginSettingTab {
             json: newThemeState.json.trim(),
           })
           await this.plugin.saveSettings()
-          new Notice('Theme added successfully.')
+          new Notice('Theme added successfully')
           this.display() // Refresh to show in list and dropdown
         }))
   }

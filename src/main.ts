@@ -41,6 +41,7 @@ import { WordCloudChartView } from './views/word-cloud-chart-view'
 import { initializeI18n } from './lang/i18n'
 import i18next from 'i18next'
 import * as echarts from 'echarts'
+import { validateTheme } from './theme-validation'
 
 export default class BarePlugin extends Plugin {
   public settings: BarePluginSettings = DEFAULT_SETTINGS
@@ -593,12 +594,13 @@ export default class BarePlugin extends Plugin {
 
   applyTheme(_?: unknown) {
     this.settings.customThemes.forEach((customTheme) => {
-      try {
+      if (validateTheme(customTheme.json)) {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const theme = JSON.parse(customTheme.json) as object
         echarts.registerTheme(customTheme.name, theme)
       }
-      catch (e) {
-        console.error(`Failed to parse custom ECharts theme: ${customTheme.name}`, e)
+      else {
+        console.error(`Failed to parse custom ECharts theme: ${customTheme.name}`)
       }
     })
   }
