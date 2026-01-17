@@ -116,7 +116,7 @@ export abstract class BaseChartView extends BasesView {
       ? this.chart.resize()
       : (this.chart = echarts.init(
           this.chartEl,
-          this.isDarkMode() ? 'dark' : undefined,
+          this.getTheme(),
         ))
 
     const data = this.data.data as unknown as BasesData
@@ -139,10 +139,17 @@ export abstract class BaseChartView extends BasesView {
       this.chart.dispose(),
       this.chart = echarts.init(
         this.chartEl,
-        this.isDarkMode() ? 'dark' : undefined,
+        this.getTheme(),
       ),
       this.renderChart()
     )
+  }
+
+  private getTheme(): string | undefined {
+    if (this.plugin.settings.customThemeJson && this.plugin.settings.customThemeJson.trim()) {
+      return 'custom'
+    }
+    return this.isDarkMode() ? 'dark' : undefined
   }
 
   private isDarkMode(_?: unknown): boolean {

@@ -40,12 +40,14 @@ import { WordCloudChartView } from './views/word-cloud-chart-view'
 // import { LiquidChartView } from './views/liquid-chart-view'
 import { initializeI18n } from './lang/i18n'
 import i18next from 'i18next'
+import * as echarts from 'echarts'
 
 export default class BarePlugin extends Plugin {
   public settings: BarePluginSettings = DEFAULT_SETTINGS
 
   async onload() {
     await this.loadSettings()
+    this.applyTheme()
     await initializeI18n()
 
     this.registerBasesView(
@@ -586,5 +588,18 @@ export default class BarePlugin extends Plugin {
 
   async saveSettings(_?: unknown) {
     await this.saveData(this.settings)
+    this.applyTheme()
+  }
+
+  applyTheme(_?: unknown) {
+    if (this.settings.customThemeJson && this.settings.customThemeJson.trim()) {
+      try {
+        const theme = JSON.parse(this.settings.customThemeJson) as object
+        echarts.registerTheme('custom', theme)
+      }
+      catch (e) {
+        console.error('Failed to parse custom ECharts theme', e)
+      }
+    }
   }
 }
