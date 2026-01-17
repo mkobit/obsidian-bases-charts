@@ -114,5 +114,12 @@
 				"max_font_size": "Max font size"
 			}
 		}
+	},
+	"settings": {
+		"custom_theme": {
+			"name": "Custom ECharts theme",
+			"desc": "Paste your custom ECharts theme JSON here. This will override the default theme.",
+			"placeholder": "{\"color\": [\"#5470c6\", \"#91cc75\", ...]}"
+		}
 	}
 }

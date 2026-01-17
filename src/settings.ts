@@ -1,6 +1,7 @@
 /* eslint-disable obsidianmd/ui/sentence-case */
 import type { App } from 'obsidian'
 import { PluginSettingTab, Setting, Notice } from 'obsidian'
+import i18next from 'i18next'
 import type BarePlugin from './main'
 
 export interface BarePluginSettings {
@@ -43,10 +44,10 @@ export class SettingTab extends PluginSettingTab {
         }))
 
     new Setting(containerEl)
-      .setName('Custom ECharts theme')
-      .setDesc('Paste your custom ECharts theme JSON here. This will override the default theme.')
+      .setName(i18next.t('settings.custom_theme.name'))
+      .setDesc(i18next.t('settings.custom_theme.desc'))
       .addTextArea(text => text
-        .setPlaceholder('{"color": ["#5470c6", "#91cc75", ...]}')
+        .setPlaceholder(i18next.t('settings.custom_theme.placeholder'))
         .setValue(this.plugin.settings.customThemeJson)
         .onChange(async (value) => {
           // Simple validation
