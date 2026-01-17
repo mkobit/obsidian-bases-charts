@@ -114,5 +114,26 @@
 				"max_font_size": "Max font size"
 			}
 		}
+	},
+	"settings": {
+		"global_theme": {
+			"name": "Default global theme",
+			"desc": "Select the default theme to apply to all charts unless overridden.",
+			"default_option": "Default (Obsidian theme)"
+		},
+		"custom_themes": {
+			"title": "Custom themes",
+			"desc": "Custom ECharts theme",
+			"delete_tooltip": "Delete theme"
+		},
+		"add_theme": {
+			"title": "Add new theme",
+			"name_label": "Theme name",
+			"json_label": "Theme JSON",
+			"json_desc": "Paste your custom ECharts theme JSON here.",
+			"button": "Add theme",
+			"exists_error": "A theme with this name already exists",
+			"invalid_json_error": "Invalid JSON provided for ECharts theme"
+		}
 	}
 }

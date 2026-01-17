@@ -26,6 +26,7 @@ export abstract class BaseChartView extends BasesView {
   public static readonly LEGEND_POSITION_KEY = 'legendPosition'
   public static readonly LEGEND_ORIENT_KEY = 'legendOrient'
   public static readonly HEIGHT_KEY = 'height'
+  public static readonly THEME_KEY = 'theme'
 
   // New Config Keys (Made public for easier access in subclasses without casting)
   public static readonly SIZE_PROP_KEY = 'sizeProp'
@@ -116,7 +117,7 @@ export abstract class BaseChartView extends BasesView {
       ? this.chart.resize()
       : (this.chart = echarts.init(
           this.chartEl,
-          this.isDarkMode() ? 'dark' : undefined,
+          this.getTheme(),
         ))
 
     const data = this.data.data as unknown as BasesData
@@ -139,18 +140,47 @@ export abstract class BaseChartView extends BasesView {
       this.chart.dispose(),
       this.chart = echarts.init(
         this.chartEl,
-        this.isDarkMode() ? 'dark' : undefined,
+        this.getTheme(),
       ),
       this.renderChart()
     )
+  }
+
+  private getTheme(): string | undefined {
+    const chartTheme = this.config.get(BaseChartView.THEME_KEY) as string
+    if (chartTheme && chartTheme !== 'default') {
+      return chartTheme
+    }
+
+    if (this.plugin.settings.selectedTheme) {
+      return this.plugin.settings.selectedTheme
+    }
+
+    return this.isDarkMode() ? 'dark' : undefined
   }
 
   private isDarkMode(_?: unknown): boolean {
     return document.body.classList.contains('theme-dark')
   }
 
-  static getCommonViewOptions(_?: unknown): ViewOption[] {
+  static getCommonViewOptions(plugin?: BarePlugin): ViewOption[] {
+    const themeOptions: Record<string, string> = {
+      default: 'Default (Global)',
+    }
+
+    if (plugin) {
+      plugin.settings.customThemes.forEach((t) => {
+        themeOptions[t.name] = t.name
+      })
+    }
+
     return [
+      {
+        displayName: 'Theme',
+        type: 'dropdown',
+        key: BaseChartView.THEME_KEY,
+        options: themeOptions,
+      } as ViewOption,
       {
         displayName: 'X-Axis Property',
         type: 'property',
