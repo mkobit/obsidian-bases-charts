@@ -116,10 +116,19 @@
 		}
 	},
 	"settings": {
-		"custom_theme": {
-			"name": "Custom ECharts theme",
-			"desc": "Paste your custom ECharts theme JSON here. This will override the default theme.",
-			"placeholder": "{\"color\": [\"#5470c6\", \"#91cc75\", ...]}"
+		"global_theme": {
+			"name": "Default global theme",
+			"desc": "Select the default theme to apply to all charts unless overridden."
+		},
+		"custom_themes": {
+			"title": "Custom themes"
+		},
+		"add_theme": {
+			"title": "Add new theme",
+			"name_label": "Theme name",
+			"json_label": "Theme JSON",
+			"json_desc": "Paste your custom ECharts theme JSON here.",
+			"button": "Add theme"
 		}
 	}
 }

@@ -4,16 +4,23 @@ import { PluginSettingTab, Setting, Notice } from 'obsidian'
 import i18next from 'i18next'
 import type BarePlugin from './main'
 
+export interface CustomTheme {
+  name: string
+  json: string
+}
+
 export interface BarePluginSettings {
   mySetting: string
   defaultHeight: string
-  customThemeJson: string
+  customThemes: CustomTheme[]
+  selectedTheme: string
 }
 
 export const DEFAULT_SETTINGS: BarePluginSettings = {
   mySetting: 'default',
   defaultHeight: '500px',
-  customThemeJson: '',
+  customThemes: [],
+  selectedTheme: '',
 }
 
 export class SettingTab extends PluginSettingTab {
@@ -43,25 +50,95 @@ export class SettingTab extends PluginSettingTab {
           await this.plugin.saveSettings()
         }))
 
+    // Global Theme Selection
     new Setting(containerEl)
-      .setName(i18next.t('settings.custom_theme.name'))
-      .setDesc(i18next.t('settings.custom_theme.desc'))
+      .setName(i18next.t('settings.global_theme.name'))
+      .setDesc(i18next.t('settings.global_theme.desc'))
+      .addDropdown((dropdown) => {
+        dropdown.addOption('', 'Default (Obsidian Theme)')
+        this.plugin.settings.customThemes.forEach((theme) => {
+          dropdown.addOption(theme.name, theme.name)
+        })
+        dropdown.setValue(this.plugin.settings.selectedTheme)
+        dropdown.onChange(async (value) => {
+          this.plugin.settings.selectedTheme = value
+          await this.plugin.saveSettings()
+        })
+      })
+
+    new Setting(containerEl).setName(i18next.t('settings.custom_themes.title')).setHeading()
+
+    // List existing custom themes
+    this.plugin.settings.customThemes.forEach((theme, index) => {
+      new Setting(containerEl)
+        .setName(theme.name)
+        .setDesc('Custom ECharts Theme')
+        .addExtraButton(button => button
+          .setIcon('trash')
+          .setTooltip('Delete Theme')
+          .onClick(async () => {
+            this.plugin.settings.customThemes.splice(index, 1)
+            if (this.plugin.settings.selectedTheme === theme.name) {
+              this.plugin.settings.selectedTheme = ''
+            }
+            await this.plugin.saveSettings()
+            this.display()
+          }))
+    })
+
+    // Add New Theme Section
+    new Setting(containerEl).setName(i18next.t('settings.add_theme.title')).setHeading()
+
+    const newThemeState = { name: '',
+      json: '' }
+
+    new Setting(containerEl)
+      .setName(i18next.t('settings.add_theme.name_label'))
+      .addText(text => text
+        .setPlaceholder('My Custom Theme')
+        .onChange((value) => {
+          newThemeState.name = value
+        }))
+
+    new Setting(containerEl)
+      .setName(i18next.t('settings.add_theme.json_label'))
+      .setDesc(i18next.t('settings.add_theme.json_desc'))
       .addTextArea(text => text
-        .setPlaceholder(i18next.t('settings.custom_theme.placeholder'))
-        .setValue(this.plugin.settings.customThemeJson)
-        .onChange(async (value) => {
-          // Simple validation
-          if (value.trim()) {
-            try {
-              JSON.parse(value)
-            }
-            catch {
-              new Notice('Invalid JSON provided for ECharts theme.')
-            }
+        .setPlaceholder('{"color": ["#5470c6", "#91cc75", ...]}')
+        .onChange((value) => {
+          newThemeState.json = value
+        }))
+
+    new Setting(containerEl)
+      .addButton(button => button
+        .setButtonText(i18next.t('settings.add_theme.button'))
+        .setCta()
+        .onClick(async () => {
+          if (!newThemeState.name.trim() || !newThemeState.json.trim()) {
+            new Notice('Please provide both a name and JSON for the theme.')
+            return
           }
 
-          this.plugin.settings.customThemeJson = value
+          if (this.plugin.settings.customThemes.some(t => t.name === newThemeState.name)) {
+            new Notice('A theme with this name already exists.')
+            return
+          }
+
+          try {
+            JSON.parse(newThemeState.json)
+          }
+          catch {
+            new Notice('Invalid JSON provided.')
+            return
+          }
+
+          this.plugin.settings.customThemes.push({
+            name: newThemeState.name.trim(),
+            json: newThemeState.json.trim(),
+          })
           await this.plugin.saveSettings()
+          new Notice('Theme added successfully.')
+          this.display() // Refresh to show in list and dropdown
         }))
   }
 }

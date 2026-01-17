@@ -592,14 +592,14 @@ export default class BarePlugin extends Plugin {
   }
 
   applyTheme(_?: unknown) {
-    if (this.settings.customThemeJson && this.settings.customThemeJson.trim()) {
+    this.settings.customThemes.forEach((customTheme) => {
       try {
-        const theme = JSON.parse(this.settings.customThemeJson) as object
-        echarts.registerTheme('custom', theme)
+        const theme = JSON.parse(customTheme.json) as object
+        echarts.registerTheme(customTheme.name, theme)
       }
       catch (e) {
-        console.error('Failed to parse custom ECharts theme', e)
+        console.error(`Failed to parse custom ECharts theme: ${customTheme.name}`, e)
       }
-    }
+    })
   }
 }

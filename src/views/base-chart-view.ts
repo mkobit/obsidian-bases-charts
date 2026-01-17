@@ -26,6 +26,7 @@ export abstract class BaseChartView extends BasesView {
   public static readonly LEGEND_POSITION_KEY = 'legendPosition'
   public static readonly LEGEND_ORIENT_KEY = 'legendOrient'
   public static readonly HEIGHT_KEY = 'height'
+  public static readonly THEME_KEY = 'theme'
 
   // New Config Keys (Made public for easier access in subclasses without casting)
   public static readonly SIZE_PROP_KEY = 'sizeProp'
@@ -146,9 +147,15 @@ export abstract class BaseChartView extends BasesView {
   }
 
   private getTheme(): string | undefined {
-    if (this.plugin.settings.customThemeJson && this.plugin.settings.customThemeJson.trim()) {
-      return 'custom'
+    const chartTheme = this.config.get(BaseChartView.THEME_KEY) as string
+    if (chartTheme && chartTheme !== 'default') {
+      return chartTheme
     }
+
+    if (this.plugin.settings.selectedTheme) {
+      return this.plugin.settings.selectedTheme
+    }
+
     return this.isDarkMode() ? 'dark' : undefined
   }
 
@@ -156,8 +163,24 @@ export abstract class BaseChartView extends BasesView {
     return document.body.classList.contains('theme-dark')
   }
 
-  static getCommonViewOptions(_?: unknown): ViewOption[] {
+  static getCommonViewOptions(plugin?: BarePlugin): ViewOption[] {
+    const themeOptions: Record<string, string> = {
+      default: 'Default (Global)',
+    }
+
+    if (plugin) {
+      plugin.settings.customThemes.forEach((t) => {
+        themeOptions[t.name] = t.name
+      })
+    }
+
     return [
+      {
+        displayName: 'Theme',
+        type: 'dropdown',
+        key: BaseChartView.THEME_KEY,
+        options: themeOptions,
+      } as ViewOption,
       {
         displayName: 'X-Axis Property',
         type: 'property',
