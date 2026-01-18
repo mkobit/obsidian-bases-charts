@@ -26,17 +26,25 @@ const CoverageTotalSchema = z.object({
   lines: CoverageMetricSchema,
 })
 
-const CoverageReportSchema = z.object({
+const CoverageReportSchema = z.string().transform((str, ctx) => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return JSON.parse(str)
+  }
+  catch {
+    ctx.addIssue({ code: 'custom', message: 'Invalid JSON' })
+    return z.NEVER
+  }
+}).pipe(z.object({
   total: CoverageTotalSchema,
-})
+}))
 
 try {
   const content = fs.readFileSync(
     coveragePath,
     'utf-8',
   )
-  const json: unknown = JSON.parse(content)
-  const coverage = CoverageReportSchema.parse(json)
+  const coverage = CoverageReportSchema.parse(content)
 
   const total = coverage.total
 
