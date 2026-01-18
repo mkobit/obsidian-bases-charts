@@ -55,8 +55,7 @@ export class MapChartView extends BaseChartView {
 
         echarts.registerMap(
           mapFile,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-          geoJson as any,
+          (geoJson as unknown) as Parameters<typeof echarts.registerMap>[1],
         )
         this.registeredMapName = mapFile
         this.executeRender()
