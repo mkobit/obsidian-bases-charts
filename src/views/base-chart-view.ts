@@ -1,14 +1,16 @@
 import type {
   QueryController,
-  ViewOption } from 'obsidian'
+  ViewOption,
+  ItemView } from 'obsidian'
 import {
   BasesView,
-  debounce,
+  Platform,
 } from 'obsidian'
 import * as echarts from 'echarts'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData, BaseTransformerOptions } from '../charts/transformers/base'
+import { ChartModal } from './chart-modal'
 
 export abstract class BaseChartView extends BasesView {
   readonly scrollEl: HTMLElement
@@ -17,6 +19,8 @@ export abstract class BaseChartView extends BasesView {
   readonly plugin: BarePlugin
   protected chart: echarts.ECharts | null = null
   private resizeObserver: ResizeObserver | null = null
+  private isFullScreenGeneration = false
+  private resizeTimeout: number | null = null
 
   // Common Config Keys
   public static readonly X_AXIS_PROP_KEY = 'xAxisProp'
@@ -63,9 +67,14 @@ export abstract class BaseChartView extends BasesView {
     ))
 
     this.resizeObserver = new ResizeObserver((_entries) => {
-      void this.onResizeDebounce()
+      this.triggerResize()
     })
-    this.resizeObserver.observe(this.containerEl)
+    this.resizeObserver.observe(this.containerEl);
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    (this as unknown as ItemView).addAction('expand', 'Full Screen', () => {
+      this.openFullScreen()
+    })
   }
 
   onunload() {
@@ -75,16 +84,18 @@ export abstract class BaseChartView extends BasesView {
     this.chart = null
   }
 
-  private readonly onResizeDebounce = debounce(
-    () => {
+  private triggerResize(): void {
+    if (this.resizeTimeout !== null) {
+      window.clearTimeout(this.resizeTimeout)
+    }
+    this.resizeTimeout = window.setTimeout(() => {
       this.chart?.resize()
-    },
-    100,
-    true,
-  )
+      this.renderChart()
+    }, 100)
+  }
 
   onResize(): void {
-    void this.onResizeDebounce()
+    this.triggerResize()
   }
 
   onDataUpdated(): void {
@@ -92,7 +103,7 @@ export abstract class BaseChartView extends BasesView {
   }
 
   protected getCommonTransformerOptions(_?: unknown): BaseTransformerOptions {
-    return {
+    const options: BaseTransformerOptions = {
       legend: this.config.get(BaseChartView.LEGEND_KEY) as boolean,
       legendPosition: this.config.get(BaseChartView.LEGEND_POSITION_KEY) as 'top' | 'bottom' | 'left' | 'right',
       legendOrient: this.config.get(BaseChartView.LEGEND_ORIENT_KEY) as 'horizontal' | 'vertical',
@@ -100,6 +111,29 @@ export abstract class BaseChartView extends BasesView {
       xAxisLabel: this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string,
       yAxisLabel: this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string,
       xAxisLabelRotate: Number(this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY) || 0),
+      isMobile: Platform.isMobile,
+      containerWidth: this.containerEl ? this.containerEl.clientWidth : 0,
+    }
+
+    if (this.isFullScreenGeneration) {
+      return {
+        ...options,
+        isMobile: false,
+        containerWidth: window.innerWidth,
+      }
+    }
+
+    return options
+  }
+
+  private openFullScreen() {
+    this.isFullScreenGeneration = true
+    const data = this.data.data as unknown as BasesData
+    const option = this.getChartOption(data)
+    this.isFullScreenGeneration = false
+
+    if (option) {
+      new ChartModal(this.app, option).open()
     }
   }
 
