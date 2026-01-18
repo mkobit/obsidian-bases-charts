@@ -30,7 +30,15 @@ export function getNestedValue(obj: unknown, path: string): unknown {
 
 export function getLegendOption(options?: BaseTransformerOptions): Readonly<LegendComponentOption> | undefined {
   const showLegend = options?.legend ?? false
-  const position = options?.legendPosition ?? 'top'
+
+  // Smart Default Position
+  const isCompact = (options?.isMobile ?? false) || (options?.containerWidth !== undefined && options.containerWidth < 600)
+  const defaultPosition = isCompact ? 'bottom' : 'top'
+
+  // Use user-specified position, or fall back to smart default
+  // Note: We check if options.legendPosition is truthy/defined.
+  // If undefined, we use defaultPosition.
+  const position = options?.legendPosition || defaultPosition
 
   // Default orient based on position if not set
   // Left/Right -> Vertical

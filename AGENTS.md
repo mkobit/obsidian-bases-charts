@@ -80,6 +80,14 @@ We strictly enforce functional programming principles to ensure code clarity, pr
     2.  Use `i18next.t('your.key')` in the code.
 -   **Reference**: See `src/lang/AGENTS.md` for detailed instructions.
 
+## Responsive Design Protocol
+-   **Mobile First**: Charts must automatically adapt to mobile devices (`Platform.isMobile`) or small containers (`width < 600px`).
+-   **Compact Mode**: In compact mode:
+    -   Cartesian charts enable `dataZoom` (horizontal scrolling) by default.
+    -   Axis labels auto-rotate (45 degrees) if not specified.
+    -   Legends move to the bottom to save horizontal space.
+-   **Full Screen**: All charts support a "Full Screen" mode via the view header action, rendering the chart in a maximized modal.
+
 ## Development Commands
 
 | Command | Description |

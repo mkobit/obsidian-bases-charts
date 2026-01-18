@@ -1,4 +1,4 @@
-import type { EChartsOption, SeriesOption, LineSeriesOption, BarSeriesOption, DatasetComponentOption } from 'echarts'
+import type { EChartsOption, SeriesOption, LineSeriesOption, BarSeriesOption, DatasetComponentOption, DataZoomComponentOption } from 'echarts'
 import type { BaseTransformerOptions, BasesData } from './base'
 import { safeToString, getNestedValue, getLegendOption } from './utils'
 import * as R from 'remeda'
@@ -29,7 +29,14 @@ export function createCartesianChartOption(
   const flipAxis = options?.flipAxis ?? false
   const xAxisLabel = options?.xAxisLabel ?? xProp
   const yAxisLabel = options?.yAxisLabel ?? yProp
-  const xAxisRotate = options?.xAxisLabelRotate ?? 0
+
+  // Responsive logic
+  const isMobile = options?.isMobile ?? false
+  const containerWidth = options?.containerWidth ?? 1000
+  const isCompact = isMobile || containerWidth < 600
+
+  // Smart axis rotation: if compact and not specified, rotate 45 degrees
+  const xAxisRotate = options?.xAxisLabelRotate ?? (isCompact && !flipAxis ? 45 : 0)
 
   // 1. Normalize Data for Dataset
   // Structure: { x, y, s }
@@ -60,7 +67,6 @@ export function createCartesianChartOption(
   )
 
   // 2. Get unique X values (categories) for the axis
-  // This ensures the axis has all categories even if filtered out in some series
   const xAxisData: readonly string[] = R.pipe(
     normalizedData,
     R.map(d => d.x),
@@ -80,8 +86,6 @@ export function createCartesianChartOption(
     source: normalizedData as unknown as Record<string, unknown>[],
   }
 
-  // If we have a seriesProp, we create filtered datasets for each series
-  // If no seriesProp, we just use the source dataset directly (datasetIndex 0)
   const filterDatasets: ReadonlyArray<DatasetComponentOption> = seriesProp
     ? seriesNames.map((name): DatasetComponentOption => ({
         transform: {
@@ -97,16 +101,11 @@ export function createCartesianChartOption(
 
   // 5. Build Series Options
   const seriesOptions: ReadonlyArray<SeriesOption> = seriesNames.map((name, idx): SeriesOption => {
-    // If seriesProp exists, we use the filtered datasets (starting at index 1)
-    // If not, we use the source dataset (index 0)
     const datasetIndex = seriesProp ? idx + 1 : 0
 
     const base = {
       name: name,
       datasetIndex: datasetIndex,
-      // Encode: Map dimensions to axes
-      // If flipped: X-Axis is Value (y data), Y-Axis is Category (x data)
-      // So encode.x -> 'y', encode.y -> 'x'
       encode: flipAxis
         ? { x: 'y',
             y: 'x',
@@ -142,6 +141,24 @@ export function createCartesianChartOption(
         })()
   })
 
+  // DataZoom for compact mode (only if not flipped, for X-axis scrolling)
+  // We use both slider (visible) and inside (touch/mouse wheel)
+  const dataZoomOptions: ReadonlyArray<DataZoomComponentOption> = (isCompact && !flipAxis)
+    ? [
+        {
+          type: 'slider',
+          show: true,
+          xAxisIndex: [0],
+          bottom: 10,
+          height: 20,
+        },
+        {
+          type: 'inside',
+          xAxisIndex: [0],
+        },
+      ]
+    : []
+
   const opt: EChartsOption = {
     dataset: [...datasets],
     xAxis: flipAxis
@@ -155,6 +172,7 @@ export function createCartesianChartOption(
           name: xAxisLabel,
           axisLabel: {
             rotate: xAxisRotate,
+            interval: isCompact ? 'auto' : 0, // Auto-hide labels if they overlap in compact mode
           },
         },
     yAxis: flipAxis
@@ -176,8 +194,10 @@ export function createCartesianChartOption(
     },
     grid: {
       containLabel: true,
+      bottom: (isCompact && !flipAxis) ? 40 : undefined, // Make room for slider
     },
     ...(getLegendOption(options) ? { legend: getLegendOption(options) } : {}),
+    ...(dataZoomOptions.length > 0 ? { dataZoom: [...dataZoomOptions] } : {}),
   }
 
   return opt
