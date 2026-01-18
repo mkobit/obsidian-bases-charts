@@ -6,6 +6,10 @@ import { transformDataToChartOption } from '../charts/transformer'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { z } from 'zod'
+import { jsonParsed } from '../json-parsing'
+
+const geoJsonSchema = jsonParsed(z.object({}).loose())
 
 export class MapChartView extends BaseChartView {
   readonly type = 'map-chart'
@@ -47,13 +51,11 @@ export class MapChartView extends BaseChartView {
         }
 
         const content = await adapter.read(mapFile)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const geoJson = JSON.parse(content)
+        const geoJson = geoJsonSchema.parse(content)
 
         echarts.registerMap(
           mapFile,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          geoJson,
+          (geoJson as unknown) as Parameters<typeof echarts.registerMap>[1],
         )
         this.registeredMapName = mapFile
         this.executeRender()

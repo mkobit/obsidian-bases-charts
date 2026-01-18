@@ -39,8 +39,7 @@
 		"typescript": "^5.8.3",
 		"typescript-eslint": "8.52.0",
 		"vite-tsconfig-paths": "^6.0.3",
-		"vitest": "4.0.16",
-		"zod": "^4.3.5"
+		"vitest": "4.0.16"
 	},
 	"dependencies": {
 		"echarts": "6.0.0",
@@ -48,6 +47,7 @@
 		"i18next": "^25.7.4",
 		"obsidian": "1.11.4",
 		"remeda": "^2.33.1",
-		"temporal-polyfill": "^0.3.0"
+		"temporal-polyfill": "^0.3.0",
+		"zod": "^4.3.5"
 	}
 }

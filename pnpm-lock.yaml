@@ -26,6 +26,9 @@ importers:
       temporal-polyfill:
         specifier: ^0.3.0
         version: 0.3.0
+      zod:
+        specifier: ^4.3.5
+        version: 4.3.5
     devDependencies:
       '@eslint/js':
         specifier: 9.39.2
@@ -102,9 +105,6 @@ importers:
       vitest:
         specifier: 4.0.16
         version: 4.0.16(@types/node@25.0.3)(happy-dom@20.0.11)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
-      zod:
-        specifier: ^4.3.5
-        version: 4.3.5
 
 packages:
 
