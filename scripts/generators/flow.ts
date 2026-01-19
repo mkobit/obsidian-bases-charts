@@ -7,24 +7,30 @@ import * as fc from 'fast-check'
 export const sankeyChartArbitrary = fc.constant(null).map((_?: unknown) => {
   // Hardcoded simple structure to ensure valid flow
   const data = [
-    { source: 'A',
-      target: 'B',
-      value: 10 },
-    { source: 'A',
-      target: 'C',
-      value: 15 },
-    { source: 'B',
-      target: 'D',
-      value: 8 },
-    { source: 'B',
-      target: 'E',
-      value: 2 },
-    { source: 'C',
-      target: 'E',
-      value: 10 },
-    { source: 'C',
-      target: 'F',
-      value: 5 },
+    { source: 'Homepage',
+      target: 'Product Page',
+      users: 5000 },
+    { source: 'Homepage',
+      target: 'Blog',
+      users: 2000 },
+    { source: 'Product Page',
+      target: 'Cart',
+      users: 3000 },
+    { source: 'Product Page',
+      target: 'Exit',
+      users: 2000 },
+    { source: 'Cart',
+      target: 'Checkout',
+      users: 2500 },
+    { source: 'Cart',
+      target: 'Exit',
+      users: 500 },
+    { source: 'Checkout',
+      target: 'Purchase',
+      users: 2000 },
+    { source: 'Checkout',
+      target: 'Exit',
+      users: 500 },
   ]
   return {
     type: 'sankey',
@@ -38,7 +44,7 @@ export const sankeyChartArbitrary = fc.constant(null).map((_?: unknown) => {
  */
 export const graphChartArbitrary = fc.record({
   nodeCount: fc.integer({ min: 5,
-    max: 15 }),
+    max: 10 }),
 }).chain((config) => {
   return fc.array(
     fc.record({
@@ -50,9 +56,22 @@ export const graphChartArbitrary = fc.record({
     { minLength: config.nodeCount,
       maxLength: config.nodeCount * 2 },
   ).map((linksData) => {
-    const nodes = Array.from({ length: config.nodeCount }, (_, i) => `Node ${i}`)
+    const nodes = [
+      'Router',
+      'Switch',
+      'Server A',
+      'Server B',
+      'Database',
+      'Firewall',
+      'Client PC',
+      'Laptop',
+      'Printer',
+      'Access Point',
+      'Phone',
+      'Tablet',
+    ]
 
-    // Create links ensuring source != target to avoid self-loops if desired (though graph supports them)
+    // Create links ensuring source != target to avoid self-loops if desired
     const links = linksData.map((l, i) => {
       const sourceIndex = i % config.nodeCount
       const rawTargetIndex = l.targetIndex
@@ -60,11 +79,14 @@ export const graphChartArbitrary = fc.record({
         ? (rawTargetIndex + 1) % config.nodeCount
         : rawTargetIndex
 
+      const safeSource = nodes[sourceIndex % nodes.length]
+      const safeTarget = nodes[targetIndex % nodes.length]
+
       return {
-        source: nodes[sourceIndex],
-        target: nodes[targetIndex],
-        value: l.value,
-        category: i % 2 === 0 ? 'Cat A' : 'Cat B', // Optional category
+        source: safeSource,
+        target: safeTarget,
+        traffic: l.value,
+        zone: i % 2 === 0 ? 'DMZ' : 'Internal', // Optional category
       }
     })
 

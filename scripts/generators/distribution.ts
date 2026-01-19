@@ -1,11 +1,10 @@
 import * as fc from 'fast-check'
-import { ECHARTS_PRODUCTS, themeSubset } from './themes'
+import { PRODUCT_NAMES, themeSubset } from './themes'
 
 /**
  * Arbitrary for Boxplot data.
- * Generates raw data points that the transformer will aggregate.
  */
-export const boxplotChartArbitrary = themeSubset(ECHARTS_PRODUCTS, 2)
+export const boxplotChartArbitrary = themeSubset(PRODUCT_NAMES, 2)
   .chain((categories) => {
     return fc.record({
       categories: fc.constant(categories),
@@ -51,7 +50,7 @@ export const histogramChartArbitrary = fc.array(
  * Arbitrary for Pareto data.
  * Similar to Bar chart but usually unsorted (transformer sorts it).
  */
-export const paretoChartArbitrary = themeSubset(ECHARTS_PRODUCTS, 4)
+export const paretoChartArbitrary = themeSubset(PRODUCT_NAMES, 4)
   .chain((names) => {
     return fc.record({
       names: fc.constant(names),

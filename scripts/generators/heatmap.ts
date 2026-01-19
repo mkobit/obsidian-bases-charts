@@ -10,30 +10,32 @@ export const heatmapChartArbitrary = fc.record({
   maxVal: fc.integer({ min: 10,
     max: 100 }),
 }).chain((config) => {
-  const hours = ['12a',
-    '1a',
-    '2a',
-    '3a',
-    '4a',
-    '5a',
-    '6a',
-    '7a',
-    '8a',
-    '9a',
-    '10a',
-    '11a',
-    '12p',
-    '1p',
-    '2p',
-    '3p',
-    '4p',
-    '5p',
-    '6p',
-    '7p',
-    '8p',
-    '9p',
-    '10p',
-    '11p']
+  const hours = [
+    '00:00',
+    '01:00',
+    '02:00',
+    '03:00',
+    '04:00',
+    '05:00',
+    '06:00',
+    '07:00',
+    '08:00',
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00',
+    '19:00',
+    '20:00',
+    '21:00',
+    '22:00',
+    '23:00',
+  ]
 
   // We want to generate a value for every combination of Day + Hour
   return fc.array(
@@ -48,7 +50,7 @@ export const heatmapChartArbitrary = fc.record({
         return {
           day,
           hour,
-          value: values[index]!,
+          activity: values[index]!,
         }
       })
     })
@@ -86,7 +88,7 @@ export const calendarChartArbitrary = fc.record({
       const date = yearStart.add({ days: i }).toString()
       return {
         date,
-        value: val,
+        commits: val,
       }
     })
 
