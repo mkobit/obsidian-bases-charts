@@ -4,8 +4,16 @@ import { stdin as input, stdout as output } from 'node:process'
 import { Temporal } from 'temporal-polyfill'
 import { generateCommandString, getDeterministicSample } from './generators/utils'
 import { barChartArbitrary } from './generators/bar'
+import { bubbleChartArbitrary } from './generators/bubble'
+import { boxplotChartArbitrary, histogramChartArbitrary, paretoChartArbitrary, waterfallChartArbitrary } from './generators/distribution'
+import { candlestickChartArbitrary } from './generators/financial'
+import { sankeyChartArbitrary, graphChartArbitrary, linesChartArbitrary } from './generators/flow'
+import { funnelChartArbitrary, gaugeChartArbitrary } from './generators/funnel'
+import { heatmapChartArbitrary, calendarChartArbitrary } from './generators/heatmap'
+import { sunburstChartArbitrary, treeChartArbitrary, treemapChartArbitrary } from './generators/hierarchy'
 import { lineChartArbitrary } from './generators/line'
 import { pieChartArbitrary } from './generators/pie'
+import { radarChartArbitrary } from './generators/radar'
 import { scatterChartArbitrary } from './generators/scatter'
 
 const program = new Command()
@@ -57,22 +65,27 @@ program
     console.log(`Command: ${commandString}`)
 
     const results = {
-      bar: getDeterministicSample(
-        barChartArbitrary,
-        seed,
-      ),
-      line: getDeterministicSample(
-        lineChartArbitrary,
-        seed,
-      ),
-      pie: getDeterministicSample(
-        pieChartArbitrary,
-        seed,
-      ),
-      scatter: getDeterministicSample(
-        scatterChartArbitrary,
-        seed,
-      ),
+      bar: getDeterministicSample(barChartArbitrary, seed),
+      boxplot: getDeterministicSample(boxplotChartArbitrary, seed),
+      bubble: getDeterministicSample(bubbleChartArbitrary, seed),
+      calendar: getDeterministicSample(calendarChartArbitrary, seed),
+      candlestick: getDeterministicSample(candlestickChartArbitrary, seed),
+      funnel: getDeterministicSample(funnelChartArbitrary, seed),
+      gauge: getDeterministicSample(gaugeChartArbitrary, seed),
+      graph: getDeterministicSample(graphChartArbitrary, seed),
+      heatmap: getDeterministicSample(heatmapChartArbitrary, seed),
+      histogram: getDeterministicSample(histogramChartArbitrary, seed),
+      line: getDeterministicSample(lineChartArbitrary, seed),
+      lines: getDeterministicSample(linesChartArbitrary, seed),
+      pareto: getDeterministicSample(paretoChartArbitrary, seed),
+      pie: getDeterministicSample(pieChartArbitrary, seed),
+      radar: getDeterministicSample(radarChartArbitrary, seed),
+      sankey: getDeterministicSample(sankeyChartArbitrary, seed),
+      scatter: getDeterministicSample(scatterChartArbitrary, seed),
+      sunburst: getDeterministicSample(sunburstChartArbitrary, seed),
+      tree: getDeterministicSample(treeChartArbitrary, seed),
+      treemap: getDeterministicSample(treemapChartArbitrary, seed),
+      waterfall: getDeterministicSample(waterfallChartArbitrary, seed),
     }
 
     console.log(JSON.stringify(
