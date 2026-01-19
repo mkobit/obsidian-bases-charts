@@ -20,4 +20,6 @@ export interface BaseTransformerOptions extends VisualMapOptions {
   readonly yAxisLabel?: string
   readonly xAxisLabelRotate?: number
   readonly flipAxis?: boolean
+  readonly isMobile?: boolean
+  readonly containerWidth?: number
 }
