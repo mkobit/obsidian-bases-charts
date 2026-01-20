@@ -19,7 +19,7 @@ export const MONTHS = ['Jan',
   'Oct',
   'Nov',
   'Dec']
-export const ECHARTS_PRODUCTS = ['Matcha Latte',
+export const PRODUCT_NAMES = ['Matcha Latte',
   'Milk Tea',
   'Cheese Cocoa',
   'Walnut Brownie']
