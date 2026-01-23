@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createParetoChartOption } from '../../../src/charts/transformers/pareto'
 import type { DatasetComponentOption, BarSeriesOption, LineSeriesOption, YAXisComponentOption, XAXisComponentOption } from 'echarts'
 

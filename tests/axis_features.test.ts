@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createCartesianChartOption } from '../src/charts/transformers/cartesian'
 describe(
   'Axis Features',

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createEffectScatterChartOption } from '../../../src/charts/transformers/effect-scatter'
 import type { EffectScatterSeriesOption } from 'echarts'
 

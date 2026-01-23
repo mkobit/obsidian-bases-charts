@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createBulletChartOption } from '../../../src/charts/transformers/bullet'
 import type { BarSeriesOption, ScatterSeriesOption, DatasetComponentOption } from 'echarts'
 

@@ -3,6 +3,3 @@
 
 "*.{ts,mts,cts,tsx}":
   - tsc-files -p tsconfig.json --noEmit
-
-"pnpm-lock.yaml":
-  - "pnpm dedupe && :"

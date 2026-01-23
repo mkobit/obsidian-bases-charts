@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createParallelChartOption } from '../src/charts/transformers/parallel'
 
 // Define a minimal interface for the test expectations to avoid "unsafe member access" errors

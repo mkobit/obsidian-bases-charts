@@ -71,7 +71,6 @@ export abstract class BaseChartView extends BasesView {
     })
     this.resizeObserver.observe(this.containerEl);
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     (this as unknown as ItemView).addAction('expand', 'Full Screen', () => {
       this.openFullScreen()
     })

@@ -235,6 +235,7 @@ export default tseslint.config(
 			// Relax rules for Testing patterns (Assertions, Mocking, Setup/Teardown)
 			"functional/no-expression-statements": "off", // Needed for expect() assertions
 			"@typescript-eslint/consistent-type-assertions": "off", // Needed for mocking
+			"@typescript-eslint/no-unsafe-argument": "off", // Allow unsafe args in tests
 			"functional/no-return-void": "off", // Needed for test/beforeEach callbacks
 			"functional/no-classes": "off", // Allowed in tests if needed (e.g. mock classes)
 			"functional/no-class-inheritance": "off",
