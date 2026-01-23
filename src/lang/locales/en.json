@@ -113,6 +113,26 @@
 				"min_font_size": "Min font size",
 				"max_font_size": "Max font size"
 			}
+		},
+		"liquid": {
+			"name": "Liquid Chart",
+			"options": {
+				"max": "Max value",
+				"value_prop": "Value Property",
+				"shape": "Shape",
+				"outline_show": "Show outline",
+				"wave_animation": "Wave animation",
+				"shapes": {
+					"circle": "Circle",
+					"rect": "Rectangle",
+					"roundRect": "Rounded Rectangle",
+					"triangle": "Triangle",
+					"diamond": "Diamond",
+					"pin": "Pin",
+					"arrow": "Arrow",
+					"container": "Container"
+				}
+			}
 		}
 	},
 	"settings": {

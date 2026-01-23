@@ -15,6 +15,9 @@ const context = await esbuild.context({
 	banner: {
 		js: banner,
 	},
+	alias: {
+		"echarts/lib/util/number": "echarts/lib/util/number.js",
+	},
 	entryPoints: ["src/main.ts"],
 	bundle: true,
 	external: [
