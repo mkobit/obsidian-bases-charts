@@ -16,12 +16,12 @@ jobs:
             - name: Install Bun
               uses: oven-sh/setup-bun@v2
               with:
-                  bun-version: latest
+                  bun-version: "1.2.14"
             - run: bun install
               id: install
             - name: Check types
               if: (success() || failure()) && steps.install.outcome == 'success'
-              run: bun run tsc --noEmit
+              run: bun run typecheck
             - name: Build
               if: (success() || failure()) && steps.install.outcome == 'success'
               run: bun run build

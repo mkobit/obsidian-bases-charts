@@ -5,12 +5,13 @@
 	"main": "main.js",
 	"type": "module",
 	"scripts": {
-		"build": "bun run tsc -noEmit && bun esbuild.config.mjs production",
+		"build": "bun esbuild.config.mjs production",
 		"dev": "bun esbuild.config.mjs",
 		"lint": "eslint .",
 		"prepare": "husky",
 		"test": "bun test",
-		"test:coverage": "bun test --coverage"
+		"test:coverage": "bun test --coverage",
+		"typecheck": "tsc --noEmit"
 	},
 	"keywords": [],
 	"license": "MIT",
