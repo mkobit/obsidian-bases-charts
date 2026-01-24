@@ -5,12 +5,13 @@
 	"main": "main.js",
 	"type": "module",
 	"scripts": {
-		"build": "tsc -noEmit && node esbuild.config.mjs production",
-		"dev": "node esbuild.config.mjs",
+		"build": "bun esbuild.config.mjs production",
+		"dev": "bun esbuild.config.mjs",
 		"lint": "eslint .",
 		"prepare": "husky",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"test": "bun test",
+		"test:coverage": "bun test --coverage",
+		"typecheck": "tsc --noEmit"
 	},
 	"keywords": [],
 	"license": "MIT",
@@ -18,8 +19,8 @@
 		"@eslint/js": "9.39.2",
 		"@eslint/json": "^0.14.0",
 		"@stylistic/eslint-plugin": "^5.7.0",
+		"@types/bun": "^1.2.4",
 		"@types/node": "^25.0.3",
-		"@vitest/coverage-v8": "^4.0.16",
 		"commander": "^14.0.2",
 		"esbuild": "0.27.2",
 		"eslint": "^9.39.2",
@@ -29,17 +30,13 @@
 		"eslint-plugin-unicorn": "^62.0.0",
 		"fast-check": "^4.5.3",
 		"globals": "17.0.0",
-		"happy-dom": "20.0.11",
 		"husky": "^9.1.7",
-		"jiti": "2.6.1",
+		"jiti": "^2.6.1",
 		"lint-staged": "^16.2.7",
 		"tsc-files": "^1.1.4",
 		"tslib": "2.8.1",
-		"tsx": "^4.21.0",
 		"typescript": "^5.8.3",
-		"typescript-eslint": "8.52.0",
-		"vite-tsconfig-paths": "^6.0.3",
-		"vitest": "4.0.16"
+		"typescript-eslint": "8.52.0"
 	},
 	"dependencies": {
 		"echarts": "6.0.0",

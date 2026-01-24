@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createScatterChartOption } from '../src/charts/transformers/scatter'
 import { createCandlestickChartOption } from '../src/charts/transformers/candlestick'
 import type { DatasetComponentOption, ScatterSeriesOption, CandlestickSeriesOption, VisualMapComponentOption } from 'echarts'

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createPieChartOption } from '../../src/charts/transformers/pie'
 import type { DatasetComponentOption, SeriesOption } from 'echarts'
 

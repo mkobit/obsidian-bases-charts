@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createPolarLineChartOption } from '../../src/charts/transformers/polar-line'
 import type { LineSeriesOption } from 'echarts'
 

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createMapChartOption } from '../src/charts/transformers/map'
 import type { MapTransformerOptions } from '../src/charts/transformers/map'
 import type { BasesData } from '../src/charts/transformers/base'

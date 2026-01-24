@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createHistogramChartOption } from '../../../src/charts/transformers/histogram'
 import type { BarSeriesOption } from 'echarts'
 

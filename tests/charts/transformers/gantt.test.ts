@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createGanttChartOption } from '../../../src/charts/transformers/gantt'
 import type { BarSeriesOption } from 'echarts'
 

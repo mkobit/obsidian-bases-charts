@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createRadialBarChartOption } from '../../../src/charts/transformers/radial-bar'
 import type { BarSeriesOption } from 'echarts'
 

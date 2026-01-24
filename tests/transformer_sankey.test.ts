@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import type { SankeyTransformerOptions } from '../src/charts/transformer'
 import { transformDataToChartOption } from '../src/charts/transformer'
 import type { SankeySeriesOption } from 'echarts'

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { createWaterfallChartOption } from '../../../src/charts/transformers/waterfall'
 
 describe(

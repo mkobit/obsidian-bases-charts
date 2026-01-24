@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import type { GraphTransformerOptions } from '../src/charts/transformer'
 import { transformDataToChartOption } from '../src/charts/transformer'
 import type { GraphSeriesOption } from 'echarts'
