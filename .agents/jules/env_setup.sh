@@ -26,48 +26,27 @@ if [ -n "$MISSING" ]; then
     fi
 fi
 
-# 2. Setup Node.js and pnpm
-# Priority: use mise if available (as per mise.toml), otherwise check for nvm or manual node
-if command -v mise &> /dev/null; then
-    echo "mise found, installing tools from mise.toml..."
-    mise install
-elif [ -s "$HOME/.nvm/nvm.sh" ]; then
-    echo "nvm found, using .nvmrc..."
-    source "$HOME/.nvm/nvm.sh"
-    nvm install
-    nvm use
-else
-    echo "mise and nvm not found. Checking Node.js..."
-    if ! command -v node &> /dev/null; then
-        echo "Error: Node.js not found. Please install Node.js 22 (via mise, nvm, or system)."
-        exit 1
-    fi
-    NODE_VERSION=$(node -v)
-    echo "Node version: $NODE_VERSION"
-    # Basic check for version 22
-    if [[ "$NODE_VERSION" != v22* ]]; then
-        echo "Warning: Node version $NODE_VERSION differs from expected v22.x"
-    fi
+# 2. Setup environment with mise
+if ! command -v mise &> /dev/null; then
+    echo "Error: 'mise' is not installed or not in the PATH."
+    echo "Please install mise (https://mise.jdx.dev) to manage this project's environment."
+    exit 1
 fi
 
-# Ensure pnpm is available
-if ! command -v pnpm &> /dev/null; then
-    echo "Installing pnpm..."
-    # Fallback to npm install -g pnpm if npm is available
-    if command -v npm &> /dev/null; then
-        npm install -g pnpm@9
-    else
-        echo "Error: npm not found, cannot install pnpm."
-        exit 1
-    fi
-fi
+echo "mise found. Installing tools..."
+mise install
 
 # 3. Install dependencies
-echo "Installing dependencies..."
-pnpm install --frozen-lockfile
+echo "Installing dependencies with bun..."
+if ! command -v bun &> /dev/null; then
+    echo "Error: 'bun' was not found after 'mise install'."
+    exit 1
+fi
+bun install
 
 # 4. Diagnostic Info
 echo "User: $(whoami)"
 echo "Git Commit: $(git rev-parse --short HEAD) ($(git log -1 --format=%cI))"
+echo "Bun Version: $(bun --version)"
 
 echo "Environment ready"
