@@ -4,6 +4,7 @@ import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class TreeChartView extends BaseChartView {
   readonly type = 'tree-chart'
@@ -25,10 +26,10 @@ export class TreeChartView extends BaseChartView {
   static getViewOptions(_?: unknown): ViewOption[] {
     return [
       {
-        displayName: 'Path property (e.g. "Folder/Subfolder")',
+        displayName: t('views.tree.path_prop'),
         type: 'property',
         key: BaseChartView.X_AXIS_PROP_KEY,
-        placeholder: 'Select path property',
+        placeholder: t('views.tree.path_placeholder'),
       },
     ]
   }

@@ -4,6 +4,7 @@ import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class CalendarChartView extends BaseChartView {
   readonly type = 'calendar-chart'
@@ -25,16 +26,16 @@ export class CalendarChartView extends BaseChartView {
   static getViewOptions(_?: unknown): ViewOption[] {
     return [
       {
-        displayName: 'Date property',
+        displayName: t('views.calendar.date_prop'),
         type: 'property',
         key: BaseChartView.X_AXIS_PROP_KEY,
-        placeholder: 'Select date property',
+        placeholder: t('views.calendar.date_placeholder'),
       },
       {
-        displayName: 'Value property',
+        displayName: t('views.calendar.value_prop'),
         type: 'property',
         key: BaseChartView.VALUE_PROP_KEY,
-        placeholder: 'Select value property',
+        placeholder: t('views.calendar.value_placeholder'),
       },
       ...BaseChartView.getVisualMapViewOptions(),
     ]

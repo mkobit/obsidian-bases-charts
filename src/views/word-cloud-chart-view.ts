@@ -6,7 +6,7 @@ import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
 import type { WordCloudTransformerOptions } from '../charts/transformers/extensions/word-cloud'
-import i18next from 'i18next'
+import { t } from '../lang/text'
 
 export class WordCloudChartView extends BaseChartView {
   readonly type = 'word-cloud-chart'
@@ -50,36 +50,36 @@ export class WordCloudChartView extends BaseChartView {
     return [
       ...BaseChartView.getCommonViewOptions(),
       {
-        displayName: i18next.t('views.word_cloud.options.shape'),
+        displayName: t('views.word_cloud.options.shape'),
         type: 'dropdown',
         key: 'shape',
         options: {
-          'circle': 'Circle',
-          'cardioid': 'Cardioid',
-          'diamond': 'Diamond',
-          'triangle-forward': 'Triangle Forward',
-          'triangle': 'Triangle',
-          'pentagon': 'Pentagon',
-          'star': 'Star',
+          'circle': t('views.word_cloud.options.shapes.circle'),
+          'cardioid': t('views.word_cloud.options.shapes.cardioid'),
+          'diamond': t('views.word_cloud.options.shapes.diamond'),
+          'triangle-forward': t('views.word_cloud.options.shapes.triangle_forward'),
+          'triangle': t('views.word_cloud.options.shapes.triangle'),
+          'pentagon': t('views.word_cloud.options.shapes.pentagon'),
+          'star': t('views.word_cloud.options.shapes.star'),
         },
       },
       {
-        displayName: i18next.t('views.word_cloud.options.grid_size'),
+        displayName: t('views.word_cloud.options.grid_size'),
         type: 'text',
         key: 'gridSize',
-        placeholder: 'Grid size (default: 2)',
+        placeholder: t('views.word_cloud.options.grid_size_placeholder'),
       },
       {
-        displayName: i18next.t('views.word_cloud.options.min_font_size'),
+        displayName: t('views.word_cloud.options.min_font_size'),
         type: 'text',
         key: 'sizeRangeMin',
-        placeholder: 'Min font size (default: 12)',
+        placeholder: t('views.word_cloud.options.min_font_size_placeholder'),
       },
       {
-        displayName: i18next.t('views.word_cloud.options.max_font_size'),
+        displayName: t('views.word_cloud.options.max_font_size'),
         type: 'text',
         key: 'sizeRangeMax',
-        placeholder: 'Max font size (default: 60)',
+        placeholder: t('views.word_cloud.options.max_font_size_placeholder'),
       },
     ]
   }

@@ -2,6 +2,7 @@ import type { ViewOption } from 'obsidian'
 import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class WaterfallChartView extends BaseChartView {
   type = 'waterfall-chart'
@@ -16,12 +17,12 @@ export class WaterfallChartView extends BaseChartView {
     // Customize display names
     const xOption = options.find(o => 'key' in o && o.key === BaseChartView.X_AXIS_PROP_KEY)
     if (xOption) {
-      xOption.displayName = 'Category Property'
+      xOption.displayName = t('views.waterfall.category_prop')
     }
 
     const yOption = options.find(o => 'key' in o && o.key === BaseChartView.Y_AXIS_PROP_KEY)
     if (yOption) {
-      yOption.displayName = 'Value Property'
+      yOption.displayName = t('views.waterfall.value_prop')
     }
 
     return [

@@ -3,6 +3,7 @@ import { BaseChartView } from './base-chart-view'
 import type { EChartsOption } from 'echarts'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class PolarBarChartView extends BaseChartView {
   type = 'polar_bar'
@@ -38,22 +39,22 @@ export class PolarBarChartView extends BaseChartView {
     return [
       {
         key: BaseChartView.X_AXIS_PROP_KEY,
-        displayName: 'Angle Property',
+        displayName: t('views.polar.angle_prop'),
         type: 'property',
       },
       {
         key: BaseChartView.VALUE_PROP_KEY,
-        displayName: 'Radius Property',
+        displayName: t('views.polar.radius_prop'),
         type: 'property',
       },
       {
         key: BaseChartView.SERIES_PROP_KEY,
-        displayName: 'Series Property',
+        displayName: t('views.polar.series_prop'),
         type: 'property',
       },
       {
         key: 'stack',
-        displayName: 'Stack',
+        displayName: t('views.polar.stack'),
         type: 'toggle',
       },
       ...BaseChartView.getCommonViewOptions(),

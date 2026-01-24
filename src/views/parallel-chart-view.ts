@@ -4,6 +4,7 @@ import { transformDataToChartOption } from '../charts/transformer'
 import type { ParallelTransformerOptions } from '../charts/transformer'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class ParallelChartView extends BaseChartView {
   readonly type = 'parallel'
@@ -11,16 +12,16 @@ export class ParallelChartView extends BaseChartView {
   static getViewOptions(_?: unknown): ViewOption[] {
     return [
       {
-        displayName: 'Dimensions (comma-separated)',
+        displayName: t('views.parallel.dimensions'),
         key: 'xProp', // repurpose xProp for dimensions list
         type: 'text',
-        placeholder: 'e.g. price,rating,volume',
+        placeholder: t('views.parallel.dimensions_placeholder'),
       },
       {
-        displayName: 'Series property',
+        displayName: t('views.parallel.series_prop'),
         key: 'seriesProp',
         type: 'property',
-        placeholder: 'Property to group by',
+        placeholder: t('views.parallel.series_placeholder'),
       },
       ...BaseChartView.getCommonViewOptions(),
     ]

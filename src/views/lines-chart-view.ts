@@ -4,6 +4,7 @@ import { transformDataToChartOption } from '../charts/transformer'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class LinesChartView extends BaseChartView {
   readonly type = 'lines-chart'
@@ -61,20 +62,20 @@ export class LinesChartView extends BaseChartView {
       {
         key: LinesChartView.END_X_PROP_KEY,
         type: 'property',
-        displayName: 'End X property',
-        placeholder: 'Select property for End X',
+        displayName: t('views.lines.end_x_prop'),
+        placeholder: t('views.lines.end_x_prop_placeholder'),
       },
       {
         key: LinesChartView.END_Y_PROP_KEY,
         type: 'property',
-        displayName: 'End Y property',
-        placeholder: 'Select property for End Y',
+        displayName: t('views.lines.end_y_prop'),
+        placeholder: t('views.lines.end_y_prop_placeholder'),
       },
       {
         key: BaseChartView.SERIES_PROP_KEY,
         type: 'property',
-        displayName: 'Series property',
-        placeholder: 'Select property for grouping',
+        displayName: t('views.lines.series_prop'),
+        placeholder: t('views.lines.series_prop_placeholder'),
       },
       ...BaseChartView.getCommonViewOptions().filter((opt) => {
         if ('key' in opt && typeof opt.key === 'string') {

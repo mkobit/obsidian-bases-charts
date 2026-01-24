@@ -7,6 +7,7 @@ import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
 import type BarePlugin from '../main'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class CandlestickChartView extends BaseChartView {
   // Unique keys for Candlestick
@@ -62,34 +63,34 @@ export class CandlestickChartView extends BaseChartView {
   static getViewOptions(_?: unknown): ViewOption[] {
     return [
       {
-        displayName: 'X-Axis Property (Date/Time)',
+        displayName: t('views.candlestick.x_axis_prop'),
         type: 'property',
         key: BaseChartView.X_AXIS_PROP_KEY,
-        placeholder: 'Select date property',
+        placeholder: t('views.candlestick.x_axis_placeholder'),
       },
       {
-        displayName: 'Open Property',
+        displayName: t('views.candlestick.open_prop'),
         type: 'property',
         key: CandlestickChartView.OPEN_PROP_KEY,
-        placeholder: 'Select Open price property',
+        placeholder: t('views.candlestick.open_placeholder'),
       },
       {
-        displayName: 'Close Property',
+        displayName: t('views.candlestick.close_prop'),
         type: 'property',
         key: CandlestickChartView.CLOSE_PROP_KEY,
-        placeholder: 'Select Close price property',
+        placeholder: t('views.candlestick.close_placeholder'),
       },
       {
-        displayName: 'Lowest Property',
+        displayName: t('views.candlestick.low_prop'),
         type: 'property',
         key: CandlestickChartView.LOW_PROP_KEY,
-        placeholder: 'Select Low price property',
+        placeholder: t('views.candlestick.low_placeholder'),
       },
       {
-        displayName: 'Highest Property',
+        displayName: t('views.candlestick.high_prop'),
         type: 'property',
         key: CandlestickChartView.HIGH_PROP_KEY,
-        placeholder: 'Select High price property',
+        placeholder: t('views.candlestick.high_placeholder'),
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
       ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY),

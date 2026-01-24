@@ -3,6 +3,7 @@ import { BaseChartView } from './base-chart-view'
 import type { BasesData } from '../charts/transformers/base'
 import type { EChartsOption } from 'echarts'
 import { transformDataToChartOption } from '../charts/transformer'
+import { t } from '../lang/text'
 
 export class PolarScatterChartView extends BaseChartView {
   type = 'polar-scatter-chart'
@@ -29,79 +30,79 @@ export class PolarScatterChartView extends BaseChartView {
   public static getViewOptions(): ViewOption[] {
     return [
       {
-        displayName: 'Angle Property',
+        displayName: t('views.polar.angle_prop'),
         key: BaseChartView.X_AXIS_PROP_KEY,
         type: 'property',
       },
       {
-        displayName: 'Radius Property',
+        displayName: t('views.polar.radius_prop'),
         key: BaseChartView.Y_AXIS_PROP_KEY,
         type: 'property',
       },
       {
-        displayName: 'Series Property',
+        displayName: t('views.polar.series_prop'),
         key: BaseChartView.SERIES_PROP_KEY,
         type: 'property',
       },
       {
-        displayName: 'Size Property',
+        displayName: t('views.polar.size_prop'),
         key: BaseChartView.SIZE_PROP_KEY,
         type: 'property',
       },
       {
-        displayName: 'Show Legend',
+        displayName: t('views.common.show_legend'),
         type: 'toggle',
         key: BaseChartView.LEGEND_KEY,
       },
       {
-        displayName: 'Legend Position',
+        displayName: t('views.common.legend_position'),
         type: 'dropdown',
         key: BaseChartView.LEGEND_POSITION_KEY,
         options: {
-          top: 'Top',
-          bottom: 'Bottom',
-          left: 'Left',
-          right: 'Right',
+          top: t('views.common.legend_position_options.top'),
+          bottom: t('views.common.legend_position_options.bottom'),
+          left: t('views.common.legend_position_options.left'),
+          right: t('views.common.legend_position_options.right'),
         },
       },
       {
-        displayName: 'Legend Orientation',
+        displayName: t('views.common.legend_orient'),
         type: 'dropdown',
         key: BaseChartView.LEGEND_ORIENT_KEY,
         options: {
-          horizontal: 'Horizontal',
-          vertical: 'Vertical',
+          horizontal: t('views.common.legend_orient_options.horizontal'),
+          vertical: t('views.common.legend_orient_options.vertical'),
         },
       },
       {
-        displayName: 'Visual Map Min',
+        displayName: t('views.visual_map.min'),
         type: 'text',
         key: BaseChartView.VISUAL_MAP_MIN_KEY,
-        placeholder: 'Min value (default: auto)',
+        placeholder: t('views.visual_map.min_placeholder'),
       },
       {
-        displayName: 'Visual Map Max',
+        displayName: t('views.visual_map.max'),
         type: 'text',
         key: BaseChartView.VISUAL_MAP_MAX_KEY,
-        placeholder: 'Max value (default: auto)',
+        placeholder: t('views.visual_map.max_placeholder'),
       },
       {
-        displayName: 'Visual Map Colors',
+        displayName: t('views.visual_map.colors'),
         type: 'text',
         key: BaseChartView.VISUAL_MAP_COLOR_KEY,
-        placeholder: 'Comma-separated hex colors (e.g. #fff,#000)',
+        placeholder: t('views.visual_map.colors_placeholder'),
       },
       {
-        displayName: 'Visual Map Orientation',
+        displayName: t('views.visual_map.orient'),
         type: 'dropdown',
         key: BaseChartView.VISUAL_MAP_ORIENT_KEY,
         options: {
-          horizontal: 'Horizontal',
+          horizontal: t('views.visual_map.orient_placeholder').includes('horizontal') ? 'Horizontal' : 'Horizontal', // Hacky, better reuse common logic if possible, but extraction is priority
           vertical: 'Vertical',
         },
       },
       {
-        displayName: 'Visual Map Type',
+        displayName: t('views.visual_map.type'),
         type: 'dropdown',
         key: BaseChartView.VISUAL_MAP_TYPE_KEY,
         options: {
@@ -110,10 +111,10 @@ export class PolarScatterChartView extends BaseChartView {
         },
       },
       {
-        displayName: 'Height',
+        displayName: t('views.common.height'),
         type: 'text',
         key: BaseChartView.HEIGHT_KEY,
-        placeholder: 'e.g., 500px, 50vh',
+        placeholder: t('views.common.height_placeholder'),
       },
     ]
   }

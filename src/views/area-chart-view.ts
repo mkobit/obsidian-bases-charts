@@ -4,6 +4,7 @@ import { transformDataToChartOption } from '../charts/transformer'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class AreaChartView extends BaseChartView {
   readonly type = 'area-chart'
@@ -57,12 +58,12 @@ export class AreaChartView extends BaseChartView {
       ...BaseChartView.getCommonViewOptions(),
       ...BaseChartView.getAxisViewOptions(),
       {
-        displayName: 'Smooth Line',
+        displayName: t('views.area.smooth'),
         type: 'toggle',
         key: 'smooth',
       },
       {
-        displayName: 'Show Symbol',
+        displayName: t('views.area.show_symbol'),
         type: 'toggle',
         key: 'showSymbol',
       },

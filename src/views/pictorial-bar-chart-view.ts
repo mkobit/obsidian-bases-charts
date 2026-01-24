@@ -3,6 +3,7 @@ import { BaseChartView } from './base-chart-view'
 import type { ChartType, BasesData } from '../charts/transformers/base'
 import type { PictorialBarTransformerOptions } from '../charts/transformers/pictorial-bar'
 import { transformDataToChartOption } from '../charts/transformer'
+import { t } from '../lang/text'
 
 export class PictorialBarChartView extends BaseChartView {
   type: ChartType = 'pictorialBar'
@@ -36,40 +37,40 @@ export class PictorialBarChartView extends BaseChartView {
       ...BaseChartView.getAxisViewOptions(),
       {
         key: 'symbol',
-        displayName: 'Symbol',
+        displayName: t('views.pictorial_bar.symbol'),
         type: 'dropdown',
         // description removed as it is not supported
         options: {
-          circle: 'Circle',
-          rect: 'Rectangle',
-          roundRect: 'Rounded Rectangle',
-          triangle: 'Triangle',
-          diamond: 'Diamond',
-          pin: 'Pin',
-          arrow: 'Arrow',
-          none: 'None',
+          circle: t('views.pictorial_bar.symbol_options.circle'),
+          rect: t('views.pictorial_bar.symbol_options.rect'),
+          roundRect: t('views.pictorial_bar.symbol_options.roundRect'),
+          triangle: t('views.pictorial_bar.symbol_options.triangle'),
+          diamond: t('views.pictorial_bar.symbol_options.diamond'),
+          pin: t('views.pictorial_bar.symbol_options.pin'),
+          arrow: t('views.pictorial_bar.symbol_options.arrow'),
+          none: t('views.pictorial_bar.symbol_options.none'),
         },
       } as ViewOption,
       {
         key: 'symbolRepeat',
-        displayName: 'Symbol Repeat',
+        displayName: t('views.pictorial_bar.symbol_repeat'),
         type: 'dropdown',
         options: {
-          false: 'No Repeat',
-          true: 'Repeat to Fit',
-          fixed: 'Fixed Repeat',
+          false: t('views.pictorial_bar.symbol_repeat_options.false'),
+          true: t('views.pictorial_bar.symbol_repeat_options.true'),
+          fixed: t('views.pictorial_bar.symbol_repeat_options.fixed'),
         },
       } as ViewOption,
       {
         key: 'symbolClip',
-        displayName: 'Symbol Clip',
+        displayName: t('views.pictorial_bar.symbol_clip'),
         type: 'toggle',
       },
       {
         key: 'symbolSize',
-        displayName: 'Symbol Size',
+        displayName: t('views.pictorial_bar.symbol_size'),
         type: 'text',
-        placeholder: 'Size of the symbol (number or percentage)',
+        placeholder: t('views.pictorial_bar.symbol_size_placeholder'),
       },
     ]
   }

@@ -4,6 +4,7 @@ import type { BasesData } from '../charts/transformers/base'
 import { transformDataToChartOption } from '../charts/transformer'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
+import { t } from '../lang/text'
 
 export class ParetoChartView extends BaseChartView {
   type = 'pareto-chart'
@@ -44,12 +45,12 @@ export class ParetoChartView extends BaseChartView {
     // Customize display names
     const xOption = options.find(o => 'key' in o && o.key === BaseChartView.X_AXIS_PROP_KEY)
     if (xOption) {
-      xOption.displayName = 'Category Property'
+      xOption.displayName = t('views.pareto.category_prop')
     }
 
     const yOption = options.find(o => 'key' in o && o.key === BaseChartView.Y_AXIS_PROP_KEY)
     if (yOption) {
-      yOption.displayName = 'Value Property'
+      yOption.displayName = t('views.pareto.value_prop')
     }
 
     return [
