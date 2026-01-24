@@ -28,12 +28,18 @@ fi
 
 # 2. Setup environment with mise
 if ! command -v mise &> /dev/null; then
-    echo "Error: 'mise' is not installed or not in the PATH."
-    echo "Please install mise (https://mise.jdx.dev) to manage this project's environment."
-    exit 1
+    echo "'mise' is not installed. Installing mise..."
+    curl https://mise.run | sh
+    export PATH="$HOME/.local/bin:$PATH"
+
+    if ! command -v mise &> /dev/null; then
+        echo "Error: 'mise' failed to install or is not in the PATH."
+        exit 1
+    fi
 fi
 
 echo "mise found. Installing tools..."
+mise trust
 mise install
 
 # 3. Install dependencies
