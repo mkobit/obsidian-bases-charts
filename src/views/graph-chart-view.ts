@@ -3,6 +3,7 @@ import { BaseChartView } from './base-chart-view'
 import type { ChartType } from '../charts/transformer'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class GraphChartView extends BaseChartView {
   readonly type: ChartType = 'graph'
@@ -12,27 +13,27 @@ export class GraphChartView extends BaseChartView {
       ...BaseChartView.getCommonViewOptions(),
       {
         key: 'sourceProp',
-        displayName: 'Source Property',
+        displayName: t('views.graph.source_prop'),
         type: 'property',
-        placeholder: 'Property for the source node name',
+        placeholder: t('views.graph.source_placeholder'),
       },
       {
         key: 'targetProp',
-        displayName: 'Target Property',
+        displayName: t('views.graph.target_prop'),
         type: 'property',
-        placeholder: 'Property for the target node name',
+        placeholder: t('views.graph.target_placeholder'),
       },
       {
         key: 'valueProp',
-        displayName: 'Value Property (Optional)',
+        displayName: t('views.graph.value_prop'),
         type: 'property',
-        placeholder: 'Optional property for link weight/value',
+        placeholder: t('views.graph.value_placeholder'),
       },
       {
         key: 'categoryProp',
-        displayName: 'Category Property (Optional)',
+        displayName: t('views.graph.category_prop'),
         type: 'property',
-        placeholder: 'Optional property for node grouping/color',
+        placeholder: t('views.graph.category_placeholder'),
       },
     ]
   }

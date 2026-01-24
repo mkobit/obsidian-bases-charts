@@ -4,6 +4,7 @@ import { transformDataToChartOption } from '../charts/transformer'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class GaugeChartView extends BaseChartView {
   readonly type = 'gauge-chart'
@@ -41,19 +42,19 @@ export class GaugeChartView extends BaseChartView {
   static getViewOptions(_?: unknown): ViewOption[] {
     return [
       {
-        displayName: 'Value Property',
+        displayName: t('views.gauge.value_prop'),
         type: 'property',
         key: BaseChartView.Y_AXIS_PROP_KEY,
-        placeholder: 'Select value property',
+        placeholder: t('views.gauge.value_prop_placeholder'),
       },
       {
-        displayName: 'Min Value',
+        displayName: t('views.gauge.min_value'),
         type: 'text',
         key: BaseChartView.MIN_VALUE_KEY,
         placeholder: '0',
       },
       {
-        displayName: 'Max Value',
+        displayName: t('views.gauge.max_value'),
         type: 'text',
         key: BaseChartView.MAX_VALUE_KEY,
         placeholder: '100',

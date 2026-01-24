@@ -4,6 +4,7 @@ import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class ThemeRiverChartView extends BaseChartView {
   readonly type = 'theme-river-chart'
@@ -25,25 +26,25 @@ export class ThemeRiverChartView extends BaseChartView {
   static getViewOptions(_?: unknown): ViewOption[] {
     return [
       {
-        displayName: 'Date property',
+        displayName: t('views.theme_river.date_prop'),
         type: 'property',
         key: BaseChartView.X_AXIS_PROP_KEY,
-        placeholder: 'Select date property',
+        placeholder: t('views.theme_river.date_placeholder'),
       },
       {
-        displayName: 'Value property',
+        displayName: t('views.theme_river.value_prop'),
         type: 'property',
         key: BaseChartView.VALUE_PROP_KEY,
-        placeholder: 'Select value property',
+        placeholder: t('views.theme_river.value_placeholder'),
       },
       {
-        displayName: 'Theme/category property',
+        displayName: t('views.theme_river.theme_prop'),
         type: 'property',
         key: BaseChartView.SERIES_PROP_KEY,
-        placeholder: 'Select category property',
+        placeholder: t('views.theme_river.theme_placeholder'),
       },
       {
-        displayName: 'Show legend',
+        displayName: t('views.common.show_legend'),
         type: 'toggle',
         key: BaseChartView.LEGEND_KEY,
       },

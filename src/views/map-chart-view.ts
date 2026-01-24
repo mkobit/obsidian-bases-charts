@@ -8,6 +8,7 @@ import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
 import { z } from 'zod'
 import { jsonParsed } from '../json-parsing'
+import { t } from '../lang/text'
 
 const geoJsonSchema = jsonParsed(z.object({}).loose())
 
@@ -108,32 +109,32 @@ export class MapChartView extends BaseChartView {
   static getViewOptions(_?: unknown): ViewOption[] {
     return [
       {
-        displayName: 'Map File Path',
+        displayName: t('views.map.map_file'),
         type: 'text',
         key: MapChartView.MAP_FILE_KEY,
-        placeholder: 'Path to GeoJSON (e.g. Maps/USA.json)',
+        placeholder: t('views.map.map_file_placeholder'),
       },
       {
-        displayName: 'Region Property',
+        displayName: t('views.map.region_prop'),
         type: 'property',
         key: MapChartView.REGION_PROP_KEY,
-        placeholder: 'Property matching map regions',
+        placeholder: t('views.map.region_placeholder'),
       },
       {
-        displayName: 'Value Property',
+        displayName: t('views.map.value_prop'),
         type: 'property',
         key: BaseChartView.VALUE_PROP_KEY,
-        placeholder: 'Metric (e.g. Population)',
+        placeholder: t('views.map.value_placeholder'),
       },
       ...BaseChartView.getCommonViewOptions().filter((o) => {
         const key = (o as { key?: string }).key
         return key !== BaseChartView.X_AXIS_PROP_KEY && key !== BaseChartView.Y_AXIS_PROP_KEY && key !== BaseChartView.SERIES_PROP_KEY
       }),
       {
-        displayName: 'Chart Title',
+        displayName: t('views.map.title'),
         type: 'text',
         key: BaseChartView.X_AXIS_LABEL_KEY, // Reusing X-Axis Label as Title for Maps
-        placeholder: 'Optional chart title',
+        placeholder: t('views.map.title_placeholder'),
       },
       ...BaseChartView.getVisualMapViewOptions(),
     ]

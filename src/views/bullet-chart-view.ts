@@ -3,6 +3,7 @@ import type { BasesData } from '../charts/transformers/base'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { ViewOption } from 'obsidian'
 import type { EChartsOption } from 'echarts'
+import { t } from '../lang/text'
 
 export class BulletChartView extends BaseChartView {
   // Config Keys
@@ -43,40 +44,40 @@ export class BulletChartView extends BaseChartView {
   static getViewOptions(): ViewOption[] {
     return [
       {
-        displayName: 'Category Property',
+        displayName: t('views.bullet.category_prop'),
         type: 'property',
         key: BaseChartView.X_AXIS_PROP_KEY,
-        placeholder: 'Select category property',
+        placeholder: t('views.bullet.category_placeholder'),
       },
       {
-        displayName: 'Value Property',
+        displayName: t('views.bullet.value_prop'),
         type: 'property',
         key: BaseChartView.VALUE_PROP_KEY,
-        placeholder: 'Select value property',
+        placeholder: t('views.bullet.value_placeholder'),
       },
       {
-        displayName: 'Target Property',
+        displayName: t('views.bullet.target_prop'),
         type: 'property',
         key: BulletChartView.TARGET_PROP_KEY,
-        placeholder: 'Select target property',
+        placeholder: t('views.bullet.target_placeholder'),
       },
       {
-        displayName: 'Range Low Property',
+        displayName: t('views.bullet.range_low_prop'),
         type: 'property',
         key: BulletChartView.RANGE_LOW_PROP_KEY,
-        placeholder: 'Select range low property',
+        placeholder: t('views.bullet.range_low_placeholder'),
       },
       {
-        displayName: 'Range Mid Property',
+        displayName: t('views.bullet.range_mid_prop'),
         type: 'property',
         key: BulletChartView.RANGE_MID_PROP_KEY,
-        placeholder: 'Select range mid property',
+        placeholder: t('views.bullet.range_mid_placeholder'),
       },
       {
-        displayName: 'Range High Property',
+        displayName: t('views.bullet.range_high_prop'),
         type: 'property',
         key: BulletChartView.RANGE_HIGH_PROP_KEY,
-        placeholder: 'Select range high property',
+        placeholder: t('views.bullet.range_high_placeholder'),
       },
       ...BaseChartView.getCommonViewOptions().filter((opt) => {
         // Type narrowing or check if 'key' exists

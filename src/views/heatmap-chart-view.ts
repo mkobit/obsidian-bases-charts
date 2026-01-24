@@ -4,6 +4,7 @@ import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class HeatmapChartView extends BaseChartView {
   readonly type = 'heatmap-chart'
@@ -19,22 +20,22 @@ export class HeatmapChartView extends BaseChartView {
   static getViewOptions(_?: unknown): ViewOption[] {
     return [
       {
-        displayName: 'X-Axis Property',
+        displayName: t('views.common.x_axis_prop'),
         type: 'property',
         key: BaseChartView.X_AXIS_PROP_KEY,
-        placeholder: 'Select category (columns)',
+        placeholder: t('views.heatmap.x_axis_placeholder'),
       },
       {
-        displayName: 'Y-Axis Property',
+        displayName: t('views.common.y_axis_prop'),
         type: 'property',
         key: BaseChartView.Y_AXIS_PROP_KEY,
-        placeholder: 'Select category (rows)',
+        placeholder: t('views.heatmap.y_axis_placeholder'),
       },
       {
-        displayName: 'Value Property',
+        displayName: t('views.heatmap.value_prop'),
         type: 'property',
         key: BaseChartView.VALUE_PROP_KEY,
-        placeholder: 'Select value property (color)',
+        placeholder: t('views.heatmap.value_prop_placeholder'),
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
       ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY),

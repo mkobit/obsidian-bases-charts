@@ -4,6 +4,7 @@ import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class RadialBarChartView extends BaseChartView {
   readonly type = 'radial-bar-chart'
@@ -19,25 +20,25 @@ export class RadialBarChartView extends BaseChartView {
   static getViewOptions(_?: unknown): ViewOption[] {
     return [
       {
-        displayName: 'X-Axis Property',
+        displayName: t('views.radial_bar.category_prop'),
         type: 'property',
         key: BaseChartView.X_AXIS_PROP_KEY,
-        placeholder: 'Select category',
+        placeholder: t('views.radial_bar.category_placeholder'),
       },
       {
-        displayName: 'Y-Axis Property',
+        displayName: t('views.radial_bar.value_prop'),
         type: 'property',
         key: BaseChartView.Y_AXIS_PROP_KEY,
-        placeholder: 'Select value',
+        placeholder: t('views.radial_bar.value_placeholder'),
       },
       {
-        displayName: 'Series Property',
+        displayName: t('views.common.series_prop'),
         type: 'property',
         key: BaseChartView.SERIES_PROP_KEY,
-        placeholder: 'Select group',
+        placeholder: t('views.common.series_prop_placeholder'),
       },
       {
-        displayName: 'Stack',
+        displayName: t('views.polar.stack'),
         type: 'toggle',
         key: 'stack',
       },

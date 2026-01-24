@@ -1,6 +1,6 @@
 import type { App } from 'obsidian'
 import { PluginSettingTab, Setting, Notice } from 'obsidian'
-import i18next from 'i18next'
+import { t } from './lang/text'
 import type BarePlugin from './main'
 import { validateTheme } from './theme-validation'
 
@@ -40,10 +40,10 @@ export class SettingTab extends PluginSettingTab {
     containerEl.empty()
 
     new Setting(containerEl)
-      .setName('Default chart height')
-      .setDesc('The default height for charts (e.g. 500px, 50vh).')
+      .setName(t('settings.default_height.name'))
+      .setDesc(t('settings.default_height.desc'))
       .addText(text => text
-        .setPlaceholder('500px')
+        .setPlaceholder(t('settings.default_height.placeholder'))
         .setValue(this.plugin.settings.defaultHeight)
         .onChange(async (value) => {
           this.plugin.settings.defaultHeight = value
@@ -52,10 +52,10 @@ export class SettingTab extends PluginSettingTab {
 
     // Global Theme Selection
     new Setting(containerEl)
-      .setName(i18next.t('settings.global_theme.name'))
-      .setDesc(i18next.t('settings.global_theme.desc'))
+      .setName(t('settings.global_theme.name'))
+      .setDesc(t('settings.global_theme.desc'))
       .addDropdown((dropdown) => {
-        dropdown.addOption('', i18next.t('settings.global_theme.default_option'))
+        dropdown.addOption('', t('settings.global_theme.default_option'))
         this.plugin.settings.customThemes.forEach((theme) => {
           dropdown.addOption(theme.name, theme.name)
         })
@@ -66,16 +66,16 @@ export class SettingTab extends PluginSettingTab {
         })
       })
 
-    new Setting(containerEl).setName(i18next.t('settings.custom_themes.title')).setHeading()
+    new Setting(containerEl).setName(t('settings.custom_themes.title')).setHeading()
 
     // List existing custom themes
     this.plugin.settings.customThemes.forEach((theme, index) => {
       new Setting(containerEl)
         .setName(theme.name)
-        .setDesc(i18next.t('settings.custom_themes.desc'))
+        .setDesc(t('settings.custom_themes.desc'))
         .addExtraButton(button => button
           .setIcon('trash')
-          .setTooltip(i18next.t('settings.custom_themes.delete_tooltip'))
+          .setTooltip(t('settings.custom_themes.delete_tooltip'))
           .onClick(async () => {
             this.plugin.settings.customThemes.splice(index, 1)
             if (this.plugin.settings.selectedTheme === theme.name) {
@@ -87,45 +87,45 @@ export class SettingTab extends PluginSettingTab {
     })
 
     // Add New Theme Section
-    new Setting(containerEl).setName(i18next.t('settings.add_theme.title')).setHeading()
+    new Setting(containerEl).setName(t('settings.add_theme.title')).setHeading()
 
     const newThemeState = { name: '',
       json: '' }
 
     new Setting(containerEl)
-      .setName(i18next.t('settings.add_theme.name_label'))
+      .setName(t('settings.add_theme.name_label'))
       .addText(text => text
-        .setPlaceholder('My custom theme')
+        .setPlaceholder(t('settings.add_theme.name_placeholder'))
         .onChange((value) => {
           newThemeState.name = value
         }))
 
     new Setting(containerEl)
-      .setName(i18next.t('settings.add_theme.json_label'))
-      .setDesc(i18next.t('settings.add_theme.json_desc'))
+      .setName(t('settings.add_theme.json_label'))
+      .setDesc(t('settings.add_theme.json_desc'))
       .addTextArea(text => text
-        .setPlaceholder('{"color": ["#5470c6", "#91cc75", ...]}')
+        .setPlaceholder(t('settings.add_theme.json_placeholder'))
         .onChange((value) => {
           newThemeState.json = value
         }))
 
     new Setting(containerEl)
       .addButton(button => button
-        .setButtonText(i18next.t('settings.add_theme.button'))
+        .setButtonText(t('settings.add_theme.button'))
         .setCta()
         .onClick(async () => {
           if (!newThemeState.name.trim() || !newThemeState.json.trim()) {
-            new Notice('Please provide both a name and JSON for the theme.')
+            new Notice(t('settings.add_theme.missing_fields_error'))
             return
           }
 
           if (this.plugin.settings.customThemes.some(t => t.name === newThemeState.name)) {
-            new Notice(i18next.t('settings.add_theme.exists_error'))
+            new Notice(t('settings.add_theme.exists_error'))
             return
           }
 
           if (!validateTheme(newThemeState.json)) {
-            new Notice(i18next.t('settings.add_theme.invalid_json_error'))
+            new Notice(t('settings.add_theme.invalid_json_error'))
             return
           }
 
@@ -134,7 +134,7 @@ export class SettingTab extends PluginSettingTab {
             json: newThemeState.json.trim(),
           })
           await this.plugin.saveSettings()
-          new Notice('Theme added successfully')
+          new Notice(t('settings.add_theme.success'))
           this.display() // Refresh to show in list and dropdown
         }))
   }

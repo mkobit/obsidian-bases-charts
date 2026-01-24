@@ -6,6 +6,7 @@ import { transformDataToChartOption } from '../charts/transformer'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class GanttChartView extends BaseChartView {
   readonly type = 'gantt-chart'
@@ -55,28 +56,28 @@ export class GanttChartView extends BaseChartView {
     return [
       {
         key: GanttChartView.TASK_PROP_KEY,
-        displayName: 'Task property',
+        displayName: t('views.gantt.task_prop'),
         type: 'dropdown',
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         options: p?.getProperties?.() ?? {},
       },
       {
         key: GanttChartView.START_PROP_KEY,
-        displayName: 'Start time property',
+        displayName: t('views.gantt.start_prop'),
         type: 'dropdown',
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         options: p?.getProperties?.() ?? {},
       },
       {
         key: GanttChartView.END_PROP_KEY,
-        displayName: 'End time property',
+        displayName: t('views.gantt.end_prop'),
         type: 'dropdown',
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         options: p?.getProperties?.() ?? {},
       },
       {
         key: BaseChartView.SERIES_PROP_KEY,
-        displayName: 'Group by property',
+        displayName: t('views.gantt.group_prop'),
         type: 'dropdown',
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         options: p?.getProperties?.() ?? {},

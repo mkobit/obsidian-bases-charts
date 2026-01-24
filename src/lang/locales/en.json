@@ -1,7 +1,57 @@
 {
 	"views": {
+		"common": {
+			"theme": "Theme",
+			"theme_default": "Default (Global)",
+			"x_axis_prop": "X-Axis Property",
+			"x_axis_prop_placeholder": "Select category property",
+			"y_axis_prop": "Y-Axis Property",
+			"y_axis_prop_placeholder": "Select value property",
+			"series_prop": "Series Property (Optional)",
+			"series_prop_placeholder": "Select series/group property",
+			"show_legend": "Show Legend",
+			"legend_position": "Legend Position",
+			"legend_position_options": {
+				"top": "Top",
+				"bottom": "Bottom",
+				"left": "Left",
+				"right": "Right"
+			},
+			"legend_orient": "Legend Orientation",
+			"legend_orient_options": {
+				"horizontal": "Horizontal",
+				"vertical": "Vertical"
+			},
+			"height": "Height",
+			"height_placeholder": "e.g., 500px, 50vh"
+		},
+		"axis": {
+			"x_label": "X-Axis Label",
+			"x_label_placeholder": "Override X-Axis label",
+			"y_label": "Y-Axis Label",
+			"y_label_placeholder": "Override Y-Axis label",
+			"x_rotate": "X-Axis Label Rotation",
+			"x_rotate_placeholder": "Degrees (e.g. 45)",
+			"flip": "Flip Axis"
+		},
+		"visual_map": {
+			"min": "Visual Map Min",
+			"min_placeholder": "Min value (default: auto)",
+			"max": "Visual Map Max",
+			"max_placeholder": "Max value (default: auto)",
+			"colors": "Visual Map Colors",
+			"colors_placeholder": "Comma-separated hex colors (e.g. #fff,#000)",
+			"orient": "Visual Map Orientation",
+			"orient_placeholder": "horizontal or vertical (default: horizontal)",
+			"type": "Visual Map Type",
+			"type_placeholder": "continuous or piecewise (default: continuous)"
+		},
 		"treemap": {
-			"name": "Treemap"
+			"name": "Treemap",
+			"name_prop": "Name Property",
+			"name_prop_placeholder": "Select name property",
+			"value_prop": "Value Property",
+			"value_prop_placeholder": "Select value property"
 		},
 		"bar": {
 			"name": "Bar Chart"
@@ -10,7 +60,13 @@
 			"name": "Line Chart"
 		},
 		"lines": {
-			"name": "Lines Chart"
+			"name": "Lines Chart",
+			"end_x_prop": "End X property",
+			"end_x_prop_placeholder": "Select property for End X",
+			"end_y_prop": "End Y property",
+			"end_y_prop_placeholder": "Select property for End Y",
+			"series_prop": "Series property",
+			"series_prop_placeholder": "Select property for grouping"
 		},
 		"pie": {
 			"name": "Pie Chart"
@@ -19,13 +75,35 @@
 			"name": "Rose Chart"
 		},
 		"pictorial_bar": {
-			"name": "Pictorial Bar Chart"
+			"name": "Pictorial Bar Chart",
+			"symbol": "Symbol",
+			"symbol_options": {
+				"circle": "Circle",
+				"rect": "Rectangle",
+				"roundRect": "Rounded Rectangle",
+				"triangle": "Triangle",
+				"diamond": "Diamond",
+				"pin": "Pin",
+				"arrow": "Arrow",
+				"none": "None"
+			},
+			"symbol_repeat": "Symbol Repeat",
+			"symbol_repeat_options": {
+				"false": "No Repeat",
+				"true": "Repeat to Fit",
+				"fixed": "Fixed Repeat"
+			},
+			"symbol_clip": "Symbol Clip",
+			"symbol_size": "Symbol Size",
+			"symbol_size_placeholder": "Size of the symbol (number or percentage)"
 		},
 		"stacked_bar": {
 			"name": "Stacked Bar Chart"
 		},
 		"area": {
-			"name": "Area Chart"
+			"name": "Area Chart",
+			"smooth": "Smooth Line",
+			"show_symbol": "Show Symbol"
 		},
 		"scatter": {
 			"name": "Scatter Chart"
@@ -43,55 +121,143 @@
 			"name": "Funnel Chart"
 		},
 		"gauge": {
-			"name": "Gauge Chart"
+			"name": "Gauge Chart",
+			"value_prop": "Value Property",
+			"value_prop_placeholder": "Select value property",
+			"min_value": "Min Value",
+			"max_value": "Max Value"
 		},
 		"heatmap": {
-			"name": "Heatmap"
+			"name": "Heatmap",
+			"x_axis_placeholder": "Select category (columns)",
+			"y_axis_placeholder": "Select category (rows)",
+			"value_prop": "Value Property",
+			"value_prop_placeholder": "Select value property (color)"
 		},
 		"candlestick": {
-			"name": "Candlestick Chart"
+			"name": "Candlestick Chart",
+			"x_axis_prop": "X-Axis Property (Date/Time)",
+			"x_axis_placeholder": "Select date property",
+			"open_prop": "Open Property",
+			"open_placeholder": "Select Open price property",
+			"close_prop": "Close Property",
+			"close_placeholder": "Select Close price property",
+			"low_prop": "Lowest Property",
+			"low_placeholder": "Select Low price property",
+			"high_prop": "Highest Property",
+			"high_placeholder": "Select High price property"
 		},
 		"boxplot": {
-			"name": "Boxplot Chart"
+			"name": "Boxplot Chart",
+			"x_axis_prop": "X-Axis Property (Category)",
+			"y_axis_prop": "Y-Axis Property (Values)"
 		},
 		"sankey": {
-			"name": "Sankey Chart"
+			"name": "Sankey Chart",
+			"value_prop": "Value Property",
+			"value_placeholder": "Property to use for link value"
 		},
 		"graph": {
-			"name": "Graph Chart"
+			"name": "Graph Chart",
+			"source_prop": "Source Property",
+			"source_placeholder": "Property for the source node name",
+			"target_prop": "Target Property",
+			"target_placeholder": "Property for the target node name",
+			"value_prop": "Value Property (Optional)",
+			"value_placeholder": "Optional property for link weight/value",
+			"category_prop": "Category Property (Optional)",
+			"category_placeholder": "Optional property for node grouping/color"
 		},
 		"sunburst": {
-			"name": "Sunburst Chart"
+			"name": "Sunburst Chart",
+			"path_prop": "Path Property (e.g. \"Folder/Subfolder\")",
+			"path_placeholder": "Select path property",
+			"value_prop": "Value Property",
+			"value_placeholder": "Select value property"
 		},
 		"tree": {
-			"name": "Tree Chart"
+			"name": "Tree Chart",
+			"path_prop": "Path property (e.g. \"Folder/Subfolder\")",
+			"path_placeholder": "Select path property"
 		},
 		"theme_river": {
-			"name": "ThemeRiver Chart"
+			"name": "ThemeRiver Chart",
+			"date_prop": "Date property",
+			"date_placeholder": "Select date property",
+			"value_prop": "Value property",
+			"value_placeholder": "Select value property",
+			"theme_prop": "Theme/category property",
+			"theme_placeholder": "Select category property"
 		},
 		"calendar": {
-			"name": "Calendar Chart"
+			"name": "Calendar Chart",
+			"date_prop": "Date property",
+			"date_placeholder": "Select date property",
+			"value_prop": "Value property",
+			"value_placeholder": "Select value property"
 		},
 		"parallel": {
-			"name": "Parallel Chart"
+			"name": "Parallel Chart",
+			"dimensions": "Dimensions (comma-separated)",
+			"dimensions_placeholder": "e.g. price,rating,volume",
+			"series_prop": "Series property",
+			"series_placeholder": "Property to group by"
 		},
 		"gantt": {
-			"name": "Gantt Chart"
+			"name": "Gantt Chart",
+			"task_prop": "Task property",
+			"start_prop": "Start time property",
+			"end_prop": "End time property",
+			"group_prop": "Group by property"
 		},
 		"waterfall": {
-			"name": "Waterfall Chart"
+			"name": "Waterfall Chart",
+			"category_prop": "Category Property",
+			"value_prop": "Value Property"
 		},
 		"pareto": {
-			"name": "Pareto Chart"
+			"name": "Pareto Chart",
+			"category_prop": "Category Property",
+			"value_prop": "Value Property"
 		},
 		"histogram": {
-			"name": "Histogram Chart"
+			"name": "Histogram Chart",
+			"value_prop": "Value Property",
+			"value_placeholder": "Select numeric property",
+			"bin_count": "Bin Count",
+			"bin_count_placeholder": "Optional (default: auto)"
 		},
 		"bullet": {
-			"name": "Bullet Chart"
+			"name": "Bullet Chart",
+			"category_prop": "Category Property",
+			"category_placeholder": "Select category property",
+			"value_prop": "Value Property",
+			"value_placeholder": "Select value property",
+			"target_prop": "Target Property",
+			"target_placeholder": "Select target property",
+			"range_low_prop": "Range Low Property",
+			"range_low_placeholder": "Select range low property",
+			"range_mid_prop": "Range Mid Property",
+			"range_mid_placeholder": "Select range mid property",
+			"range_high_prop": "Range High Property",
+			"range_high_placeholder": "Select range high property"
 		},
 		"radial_bar": {
-			"name": "Radial Bar Chart"
+			"name": "Radial Bar Chart",
+			"category_prop": "Category Property",
+			"category_placeholder": "Select category property",
+			"value_prop": "Value Property",
+			"value_placeholder": "Select value property",
+			"max_value": "Max Value"
+		},
+		"polar": {
+			"angle_prop": "Angle Property",
+			"radius_prop": "Radius Property",
+			"series_prop": "Series Property",
+			"stack": "Stack",
+			"size_prop": "Size Property",
+			"smooth": "Smooth",
+			"area_style": "Area Style"
 		},
 		"polar_line": {
 			"name": "Polar Line Chart"
@@ -103,19 +269,44 @@
 			"name": "Polar Scatter Chart"
 		},
 		"map": {
-			"name": "Map Chart"
+			"name": "Map Chart",
+			"map_file": "Map File Path",
+			"map_file_placeholder": "Path to GeoJSON (e.g. Maps/USA.json)",
+			"region_prop": "Region Property",
+			"region_placeholder": "Property matching map regions",
+			"value_prop": "Value Property",
+			"value_placeholder": "Metric (e.g. Population)",
+			"title": "Chart Title",
+			"title_placeholder": "Optional chart title"
 		},
 		"word_cloud": {
 			"name": "Word Cloud",
 			"options": {
 				"shape": "Shape",
 				"grid_size": "Grid size",
+				"grid_size_placeholder": "Grid size (default: 2)",
 				"min_font_size": "Min font size",
-				"max_font_size": "Max font size"
+				"min_font_size_placeholder": "Min font size (default: 12)",
+				"max_font_size": "Max font size",
+				"max_font_size_placeholder": "Max font size (default: 60)",
+				"shapes": {
+					"circle": "Circle",
+					"cardioid": "Cardioid",
+					"diamond": "Diamond",
+					"triangle_forward": "Triangle Forward",
+					"triangle": "Triangle",
+					"pentagon": "Pentagon",
+					"star": "Star"
+				}
 			}
 		}
 	},
 	"settings": {
+		"default_height": {
+			"name": "Default chart height",
+			"desc": "The default height for charts (e.g. 500px, 50vh).",
+			"placeholder": "500px"
+		},
 		"global_theme": {
 			"name": "Default global theme",
 			"desc": "Select the default theme to apply to all charts unless overridden.",
@@ -129,11 +320,15 @@
 		"add_theme": {
 			"title": "Add new theme",
 			"name_label": "Theme name",
+			"name_placeholder": "My custom theme",
 			"json_label": "Theme JSON",
 			"json_desc": "Paste your custom ECharts theme JSON here.",
+			"json_placeholder": "{\"color\": [\"#5470c6\", \"#91cc75\", ...]}",
 			"button": "Add theme",
 			"exists_error": "A theme with this name already exists",
-			"invalid_json_error": "Invalid JSON provided for ECharts theme"
+			"invalid_json_error": "Invalid JSON provided for ECharts theme",
+			"missing_fields_error": "Please provide both a name and JSON for the theme.",
+			"success": "Theme added successfully"
 		}
 	}
 }

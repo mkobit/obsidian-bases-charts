@@ -4,6 +4,7 @@ import type { ChartType } from '../charts/transformer'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class SankeyChartView extends BaseChartView {
   readonly type = 'sankey'
@@ -35,10 +36,10 @@ export class SankeyChartView extends BaseChartView {
 
   static getViewOptions(_?: unknown): ViewOption[] {
     const valueOption: TextOption = {
-      displayName: 'Value Property',
+      displayName: t('views.sankey.value_prop'),
       key: BaseChartView.VALUE_PROP_KEY,
       type: 'text',
-      placeholder: 'Property to use for link value',
+      placeholder: t('views.sankey.value_placeholder'),
     }
 
     return [

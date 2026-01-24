@@ -7,6 +7,7 @@ import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class SunburstChartView extends BaseChartView {
   readonly type = 'sunburst-chart'
@@ -34,16 +35,16 @@ export class SunburstChartView extends BaseChartView {
   static getViewOptions(_?: unknown): ViewOption[] {
     return [
       {
-        displayName: 'Path Property (e.g. "Folder/Subfolder")',
+        displayName: t('views.sunburst.path_prop'),
         type: 'property',
         key: BaseChartView.X_AXIS_PROP_KEY,
-        placeholder: 'Select path property',
+        placeholder: t('views.sunburst.path_placeholder'),
       },
       {
-        displayName: 'Value Property',
+        displayName: t('views.sunburst.value_prop'),
         type: 'property',
         key: BaseChartView.VALUE_PROP_KEY,
-        placeholder: 'Select value property',
+        placeholder: t('views.sunburst.value_placeholder'),
       },
     ]
   }

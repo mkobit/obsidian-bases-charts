@@ -3,6 +3,7 @@ import type { EChartsOption } from 'echarts'
 import { BaseChartView } from './base-chart-view'
 import type { BasesData } from '../charts/transformers/base'
 import { createHistogramChartOption } from '../charts/transformers/histogram'
+import { t } from '../lang/text'
 
 export class HistogramChartView extends BaseChartView {
   type = 'histogram'
@@ -51,16 +52,16 @@ export class HistogramChartView extends BaseChartView {
   static getViewOptions(): ViewOption[] {
     return [
       {
-        displayName: 'Value Property',
+        displayName: t('views.histogram.value_prop'),
         type: 'property',
         key: BaseChartView.VALUE_PROP_KEY,
-        placeholder: 'Select numeric property',
+        placeholder: t('views.histogram.value_placeholder'),
       },
       {
-        displayName: 'Bin Count',
+        displayName: t('views.histogram.bin_count'),
         type: 'text',
         key: HistogramChartView.BIN_COUNT_KEY,
-        placeholder: 'Optional (default: auto)',
+        placeholder: t('views.histogram.bin_count_placeholder'),
       },
       ...BaseChartView.getCommonViewOptions(),
       ...BaseChartView.getAxisViewOptions(),
