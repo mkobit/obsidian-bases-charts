@@ -1,6 +1,7 @@
 {
 	"views": {
 		"common": {
+			"no_data": "No data found",
 			"theme": "Theme",
 			"theme_default": "Default (Global)",
 			"x_axis_prop": "X-Axis Property",

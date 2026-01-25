@@ -7,6 +7,16 @@
     width: var(--bases-echarts-width, 100%);
 }
 
+.bases-chart-no-data {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: var(--font-ui-small);
+}
+
 /* Full Screen Modal */
 .bases-chart-modal {
     width: 100%;

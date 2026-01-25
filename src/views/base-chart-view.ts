@@ -146,6 +146,25 @@ export abstract class BaseChartView extends BasesView {
     const height = (this.config.get(BaseChartView.HEIGHT_KEY) as string) || this.plugin.settings.defaultHeight
     this.chartEl.style.height = height
 
+    const data = this.data.data as unknown as BasesData
+
+    // Handle Empty State
+    if (!data || data.length === 0) {
+      this.chart?.dispose()
+      this.chart = null
+      this.chartEl.empty()
+      this.chartEl.createDiv({
+        cls: 'bases-chart-no-data',
+        text: t('views.common.no_data'),
+      })
+      return
+    }
+
+    // Ensure chart container is clear of text if it was previously empty
+    if (this.chartEl.innerText === t('views.common.no_data')) {
+      this.chartEl.empty()
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.chart
       ? this.chart.resize()
@@ -154,7 +173,6 @@ export abstract class BaseChartView extends BasesView {
           this.getTheme(),
         ))
 
-    const data = this.data.data as unknown as BasesData
     const option = this.getChartOption(data)
 
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -169,6 +187,9 @@ export abstract class BaseChartView extends BasesView {
   protected abstract getChartOption(data: BasesData): EChartsOption | null
 
   private readonly updateChartTheme = (): void => {
+    // Re-register theme to capture any CSS variable changes
+    this.registerObsidianTheme()
+
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.chart && (
       this.chart.dispose(),
@@ -190,7 +211,401 @@ export abstract class BaseChartView extends BasesView {
       return this.plugin.settings.selectedTheme
     }
 
-    return this.isDarkMode() ? 'dark' : undefined
+    // Register and return our dynamic Obsidian theme
+    this.registerObsidianTheme()
+    return 'obsidian-theme'
+  }
+
+  private registerObsidianTheme(): void {
+    const getVar = (name: string): string =>
+      getComputedStyle(document.body).getPropertyValue(name).trim()
+
+    const textColor = getVar('--text-normal')
+    const axisLineColor = getVar('--background-modifier-border')
+    const splitLineColor = getVar('--background-modifier-border')
+    const fontFamily = getVar('--font-interface')
+
+    const theme = {
+      textStyle: {
+        fontFamily: fontFamily || 'sans-serif',
+        color: textColor,
+      },
+      title: {
+        textStyle: {
+          color: textColor,
+        },
+      },
+      line: {
+        itemStyle: {
+          borderWidth: 1,
+        },
+        lineStyle: {
+          width: 2,
+        },
+        symbolSize: 4,
+        symbol: 'emptyCircle',
+        smooth: false,
+      },
+      radar: {
+        itemStyle: {
+          borderWidth: 1,
+        },
+        lineStyle: {
+          width: 2,
+        },
+        symbolSize: 4,
+        symbol: 'emptyCircle',
+        smooth: false,
+      },
+      bar: {
+        itemStyle: {
+          barBorderWidth: 0,
+          barBorderColor: '#ccc',
+        },
+      },
+      pie: {
+        itemStyle: {
+          borderWidth: 0,
+          borderColor: '#ccc',
+        },
+      },
+      scatter: {
+        itemStyle: {
+          borderWidth: 0,
+          borderColor: '#ccc',
+        },
+      },
+      boxplot: {
+        itemStyle: {
+          borderWidth: 0,
+          borderColor: '#ccc',
+        },
+      },
+      parallel: {
+        itemStyle: {
+          borderWidth: 0,
+          borderColor: '#ccc',
+        },
+      },
+      sankey: {
+        itemStyle: {
+          borderWidth: 0,
+          borderColor: '#ccc',
+        },
+      },
+      funnel: {
+        itemStyle: {
+          borderWidth: 0,
+          borderColor: '#ccc',
+        },
+      },
+      gauge: {
+        itemStyle: {
+          borderWidth: 0,
+          borderColor: '#ccc',
+        },
+      },
+      candlestick: {
+        itemStyle: {
+          color: '#eb5454',
+          color0: '#47b262',
+          borderColor: '#eb5454',
+          borderColor0: '#47b262',
+          borderWidth: 1,
+        },
+      },
+      graph: {
+        itemStyle: {
+          borderWidth: 0,
+          borderColor: '#ccc',
+        },
+        lineStyle: {
+          width: 1,
+          color: '#aaa',
+        },
+        symbolSize: 4,
+        symbol: 'emptyCircle',
+        smooth: false,
+        color: [
+          '#5470c6',
+          '#91cc75',
+          '#fac858',
+          '#ee6666',
+          '#73c0de',
+          '#3ba272',
+          '#fc8452',
+          '#9a60b4',
+          '#ea7ccc',
+        ],
+        label: {
+          color: textColor,
+        },
+      },
+      map: {
+        itemStyle: {
+          areaColor: '#eee',
+          borderColor: '#444',
+          borderWidth: 0.5,
+        },
+        label: {
+          color: '#000',
+        },
+        emphasis: {
+          itemStyle: {
+            areaColor: 'rgba(255,215,0,0.8)',
+            borderColor: '#444',
+            borderWidth: 1,
+          },
+          label: {
+            color: 'rgb(100,0,0)',
+          },
+        },
+      },
+      geo: {
+        itemStyle: {
+          areaColor: '#eee',
+          borderColor: '#444',
+          borderWidth: 0.5,
+        },
+        label: {
+          color: '#000',
+        },
+        emphasis: {
+          itemStyle: {
+            areaColor: 'rgba(255,215,0,0.8)',
+            borderColor: '#444',
+            borderWidth: 1,
+          },
+          label: {
+            color: 'rgb(100,0,0)',
+          },
+        },
+      },
+      categoryAxis: {
+        axisLine: {
+          show: true,
+          lineStyle: {
+            color: axisLineColor,
+          },
+        },
+        axisTick: {
+          show: true,
+          lineStyle: {
+            color: axisLineColor,
+          },
+        },
+        axisLabel: {
+          show: true,
+          color: textColor,
+        },
+        splitLine: {
+          show: false,
+          lineStyle: {
+            color: [splitLineColor],
+          },
+        },
+        splitArea: {
+          show: false,
+          areaStyle: {
+            color: [
+              'rgba(250,250,250,0.3)',
+              'rgba(200,200,200,0.3)',
+            ],
+          },
+        },
+      },
+      valueAxis: {
+        axisLine: {
+          show: false,
+          lineStyle: {
+            color: axisLineColor,
+          },
+        },
+        axisTick: {
+          show: false,
+          lineStyle: {
+            color: axisLineColor,
+          },
+        },
+        axisLabel: {
+          show: true,
+          color: textColor,
+        },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: [splitLineColor],
+          },
+        },
+        splitArea: {
+          show: false,
+          areaStyle: {
+            color: [
+              'rgba(250,250,250,0.3)',
+              'rgba(200,200,200,0.3)',
+            ],
+          },
+        },
+      },
+      logAxis: {
+        axisLine: {
+          show: true,
+          lineStyle: {
+            color: axisLineColor,
+          },
+        },
+        axisTick: {
+          show: true,
+          lineStyle: {
+            color: axisLineColor,
+          },
+        },
+        axisLabel: {
+          show: true,
+          color: textColor,
+        },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: [splitLineColor],
+          },
+        },
+        splitArea: {
+          show: false,
+          areaStyle: {
+            color: [
+              'rgba(250,250,250,0.3)',
+              'rgba(200,200,200,0.3)',
+            ],
+          },
+        },
+      },
+      timeAxis: {
+        axisLine: {
+          show: true,
+          lineStyle: {
+            color: axisLineColor,
+          },
+        },
+        axisTick: {
+          show: true,
+          lineStyle: {
+            color: axisLineColor,
+          },
+        },
+        axisLabel: {
+          show: true,
+          color: textColor,
+        },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: [splitLineColor],
+          },
+        },
+        splitArea: {
+          show: false,
+          areaStyle: {
+            color: [
+              'rgba(250,250,250,0.3)',
+              'rgba(200,200,200,0.3)',
+            ],
+          },
+        },
+      },
+      toolbox: {
+        iconStyle: {
+          borderColor: '#999',
+        },
+        emphasis: {
+          iconStyle: {
+            borderColor: '#666',
+          },
+        },
+      },
+      legend: {
+        textStyle: {
+          color: textColor,
+        },
+      },
+      tooltip: {
+        axisPointer: {
+          lineStyle: {
+            color: '#ccc',
+            width: 1,
+          },
+          crossStyle: {
+            color: '#ccc',
+            width: 1,
+          },
+        },
+        backgroundColor: getVar('--background-secondary'),
+        borderColor: getVar('--background-modifier-border'),
+        textStyle: {
+          color: textColor,
+        },
+      },
+      timeline: {
+        lineStyle: {
+          color: '#dae1f5',
+          width: 2,
+        },
+        itemStyle: {
+          color: '#a4b1d7',
+          borderWidth: 1,
+        },
+        controlStyle: {
+          color: '#a4b1d7',
+          borderColor: '#a4b1d7',
+          borderWidth: 1,
+        },
+        checkpointStyle: {
+          color: '#316bf3',
+          borderColor: 'fff',
+        },
+        label: {
+          color: '#a4b1d7',
+        },
+        emphasis: {
+          itemStyle: {
+            color: '#FFF',
+          },
+          controlStyle: {
+            color: '#a4b1d7',
+            borderColor: '#a4b1d7',
+            borderWidth: 1,
+          },
+          label: {
+            color: '#a4b1d7',
+          },
+        },
+      },
+      visualMap: {
+        color: [
+          '#bf444c',
+          '#d88273',
+          '#f6efa6',
+        ],
+      },
+      dataZoom: {
+        handleSize: 'undefined%',
+        textStyle: {
+          color: '#333',
+        },
+      },
+      markPoint: {
+        label: {
+          color: '#eee',
+        },
+        emphasis: {
+          label: {
+            color: '#eee',
+          },
+        },
+      },
+    }
+
+    echarts.registerTheme('obsidian-theme', theme)
   }
 
   private isDarkMode(_?: unknown): boolean {
