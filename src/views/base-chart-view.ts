@@ -224,8 +224,22 @@ export abstract class BaseChartView extends BasesView {
     const axisLineColor = getVar('--background-modifier-border')
     const splitLineColor = getVar('--background-modifier-border')
     const fontFamily = getVar('--font-interface')
+    const faintColor = getVar('--text-faint')
+    const accentColor = getVar('--interactive-accent')
+    const errorColor = getVar('--text-error')
+    const successColor = getVar('--text-success')
 
     const theme = {
+      color: [
+        getVar('--color-red'),
+        getVar('--color-orange'),
+        getVar('--color-yellow'),
+        getVar('--color-green'),
+        getVar('--color-cyan'),
+        getVar('--color-blue'),
+        getVar('--color-purple'),
+        getVar('--color-pink'),
+      ],
       textStyle: {
         fontFamily: fontFamily || 'sans-serif',
         color: textColor,
@@ -260,124 +274,113 @@ export abstract class BaseChartView extends BasesView {
       bar: {
         itemStyle: {
           barBorderWidth: 0,
-          barBorderColor: '#ccc',
+          barBorderColor: faintColor,
         },
       },
       pie: {
         itemStyle: {
           borderWidth: 0,
-          borderColor: '#ccc',
+          borderColor: faintColor,
         },
       },
       scatter: {
         itemStyle: {
           borderWidth: 0,
-          borderColor: '#ccc',
+          borderColor: faintColor,
         },
       },
       boxplot: {
         itemStyle: {
           borderWidth: 0,
-          borderColor: '#ccc',
+          borderColor: faintColor,
         },
       },
       parallel: {
         itemStyle: {
           borderWidth: 0,
-          borderColor: '#ccc',
+          borderColor: faintColor,
         },
       },
       sankey: {
         itemStyle: {
           borderWidth: 0,
-          borderColor: '#ccc',
+          borderColor: faintColor,
         },
       },
       funnel: {
         itemStyle: {
           borderWidth: 0,
-          borderColor: '#ccc',
+          borderColor: faintColor,
         },
       },
       gauge: {
         itemStyle: {
           borderWidth: 0,
-          borderColor: '#ccc',
+          borderColor: faintColor,
         },
       },
       candlestick: {
         itemStyle: {
-          color: '#eb5454',
-          color0: '#47b262',
-          borderColor: '#eb5454',
-          borderColor0: '#47b262',
+          color: errorColor,
+          color0: successColor,
+          borderColor: errorColor,
+          borderColor0: successColor,
           borderWidth: 1,
         },
       },
       graph: {
         itemStyle: {
           borderWidth: 0,
-          borderColor: '#ccc',
+          borderColor: faintColor,
         },
         lineStyle: {
           width: 1,
-          color: '#aaa',
+          color: axisLineColor,
         },
         symbolSize: 4,
         symbol: 'emptyCircle',
         smooth: false,
-        color: [
-          '#5470c6',
-          '#91cc75',
-          '#fac858',
-          '#ee6666',
-          '#73c0de',
-          '#3ba272',
-          '#fc8452',
-          '#9a60b4',
-          '#ea7ccc',
-        ],
         label: {
           color: textColor,
         },
       },
       map: {
         itemStyle: {
-          areaColor: '#eee',
-          borderColor: '#444',
+          areaColor: getVar('--background-primary-alt'),
+          borderColor: axisLineColor,
           borderWidth: 0.5,
         },
         label: {
-          color: '#000',
+          color: textColor,
         },
         emphasis: {
           itemStyle: {
-            areaColor: 'rgba(255,215,0,0.8)',
-            borderColor: '#444',
+            areaColor: getVar('--background-modifier-hover'),
+            borderColor: axisLineColor,
             borderWidth: 1,
           },
           label: {
-            color: 'rgb(100,0,0)',
+            color: accentColor,
           },
         },
       },
       geo: {
         itemStyle: {
-          areaColor: '#eee',
-          borderColor: '#444',
+          areaColor: getVar('--background-primary-alt'),
+          borderColor: axisLineColor,
           borderWidth: 0.5,
         },
         label: {
-          color: '#000',
+          color: textColor,
         },
         emphasis: {
           itemStyle: {
-            areaColor: 'rgba(255,215,0,0.8)',
-            borderColor: '#444',
+            areaColor: getVar('--background-modifier-hover'),
+            borderColor: axisLineColor,
             borderWidth: 1,
           },
           label: {
-            color: 'rgb(100,0,0)',
+            color: accentColor,
           },
         },
       },
@@ -408,8 +411,8 @@ export abstract class BaseChartView extends BasesView {
           show: false,
           areaStyle: {
             color: [
-              'rgba(250,250,250,0.3)',
-              'rgba(200,200,200,0.3)',
+              getVar('--background-primary'),
+              getVar('--background-secondary'),
             ],
           },
         },
@@ -441,8 +444,8 @@ export abstract class BaseChartView extends BasesView {
           show: false,
           areaStyle: {
             color: [
-              'rgba(250,250,250,0.3)',
-              'rgba(200,200,200,0.3)',
+              getVar('--background-primary'),
+              getVar('--background-secondary'),
             ],
           },
         },
@@ -474,8 +477,8 @@ export abstract class BaseChartView extends BasesView {
           show: false,
           areaStyle: {
             color: [
-              'rgba(250,250,250,0.3)',
-              'rgba(200,200,200,0.3)',
+              getVar('--background-primary'),
+              getVar('--background-secondary'),
             ],
           },
         },
@@ -507,19 +510,19 @@ export abstract class BaseChartView extends BasesView {
           show: false,
           areaStyle: {
             color: [
-              'rgba(250,250,250,0.3)',
-              'rgba(200,200,200,0.3)',
+              getVar('--background-primary'),
+              getVar('--background-secondary'),
             ],
           },
         },
       },
       toolbox: {
         iconStyle: {
-          borderColor: '#999',
+          borderColor: faintColor,
         },
         emphasis: {
           iconStyle: {
-            borderColor: '#666',
+            borderColor: textColor,
           },
         },
       },
@@ -531,11 +534,11 @@ export abstract class BaseChartView extends BasesView {
       tooltip: {
         axisPointer: {
           lineStyle: {
-            color: '#ccc',
+            color: faintColor,
             width: 1,
           },
           crossStyle: {
-            color: '#ccc',
+            color: faintColor,
             width: 1,
           },
         },
@@ -547,59 +550,58 @@ export abstract class BaseChartView extends BasesView {
       },
       timeline: {
         lineStyle: {
-          color: '#dae1f5',
+          color: axisLineColor,
           width: 2,
         },
         itemStyle: {
-          color: '#a4b1d7',
+          color: faintColor,
           borderWidth: 1,
         },
         controlStyle: {
-          color: '#a4b1d7',
-          borderColor: '#a4b1d7',
+          color: faintColor,
+          borderColor: faintColor,
           borderWidth: 1,
         },
         checkpointStyle: {
-          color: '#316bf3',
-          borderColor: 'fff',
+          color: accentColor,
+          borderColor: textColor,
         },
         label: {
-          color: '#a4b1d7',
+          color: faintColor,
         },
         emphasis: {
           itemStyle: {
-            color: '#FFF',
+            color: textColor,
           },
           controlStyle: {
-            color: '#a4b1d7',
-            borderColor: '#a4b1d7',
+            color: faintColor,
+            borderColor: faintColor,
             borderWidth: 1,
           },
           label: {
-            color: '#a4b1d7',
+            color: faintColor,
           },
         },
       },
       visualMap: {
         color: [
-          '#bf444c',
-          '#d88273',
-          '#f6efa6',
+          getVar('--color-red'),
+          getVar('--color-yellow'),
         ],
       },
       dataZoom: {
         handleSize: 'undefined%',
         textStyle: {
-          color: '#333',
+          color: faintColor,
         },
       },
       markPoint: {
         label: {
-          color: '#eee',
+          color: textColor,
         },
         emphasis: {
           label: {
-            color: '#eee',
+            color: textColor,
           },
         },
       },
