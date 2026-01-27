@@ -1,6 +1,9 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-export const config = {
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export const config: WebdriverIO.Config = {
     //
     // ====================
     // Runner Configuration
@@ -42,8 +45,7 @@ export const config = {
     connectionRetryCount: 3,
     services: [
         ['obsidian', {
-            vault: path.join(process.cwd(), 'example'),
-            // We can add more options here like communityPlugins: []
+            vault: path.join(__dirname, 'example'),
         }]
     ],
     framework: 'mocha',

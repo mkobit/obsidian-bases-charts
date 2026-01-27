@@ -42,6 +42,6 @@
 		"tests/**/*.ts",
 		"e2e/**/*.ts",
 		"scripts/**/*.ts",
-		"wdio.conf.ts"
+		"wdio.conf.mts"
 	]
 }

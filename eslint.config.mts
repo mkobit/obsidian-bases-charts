@@ -335,6 +335,6 @@ export default tseslint.config(
 		"versions.json",
 		"main.js",
 		"coverage",
-		"wdio.conf.ts"
+		"wdio.conf.mts"
 	])
 );
