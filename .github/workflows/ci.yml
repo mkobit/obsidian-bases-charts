@@ -31,3 +31,26 @@ jobs:
             - name: Test
               if: (success() || failure()) && steps.install.outcome == 'success'
               run: bun run test:coverage
+
+    e2e:
+        needs: build
+        runs-on: ubuntu-latest
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+
+        steps:
+            - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+            - name: Install Bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: "1.2.14"
+
+            - name: Install Dependencies
+              run: bun install
+
+            - name: Build Plugin
+              run: bun run build
+
+            - name: Run E2E Tests
+              # Run with xvfb for headless display support
+              run: xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" bun run test:e2e
