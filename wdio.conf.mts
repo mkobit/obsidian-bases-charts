@@ -49,7 +49,9 @@ export const config: WebdriverIO.Config = {
         }]
     ],
     framework: 'mocha',
-    reporters: ['spec'],
+    reporters: ['obsidian'],
+    // wdio-obsidian-service will download Obsidian versions into this directory
+    cacheDir: path.resolve(__dirname, ".obsidian-cache"),
     mochaOpts: {
         ui: 'bdd',
         timeout: 60000
