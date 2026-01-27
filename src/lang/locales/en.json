@@ -2,22 +2,22 @@
 	"views": {
 		"common": {
 			"theme": "Theme",
-			"theme_default": "Default (Global)",
-			"x_axis_prop": "X-Axis Property",
+			"theme_default": "Default (global)",
+			"x_axis_prop": "X-axis property",
 			"x_axis_prop_placeholder": "Select category property",
-			"y_axis_prop": "Y-Axis Property",
+			"y_axis_prop": "Y-axis property",
 			"y_axis_prop_placeholder": "Select value property",
-			"series_prop": "Series Property (Optional)",
+			"series_prop": "Series property (optional)",
 			"series_prop_placeholder": "Select series/group property",
-			"show_legend": "Show Legend",
-			"legend_position": "Legend Position",
+			"show_legend": "Show legend",
+			"legend_position": "Legend position",
 			"legend_position_options": {
 				"top": "Top",
 				"bottom": "Bottom",
 				"left": "Left",
 				"right": "Right"
 			},
-			"legend_orient": "Legend Orientation",
+			"legend_orient": "Legend orientation",
 			"legend_orient_options": {
 				"horizontal": "Horizontal",
 				"vertical": "Vertical"
@@ -26,41 +26,56 @@
 			"height_placeholder": "e.g., 500px, 50vh"
 		},
 		"axis": {
-			"x_label": "X-Axis Label",
-			"x_label_placeholder": "Override X-Axis label",
-			"y_label": "Y-Axis Label",
-			"y_label_placeholder": "Override Y-Axis label",
-			"x_rotate": "X-Axis Label Rotation",
+			"x_label": "X-axis label",
+			"x_label_placeholder": "Override X-axis label",
+			"y_label": "Y-axis label",
+			"y_label_placeholder": "Override Y-axis label",
+			"x_rotate": "X-axis label rotation",
 			"x_rotate_placeholder": "Degrees (e.g. 45)",
-			"flip": "Flip Axis"
+			"flip": "Flip axis"
 		},
 		"visual_map": {
-			"min": "Visual Map Min",
+			"min": "Visual map min",
 			"min_placeholder": "Min value (default: auto)",
-			"max": "Visual Map Max",
+			"max": "Visual map max",
 			"max_placeholder": "Max value (default: auto)",
-			"colors": "Visual Map Colors",
+			"colors": "Visual map colors",
 			"colors_placeholder": "Comma-separated hex colors (e.g. #fff,#000)",
-			"orient": "Visual Map Orientation",
+			"orient": "Visual map orientation",
 			"orient_placeholder": "horizontal or vertical (default: horizontal)",
-			"type": "Visual Map Type",
-			"type_placeholder": "continuous or piecewise (default: continuous)"
+			"orient_options": {
+				"horizontal": "Horizontal",
+				"vertical": "Vertical"
+			},
+			"type": "Visual map type",
+			"type_placeholder": "continuous or piecewise (default: continuous)",
+			"type_options": {
+				"continuous": "Continuous",
+				"piecewise": "Piecewise"
+			}
 		},
 		"treemap": {
 			"name": "Treemap",
-			"name_prop": "Name Property",
+			"name_prop": "Name property",
 			"name_prop_placeholder": "Select name property",
-			"value_prop": "Value Property",
+			"value_prop": "Value property",
 			"value_prop_placeholder": "Select value property"
 		},
 		"bar": {
-			"name": "Bar Chart"
+			"name": "Bar chart"
 		},
 		"line": {
-			"name": "Line Chart"
+			"name": "Line chart",
+			"smooth": "Smooth line",
+			"show_symbol": "Show symbol",
+			"area_style": "Area style"
 		},
 		"lines": {
-			"name": "Lines Chart",
+			"name": "Lines chart",
+			"start_x_prop": "Start X property",
+			"start_x_prop_placeholder": "Select property for Start X",
+			"start_y_prop": "Start Y property",
+			"start_y_prop_placeholder": "Select property for Start Y",
 			"end_x_prop": "End X property",
 			"end_x_prop_placeholder": "Select property for End X",
 			"end_y_prop": "End Y property",
@@ -69,119 +84,127 @@
 			"series_prop_placeholder": "Select property for grouping"
 		},
 		"pie": {
-			"name": "Pie Chart"
+			"name": "Pie chart"
 		},
 		"rose": {
-			"name": "Rose Chart"
+			"name": "Rose chart"
 		},
 		"pictorial_bar": {
-			"name": "Pictorial Bar Chart",
+			"name": "Pictorial bar chart",
 			"symbol": "Symbol",
 			"symbol_options": {
 				"circle": "Circle",
 				"rect": "Rectangle",
-				"roundRect": "Rounded Rectangle",
+				"roundRect": "Rounded rectangle",
 				"triangle": "Triangle",
 				"diamond": "Diamond",
 				"pin": "Pin",
 				"arrow": "Arrow",
 				"none": "None"
 			},
-			"symbol_repeat": "Symbol Repeat",
+			"symbol_repeat": "Symbol repeat",
 			"symbol_repeat_options": {
-				"false": "No Repeat",
-				"true": "Repeat to Fit",
-				"fixed": "Fixed Repeat"
+				"false": "No repeat",
+				"true": "Repeat to fit",
+				"fixed": "Fixed repeat"
 			},
-			"symbol_clip": "Symbol Clip",
-			"symbol_size": "Symbol Size",
+			"symbol_clip": "Symbol clip",
+			"symbol_size": "Symbol size",
 			"symbol_size_placeholder": "Size of the symbol (number or percentage)"
 		},
 		"stacked_bar": {
-			"name": "Stacked Bar Chart"
+			"name": "Stacked bar chart"
 		},
 		"area": {
-			"name": "Area Chart",
-			"smooth": "Smooth Line",
-			"show_symbol": "Show Symbol"
+			"name": "Area chart",
+			"smooth": "Smooth line",
+			"show_symbol": "Show symbol"
 		},
 		"scatter": {
-			"name": "Scatter Chart"
+			"name": "Scatter chart",
+			"size_prop": "Size property (optional)",
+			"size_prop_placeholder": "Select size property"
 		},
 		"effect_scatter": {
-			"name": "Effect Scatter Chart"
+			"name": "Effect scatter chart",
+			"size_prop": "Size property",
+			"size_prop_placeholder": "Select property for bubble size"
 		},
 		"bubble": {
-			"name": "Bubble Chart"
+			"name": "Bubble chart",
+			"size_prop": "Size property",
+			"size_prop_placeholder": "Select property for bubble size"
 		},
 		"radar": {
-			"name": "Radar Chart"
+			"name": "Radar chart",
+			"indicator_prop": "Indicator property",
+			"indicator_prop_placeholder": "Select indicator/category property"
 		},
 		"funnel": {
-			"name": "Funnel Chart"
+			"name": "Funnel chart"
 		},
 		"gauge": {
-			"name": "Gauge Chart",
-			"value_prop": "Value Property",
+			"name": "Gauge chart",
+			"value_prop": "Value property",
 			"value_prop_placeholder": "Select value property",
-			"min_value": "Min Value",
-			"max_value": "Max Value"
+			"min_value": "Min value",
+			"max_value": "Max value"
 		},
 		"heatmap": {
 			"name": "Heatmap",
 			"x_axis_placeholder": "Select category (columns)",
 			"y_axis_placeholder": "Select category (rows)",
-			"value_prop": "Value Property",
+			"value_prop": "Value property",
 			"value_prop_placeholder": "Select value property (color)"
 		},
 		"candlestick": {
-			"name": "Candlestick Chart",
-			"x_axis_prop": "X-Axis Property (Date/Time)",
+			"name": "Candlestick chart",
+			"x_axis_prop": "X-axis property (Date/Time)",
 			"x_axis_placeholder": "Select date property",
-			"open_prop": "Open Property",
+			"open_prop": "Open property",
 			"open_placeholder": "Select Open price property",
-			"close_prop": "Close Property",
+			"close_prop": "Close property",
 			"close_placeholder": "Select Close price property",
-			"low_prop": "Lowest Property",
+			"low_prop": "Lowest property",
 			"low_placeholder": "Select Low price property",
-			"high_prop": "Highest Property",
+			"high_prop": "Highest property",
 			"high_placeholder": "Select High price property"
 		},
 		"boxplot": {
-			"name": "Boxplot Chart",
-			"x_axis_prop": "X-Axis Property (Category)",
-			"y_axis_prop": "Y-Axis Property (Values)"
+			"name": "Boxplot chart",
+			"x_axis_prop": "X-axis property (Category)",
+			"y_axis_prop": "Y-axis property (Values)"
 		},
 		"sankey": {
-			"name": "Sankey Chart",
-			"value_prop": "Value Property",
+			"name": "Sankey chart",
+			"value_prop": "Value property",
 			"value_placeholder": "Property to use for link value"
 		},
 		"graph": {
-			"name": "Graph Chart",
-			"source_prop": "Source Property",
+			"name": "Graph chart",
+			"source_prop": "Source property",
 			"source_placeholder": "Property for the source node name",
-			"target_prop": "Target Property",
+			"target_prop": "Target property",
 			"target_placeholder": "Property for the target node name",
-			"value_prop": "Value Property (Optional)",
+			"value_prop": "Value property (optional)",
 			"value_placeholder": "Optional property for link weight/value",
-			"category_prop": "Category Property (Optional)",
+			"category_prop": "Category property (optional)",
 			"category_placeholder": "Optional property for node grouping/color"
 		},
 		"sunburst": {
-			"name": "Sunburst Chart",
-			"path_prop": "Path Property (e.g. \"Folder/Subfolder\")",
+			"name": "Sunburst chart",
+			"path_prop": "Path property (e.g. \"Folder/Subfolder\")",
 			"path_placeholder": "Select path property",
-			"value_prop": "Value Property",
+			"value_prop": "Value property",
 			"value_placeholder": "Select value property"
 		},
 		"tree": {
-			"name": "Tree Chart",
+			"name": "Tree chart",
 			"path_prop": "Path property (e.g. \"Folder/Subfolder\")",
 			"path_placeholder": "Select path property"
 		},
 		"theme_river": {
-			"name": "ThemeRiver Chart",
+			"name": "ThemeRiver chart",
 			"date_prop": "Date property",
 			"date_placeholder": "Select date property",
 			"value_prop": "Value property",
@@ -190,97 +213,97 @@
 			"theme_placeholder": "Select category property"
 		},
 		"calendar": {
-			"name": "Calendar Chart",
+			"name": "Calendar chart",
 			"date_prop": "Date property",
 			"date_placeholder": "Select date property",
 			"value_prop": "Value property",
 			"value_placeholder": "Select value property"
 		},
 		"parallel": {
-			"name": "Parallel Chart",
+			"name": "Parallel chart",
 			"dimensions": "Dimensions (comma-separated)",
 			"dimensions_placeholder": "e.g. price,rating,volume",
 			"series_prop": "Series property",
 			"series_placeholder": "Property to group by"
 		},
 		"gantt": {
-			"name": "Gantt Chart",
+			"name": "Gantt chart",
 			"task_prop": "Task property",
 			"start_prop": "Start time property",
 			"end_prop": "End time property",
 			"group_prop": "Group by property"
 		},
 		"waterfall": {
-			"name": "Waterfall Chart",
-			"category_prop": "Category Property",
-			"value_prop": "Value Property"
+			"name": "Waterfall chart",
+			"category_prop": "Category property",
+			"value_prop": "Value property"
 		},
 		"pareto": {
-			"name": "Pareto Chart",
-			"category_prop": "Category Property",
-			"value_prop": "Value Property"
+			"name": "Pareto chart",
+			"category_prop": "Category property",
+			"value_prop": "Value property"
 		},
 		"histogram": {
-			"name": "Histogram Chart",
-			"value_prop": "Value Property",
+			"name": "Histogram chart",
+			"value_prop": "Value property",
 			"value_placeholder": "Select numeric property",
-			"bin_count": "Bin Count",
+			"bin_count": "Bin count",
 			"bin_count_placeholder": "Optional (default: auto)"
 		},
 		"bullet": {
-			"name": "Bullet Chart",
-			"category_prop": "Category Property",
+			"name": "Bullet chart",
+			"category_prop": "Category property",
 			"category_placeholder": "Select category property",
-			"value_prop": "Value Property",
+			"value_prop": "Value property",
 			"value_placeholder": "Select value property",
-			"target_prop": "Target Property",
+			"target_prop": "Target property",
 			"target_placeholder": "Select target property",
-			"range_low_prop": "Range Low Property",
+			"range_low_prop": "Range low property",
 			"range_low_placeholder": "Select range low property",
-			"range_mid_prop": "Range Mid Property",
+			"range_mid_prop": "Range mid property",
 			"range_mid_placeholder": "Select range mid property",
-			"range_high_prop": "Range High Property",
+			"range_high_prop": "Range high property",
 			"range_high_placeholder": "Select range high property"
 		},
 		"radial_bar": {
-			"name": "Radial Bar Chart",
-			"category_prop": "Category Property",
+			"name": "Radial bar chart",
+			"category_prop": "Category property",
 			"category_placeholder": "Select category property",
-			"value_prop": "Value Property",
+			"value_prop": "Value property",
 			"value_placeholder": "Select value property",
-			"max_value": "Max Value"
+			"max_value": "Max value"
 		},
 		"polar": {
-			"angle_prop": "Angle Property",
-			"radius_prop": "Radius Property",
-			"series_prop": "Series Property",
+			"angle_prop": "Angle property",
+			"radius_prop": "Radius property",
+			"series_prop": "Series property",
 			"stack": "Stack",
-			"size_prop": "Size Property",
+			"size_prop": "Size property",
 			"smooth": "Smooth",
-			"area_style": "Area Style"
+			"area_style": "Area style"
 		},
 		"polar_line": {
-			"name": "Polar Line Chart"
+			"name": "Polar line chart"
 		},
 		"polar_bar": {
-			"name": "Polar Bar Chart"
+			"name": "Polar bar chart"
 		},
 		"polar_scatter": {
-			"name": "Polar Scatter Chart"
+			"name": "Polar scatter chart"
 		},
 		"map": {
-			"name": "Map Chart",
-			"map_file": "Map File Path",
+			"name": "Map chart",
+			"map_file": "Map file path",
 			"map_file_placeholder": "Path to GeoJSON (e.g. Maps/USA.json)",
-			"region_prop": "Region Property",
+			"region_prop": "Region property",
 			"region_placeholder": "Property matching map regions",
-			"value_prop": "Value Property",
+			"value_prop": "Value property",
 			"value_placeholder": "Metric (e.g. Population)",
-			"title": "Chart Title",
+			"title": "Chart title",
 			"title_placeholder": "Optional chart title"
 		},
 		"word_cloud": {
-			"name": "Word Cloud",
+			"name": "Word cloud",
 			"options": {
 				"shape": "Shape",
 				"grid_size": "Grid size",
@@ -293,7 +316,7 @@
 					"circle": "Circle",
 					"cardioid": "Cardioid",
 					"diamond": "Diamond",
-					"triangle_forward": "Triangle Forward",
+					"triangle_forward": "Triangle forward",
 					"triangle": "Triangle",
 					"pentagon": "Pentagon",
 					"star": "Star"

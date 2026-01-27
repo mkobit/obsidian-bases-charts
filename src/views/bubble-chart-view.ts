@@ -4,6 +4,7 @@ import { transformDataToChartOption } from '../charts/transformer'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class BubbleChartView extends BaseChartView {
   readonly type = 'bubble-chart'
@@ -55,10 +56,10 @@ export class BubbleChartView extends BaseChartView {
       ...BaseChartView.getCommonViewOptions(), // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
       ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY),
       {
-        displayName: 'Size Property',
+        displayName: t('views.bubble.size_prop'),
         type: 'property',
         key: BaseChartView.SIZE_PROP_KEY,
-        placeholder: 'Select property for bubble size',
+        placeholder: t('views.bubble.size_prop_placeholder'),
       },
     ]
   }
