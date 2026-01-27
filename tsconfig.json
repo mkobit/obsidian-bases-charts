@@ -27,11 +27,21 @@
 			"ES6",
 			"ES7",
 			"ESNext"
+		],
+		"types": [
+			"bun",
+			"node",
+			"webdriverio",
+			"expect-webdriverio",
+			"@wdio/globals",
+			"@wdio/mocha-framework"
 		]
 	},
 	"include": [
 		"src/**/*.ts",
 		"tests/**/*.ts",
-		"scripts/**/*.ts"
+		"e2e/**/*.ts",
+		"scripts/**/*.ts",
+		"wdio.conf.ts"
 	]
 }
