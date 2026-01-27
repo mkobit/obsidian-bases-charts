@@ -97,8 +97,8 @@ export class PolarScatterChartView extends BaseChartView {
         type: 'dropdown',
         key: BaseChartView.VISUAL_MAP_ORIENT_KEY,
         options: {
-          horizontal: t('views.visual_map.orient_placeholder').includes('horizontal') ? 'Horizontal' : 'Horizontal', // Hacky, better reuse common logic if possible, but extraction is priority
-          vertical: 'Vertical',
+          horizontal: t('views.visual_map.orient_options.horizontal'),
+          vertical: t('views.visual_map.orient_options.vertical'),
         },
       },
       {
@@ -106,8 +106,8 @@ export class PolarScatterChartView extends BaseChartView {
         type: 'dropdown',
         key: BaseChartView.VISUAL_MAP_TYPE_KEY,
         options: {
-          continuous: 'Continuous',
-          piecewise: 'Piecewise',
+          continuous: t('views.visual_map.type_options.continuous'),
+          piecewise: t('views.visual_map.type_options.piecewise'),
         },
       },
       {

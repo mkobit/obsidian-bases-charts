@@ -50,14 +50,14 @@ export class LinesChartView extends BaseChartView {
       {
         key: BaseChartView.X_AXIS_PROP_KEY,
         type: 'property',
-        displayName: 'Start X property',
-        placeholder: 'Select property for Start X',
+        displayName: t('views.lines.start_x_prop'),
+        placeholder: t('views.lines.start_x_prop_placeholder'),
       },
       {
         key: BaseChartView.Y_AXIS_PROP_KEY,
         type: 'property',
-        displayName: 'Start Y property',
-        placeholder: 'Select property for Start Y',
+        displayName: t('views.lines.start_y_prop'),
+        placeholder: t('views.lines.start_y_prop_placeholder'),
       },
       {
         key: LinesChartView.END_X_PROP_KEY,

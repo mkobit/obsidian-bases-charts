@@ -4,6 +4,7 @@ import { transformDataToChartOption } from '../charts/transformer'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class EffectScatterChartView extends BaseChartView {
   readonly type = 'effect-scatter-chart'
@@ -47,8 +48,8 @@ export class EffectScatterChartView extends BaseChartView {
       {
         key: BaseChartView.SIZE_PROP_KEY,
         type: 'property',
-        displayName: 'Size property',
-        placeholder: 'Select property for bubble size',
+        displayName: t('views.effect_scatter.size_prop'),
+        placeholder: t('views.effect_scatter.size_prop_placeholder'),
       },
     ]
   }

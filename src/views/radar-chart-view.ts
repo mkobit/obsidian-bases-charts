@@ -4,6 +4,7 @@ import { transformDataToChartOption } from '../charts/transformer'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class RadarChartView extends BaseChartView {
   readonly type = 'radar-chart'
@@ -46,8 +47,8 @@ export class RadarChartView extends BaseChartView {
       return isXAxis
         ? {
             ...opt,
-            displayName: 'Indicator Property',
-            placeholder: 'Select indicator/category property',
+            displayName: t('views.radar.indicator_prop'),
+            placeholder: t('views.radar.indicator_prop_placeholder'),
           }
         : { ...opt }
     })

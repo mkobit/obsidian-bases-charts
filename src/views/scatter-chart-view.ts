@@ -4,6 +4,7 @@ import { transformDataToChartOption } from '../charts/transformer'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
+import { t } from '../lang/text'
 
 export class ScatterChartView extends BaseChartView {
   readonly type = 'scatter-chart'
@@ -56,10 +57,10 @@ export class ScatterChartView extends BaseChartView {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
       ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY),
       {
-        displayName: 'Size Property (Optional)',
+        displayName: t('views.scatter.size_prop'),
         type: 'property',
         key: BaseChartView.SIZE_PROP_KEY,
-        placeholder: 'Select size property',
+        placeholder: t('views.scatter.size_prop_placeholder'),
       },
       ...BaseChartView.getVisualMapViewOptions(),
     ]
