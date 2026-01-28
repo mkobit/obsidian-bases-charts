@@ -48,6 +48,16 @@ To build for production:
 pnpm build
 ```
 
+### Automated testing
+
+We use WebdriverIO for end-to-end testing.
+
+```bash
+bun run test:e2e
+```
+
+For more details, see [`e2e/AGENTS.md`](e2e/AGENTS.md).
+
 ### Manual testing
 
 To test the plugin in Obsidian, you need to load the built files into a vault.
