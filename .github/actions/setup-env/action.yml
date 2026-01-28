@@ -11,6 +11,6 @@ runs:
       uses: oven-sh/setup-bun@v2
       with:
         bun-version: ${{ inputs.bun-version }}
-    - name: Install Dependencies
+    - name: Install dependencies
       run: bun install
       shell: bash
