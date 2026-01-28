@@ -16,7 +16,7 @@ export const config: WebdriverIO.Config = {
     // ==================
     //
     specs: [
-        './e2e/**/*.test.ts'
+        './e2e/**/*.e2e.ts'
     ],
     //
     // ============
