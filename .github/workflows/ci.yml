@@ -51,22 +51,10 @@ jobs:
             - name: Build Plugin
               run: bun run build
 
-            - name: Setup virtual graphics
+            - name: Setup Linux Environment
               run: |
-                  # Some hacks to speed up apt install
-                  sudo rm -rf /etc/apt/sources.list.d/*.list
-                  echo "set man-db/auto-update false" | sudo debconf-communicate
-                  sudo dpkg-reconfigure man-db
-
-                  sudo apt-get update -q
-                  sudo apt-get install -q herbstluftwm dzen2 x11-xserver-utils
-
-                  export DISPLAY=:99
-                  echo "DISPLAY=$DISPLAY" >> "$GITHUB_ENV"
-                  Xvfb $DISPLAY -screen 0 1280x1024x24 +extension GLX -noreset &
-                  sleep 1
-                  herbstluftwm &
-                  sleep 1
+                  sudo apt-get update
+                  sudo apt-get install -y herbstluftwm
 
             - name: Run E2E Tests
-              run: bun run test:e2e
+              run: xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" bash -c "herbstluftwm & bun run test:e2e"
