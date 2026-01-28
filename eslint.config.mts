@@ -230,10 +230,17 @@ export default tseslint.config(
 	},
 	// Overrides for Tests
 	{
-		files: ["tests/**/*.ts", "tests/**/*.tsx"],
+		files: ["tests/**/*.ts", "tests/**/*.tsx", "e2e/**/*.ts"],
+		languageOptions: {
+			globals: {
+				...globals.node,
+				...globals.mocha
+			}
+		},
 		rules: {
 			// Relax rules for Testing patterns (Assertions, Mocking, Setup/Teardown)
 			"functional/no-expression-statements": "off", // Needed for expect() assertions
+			"import/no-extraneous-dependencies": ["error", { "devDependencies": true }], // Allow devDependencies in tests
 			"@typescript-eslint/consistent-type-assertions": "off", // Needed for mocking
 			"@typescript-eslint/no-unsafe-argument": "off", // Allow unsafe args in tests
 			"functional/no-return-void": "off", // Needed for test/beforeEach callbacks
@@ -327,6 +334,7 @@ export default tseslint.config(
 		"eslint.config.js",
 		"versions.json",
 		"main.js",
-		"coverage"
+		"coverage",
+		"wdio.conf.mts"
 	])
 );
