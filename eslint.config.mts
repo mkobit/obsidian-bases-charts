@@ -335,6 +335,7 @@ export default tseslint.config(
 		"versions.json",
 		"main.js",
 		"coverage",
-		"wdio.conf.mts"
+		"wdio.conf.mts",
+		".obsidian-cache"
 	])
 );
