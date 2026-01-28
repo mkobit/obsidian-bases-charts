@@ -4,8 +4,8 @@ describe('Obsidian Bases Charts Plugin', () => {
   it('should launch Obsidian', async () => {
     // The service should have started Obsidian with the example vault
     // Verify the body exists, indicating the window is open
-    const body = await browser.$('body')
-    await body.waitForExist({ timeout: 10000 })
+    const body = browser.$('body')
+    await body.waitForExist({ timeout: 10_000 })
     await expect(body).toExist()
   })
 
@@ -24,9 +24,9 @@ describe('Obsidian Bases Charts Plugin', () => {
 
     // Verify palette exists and has results (optional, but good)
     // The palette usually has class .prompt
-    const prompt = await browser.$('.prompt')
+    const prompt = browser.$('.prompt')
     if (await prompt.isExisting()) {
-       await expect(prompt).toExist()
+      await expect(prompt).toExist()
     }
 
     // Close palette
