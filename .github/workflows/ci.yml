@@ -56,5 +56,13 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install -y herbstluftwm
 
+            - name: Cache Obsidian
+              uses: actions/cache@v4
+              with:
+                  path: .obsidian-cache
+                  key: obsidian-cache-${{ runner.os }}-${{ hashFiles('bun.lock', 'wdio.conf.mts') }}
+                  restore-keys: |
+                      obsidian-cache-${{ runner.os }}-
+
             - name: Run E2E Tests
               run: xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" bash -c "herbstluftwm & bun run test:e2e"
