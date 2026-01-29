@@ -14,14 +14,38 @@ We target the **specified dependency version** (defined in `package.json` and `m
 -   **App Version (`browserVersion`)**: Set to `'earliest'`, which resolves to `minAppVersion` from `manifest.json` (e.g., `1.11.4`).
 -   **Installer Version**: Set to `'earliest'`, which selects the oldest installer compatible with the App Version.
 
-## How it works
-The `wdio-obsidian-service`:
-1.  **Downloads Obsidian**: It fetches the requested version of Obsidian and the installer.
-2.  **Creates a Sandbox**: It sets up a temporary vault (using `example/` as a template via the configuration) to ensure a clean state.
-3.  **Launches Obsidian**: It starts the application with the plugin installed.
-4.  **Runs Tests**: WebdriverIO executes the tests against the running Obsidian instance.
+## Best Practices
+We follow the patterns established in the [wdio-obsidian-service-sample-plugin](https://github.com/jesse-r-s-hines/wdio-obsidian-service-sample-plugin).
 
-The setup also uses **wdio-obsidian-reporter**, which wraps the standard `@wdio/spec-reporter` to display the Obsidian version instead of the browser version in the output.
+### 1. Direct Execution over UI Interaction
+Where possible, prefer executing code within the Obsidian context rather than relying on brittle UI interactions (like typing in the command palette).
+
+-   **Commands**: Use `browser.executeObsidianCommand("plugin-id:command-id")` instead of typing `Ctrl+P`.
+-   **State Inspection**: Use `browser.executeObsidian(({ app }) => ...)` to check internal state (e.g., checks if a file exists in `app.vault`).
+
+```typescript
+// Good: Direct verification
+const fileExists = await browser.executeObsidian(({ app }) => {
+    return app.vault.getAbstractFileByPath("MyFile.md") !== null;
+});
+
+// Avoid: Relying solely on visual existence if logical verification is possible
+```
+
+### 2. Vault Management
+Ensure a clean state for tests.
+-   Use `obsidianPage.resetVault()` or `browser.reloadObsidian()` to reset the vault state between tests.
+-   `resetVault` is faster as it cleans files without restarting the app.
+
+### 3. Context Isolation
+When using `browser.executeObsidian`, remember that variables from the test scope are **not** automatically available. You must pass them explicitly.
+
+```typescript
+const fileName = "test.md";
+await browser.executeObsidian(async ({ app }, name) => {
+    await app.vault.create(name, "content");
+}, fileName); // Pass 'fileName' as the second argument
+```
 
 ## Running Tests
 
@@ -32,21 +56,8 @@ To run the E2E tests locally:
 bun run test:e2e
 ```
 
-**Note:** On Linux, you might need a display server like `xvfb` if running in a headless environment, though locally it should pop up the window. The CI uses `xvfb` and `herbstluftwm`.
-
-### Troubleshooting
--   **Obsidian not starting**: Ensure you have a valid internet connection for the first run to download Obsidian.
--   **Selectors**: Obsidian is an Electron app, but it's not a standard website. Use robust selectors. The service creates a cache in `.obsidian-cache`.
-
-## Writing Tests
--   **Files**: Create new test files in `e2e/` with the `.e2e.ts` extension.
--   **Globals**: `browser`, `$`, `$$`, `expect` are available globally (via `@wdio/globals`).
--   **Best Practices**:
-    -   Avoid visual regression testing if possible, as it can be brittle across platforms.
-    -   Focus on functional verification (e.g., "Does the chart element exist?", "Does the command palette show the command?").
-    -   Use `await browser.pause()` sparingly; prefer `await element.waitForExist()`.
+**Note:** On Linux, you might need a display server like `xvfb` if running in a headless environment.
 
 ## References
 -   [wdio-obsidian-service Documentation](https://github.com/jesse-r-s-hines/wdio-obsidian-service/blob/main/packages/wdio-obsidian-service/README.md)
--   [obsidian-launcher Documentation](https://github.com/jesse-r-s-hines/wdio-obsidian-service/blob/main/packages/obsidian-launcher/README.md)
--   [WebdriverIO Documentation](https://webdriver.io/docs/gettingstarted)
+-   [Sample Plugin Tests](https://github.com/jesse-r-s-hines/wdio-obsidian-service-sample-plugin/blob/main/test/specs/test.e2e.ts)
