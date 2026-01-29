@@ -4,16 +4,18 @@
 We use **WebdriverIO** (v9+) with the **wdio-obsidian-service** to perform end-to-end testing of the plugin. This allows us to run tests in a real Obsidian environment, interacting with the app as a user would.
 
 ## Structure
-- `wdio.conf.mts`: The WebdriverIO configuration file.
+- `wdio.conf.mts`: The WebdriverIO configuration file. Configured to use `obsidian` as the browser, with options defined in `wdio:obsidianOptions`.
 - `e2e/`: Directory containing test files (`*.e2e.ts`) and this documentation.
 - `e2e/smoke.e2e.ts`: A smoke test to verify the plugin loads and basic functionality works.
 
 ## How it works
 The `wdio-obsidian-service`:
-1.  **Downloads Obsidian**: It fetches the requested version of Obsidian (or the latest).
-2.  **Creates a Sandbox**: It sets up a temporary vault (using `example/` as a template if configured) to ensure a clean state.
+1.  **Downloads Obsidian**: It fetches the requested version of Obsidian (e.g., `latest`) and the installer (e.g., `earliest` for compatibility).
+2.  **Creates a Sandbox**: It sets up a temporary vault (using `example/` as a template via the configuration) to ensure a clean state.
 3.  **Launches Obsidian**: It starts the application with the plugin installed.
 4.  **Runs Tests**: WebdriverIO executes the tests against the running Obsidian instance.
+
+The setup also uses **wdio-obsidian-reporter**, which wraps the standard `@wdio/spec-reporter` to display the Obsidian version instead of the browser version in the output.
 
 ## Running Tests
 
@@ -39,5 +41,6 @@ bun run test:e2e
     -   Use `await browser.pause()` sparingly; prefer `await element.waitForExist()`.
 
 ## References
--   [wdio-obsidian-service Documentation](https://webdriver.io/docs/wdio-obsidian-service)
+-   [wdio-obsidian-service Documentation](https://github.com/jesse-r-s-hines/wdio-obsidian-service/blob/main/packages/wdio-obsidian-service/README.md)
+-   [obsidian-launcher Documentation](https://github.com/jesse-r-s-hines/wdio-obsidian-service/blob/main/packages/obsidian-launcher/README.md)
 -   [WebdriverIO Documentation](https://webdriver.io/docs/gettingstarted)
