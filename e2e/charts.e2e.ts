@@ -1,7 +1,7 @@
 import { $, browser, expect } from '@wdio/globals'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare const app: any
+declare const window: any
 
 describe('Chart Rendering', () => {
   it('should render charts in Sales-Dashboard.base', async () => {
@@ -10,7 +10,7 @@ describe('Chart Rendering', () => {
     await browser.execute(async () => {
       // @ts-ignore - app is available in the global scope in Obsidian
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      await app.workspace.openLinkText('Sales-Dashboard.base', '', false)
+      await window.app.workspace.openLinkText('Sales-Dashboard.base', '', false)
     })
 
     // Wait for the view to load and the chart container to be present
