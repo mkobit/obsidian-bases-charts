@@ -10,9 +10,9 @@ describe('Obsidian Bases Charts Plugin', () => {
 
     // Verify the plugin is loaded in the internal registry
     const isLoaded = await browser.executeObsidian(({ app }) => {
-      // @ts-expect-error - 'plugins' is not in the public API but exists at runtime
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      return app.plugins.plugins['obsidian-bases-charts'] !== undefined
+      // 'plugins' is not in the public API but exists at runtime
+      const internalApp = app as unknown as { plugins: { plugins: Record<string, unknown> } }
+      return internalApp.plugins.plugins['obsidian-bases-charts'] !== undefined
     })
     expect(isLoaded).toBe(true)
   })
@@ -20,9 +20,9 @@ describe('Obsidian Bases Charts Plugin', () => {
   it('should register the settings tab', async () => {
     // Verify that the plugin registered its settings tab
     const hasSettingsTab = await browser.executeObsidian(({ app }) => {
-      // @ts-expect-error - 'setting' is internal
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-      return app.setting.pluginTabs.some((t: any) => t.id === 'obsidian-bases-charts')
+      // 'setting' is internal
+      const internalApp = app as unknown as { setting: { pluginTabs: { id: string }[] } }
+      return internalApp.setting.pluginTabs.some(t => t.id === 'obsidian-bases-charts')
     })
     expect(hasSettingsTab).toBe(true)
   })
