@@ -26,10 +26,15 @@ export const config: WebdriverIO.Config = {
     maxInstances: 1,
     capabilities: [{
         browserName: 'obsidian',
-        browserVersion: 'latest',
+        // 'earliest' uses minAppVersion from manifest.json (1.11.4)
+        // This ensures we verify the "specified dependency version" works.
+        browserVersion: 'earliest',
         'wdio:obsidianOptions': {
+            // 'earliest' uses the oldest installer compatible with the browserVersion
+            // This ensures maximum compatibility coverage.
             installerVersion: 'earliest',
             vault: path.join(__dirname, 'example'),
+            plugins: ['.'], // Install the current plugin
         }
     }],
     //
