@@ -1,17 +1,31 @@
 import { $, browser, expect } from '@wdio/globals'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare const window: any
-
 describe('Chart Rendering', () => {
   it('should render charts in Sales-Dashboard.base', async () => {
-    // Open the Sales-Dashboard.base file
-    // We use browser.execute to interact with the Obsidian API directly
-    await browser.execute(async () => {
-      // @ts-ignore - app is available in the global scope in Obsidian
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      await window.app.workspace.openLinkText('Sales-Dashboard.base', '', false)
-    })
+    // Open the Sales-Dashboard.base file using Quick Switcher
+    // This avoids using browser.execute which has scope issues with 'app'
+
+    // Determine modifier key (Meta for Mac, Control for others)
+    const isMac = process.platform === 'darwin'
+    const modifier = isMac ? 'Meta' : 'Control'
+
+    // Open Quick Switcher (Ctrl/Cmd + O)
+    // Modifier keys are sticky in WDIO, so we need to press them again to release
+    await browser.keys([modifier, 'o', modifier])
+
+    // Wait for Quick Switcher input to appear
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    const quickSwitcherInput = await $('.prompt-input')
+    await quickSwitcherInput.waitForExist({ timeout: 5000 })
+
+    // Type the filename
+    await browser.keys('Sales-Dashboard.base')
+
+    // Wait for results to filter (heuristic wait as DOM changes are fast but async)
+    await browser.pause(500)
+
+    // Press Enter to select the top result
+    await browser.keys(['Enter'])
 
     // Wait for the view to load and the chart container to be present
     // eslint-disable-next-line @typescript-eslint/await-thenable
