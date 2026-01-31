@@ -7,7 +7,7 @@ echo "Setting up environment..."
 
 # 1. Install missing system tools
 # Standard tools that might be useful
-TOOLS="curl jq"
+TOOLS="curl jq xvfb herbstluftwm"
 MISSING=""
 for tool in $TOOLS; do
     if ! command -v "$tool" &> /dev/null; then
@@ -15,14 +15,36 @@ for tool in $TOOLS; do
     fi
 done
 
-if [ -n "$MISSING" ]; then
-    echo "Installing missing tools:$MISSING..."
+# Electron/Headless dependencies
+# We check for standard names and t64 variants (Ubuntu 24.04+)
+LIBS_TO_CHECK="libnss3 libgtk-3-0 libasound2 libatk-bridge2.0-0 libdrm2 libgbm1"
+LIBS_TO_INSTALL=""
+
+if command -v apt-get &> /dev/null; then
+    for lib in $LIBS_TO_CHECK; do
+        # Use simulation (-s) to check if the package can be installed/is found
+        if apt-get -s install "$lib" &> /dev/null; then
+            LIBS_TO_INSTALL="$LIBS_TO_INSTALL $lib"
+        elif apt-get -s install "${lib}t64" &> /dev/null; then
+            LIBS_TO_INSTALL="$LIBS_TO_INSTALL ${lib}t64"
+        else
+            echo "Warning: Could not find candidate for library $lib"
+        fi
+    done
+else
+    echo "Warning: apt-get not found, assuming standard library names."
+    LIBS_TO_INSTALL="$LIBS_TO_CHECK"
+fi
+
+if [ -n "$MISSING" ] || [ -n "$LIBS_TO_INSTALL" ]; then
+    echo "Installing missing tools and libraries..."
     # Attempt sudo if available, otherwise warn
     if command -v sudo &> /dev/null; then
         sudo apt-get update -qq
-        sudo apt-get install -y -qq $MISSING
+        TO_INSTALL="$MISSING $LIBS_TO_INSTALL"
+        sudo apt-get install -y -qq $TO_INSTALL
     else
-        echo "Warning: sudo not found, skipping system package installation for:$MISSING"
+        echo "Warning: sudo not found, skipping system package installation for: $MISSING $LIBS_TO_INSTALL"
     fi
 fi
 

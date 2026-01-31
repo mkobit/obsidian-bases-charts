@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# herbstluftwm autostart for E2E tests
+
+hc() {
+    herbstclient "$@"
+}
+
+hc emit_hook reload
+
+# Remove all rules
+hc unrule --all
+
+# Force all windows to be floating
+hc rule class=".*" floating=on
+
+# Set default layout to floating (just in case)
+hc set_attr tags.by-name.default.floating true
+
+# Unlock in case something locked it
+hc unlock
+
+echo "Herbstluftwm configured for floating mode"
