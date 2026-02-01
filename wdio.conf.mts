@@ -26,7 +26,10 @@ export const config: WebdriverIO.Config = {
     maxInstances: 1,
     capabilities: [{
         // The service will handle the app launching
-        browserName: 'chrome',
+        browserName: 'obsidian',
+        'wdio:obsidianOptions': {
+            vault: path.join(__dirname, 'example'),
+        },
         'goog:chromeOptions': {
             // Electron specific options if needed, but the service likely handles binary paths
             args: ['--no-sandbox', '--disable-gpu']
@@ -44,9 +47,7 @@ export const config: WebdriverIO.Config = {
     connectionRetryTimeout: 120000,
     connectionRetryCount: 3,
     services: [
-        ['obsidian', {
-            vault: path.join(__dirname, 'example'),
-        }]
+        'obsidian'
     ],
     framework: 'mocha',
     reporters: ['obsidian'],
