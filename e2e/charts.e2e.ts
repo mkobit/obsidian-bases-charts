@@ -1,13 +1,14 @@
 import { $, browser, expect } from '@wdio/globals'
+import type { App } from 'obsidian'
 
 describe('Chart Rendering', () => {
   it('should render charts in Sales-Dashboard.base', async () => {
     // Open the Sales-Dashboard.base file using executeObsidian
     // This helper correctly injects the 'app' context
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    await browser.executeObsidian(async (app) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      await app.workspace.openLinkText('Sales-Dashboard.base', '', false)
+    await browser.executeObsidian(async (app: unknown) => {
+      // Cast app to known type inside the execution block
+      const obsApp = app as App
+      await obsApp.workspace.openLinkText('Sales-Dashboard.base', '', false)
     })
 
     // Wait for the view to load and the chart container to be present

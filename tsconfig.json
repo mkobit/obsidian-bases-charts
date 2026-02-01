@@ -34,7 +34,8 @@
 			"webdriverio",
 			"expect-webdriverio",
 			"@wdio/globals",
-			"@wdio/mocha-framework"
+			"@wdio/mocha-framework",
+			"wdio-obsidian-service"
 		]
 	},
 	"include": [
