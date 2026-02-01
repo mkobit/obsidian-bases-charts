@@ -18,7 +18,7 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@eslint/js": "9.39.2",
-		"@eslint/json": "^0.14.0",
+		"@eslint/json": "^1.0.0",
 		"@stylistic/eslint-plugin": "^5.7.0",
 		"@types/bun": "^1.2.4",
 		"@types/mocha": "^10.0.10",
