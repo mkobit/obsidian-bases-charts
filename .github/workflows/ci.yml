@@ -57,7 +57,7 @@ jobs:
                   sudo apt-get install -y herbstluftwm
 
             - name: Cache Obsidian
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                   path: .obsidian-cache
                   key: obsidian-cache-${{ runner.os }}-${{ hashFiles('bun.lock', 'wdio.conf.mts') }}
