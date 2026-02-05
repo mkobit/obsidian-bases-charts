@@ -21,6 +21,9 @@ data.json
 # vitest coverage
 coverage
 
+# Playwright results
+test-results/
+
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
 .obsidian-cache/

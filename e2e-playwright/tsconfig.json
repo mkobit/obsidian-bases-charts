@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "bun",
+      "node",
+      "playwright"
+    ]
+  },
+  "include": [
+    "**/*.ts",
+    "../scripts/test-harness.ts"
+  ]
+}
