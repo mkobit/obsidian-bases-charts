@@ -305,7 +305,7 @@ export default tseslint.config(
 	},
 	// Scripts
 	{
-		files: ["scripts/**/*.ts", "scripts/**/*.cjs", "esbuild.config.mjs", "version-bump.mjs"],
+		files: ["scripts/**/*.ts", "scripts/**/*.cjs", "esbuild.config.mjs", "version-bump.mjs", "e2e-playwright/**/*.ts"],
 		languageOptions: {
 			globals: {
 				...globals.node
@@ -335,6 +335,9 @@ export default tseslint.config(
 		"versions.json",
 		"main.js",
 		"coverage",
-		"wdio.conf.mts"
+		"wdio.conf.mts",
+		"test-results",
+		".obsidian-cache",
+		"playwright.config.ts"
 	])
 );
