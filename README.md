@@ -19,19 +19,19 @@ By leveraging the **Obsidian Bases API** for data querying and **Apache ECharts*
 
 ## Development
 
-This project uses [pnpm](https://pnpm.io/) and Node.js.
+This project uses [Bun](https://bun.sh/) and Node.js.
 
 ### Prerequisites
 
 - Node.js (v22 recommended)
-- pnpm
+- Bun
 
 ### Setup
 
 Install dependencies:
 
 ```bash
-pnpm install
+bun install
 ```
 
 ### Building
@@ -39,13 +39,13 @@ pnpm install
 To build the plugin in watch mode (for development):
 
 ```bash
-pnpm dev
+bun run dev
 ```
 
 To build for production:
 
 ```bash
-pnpm build
+bun run build
 ```
 
 ### Automated testing
