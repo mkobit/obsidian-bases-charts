@@ -20,6 +20,8 @@ data.json
 
 # vitest coverage
 coverage
+test-results/
+playwright-report/
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
