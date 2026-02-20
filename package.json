@@ -10,7 +10,7 @@
 		"lint": "eslint .",
 		"prepare": "husky",
 		"test": "bun test ./tests",
-		"test:coverage": "bun test ./tests --coverage",
+		"test:coverage": "bun test ./tests --coverage --coverage-reporter=lcov",
 		"test:e2e": "wdio run wdio.conf.mts",
 		"typecheck": "tsc --noEmit"
 	},
@@ -35,6 +35,7 @@
 		"eslint-plugin-obsidianmd": "0.1.9",
 		"eslint-plugin-promise": "^7.2.1",
 		"eslint-plugin-unicorn": "^62.0.0",
+		"eslint-plugin-yml": "^3.2.1",
 		"fast-check": "^4.5.3",
 		"globals": "17.3.0",
 		"husky": "^9.1.7",
