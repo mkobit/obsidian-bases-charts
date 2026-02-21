@@ -174,6 +174,12 @@ import type {
 import {
   createWordCloudChartOption,
 } from './transformers/extensions/word-cloud'
+import type {
+  CustomTransformerOptions,
+} from './transformers/custom'
+import {
+  createCustomChartOption,
+} from './transformers/custom'
 import type { ChartType, BasesData } from './transformers/base'
 
 export type ChartTransformerOptions
@@ -205,6 +211,7 @@ export type ChartTransformerOptions
     | PolarBarTransformerOptions
     | PolarScatterTransformerOptions
     | WordCloudTransformerOptions
+    | CustomTransformerOptions
 
 // Helper to cast options
 function asOptions<T>(options: unknown): T {
@@ -416,6 +423,12 @@ const transformerMap: Readonly<Record<
     yProp,
     asOptions(options),
   ),
+  custom: (data, xProp, yProp, options): EChartsOption => createCustomChartOption(
+    data,
+    xProp,
+    yProp,
+    asOptions(options),
+  ),
 }
 
 /**
@@ -475,3 +488,4 @@ export { type PolarBarTransformerOptions } from './transformers/polar-bar'
 export { type PolarScatterTransformerOptions } from './transformers/polar-scatter'
 export { type MapTransformerOptions } from './transformers/map'
 export { type WordCloudTransformerOptions } from './transformers/extensions/word-cloud'
+export { type CustomTransformerOptions } from './transformers/custom'
