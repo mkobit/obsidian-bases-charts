@@ -30,7 +30,7 @@
 		"@wdio/spec-reporter": "^9.24.0",
 		"commander": "^14.0.3",
 		"esbuild": "0.27.2",
-		"eslint": "^9.39.2",
+		"eslint": "^10.0.1",
 		"eslint-plugin-functional": "^9.0.2",
 		"eslint-plugin-obsidianmd": "0.1.9",
 		"eslint-plugin-promise": "^7.2.1",
