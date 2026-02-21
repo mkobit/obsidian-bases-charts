@@ -263,7 +263,7 @@ export default tseslint.config(
   },
   // Overrides for Tests
   {
-    files: ['tests/**/*.ts', 'tests/**/*.tsx', 'e2e/**/*.ts'],
+    files: ['tests/**/*.ts', 'tests/**/*.tsx', 'e2e/**/*.ts', 'e2e-playwright/**/*.ts'],
     languageOptions: {
       globals: {
         ...globals.node,
