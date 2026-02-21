@@ -48,7 +48,7 @@
 		"typescript-eslint": "8.56.0",
 		"wdio-obsidian-reporter": "^2.2.1",
 		"wdio-obsidian-service": "^2.2.1",
-		"webdriverio": "^9.23.2"
+		"webdriverio": "^9.24.0"
 	},
 	"dependencies": {
 		"echarts": "6.0.0",
