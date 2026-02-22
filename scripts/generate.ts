@@ -25,6 +25,7 @@ function parseInteger(value: string) {
     10,
   )
   if (isNaN(parsedValue)) {
+    // eslint-disable-next-line functional/no-throw-statements
     throw new InvalidArgumentError('Not a number.')
   }
   return parsedValue
@@ -92,9 +93,10 @@ program
     const results: Record<string, unknown> = {}
 
     // Iterate over the map to generate results, avoiding repetition
-
+    // eslint-disable-next-line functional/no-loop-statements
     for (const [key,
       arbitrary] of Object.entries(chartArbitraries)) {
+      // eslint-disable-next-line functional/immutable-data
       results[key] = getDeterministicSample(
         arbitrary,
         seed,
