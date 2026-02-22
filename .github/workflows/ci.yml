@@ -32,10 +32,6 @@ jobs:
                   SHORT_SHA="${GITHUB_SHA::7}"
                   echo "artifact-name=obsidian-bases-charts-${SAFE_BRANCH}-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
 
-            - name: Update Version
-              if: (success() || failure()) && steps.setup.outcome == 'success'
-              run: bun scripts/update-version.ts
-
             - name: Check types
               if: (success() || failure()) && steps.setup.outcome == 'success'
               run: bun run typecheck
