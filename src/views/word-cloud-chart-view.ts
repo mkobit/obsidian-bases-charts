@@ -1,8 +1,7 @@
 import 'echarts-wordcloud'
-import type { QueryController, ViewOption } from 'obsidian'
+import type { ViewOption } from 'obsidian'
 import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
-import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
 import type { WordCloudTransformerOptions } from '../charts/transformers/extensions/word-cloud'
@@ -10,15 +9,6 @@ import { t } from '../lang/text'
 
 export class WordCloudChartView extends BaseChartView {
   readonly type = 'word-cloud-chart'
-
-  constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-    super(
-      controller,
-      scrollEl,
-      plugin,
-    )
-  }
-
   protected getChartOption(data: BasesData): EChartsOption | null {
     // X-Axis Prop -> Word
     // Y-Axis Prop -> Frequency/Value
