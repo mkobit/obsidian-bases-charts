@@ -309,6 +309,7 @@ export default tseslint.config(
       'src/charts/transformer.ts',
       'src/charts/transformers/base.ts',
       'src/charts/transformers/cartesian.ts',
+      'src/charts/transformers/gantt.ts',
       'src/charts/transformers/pie.ts',
       'src/charts/transformers/scatter.ts',
       'src/charts/transformers/utils.ts',
