@@ -337,6 +337,15 @@ export default tseslint.config(
       }],
     },
   },
+  // Temporary override for gantt.ts pending refactor
+  {
+    files: ['src/charts/transformers/gantt.ts'],
+    rules: {
+      'functional/prefer-immutable-types': 'off',
+      'functional/type-declaration-immutability': 'off',
+      'functional/readonly-type': 'off',
+    },
+  },
   // Scripts
   {
     files: ['scripts/**/*.ts', 'scripts/**/*.cjs', 'esbuild.config.mjs', 'version-bump.mjs', 'wdio.conf.mts'],
