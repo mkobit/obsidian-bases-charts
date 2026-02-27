@@ -18,9 +18,9 @@ export class LineChartView extends BaseChartView {
   }
 
   protected getChartOption(data: BasesData): EChartsOption | null {
-    const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY)
-    const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY)
-    const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY)
+    const xProp = this.getStringOption(BaseChartView.X_AXIS_PROP_KEY)
+    const yProp = this.getStringOption(BaseChartView.Y_AXIS_PROP_KEY)
+    const seriesProp = this.getStringOption(BaseChartView.SERIES_PROP_KEY)
 
     // Get line specific options safely
     const smooth = this.getBooleanOption('smooth')
@@ -41,14 +41,9 @@ export class LineChartView extends BaseChartView {
         smooth,
         showSymbol,
         areaStyle,
-        seriesProp: typeof seriesProp === 'string' ? seriesProp : undefined,
+        seriesProp,
       },
     )
-  }
-
-  private getBooleanOption(key: string): boolean | undefined {
-    const val = this.config.get(key)
-    return typeof val === 'boolean' ? val : undefined
   }
 
   static getViewOptions(_?: unknown): ViewOption[] {

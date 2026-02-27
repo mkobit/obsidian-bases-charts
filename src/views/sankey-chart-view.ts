@@ -14,9 +14,9 @@ export class SankeyChartView extends BaseChartView {
   }
 
   protected getChartOption(data: BasesData): EChartsOption | null {
-    const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string
-    const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY) as string
-    const valueProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string
+    const xProp = this.getStringOption(BaseChartView.X_AXIS_PROP_KEY)
+    const yProp = this.getStringOption(BaseChartView.Y_AXIS_PROP_KEY)
+    const valueProp = this.getStringOption(BaseChartView.VALUE_PROP_KEY)
 
     if (!xProp || !yProp) {
       return null
@@ -28,7 +28,7 @@ export class SankeyChartView extends BaseChartView {
       yProp,
       'sankey',
       {
-        legend: this.config.get(BaseChartView.LEGEND_KEY) as boolean,
+        legend: this.getBooleanOption(BaseChartView.LEGEND_KEY),
         valueProp: valueProp,
       },
     )

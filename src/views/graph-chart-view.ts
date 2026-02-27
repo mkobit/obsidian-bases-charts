@@ -39,10 +39,10 @@ export class GraphChartView extends BaseChartView {
   }
 
   getChartOption(data: BasesData) {
-    const sourceProp = this.config.get('sourceProp') as string
-    const targetProp = this.config.get('targetProp') as string
-    const valueProp = this.config.get('valueProp') as string
-    const categoryProp = this.config.get('categoryProp') as string
+    const sourceProp = this.getStringOption('sourceProp')
+    const targetProp = this.getStringOption('targetProp')
+    const valueProp = this.getStringOption('valueProp')
+    const categoryProp = this.getStringOption('categoryProp')
 
     if (!sourceProp || !targetProp) {
       return {}
