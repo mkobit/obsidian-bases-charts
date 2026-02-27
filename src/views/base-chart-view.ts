@@ -102,7 +102,7 @@ export abstract class BaseChartView extends BasesView {
     this.renderChart()
   }
 
-  protected getCommonTransformerOptions(_?: unknown): BaseTransformerOptions {
+  protected getCommonTransformerOptions(): BaseTransformerOptions {
     const options: BaseTransformerOptions = {
       legend: this.config.get(BaseChartView.LEGEND_KEY) as boolean,
       legendPosition: this.config.get(BaseChartView.LEGEND_POSITION_KEY) as 'top' | 'bottom' | 'left' | 'right',
@@ -137,12 +137,12 @@ export abstract class BaseChartView extends BasesView {
     }
   }
 
-  protected renderChart(_?: unknown): void {
+  protected renderChart(): void {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     !this.chartEl ? undefined : this.executeRender()
   }
 
-  protected executeRender(_?: unknown): void {
+  protected executeRender(): void {
     const height = (this.config.get(BaseChartView.HEIGHT_KEY) as string) || this.plugin.settings.defaultHeight
     this.chartEl.style.height = height
 
@@ -193,7 +193,7 @@ export abstract class BaseChartView extends BasesView {
     return this.isDarkMode() ? 'dark' : undefined
   }
 
-  private isDarkMode(_?: unknown): boolean {
+  private isDarkMode(): boolean {
     return document.body.classList.contains('theme-dark')
   }
 
@@ -267,7 +267,7 @@ export abstract class BaseChartView extends BasesView {
     ]
   }
 
-  static getAxisViewOptions(_?: unknown): ViewOption[] {
+  static getAxisViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.axis.x_label'),
@@ -295,7 +295,7 @@ export abstract class BaseChartView extends BasesView {
     ]
   }
 
-  static getVisualMapViewOptions(_?: unknown): ViewOption[] {
+  static getVisualMapViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.visual_map.min'),

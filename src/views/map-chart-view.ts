@@ -27,7 +27,7 @@ export class MapChartView extends BaseChartView {
     )
   }
 
-  protected renderChart(_?: unknown): void {
+  protected renderChart(): void {
     const mapFile = this.config.get(MapChartView.MAP_FILE_KEY) as string
 
     if (!mapFile) {
@@ -106,7 +106,7 @@ export class MapChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.map.map_file'),

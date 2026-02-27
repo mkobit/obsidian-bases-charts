@@ -60,7 +60,7 @@ export class CandlestickChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.candlestick.x_axis_prop'),

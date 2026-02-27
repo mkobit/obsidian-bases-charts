@@ -45,7 +45,7 @@ export class LinesChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         key: BaseChartView.X_AXIS_PROP_KEY,

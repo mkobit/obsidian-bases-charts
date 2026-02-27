@@ -17,7 +17,7 @@ export class RadialBarChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.radial_bar.category_prop'),

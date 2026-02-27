@@ -17,7 +17,7 @@ export class HeatmapChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.common.x_axis_prop'),
