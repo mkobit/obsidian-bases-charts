@@ -61,7 +61,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => TreemapChartView.getViewOptions(),
+        options: () => TreemapChartView.getViewOptions(),
       },
     )
 
@@ -75,7 +75,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => BarChartView.getViewOptions(),
+        options: () => BarChartView.getViewOptions(),
       },
     )
 
@@ -89,7 +89,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => LineChartView.getViewOptions(),
+        options: () => LineChartView.getViewOptions(),
       },
     )
 
@@ -103,7 +103,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => LinesChartView.getViewOptions(),
+        options: () => LinesChartView.getViewOptions(),
       },
     )
 
@@ -117,7 +117,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => PieChartView.getViewOptions(),
+        options: () => PieChartView.getViewOptions(),
       },
     )
 
@@ -131,7 +131,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => RoseChartView.getViewOptions(),
+        options: () => RoseChartView.getViewOptions(),
       },
     )
 
@@ -145,7 +145,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => PictorialBarChartView.getViewOptions(),
+        options: () => PictorialBarChartView.getViewOptions(),
       },
     )
 
@@ -159,7 +159,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => StackedBarChartView.getViewOptions(),
+        options: () => StackedBarChartView.getViewOptions(),
       },
     )
 
@@ -173,7 +173,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => AreaChartView.getViewOptions(),
+        options: () => AreaChartView.getViewOptions(),
       },
     )
 
@@ -187,7 +187,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => ScatterChartView.getViewOptions(),
+        options: () => ScatterChartView.getViewOptions(),
       },
     )
 
@@ -201,7 +201,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => EffectScatterChartView.getViewOptions(),
+        options: () => EffectScatterChartView.getViewOptions(),
       },
     )
 
@@ -215,7 +215,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => BubbleChartView.getViewOptions(),
+        options: () => BubbleChartView.getViewOptions(),
       },
     )
 
@@ -229,7 +229,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => RadarChartView.getViewOptions(),
+        options: () => RadarChartView.getViewOptions(),
       },
     )
 
@@ -243,7 +243,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => FunnelChartView.getViewOptions(),
+        options: () => FunnelChartView.getViewOptions(),
       },
     )
 
@@ -257,7 +257,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => GaugeChartView.getViewOptions(),
+        options: () => GaugeChartView.getViewOptions(),
       },
     )
 
@@ -271,7 +271,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => HeatmapChartView.getViewOptions(),
+        options: () => HeatmapChartView.getViewOptions(),
       },
     )
 
@@ -285,7 +285,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => CandlestickChartView.getViewOptions(),
+        options: () => CandlestickChartView.getViewOptions(),
       },
     )
 
@@ -299,7 +299,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => BoxplotChartView.getViewOptions(),
+        options: () => BoxplotChartView.getViewOptions(),
       },
     )
 
@@ -313,7 +313,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => SankeyChartView.getViewOptions(),
+        options: () => SankeyChartView.getViewOptions(),
       },
     )
 
@@ -327,7 +327,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => GraphChartView.getViewOptions(),
+        options: () => GraphChartView.getViewOptions(),
       },
     )
 
@@ -341,7 +341,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => SunburstChartView.getViewOptions(),
+        options: () => SunburstChartView.getViewOptions(),
       },
     )
 
@@ -355,7 +355,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => TreeChartView.getViewOptions(),
+        options: () => TreeChartView.getViewOptions(),
       },
     )
 
@@ -369,7 +369,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => ThemeRiverChartView.getViewOptions(),
+        options: () => ThemeRiverChartView.getViewOptions(),
       },
     )
 
@@ -383,7 +383,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => CalendarChartView.getViewOptions(),
+        options: () => CalendarChartView.getViewOptions(),
       },
     )
 
@@ -397,7 +397,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => ParallelChartView.getViewOptions(),
+        options: () => ParallelChartView.getViewOptions(),
       },
     )
 
@@ -425,7 +425,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => WaterfallChartView.getViewOptions(),
+        options: () => WaterfallChartView.getViewOptions(),
       },
     )
 
@@ -439,7 +439,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => ParetoChartView.getViewOptions(),
+        options: () => ParetoChartView.getViewOptions(),
       },
     )
 
@@ -453,7 +453,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => HistogramChartView.getViewOptions(),
+        options: () => HistogramChartView.getViewOptions(),
       },
     )
 
@@ -467,7 +467,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => BulletChartView.getViewOptions(),
+        options: () => BulletChartView.getViewOptions(),
       },
     )
 
@@ -481,7 +481,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => RadialBarChartView.getViewOptions(),
+        options: () => RadialBarChartView.getViewOptions(),
       },
     )
 
@@ -495,7 +495,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => PolarLineChartView.getViewOptions(),
+        options: () => PolarLineChartView.getViewOptions(),
       },
     )
 
@@ -509,7 +509,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => PolarBarChartView.getViewOptions(),
+        options: () => PolarBarChartView.getViewOptions(),
       },
     )
 
@@ -523,7 +523,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => PolarScatterChartView.getViewOptions(),
+        options: () => PolarScatterChartView.getViewOptions(),
       },
     )
 
@@ -537,7 +537,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => MapChartView.getViewOptions(),
+        options: () => MapChartView.getViewOptions(),
       },
     )
 
@@ -551,7 +551,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => WordCloudChartView.getViewOptions(),
+        options: () => WordCloudChartView.getViewOptions(),
       },
     )
 
@@ -566,7 +566,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => LiquidChartView.getViewOptions(),
+        options: () => LiquidChartView.getViewOptions(),
       },
     )
     */
@@ -579,7 +579,7 @@ export default class BarePlugin extends Plugin {
 
   onunload() {}
 
-  async loadSettings(_?: unknown) {
+  async loadSettings() {
     this.settings = Object.assign(
       {},
       DEFAULT_SETTINGS,
@@ -587,12 +587,12 @@ export default class BarePlugin extends Plugin {
     )
   }
 
-  async saveSettings(_?: unknown) {
+  async saveSettings() {
     await this.saveData(this.settings)
     this.applyTheme()
   }
 
-  applyTheme(_?: unknown) {
+  applyTheme() {
     this.settings.customThemes.forEach((customTheme) => {
       const theme = parseTheme(customTheme.json)
       if (theme) {

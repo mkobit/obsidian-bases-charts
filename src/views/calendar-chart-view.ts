@@ -23,7 +23,7 @@ export class CalendarChartView extends BaseChartView {
 
   getIcon(): string { return 'calendar' }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.calendar.date_prop'),

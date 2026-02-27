@@ -36,7 +36,7 @@ export class ParetoChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     const common = BaseChartView.getCommonViewOptions()
 
     // Remove seriesProp as Pareto doesn't support grouping by series

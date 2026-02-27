@@ -40,7 +40,7 @@ export class EffectScatterChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       ...BaseChartView.getCommonViewOptions(),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access

@@ -23,7 +23,7 @@ export class TreeChartView extends BaseChartView {
 
   getIcon(): string { return 'network' }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.tree.path_prop'),

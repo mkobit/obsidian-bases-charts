@@ -34,7 +34,7 @@ export class SankeyChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     const valueOption: TextOption = {
       displayName: t('views.sankey.value_prop'),
       key: BaseChartView.VALUE_PROP_KEY,
