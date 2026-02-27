@@ -16,7 +16,7 @@ interface GanttDataPoint {
   readonly start: number
   readonly end: number
   readonly duration: number
-  readonly seriesName?: string
+  readonly seriesName: string
   readonly dataIndex: number
 }
 
@@ -65,7 +65,8 @@ function formatTooltip(params: GanttTooltipParam | ReadonlyArray<GanttTooltipPar
   return visibleItems.length === 0
     ? ''
     : (() => {
-        const category = visibleItems[0].name
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const category = (visibleItems[0] as GanttTooltipParam).name
 
         const itemsHtml = visibleItems.map((item: GanttTooltipParam) => {
           const data = item.data
@@ -113,7 +114,7 @@ export function createGanttChartOption(
       const start = normalizeDate(startRaw)
       const end = normalizeDate(endRaw)
 
-      return (!task || start === null || end === null || end < start)
+      const point: GanttDataPoint | null = (!task || start === null || end === null || end < start)
         ? null
         : {
             task,
@@ -123,6 +124,7 @@ export function createGanttChartOption(
             seriesName,
             dataIndex: idx,
           }
+      return point
     }),
     R.filter((x): x is GanttDataPoint => x !== null),
   )
