@@ -1,11 +1,3 @@
-/* eslint-disable functional/no-loop-statements */
-/* eslint-disable functional/no-conditional-statements */
-/* eslint-disable functional/immutable-data */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable functional/no-expression-statements */
-
 import type { BarSeriesOption, EChartsOption } from 'echarts'
 import { Temporal } from 'temporal-polyfill'
 import * as R from 'remeda'
@@ -28,62 +20,66 @@ interface GanttDataPoint {
   readonly dataIndex: number
 }
 
-function normalizeDate(val: unknown): number | null {
-  if (typeof val === 'number') {
-    return val
+export interface GanttTooltipParam {
+  readonly seriesName: string
+  readonly name: string
+  readonly marker?: string
+  readonly data: {
+    readonly value: number
+    readonly start: number
+    readonly end: number
   }
-  // Handle Date objects if they slip through (though restricted), or general objects with getTime
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  if (val && typeof val === 'object' && 'getTime' in val && typeof (val as { getTime: unknown }).getTime === 'function') {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return (val as { getTime: () => number }).getTime()
-  }
-  if (typeof val === 'string') {
-    // eslint-disable-next-line functional/no-try-statements
-    try {
-      // Try ISO 8601 first (Temporal strict)
-      return Temporal.Instant.from(val).epochMilliseconds
-    }
-    catch {
-      // Fallback to legacy parsing via basic ISO check or assume invalid if not simple ISO
-      // Since we can't use Date, we might try Temporal.PlainDate if it's just a date string
-      // eslint-disable-next-line functional/no-try-statements
-      try {
-        return Temporal.PlainDate.from(val).toZonedDateTime('UTC').epochMilliseconds
-      }
-      catch {
-        return null
-      }
-    }
-  }
-  return null
 }
 
-function formatTooltip(params: any): string {
-  const p = Array.isArray(params) ? params : [params]
-  const visibleItems = p.filter((item: any) => item.seriesName !== '_start')
-
-  if (visibleItems.length === 0) {
-    return ''
-  }
-
-  const category = visibleItems[0].name
-
-  const itemsHtml = visibleItems.map((item: any) => {
+function normalizeDate(val: unknown): number | null {
+  return typeof val === 'number'
+    ? val
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    const data = item.data as { value: number
-      start: number
-      end: number }
-    const startStr = Temporal.Instant.fromEpochMilliseconds(data.start).toZonedDateTimeISO('UTC').toPlainDate().toString()
-    const endStr = Temporal.Instant.fromEpochMilliseconds(data.end).toZonedDateTimeISO('UTC').toPlainDate().toString()
+    : (val && typeof val === 'object' && 'getTime' in val && typeof (val as { getTime: unknown }).getTime === 'function')
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        ? (val as { getTime: () => number }).getTime()
+        : typeof val === 'string'
+          ? (() => {
+              // eslint-disable-next-line functional/no-try-statements
+              try {
+                return Temporal.Instant.from(val).epochMilliseconds
+              }
+              catch {
+                // eslint-disable-next-line functional/no-try-statements
+                try {
+                  return Temporal.PlainDate.from(val).toZonedDateTime('UTC').epochMilliseconds
+                }
+                catch {
+                  return null
+                }
+              }
+            })()
+          : null
+}
 
-    const marker = item.marker || ''
-    const seriesName = item.seriesName || ''
+function formatTooltip(params: GanttTooltipParam | ReadonlyArray<GanttTooltipParam>): string {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const p = Array.isArray(params) ? params as ReadonlyArray<GanttTooltipParam> : [params] as ReadonlyArray<GanttTooltipParam>
+  const visibleItems = p.filter((item: GanttTooltipParam) => item.seriesName !== '_start')
 
-    return `<div>${marker} <b>${seriesName}</b> <br/>Start: ${startStr}<br/>End: ${endStr}<br/>Duration: ${data.value}ms</div>`
-  }).join('')
+  return visibleItems.length === 0
+    ? ''
+    : (() => {
+        const category = visibleItems[0].name
 
-  return `<div><b>${category}</b></div>${itemsHtml}`
+        const itemsHtml = visibleItems.map((item: GanttTooltipParam) => {
+          const data = item.data
+          const startStr = Temporal.Instant.fromEpochMilliseconds(data.start).toZonedDateTimeISO('UTC').toPlainDate().toString()
+          const endStr = Temporal.Instant.fromEpochMilliseconds(data.end).toZonedDateTimeISO('UTC').toPlainDate().toString()
+
+          const marker = item.marker || ''
+          const seriesName = item.seriesName || ''
+
+          return `<div>${marker} <b>${seriesName}</b> <br/>Start: ${startStr}<br/>End: ${endStr}<br/>Duration: ${data.value}ms</div>`
+        }).join('')
+
+        return `<div><b>${category}</b></div>${itemsHtml}`
+      })()
 }
 
 export function createGanttChartOption(
@@ -117,24 +113,21 @@ export function createGanttChartOption(
       const start = normalizeDate(startRaw)
       const end = normalizeDate(endRaw)
 
-      if (!task || start === null || end === null || end < start) {
-        return null
-      }
-
-      const point: GanttDataPoint = {
-        task,
-        start,
-        end,
-        duration: end - start,
-        seriesName,
-        dataIndex: idx,
-      }
-      return point
+      return (!task || start === null || end === null || end < start)
+        ? null
+        : {
+            task,
+            start,
+            end,
+            duration: end - start,
+            seriesName,
+            dataIndex: idx,
+          }
     }),
     R.filter((x): x is GanttDataPoint => x !== null),
   )
 
-  const tasks = R.pipe(
+  const tasks: readonly string[] = R.pipe(
     validData,
     R.map(d => d.task),
     R.unique(),
@@ -145,84 +138,79 @@ export function createGanttChartOption(
     d => d.seriesName ?? 'Default',
   )
 
-  const seriesOptions: BarSeriesOption[] = []
+  const seriesOptions: ReadonlyArray<BarSeriesOption> = R.pipe(
+    Object.entries(groupedData),
+    R.flatMap(([sName,
+      sData]): ReadonlyArray<BarSeriesOption> => {
+      const dataMap = R.indexBy(
+        sData,
+        d => d.task,
+      )
 
-  // The loops below are complex to refactor purely functionally without hurting readability significantly
-  // given the need to push multiple series options per group.
-  // Suppressing lint for this specific block.
+      const startSeriesData = tasks.map((t) => {
+        const item = dataMap[t]
+        return !item
+          ? '-'
+          : {
+              value: item.start,
+              itemStyle: { color: 'transparent' },
+            }
+      })
 
-  for (const [sName,
-    sData] of Object.entries(groupedData)) {
-    const dataMap = R.indexBy(
-      sData,
-      d => d.task,
-    )
+      const durationSeriesData = tasks.map((t) => {
+        const item = dataMap[t]
+        return !item
+          ? '-'
+          : {
+              value: item.duration,
+              start: item.start,
+              end: item.end,
+              seriesName: sName,
+            }
+      })
 
-    const startSeriesData = tasks.map((t) => {
-      const item = dataMap[t]
-      if (!item) {
-        return '-'
-      }
-      return {
-        value: item.start,
-        itemStyle: { color: 'transparent' },
-      }
-    })
+      const stackId = `stack_${sName}`
 
-    const durationSeriesData = tasks.map((t) => {
-      const item = dataMap[t]
-      if (!item) {
-        return '-'
-      }
-      return {
-        value: item.duration,
-        start: item.start,
-        end: item.end,
-        seriesName: sName,
-      }
-    })
-
-    const stackId = `stack_${sName}`
-
-    seriesOptions.push({
-      name: '_start',
-      type: 'bar',
-      stack: stackId,
-      itemStyle: {
-        borderColor: 'transparent',
-        color: 'transparent',
-      },
-      emphasis: {
-        itemStyle: {
-          borderColor: 'transparent',
-          color: 'transparent',
+      return [
+        {
+          name: '_start',
+          type: 'bar',
+          stack: stackId,
+          itemStyle: {
+            borderColor: 'transparent',
+            color: 'transparent',
+          },
+          emphasis: {
+            itemStyle: {
+              borderColor: 'transparent',
+              color: 'transparent',
+            },
+          },
+          data: startSeriesData,
+          tooltip: { show: false },
+          silent: true,
         },
-      },
-      data: startSeriesData,
-      tooltip: { show: false },
-      silent: true,
-    })
-
-    seriesOptions.push({
-      name: sName,
-      type: 'bar',
-      stack: stackId,
-      data: durationSeriesData,
-      label: {
-        show: true,
-        position: 'inside',
-        formatter: (p: any) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          return p.seriesName === 'Task' ? '' : p.seriesName
+        {
+          name: sName,
+          type: 'bar',
+          stack: stackId,
+          data: durationSeriesData,
+          label: {
+            show: true,
+            position: 'inside',
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            formatter: (p: unknown) => (p as GanttTooltipParam).seriesName === 'Task' ? '' : (p as GanttTooltipParam).seriesName,
+          },
         },
-      },
-    })
-  }
+      ]
+    }),
+  )
 
   return {
     tooltip: {
       trigger: 'item',
-      formatter: formatTooltip,
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      formatter: formatTooltip as unknown as NonNullable<EChartsOption['tooltip']> extends { formatter?: infer F } ? F : never,
     },
     legend: getLegendOption(options),
     grid: {
@@ -238,11 +226,11 @@ export function createGanttChartOption(
     },
     yAxis: {
       type: 'category',
-      data: tasks,
+      data: [...tasks],
       splitLine: { show: true },
       axisLine: { show: false },
       axisTick: { show: false },
     },
-    series: seriesOptions,
+    series: [...seriesOptions],
   }
 }
