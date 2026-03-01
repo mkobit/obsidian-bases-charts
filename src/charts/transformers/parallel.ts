@@ -9,7 +9,7 @@ export interface ParallelTransformerOptions extends BaseTransformerOptions {
 
 // ECharts parallelAxis type is complex union
 function asParallelAxis(axis: unknown): EChartsOption['parallelAxis'] {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any
   return axis as any
 }
 

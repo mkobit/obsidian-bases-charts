@@ -33,7 +33,7 @@ export class EffectScatterChartView extends BaseChartView {
   static getViewOptions(): ViewOption[] {
     return [
       ...BaseChartView.getCommonViewOptions(),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY),
       {
         key: BaseChartView.SIZE_PROP_KEY,

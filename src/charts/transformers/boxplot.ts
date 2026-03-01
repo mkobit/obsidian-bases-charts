@@ -93,7 +93,7 @@ export function createBoxplotChartOption(
 
       // Use standard ECharts data tool to process the data
       // prepareBoxplotData expects [ [v1, v2...], [v3, v4...] ] where each inner array is a category
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
       const result: unknown = prepareBoxplotData(rawData)
 
       return !isBoxplotResult(result)

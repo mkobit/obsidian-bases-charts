@@ -81,7 +81,7 @@ export class CandlestickChartView extends BaseChartView {
         key: CandlestickChartView.HIGH_PROP_KEY,
         placeholder: t('views.candlestick.high_placeholder'),
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY),
     ]
   }

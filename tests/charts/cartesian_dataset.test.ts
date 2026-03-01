@@ -41,9 +41,9 @@ describe(
         const series = (Array.isArray(option.series) ? option.series[0] : option.series) as SeriesOption
         expect(series).toBeDefined()
         expect(series.type).toBe('bar')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((series as any).datasetIndex).toBeDefined()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((series as any).encode).toEqual({ x: 'x',
           y: 'y',
           tooltip: ['x',
@@ -76,16 +76,16 @@ describe(
         // Explicit check for transform type
 
         const t = transformDatasets[0]!.transform
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((t as any).type).toBe('filter')
 
         // Verify series reference these datasets
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const series = option.series as readonly any[]
         expect(series).toHaveLength(2)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(series[0].datasetIndex).toBeGreaterThan(0)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(series[1].datasetIndex).toBeGreaterThan(0)
       },
     )
@@ -104,9 +104,9 @@ describe(
         const series = Array.isArray(option.series) ? option.series[0] : option.series
         expect(series).toBeDefined()
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((option.yAxis as any).type).toBe('category')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((option.xAxis as any).type).toBe('value')
       },
     )

@@ -4,7 +4,7 @@ import * as fc from 'fast-check'
  * Arbitrary for Sankey chart data.
  * Generates a simple multi-stage flow.
  */
-export const sankeyChartArbitrary = fc.constant(null).map((_?: unknown) => {
+export const sankeyChartArbitrary = fc.constant(null).map(() => {
   // Hardcoded simple structure to ensure valid flow
   const data = [
     { source: 'Homepage',

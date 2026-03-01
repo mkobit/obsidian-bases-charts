@@ -9,7 +9,7 @@ export interface CalendarTransformerOptions extends BaseTransformerOptions {
 }
 
 function asCalendarTooltipParams(params: unknown): Readonly<{ value: readonly (number | string)[] }> {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any
   return params as any
 }
 

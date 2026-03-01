@@ -39,7 +39,6 @@ export class ChartModal extends Modal {
     this.contentEl.empty()
   }
 
-  // eslint-disable-next-line @typescript-eslint/prefer-readonly
   private handleResize = () => {
     this.chart?.resize()
   }

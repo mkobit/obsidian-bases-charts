@@ -27,7 +27,7 @@ export class HeatmapChartView extends BaseChartView {
         key: BaseChartView.VALUE_PROP_KEY,
         placeholder: t('views.heatmap.value_prop_placeholder'),
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY),
       ...BaseChartView.getVisualMapViewOptions(),
     ]
