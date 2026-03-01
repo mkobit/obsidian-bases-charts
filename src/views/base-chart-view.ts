@@ -112,7 +112,7 @@ export abstract class BaseChartView extends BasesView {
     return typeof val === 'string' ? val : undefined
   }
 
-  protected getCommonTransformerOptions(_?: unknown): BaseTransformerOptions {
+  protected getCommonTransformerOptions(): BaseTransformerOptions {
     const options: BaseTransformerOptions = {
       legend: this.getBooleanOption(BaseChartView.LEGEND_KEY),
       legendPosition: this.config.get(BaseChartView.LEGEND_POSITION_KEY) as 'top' | 'bottom' | 'left' | 'right',
@@ -152,7 +152,7 @@ export abstract class BaseChartView extends BasesView {
     !this.chartEl ? undefined : this.executeRender()
   }
 
-  protected executeRender(_?: unknown): void {
+  protected executeRender(): void {
     const height = this.getStringOption(BaseChartView.HEIGHT_KEY) || this.plugin.settings.defaultHeight
     this.chartEl.style.height = height
 
