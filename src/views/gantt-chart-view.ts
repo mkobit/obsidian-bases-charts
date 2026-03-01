@@ -73,7 +73,7 @@ export class GanttChartView extends BaseChartView {
         options: p?.getProperties?.() ?? {},
       },
       ...BaseChartView.getCommonViewOptions().filter((o) => {
-        const key = (o as any).key
+        const key = (o as { key?: string }).key
         return key !== BaseChartView.X_AXIS_PROP_KEY
           && key !== BaseChartView.Y_AXIS_PROP_KEY
           && key !== BaseChartView.SERIES_PROP_KEY

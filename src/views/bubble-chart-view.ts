@@ -32,8 +32,8 @@ export class BubbleChartView extends BaseChartView {
 
   static getViewOptions(): ViewOption[] {
     return [
-      ...BaseChartView.getCommonViewOptions(), // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY),
+      ...BaseChartView.getCommonViewOptions(),
+      ...BaseChartView.getAxisViewOptions().filter(opt => (opt as { key?: string }).key !== BaseChartView.FLIP_AXIS_KEY),
       {
         displayName: t('views.bubble.size_prop'),
         type: 'property',
