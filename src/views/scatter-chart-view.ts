@@ -44,8 +44,7 @@ export class ScatterChartView extends BaseChartView {
   static getViewOptions(): ViewOption[] {
     return [
       ...BaseChartView.getCommonViewOptions(),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ...BaseChartView.getAxisViewOptions().filter(opt => (opt as any).key !== BaseChartView.FLIP_AXIS_KEY),
+      ...BaseChartView.getAxisViewOptions().filter(opt => (opt as { key?: string }).key !== BaseChartView.FLIP_AXIS_KEY),
       {
         displayName: t('views.scatter.size_prop'),
         type: 'property',
