@@ -38,12 +38,7 @@ export class AreaChartView extends BaseChartView {
     )
   }
 
-  private getBooleanOption(key: string): boolean | undefined {
-    const val = this.config.get(key)
-    return typeof val === 'boolean' ? val : undefined
-  }
-
-  static getViewOptions(): ViewOption[] {
+  static getViewOptions(_?: unknown): ViewOption[] {
     return [
       ...BaseChartView.getCommonViewOptions(),
       ...BaseChartView.getAxisViewOptions(),

@@ -102,14 +102,24 @@ export abstract class BaseChartView extends BasesView {
     this.renderChart()
   }
 
-  protected getCommonTransformerOptions(): BaseTransformerOptions {
+  protected getBooleanOption(key: string): boolean | undefined {
+    const val = this.config.get(key)
+    return typeof val === 'boolean' ? val : undefined
+  }
+
+  protected getStringOption(key: string): string | undefined {
+    const val = this.config.get(key)
+    return typeof val === 'string' ? val : undefined
+  }
+
+  protected getCommonTransformerOptions(_?: unknown): BaseTransformerOptions {
     const options: BaseTransformerOptions = {
-      legend: this.config.get(BaseChartView.LEGEND_KEY) as boolean,
+      legend: this.getBooleanOption(BaseChartView.LEGEND_KEY),
       legendPosition: this.config.get(BaseChartView.LEGEND_POSITION_KEY) as 'top' | 'bottom' | 'left' | 'right',
       legendOrient: this.config.get(BaseChartView.LEGEND_ORIENT_KEY) as 'horizontal' | 'vertical',
-      flipAxis: this.config.get(BaseChartView.FLIP_AXIS_KEY) as boolean,
-      xAxisLabel: this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string,
-      yAxisLabel: this.config.get(BaseChartView.Y_AXIS_LABEL_KEY) as string,
+      flipAxis: this.getBooleanOption(BaseChartView.FLIP_AXIS_KEY),
+      xAxisLabel: this.getStringOption(BaseChartView.X_AXIS_LABEL_KEY),
+      yAxisLabel: this.getStringOption(BaseChartView.Y_AXIS_LABEL_KEY),
       xAxisLabelRotate: Number(this.config.get(BaseChartView.X_AXIS_LABEL_ROTATE_KEY) || 0),
       isMobile: Platform.isMobile,
       containerWidth: this.containerEl ? this.containerEl.clientWidth : 0,
@@ -142,8 +152,8 @@ export abstract class BaseChartView extends BasesView {
     !this.chartEl ? undefined : this.executeRender()
   }
 
-  protected executeRender(): void {
-    const height = (this.config.get(BaseChartView.HEIGHT_KEY) as string) || this.plugin.settings.defaultHeight
+  protected executeRender(_?: unknown): void {
+    const height = this.getStringOption(BaseChartView.HEIGHT_KEY) || this.plugin.settings.defaultHeight
     this.chartEl.style.height = height
 
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -181,7 +191,7 @@ export abstract class BaseChartView extends BasesView {
   }
 
   private getTheme(): string | undefined {
-    const chartTheme = this.config.get(BaseChartView.THEME_KEY) as string
+    const chartTheme = this.getStringOption(BaseChartView.THEME_KEY)
     if (chartTheme && chartTheme !== 'default') {
       return chartTheme
     }
