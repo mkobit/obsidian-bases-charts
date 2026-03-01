@@ -148,7 +148,6 @@ export abstract class BaseChartView extends BasesView {
   }
 
   protected renderChart(): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     !this.chartEl ? undefined : this.executeRender()
   }
 
@@ -156,7 +155,6 @@ export abstract class BaseChartView extends BasesView {
     const height = this.getStringOption(BaseChartView.HEIGHT_KEY) || this.plugin.settings.defaultHeight
     this.chartEl.style.height = height
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.chart
       ? this.chart.resize()
       : (this.chart = echarts.init(
@@ -167,7 +165,6 @@ export abstract class BaseChartView extends BasesView {
     const data = this.data.data as unknown as BasesData
     const option = this.getChartOption(data)
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     option
       ? this.chart.setOption(
           option,
@@ -179,7 +176,6 @@ export abstract class BaseChartView extends BasesView {
   protected abstract getChartOption(data: BasesData): EChartsOption | null
 
   private readonly updateChartTheme = (): void => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.chart && (
       this.chart.dispose(),
       this.chart = echarts.init(
