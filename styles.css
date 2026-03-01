@@ -27,3 +27,30 @@
     width: 100%;
     height: 100%;
 }
+
+.bases-echarts {
+    touch-action: pan-y;
+}
+
+@media (max-width: 768px) {
+    .bases-echarts-container {
+        min-height: 250px;
+    }
+
+    .bases-chart-modal {
+        padding: var(--size-2-2, 0.5rem);
+    }
+
+    .bases-chart-modal .bases-echarts-container {
+        min-height: 40vh;
+    }
+}
+
+.bases-echarts-container {
+    overflow: hidden;
+    position: relative;
+}
+
+.is-mobile .bases-echarts-container {
+    min-height: 200px;
+}
