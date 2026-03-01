@@ -8,7 +8,7 @@ import { t } from '../lang/text'
 export class GraphChartView extends BaseChartView {
   readonly type: ChartType = 'graph'
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       ...BaseChartView.getCommonViewOptions(),
       {

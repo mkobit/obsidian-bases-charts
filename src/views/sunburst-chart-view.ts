@@ -21,7 +21,7 @@ export class SunburstChartView extends BaseChartView {
     return 'disc'
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.sunburst.path_prop'),

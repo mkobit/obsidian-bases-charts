@@ -30,7 +30,7 @@ export class RadarChartView extends BaseChartView {
         )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     // Clone options to avoid side effects on other charts
     return BaseChartView.getCommonViewOptions().map((opt) => {
       const isXAxis = 'key' in opt && opt.key === BaseChartView.X_AXIS_PROP_KEY

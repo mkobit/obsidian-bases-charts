@@ -13,7 +13,7 @@ export class ThemeRiverChartView extends BaseChartView {
 
   getIcon(): string { return 'waves' }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.theme_river.date_prop'),

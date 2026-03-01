@@ -29,7 +29,7 @@ export class GaugeChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.gauge.value_prop'),

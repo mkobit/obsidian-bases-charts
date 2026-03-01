@@ -7,7 +7,7 @@ import { t } from '../lang/text'
 
 export class HeatmapChartView extends BaseChartView {
   readonly type = 'heatmap-chart'
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.common.x_axis_prop'),

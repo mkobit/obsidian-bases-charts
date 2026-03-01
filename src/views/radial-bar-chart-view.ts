@@ -7,7 +7,7 @@ import { t } from '../lang/text'
 
 export class RadialBarChartView extends BaseChartView {
   readonly type = 'radial-bar-chart'
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.radial_bar.category_prop'),
