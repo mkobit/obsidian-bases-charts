@@ -47,7 +47,7 @@ jobs:
 
             - name: Upload Build Artifacts
               if: (success() || failure()) && steps.setup.outcome == 'success'
-              uses: actions/upload-artifact@v6
+              uses: actions/upload-artifact@v7
               with:
                   name: ${{ steps.set-artifact-name.outputs.artifact-name }}
                   path: |
@@ -57,7 +57,7 @@ jobs:
 
             - name: Upload Coverage
               if: (success() || failure()) && steps.setup.outcome == 'success'
-              uses: actions/upload-artifact@v6
+              uses: actions/upload-artifact@v7
               with:
                   name: coverage
                   path: coverage/
