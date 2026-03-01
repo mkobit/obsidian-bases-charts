@@ -31,7 +31,7 @@
 		"@wdio/mocha-framework": "^9.24.0",
 		"@wdio/spec-reporter": "^9.24.0",
 		"commander": "^14.0.3",
-		"esbuild": "0.27.2",
+		"esbuild": "0.27.3",
 		"eslint": "^10.0.2",
 		"eslint-plugin-functional": "^9.0.4",
 		"eslint-plugin-obsidianmd": "^0.1.9",
