@@ -40,12 +40,10 @@ function normalizeDate(val: unknown): number | null {
         ? (val as { getTime: () => number }).getTime()
         : typeof val === 'string'
           ? (() => {
-              // eslint-disable-next-line functional/no-try-statements
               try {
                 return Temporal.Instant.from(val).epochMilliseconds
               }
               catch {
-                // eslint-disable-next-line functional/no-try-statements
                 try {
                   return Temporal.PlainDate.from(val).toZonedDateTime('UTC').epochMilliseconds
                 }

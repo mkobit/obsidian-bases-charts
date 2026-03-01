@@ -208,7 +208,7 @@ export type ChartTransformerOptions
 
 // Helper to cast options
 function asOptions<T>(options: unknown): T {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any
   return options as any
 }
 

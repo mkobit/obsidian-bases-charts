@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import type { ViewOption } from 'obsidian'
 import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
@@ -48,32 +48,31 @@ export class GanttChartView extends BaseChartView {
         key: GanttChartView.TASK_PROP_KEY,
         displayName: t('views.gantt.task_prop'),
         type: 'dropdown',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+
         options: p?.getProperties?.() ?? {},
       },
       {
         key: GanttChartView.START_PROP_KEY,
         displayName: t('views.gantt.start_prop'),
         type: 'dropdown',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+
         options: p?.getProperties?.() ?? {},
       },
       {
         key: GanttChartView.END_PROP_KEY,
         displayName: t('views.gantt.end_prop'),
         type: 'dropdown',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+
         options: p?.getProperties?.() ?? {},
       },
       {
         key: BaseChartView.SERIES_PROP_KEY,
         displayName: t('views.gantt.group_prop'),
         type: 'dropdown',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+
         options: p?.getProperties?.() ?? {},
       },
       ...BaseChartView.getCommonViewOptions().filter((o) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const key = (o as any).key
         return key !== BaseChartView.X_AXIS_PROP_KEY
           && key !== BaseChartView.Y_AXIS_PROP_KEY

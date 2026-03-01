@@ -81,7 +81,7 @@ describe(
 
             const checkVisualMap = () => {
               const visualMap = option.visualMap as VisualMapComponentOption
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               expect((visualMap as any).dimension).toBe('size')
             }
 

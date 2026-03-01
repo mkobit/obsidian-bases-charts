@@ -39,34 +39,34 @@ describe(
 
         expect(option).toBeDefined()
         // Check X Axis
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const xAxis = option.xAxis as any
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(xAxis.type).toBe('category')
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(xAxis.data).toContain('Mon')
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(xAxis.data).toContain('Tue')
 
         // Check Y Axis
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const yAxis = option.yAxis as any
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(yAxis.type).toBe('category')
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(yAxis.data).toContain('Morning')
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(yAxis.data).toContain('Evening')
 
         // Check Series
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const series = option.series as readonly any[]
         expect(series).toHaveLength(1)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(series[0]?.type).toBe('heatmap')
 
         // Check Data Mapping
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(series[0].datasetIndex).toBe(0)
         const dataset = option.dataset as readonly DatasetComponentOption[]
         expect(dataset).toBeDefined()
@@ -126,12 +126,11 @@ describe(
           'heatmap',
           { valueProp: 'val' },
         )
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const visualMap = option.visualMap as any
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(visualMap.min).toBe(10)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(visualMap.max).toBe(100)
       },
     )

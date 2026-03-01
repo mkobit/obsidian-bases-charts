@@ -10,7 +10,7 @@ export interface LinesTransformerOptions extends BaseTransformerOptions {
 }
 
 function asCoords(coords: readonly (readonly number[])[]): [number, number][] {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any
   return coords as any
 }
 

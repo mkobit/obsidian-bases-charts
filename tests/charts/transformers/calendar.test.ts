@@ -39,13 +39,13 @@ describe(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const series = option.series as readonly any[]
         expect(series).toHaveLength(1)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(series[0]?.type).toBe('heatmap')
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(series[0]?.coordinateSystem).toBe('calendar')
 
         // Check Data
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         const seriesData = series[0].data as readonly (readonly [string, number])[]
         expect(seriesData).toHaveLength(3)
         expect(seriesData[0]).toEqual(['2023-01-01',
@@ -76,7 +76,7 @@ describe(
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const series = option.series as readonly any[]
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         const seriesData = series[0].data as readonly (readonly [string, number])[]
 
         // invalid-date should be skipped?

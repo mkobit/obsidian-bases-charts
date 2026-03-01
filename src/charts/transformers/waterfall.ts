@@ -1,4 +1,3 @@
-/* eslint-disable functional/no-conditional-statements */
 import type { EChartsOption, BarSeriesOption } from 'echarts'
 import * as R from 'remeda'
 import type { BaseTransformerOptions, BasesData } from './base'

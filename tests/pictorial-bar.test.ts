@@ -72,7 +72,7 @@ describe(
           'category',
           'value',
           {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             symbolRepeat: 'true' as any,
           },
         )
@@ -85,7 +85,7 @@ describe(
           'category',
           'value',
           {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             symbolRepeat: 'false' as any,
           },
         )
@@ -157,9 +157,9 @@ describe(
             's'] })
 
         // yAxis should be category
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const yAxis = option.yAxis as any
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(yAxis.type).toBe('category')
       },
     )

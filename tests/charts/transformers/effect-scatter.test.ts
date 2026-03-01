@@ -83,9 +83,9 @@ describe(
           },
         )
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((option.xAxis as any).name).toBe('Cat')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((option.yAxis as any).name).toBe('Val')
       },
     )

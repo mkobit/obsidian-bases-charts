@@ -80,7 +80,7 @@ describe(
 
         // Axis Verification
         expect(option.xAxis).toBeDefined()
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((option.xAxis as any).data).toEqual(['2023-10-01',
           '2023-10-02',
           '2023-10-03'])
@@ -142,7 +142,7 @@ describe(
           high: 115 })
 
         // Check xAxis data sync
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((option.xAxis as any).data).toEqual(['2023-10-01'])
       },
     )

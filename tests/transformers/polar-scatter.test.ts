@@ -34,14 +34,14 @@ describe(
         expect(option.angleAxis).toBeDefined()
         expect(option.radiusAxis).toBeDefined()
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((option.angleAxis as any).type).toBe('category')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((option.radiusAxis as any).type).toBe('value')
         expect(option.series).toBeDefined()
         expect(option.series).toHaveLength(1)
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const series = (option.series as any)[0] as ScatterSeriesOption
         expect(series.type).toBe('scatter')
         expect(series.coordinateSystem).toBe('polar')
@@ -69,9 +69,9 @@ describe(
 
         expect(option.series).toHaveLength(2) // G1, G2
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const s1 = (option.series as any)[0] as ScatterSeriesOption
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const s2 = (option.series as any)[1] as ScatterSeriesOption
 
         expect(s1.name).toBe('G1')
@@ -93,7 +93,7 @@ describe(
 
         expect(option.visualMap).toBeDefined()
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const series = (option.series as any)[0] as ScatterSeriesOption
         expect(series.encode?.tooltip).toContain('size')
       },

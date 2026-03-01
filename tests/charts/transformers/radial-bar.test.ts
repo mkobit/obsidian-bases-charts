@@ -35,7 +35,7 @@ describe(
         expect(option.polar).toBeDefined()
         expect(option.angleAxis).toEqual(expect.objectContaining({
           type: 'category',
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
           data: expect.arrayContaining(['A',
             'B',
             'C']),

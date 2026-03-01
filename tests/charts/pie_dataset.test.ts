@@ -32,9 +32,9 @@ describe(
         const series = (Array.isArray(option.series) ? option.series[0] : option.series) as SeriesOption
         expect(series).toBeDefined()
         expect(series.type).toBe('pie')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((series as any).datasetIndex).toBe(0)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect((series as any).encode).toEqual({ itemName: 'name',
           value: 'value' })
       },

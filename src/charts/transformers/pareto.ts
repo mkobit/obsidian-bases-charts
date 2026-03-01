@@ -95,7 +95,6 @@ export function createParetoChartOption(
       y: 'cumulative' },
     tooltip: {
       valueFormatter: (value: unknown) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const v = Array.isArray(value) ? value[0] : value
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const val = v as number | string | null | undefined
@@ -152,7 +151,7 @@ export function createParetoChartOption(
       },
     ],
     dataset: {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any
       source: finalData as any,
     },
     series: [barSeries,
