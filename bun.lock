@@ -45,7 +45,7 @@
         "tslib": "2.8.1",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.56.1",
-        "wdio-obsidian-reporter": "^2.2.1",
+        "wdio-obsidian-reporter": "^2.3.2",
         "wdio-obsidian-service": "^2.3.2",
         "webdriverio": "^9.24.0",
       },
@@ -1584,7 +1584,7 @@
 
     "wcwidth": ["wcwidth@1.0.1", "", { "dependencies": { "defaults": "^1.0.3" } }, "sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg=="],
 
-    "wdio-obsidian-reporter": ["wdio-obsidian-reporter@2.2.1", "", { "dependencies": { "@wdio/reporter": "^9.18.0", "@wdio/spec-reporter": "^9.18.0" } }, "sha512-C/yBY1dx1nVhDKEYuY67cDz7C6K2N1LctDMAmPwOBGojBlLEFiG9i+GhGOQWEJorfvP0SNmCDvFB9/FfWsEO5A=="],
+    "wdio-obsidian-reporter": ["wdio-obsidian-reporter@2.3.2", "", { "dependencies": { "@wdio/reporter": "^9.18.0", "@wdio/spec-reporter": "^9.18.0" } }, "sha512-BlIskZc44PcurMspIMTq91Q1ETBQuCo/EiVZJRQsCOFpEZ8Niw7atNDhaFEEMoitwfB90Vy1lVROe1bY++vu+g=="],
 
     "wdio-obsidian-service": ["wdio-obsidian-service@2.3.2", "", { "dependencies": { "lodash": "~4.17.21", "obsidian-launcher": "2.3.2", "semver": "~7.7.3", "tar": "~7.5.3" }, "peerDependencies": { "@wdio/cli": "^9.18.1", "@wdio/local-runner": "^9.18.1", "@wdio/logger": "^9.18.0", "@wdio/mocha-framework": "^9.18.0", "appium": ">=2.19.0", "appium-uiautomator2-driver": ">=4.2.7", "obsidian": ">=1.1.1", "webdriverio": "^9.18.1" }, "optionalPeers": ["appium", "appium-uiautomator2-driver"] }, "sha512-6QLx4uCooEM2wtdj2xNsuvWpT7dZvrJGjchtru0R8ra9wKOwBuusnkszErqc+kdbQ1Wo2nfL0auERnjJSJHLNA=="],
 
@@ -1914,10 +1914,6 @@
 
     "wait-port/commander": ["commander@9.5.0", "", {}, "sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ=="],
 
-    "wdio-obsidian-reporter/@wdio/reporter": ["@wdio/reporter@9.23.2", "", { "dependencies": { "@types/node": "^20.1.0", "@wdio/logger": "9.18.0", "@wdio/types": "9.23.2", "diff": "^8.0.2", "object-inspect": "^1.12.0" } }, "sha512-+L1knNyQl+Xs+/VkM5JOX/HINe+g3ZVWt0Scsb9DcOCll8xG8jisxArutZLo+UuV6Bm1BzqfJJb/+ae04EuRAQ=="],
-
-    "wdio-obsidian-reporter/@wdio/spec-reporter": ["@wdio/spec-reporter@9.23.2", "", { "dependencies": { "@wdio/reporter": "9.23.2", "@wdio/types": "9.23.2", "chalk": "^5.1.2", "easy-table": "^1.2.0", "pretty-ms": "^9.0.0" } }, "sha512-9uwbrOFgPuF5NqixiU9db46HNJERN04beefNh4f4usJSP41Mbru0isps64qKkWSpFJhYl1LZrSGELezxH9bZ6A=="],
-
     "webdriver/@types/node": ["@types/node@20.12.12", "", { "dependencies": { "undici-types": "~5.26.4" } }, "sha512-eWLDGF/FOSPtAvEqeRAQ4C8LSA7M1I7i0ky1I8U7kD1J5ITyW3AsRhQrKVoWf5pFKZ2kILsEGJhsI9r93PYnOw=="],
 
     "webdriver/@wdio/config": ["@wdio/config@9.24.0", "", { "dependencies": { "@wdio/logger": "9.18.0", "@wdio/types": "9.24.0", "@wdio/utils": "9.24.0", "deepmerge-ts": "^7.0.3", "glob": "^10.2.2", "import-meta-resolve": "^4.0.0", "jiti": "^2.6.1" } }, "sha512-rcHu0eG16rSEmHL0sEKDcr/vYFmGhQ5GOlmlx54r+1sgh6sf136q+kth4169s16XqviWGW3LjZbUfpTK29pGtw=="],
@@ -2144,10 +2140,6 @@
 
     "wait-port/chalk/supports-color": ["supports-color@7.2.0", "", { "dependencies": { "has-flag": "^4.0.0" } }, "sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw=="],
 
-    "wdio-obsidian-reporter/@wdio/reporter/@types/node": ["@types/node@20.12.12", "", { "dependencies": { "undici-types": "~5.26.4" } }, "sha512-eWLDGF/FOSPtAvEqeRAQ4C8LSA7M1I7i0ky1I8U7kD1J5ITyW3AsRhQrKVoWf5pFKZ2kILsEGJhsI9r93PYnOw=="],
-
-    "wdio-obsidian-reporter/@wdio/reporter/diff": ["diff@8.0.3", "", {}, "sha512-qejHi7bcSD4hQAZE0tNAawRK1ZtafHDmMTMkrrIGgSLl7hTnQHmKCeB45xAcbfTqK2zowkM3j3bHt/4b/ARbYQ=="],
-
     "webdriver/@types/node/undici-types": ["undici-types@5.26.5", "", {}, "sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA=="],
 
     "webdriverio/@types/node/undici-types": ["undici-types@5.26.5", "", {}, "sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA=="],
@@ -2201,8 +2193,6 @@
     "readdir-glob/minimatch/brace-expansion/balanced-match": ["balanced-match@1.0.2", "", {}, "sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw=="],
 
     "recursive-readdir/minimatch/brace-expansion/balanced-match": ["balanced-match@1.0.2", "", {}, "sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw=="],
-
-    "wdio-obsidian-reporter/@wdio/reporter/@types/node/undici-types": ["undici-types@5.26.5", "", {}, "sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA=="],
 
     "eslint-plugin-obsidianmd/eslint/@eslint/config-array/minimatch/brace-expansion": ["brace-expansion@1.1.12", "", { "dependencies": { "balanced-match": "^1.0.0", "concat-map": "0.0.1" } }, "sha512-9T9UjW3r0UW5c1Q7GTwllptXwhvYmEzFhzMfZ9H7FQWt+uZePjZPjBP/W1ZEyZ1twGWom5/56TF4lPcqjnDHcg=="],
 
