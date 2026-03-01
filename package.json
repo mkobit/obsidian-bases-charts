@@ -49,7 +49,7 @@
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.56.1",
 		"wdio-obsidian-reporter": "^2.2.1",
-		"wdio-obsidian-service": "^2.2.1",
+		"wdio-obsidian-service": "^2.3.2",
 		"webdriverio": "^9.24.0"
 	},
 	"dependencies": {

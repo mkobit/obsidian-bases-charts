@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "obsidian-bases-charts",
@@ -45,7 +46,7 @@
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.56.1",
         "wdio-obsidian-reporter": "^2.2.1",
-        "wdio-obsidian-service": "^2.2.1",
+        "wdio-obsidian-service": "^2.3.2",
         "webdriverio": "^9.24.0",
       },
     },
@@ -1227,7 +1228,7 @@
 
     "obsidian": ["obsidian@1.11.4", "", { "dependencies": { "@types/codemirror": "5.60.8", "moment": "2.29.4" }, "peerDependencies": { "@codemirror/state": "6.5.0", "@codemirror/view": "6.38.6" } }, "sha512-n0KD3S+VndgaByrEtEe8NELy0ya6/s+KZ7OcxA6xOm5NN4thxKpQjo6eqEudHEvfGCeT/TYToAKJzitQ1I3XTg=="],
 
-    "obsidian-launcher": ["obsidian-launcher@2.2.1", "", { "dependencies": { "7z-wasm": "1.2.0", "@electron/get": "~4.0.2", "@supercharge/promise-pool": "~3.2.0", "chrome-remote-interface": "~0.33.3", "classic-level": "~3.0.0", "commander": "~14.0.2", "consola": "~3.4.2", "dotenv": "~17.2.3", "extract-zip": "~2.0.1", "lodash": "~4.17.21", "readline-sync": "~1.4.10", "semver": "~7.7.3" }, "bin": { "obsidian-launcher": "dist/cli.js" } }, "sha512-dnJJnTZ87bDRoJlYwbG523syjjkgJekqRVyumFQiPQ2RHTlyqJ4E9qbDDCUh76EnlUr4Zx/9VMt7T453F50Vpg=="],
+    "obsidian-launcher": ["obsidian-launcher@2.3.2", "", { "dependencies": { "7z-wasm": "1.2.0", "@electron/get": "~4.0.2", "@supercharge/promise-pool": "~3.2.0", "chrome-remote-interface": "~0.33.3", "classic-level": "~3.0.0", "commander": "~14.0.2", "consola": "~3.4.2", "dotenv": "~17.2.3", "extract-zip": "~2.0.1", "lodash": "~4.17.21", "readline-sync": "~1.4.10", "semver": "~7.7.3" }, "bin": { "obsidian-launcher": "dist/cli.js" } }, "sha512-KN7aL0YGmHk43sc72644P37SQjokd1NKvC5/koSCK+3C8kdleREj5cJ2Yh8xkjFq9PmKnJszRxjHQtSkz1O5aw=="],
 
     "once": ["once@1.4.0", "", { "dependencies": { "wrappy": "1" } }, "sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w=="],
 
@@ -1585,7 +1586,7 @@
 
     "wdio-obsidian-reporter": ["wdio-obsidian-reporter@2.2.1", "", { "dependencies": { "@wdio/reporter": "^9.18.0", "@wdio/spec-reporter": "^9.18.0" } }, "sha512-C/yBY1dx1nVhDKEYuY67cDz7C6K2N1LctDMAmPwOBGojBlLEFiG9i+GhGOQWEJorfvP0SNmCDvFB9/FfWsEO5A=="],
 
-    "wdio-obsidian-service": ["wdio-obsidian-service@2.2.1", "", { "dependencies": { "lodash": "~4.17.21", "obsidian-launcher": "2.2.1", "semver": "~7.7.3", "tar": "~7.5.3" }, "peerDependencies": { "@wdio/cli": "^9.18.1", "@wdio/local-runner": "^9.18.1", "@wdio/logger": "^9.18.0", "@wdio/mocha-framework": "^9.18.0", "appium": ">=2.19.0", "appium-uiautomator2-driver": ">=4.2.7", "obsidian": "^1.8.7", "webdriverio": "^9.18.1" }, "optionalPeers": ["appium", "appium-uiautomator2-driver"] }, "sha512-QuATiwKc80xQSqd1j7LAb+sWVd9F1fGoZ+NwB6xZfl6mqwu/C2VZaMbdjRO4dIzA/6KoNHgn8mOSsy9ivGtauw=="],
+    "wdio-obsidian-service": ["wdio-obsidian-service@2.3.2", "", { "dependencies": { "lodash": "~4.17.21", "obsidian-launcher": "2.3.2", "semver": "~7.7.3", "tar": "~7.5.3" }, "peerDependencies": { "@wdio/cli": "^9.18.1", "@wdio/local-runner": "^9.18.1", "@wdio/logger": "^9.18.0", "@wdio/mocha-framework": "^9.18.0", "appium": ">=2.19.0", "appium-uiautomator2-driver": ">=4.2.7", "obsidian": ">=1.1.1", "webdriverio": "^9.18.1" }, "optionalPeers": ["appium", "appium-uiautomator2-driver"] }, "sha512-6QLx4uCooEM2wtdj2xNsuvWpT7dZvrJGjchtru0R8ra9wKOwBuusnkszErqc+kdbQ1Wo2nfL0auERnjJSJHLNA=="],
 
     "webdriver": ["webdriver@9.24.0", "", { "dependencies": { "@types/node": "^20.1.0", "@types/ws": "^8.5.3", "@wdio/config": "9.24.0", "@wdio/logger": "9.18.0", "@wdio/protocols": "9.24.0", "@wdio/types": "9.24.0", "@wdio/utils": "9.24.0", "deepmerge-ts": "^7.0.3", "https-proxy-agent": "^7.0.6", "undici": "^6.21.3", "ws": "^8.8.0" } }, "sha512-2R31Ey83NzMsafkl4hdFq6GlIBvOODQMkueLjeRqYAITu3QCYiq9oqBdnWA6CdePuV4dbKlYsKRX0mwMiPclDA=="],
 
@@ -1868,8 +1869,6 @@
     "node-exports-info/semver": ["semver@6.3.1", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA=="],
 
     "npm-run-path/path-key": ["path-key@4.0.0", "", {}, "sha512-haREypq7xkM7ErfgIyA0z+Bj4AGKlMSdlQE2jvJo6huWD1EdkKYV+G/T4nq0YEF2vgTT8kqMFKo1uHn950r4SQ=="],
-
-    "obsidian-launcher/commander": ["commander@14.0.2", "", {}, "sha512-TywoWNNRbhoD0BXs1P3ZEScW8W5iKrnbithIl0YH+uCmBd0QpPOA8yc82DS3BIE5Ma6FnBVUsJ7wVUDz4dvOWQ=="],
 
     "parse-json/type-fest": ["type-fest@3.13.1", "", {}, "sha512-tLq3bSNx+xSpwvAJnzrK0Ep5CLNWjvFTOp71URMaAEWBfRb9nnJiBoUe0tF8bI4ZFO3omgBR6NvnbzVUT3Ly4g=="],
 
