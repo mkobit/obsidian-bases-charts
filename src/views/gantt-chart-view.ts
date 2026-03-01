@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import type { QueryController, ViewOption } from 'obsidian'
+import type { ViewOption } from 'obsidian'
 import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
-import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
 import { t } from '../lang/text'
@@ -14,15 +13,6 @@ export class GanttChartView extends BaseChartView {
   static readonly TASK_PROP_KEY = 'taskProp'
   static readonly START_PROP_KEY = 'startProp'
   static readonly END_PROP_KEY = 'endProp'
-
-  constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-    super(
-      controller,
-      scrollEl,
-      plugin,
-    )
-  }
-
   protected getChartOption(data: BasesData): EChartsOption | null {
     const taskProp = this.config.get(GanttChartView.TASK_PROP_KEY)
     const startProp = this.config.get(GanttChartView.START_PROP_KEY)

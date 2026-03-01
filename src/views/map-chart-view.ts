@@ -1,9 +1,8 @@
-import type { QueryController, ViewOption } from 'obsidian'
+import type { ViewOption } from 'obsidian'
 import { Notice } from 'obsidian'
 import { BaseChartView } from './base-chart-view'
 import * as echarts from 'echarts'
 import { transformDataToChartOption } from '../charts/transformer'
-import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
 import { z } from 'zod'
@@ -18,15 +17,6 @@ export class MapChartView extends BaseChartView {
 
   public static readonly MAP_FILE_KEY = 'mapFile'
   public static readonly REGION_PROP_KEY = 'regionProp'
-
-  constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-    super(
-      controller,
-      scrollEl,
-      plugin,
-    )
-  }
-
   protected renderChart(): void {
     const mapFile = this.config.get(MapChartView.MAP_FILE_KEY) as string
 

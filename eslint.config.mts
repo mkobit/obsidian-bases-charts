@@ -123,9 +123,6 @@ export default tseslint.config(
   {
     ...functional.configs.externalTypeScriptRecommended,
     files: ['**/*.ts', '**/*.tsx'],
-    plugins: {
-      '@typescript-eslint': tseslint.plugin,
-    },
   },
 
   // Manual plugin setup
@@ -135,7 +132,6 @@ export default tseslint.config(
       obsidianmd,
       functional,
       promise,
-      '@typescript-eslint': tseslint.plugin,
       unicorn,
     },
     rules: {

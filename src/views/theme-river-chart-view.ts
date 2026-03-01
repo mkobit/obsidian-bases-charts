@@ -1,5 +1,4 @@
-import type { QueryController, ViewOption } from 'obsidian'
-import type BarePlugin from '../main'
+import type { ViewOption } from 'obsidian'
 import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { EChartsOption } from 'echarts'
@@ -8,15 +7,6 @@ import { t } from '../lang/text'
 
 export class ThemeRiverChartView extends BaseChartView {
   readonly type = 'theme-river-chart'
-
-  constructor(controller: Readonly<QueryController>, containerEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-    super(
-      controller,
-      containerEl,
-      plugin,
-    )
-  }
-
   getViewType(): string { return 'theme-river-chart' }
 
   getDisplayText(): string { return 'Theme river' }
