@@ -9,7 +9,7 @@ import {
 import * as echarts from 'echarts'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
-import type { BasesData, BaseTransformerOptions } from '../charts/transformers/base'
+import type { BasesData, BaseTransformerOptions, VisualMapOptions } from '../charts/transformers/base'
 import { ChartModal } from './chart-modal'
 import { t } from '../lang/text'
 
@@ -110,6 +110,22 @@ export abstract class BaseChartView extends BasesView {
   protected getStringOption(key: string): string | undefined {
     const val = this.config.get(key)
     return typeof val === 'string' ? val : undefined
+  }
+
+  protected getVisualMapTransformerOptions(): VisualMapOptions {
+    const visualMapMin = this.config.get(BaseChartView.VISUAL_MAP_MIN_KEY) ? Number(this.config.get(BaseChartView.VISUAL_MAP_MIN_KEY)) : undefined
+    const visualMapMax = this.config.get(BaseChartView.VISUAL_MAP_MAX_KEY) ? Number(this.config.get(BaseChartView.VISUAL_MAP_MAX_KEY)) : undefined
+    const visualMapColor = (this.config.get(BaseChartView.VISUAL_MAP_COLOR_KEY) as string)?.split(',').map(s => s.trim()).filter(Boolean)
+    const visualMapOrient = this.config.get(BaseChartView.VISUAL_MAP_ORIENT_KEY) as 'horizontal' | 'vertical' | undefined
+    const visualMapType = this.config.get(BaseChartView.VISUAL_MAP_TYPE_KEY) as 'continuous' | 'piecewise' | undefined
+
+    return {
+      visualMapMin: !Number.isNaN(visualMapMin) ? visualMapMin : undefined,
+      visualMapMax: !Number.isNaN(visualMapMax) ? visualMapMax : undefined,
+      visualMapColor: visualMapColor && visualMapColor.length > 0 ? visualMapColor : undefined,
+      visualMapOrient,
+      visualMapType,
+    }
   }
 
   protected getCommonTransformerOptions(_?: unknown): BaseTransformerOptions {
