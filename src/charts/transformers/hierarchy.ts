@@ -151,7 +151,7 @@ export function createSunburstChartOption(
 export function createTreeChartOption(
   data: BasesData,
   pathProp: string,
-  options?: TreeTransformerOptions,
+  _options?: TreeTransformerOptions,
 ): EChartsOption {
   const hierarchyDataRaw = buildHierarchy(
     data,
