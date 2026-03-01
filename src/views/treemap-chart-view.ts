@@ -1,8 +1,6 @@
 import type {
-  QueryController,
   ViewOption,
 } from 'obsidian'
-import type BarePlugin from '../main'
 import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { EChartsOption } from 'echarts'
@@ -11,15 +9,6 @@ import { t } from '../lang/text'
 
 export class TreemapChartView extends BaseChartView {
   readonly type = 'treemap-chart'
-
-  constructor(controller: Readonly<QueryController>, containerEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-    super(
-      controller,
-      containerEl,
-      plugin,
-    )
-  }
-
   getViewType(): string {
     return 'treemap-chart'
   }
@@ -32,7 +21,7 @@ export class TreemapChartView extends BaseChartView {
     return 'layout-grid' // Use an icon that looks like a treemap
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.treemap.name_prop'),

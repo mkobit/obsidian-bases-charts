@@ -1,11 +1,9 @@
 import type {
-  QueryController,
   ViewOption,
 } from 'obsidian'
 import type { EChartsOption } from 'echarts'
 import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
-import type BarePlugin from '../main'
 import type { BasesData } from '../charts/transformers/base'
 import { t } from '../lang/text'
 
@@ -17,15 +15,6 @@ export class CandlestickChartView extends BaseChartView {
   public static readonly HIGH_PROP_KEY = 'highProp'
 
   readonly type = 'candlestick-chart'
-
-  constructor(controller: Readonly<QueryController>, containerEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-    super(
-      controller,
-      containerEl,
-      plugin,
-    )
-  }
-
   protected getChartOption(data: BasesData): EChartsOption | null {
     const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string
     const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string
@@ -60,7 +49,7 @@ export class CandlestickChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.candlestick.x_axis_prop'),

@@ -1,8 +1,6 @@
 import type {
-  QueryController,
   ViewOption,
 } from 'obsidian'
-import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
@@ -10,14 +8,6 @@ import type { BasesData } from '../charts/transformers/base'
 import { t } from '../lang/text'
 
 export class BoxplotChartView extends BaseChartView {
-  constructor(controller: Readonly<QueryController>, containerEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-    super(
-      controller,
-      containerEl,
-      plugin,
-    )
-  }
-
   protected getChartOption(data: BasesData): EChartsOption | null {
     const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string
     const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY) as string
@@ -39,7 +29,7 @@ export class BoxplotChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.boxplot.x_axis_prop'),

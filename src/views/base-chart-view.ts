@@ -147,7 +147,7 @@ export abstract class BaseChartView extends BasesView {
     }
   }
 
-  protected renderChart(_?: unknown): void {
+  protected renderChart(): void {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     !this.chartEl ? undefined : this.executeRender()
   }
@@ -203,7 +203,7 @@ export abstract class BaseChartView extends BasesView {
     return this.isDarkMode() ? 'dark' : undefined
   }
 
-  private isDarkMode(_?: unknown): boolean {
+  private isDarkMode(): boolean {
     return document.body.classList.contains('theme-dark')
   }
 
@@ -277,7 +277,7 @@ export abstract class BaseChartView extends BasesView {
     ]
   }
 
-  static getAxisViewOptions(_?: unknown): ViewOption[] {
+  static getAxisViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.axis.x_label'),
@@ -305,7 +305,7 @@ export abstract class BaseChartView extends BasesView {
     ]
   }
 
-  static getVisualMapViewOptions(_?: unknown): ViewOption[] {
+  static getVisualMapViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.visual_map.min'),

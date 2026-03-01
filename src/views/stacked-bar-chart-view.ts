@@ -1,21 +1,11 @@
-import type { QueryController, ViewOption } from 'obsidian'
+import type { ViewOption } from 'obsidian'
 import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
-import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
 
 export class StackedBarChartView extends BaseChartView {
   readonly type = 'stacked-bar-chart'
-
-  constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-    super(
-      controller,
-      scrollEl,
-      plugin,
-    )
-  }
-
   protected getChartOption(data: BasesData): EChartsOption | null {
     const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY)
     const xAxisLabel = this.config.get(BaseChartView.X_AXIS_LABEL_KEY) as string
@@ -48,7 +38,7 @@ export class StackedBarChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [...BaseChartView.getCommonViewOptions(),
       ...BaseChartView.getAxisViewOptions()]
   }

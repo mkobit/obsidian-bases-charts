@@ -1,22 +1,12 @@
-import type { QueryController, ViewOption } from 'obsidian'
+import type { ViewOption } from 'obsidian'
 import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
-import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
 import type { BasesData } from '../charts/transformers/base'
 import { t } from '../lang/text'
 
 export class AreaChartView extends BaseChartView {
   readonly type = 'area-chart'
-
-  constructor(controller: Readonly<QueryController>, scrollEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-    super(
-      controller,
-      scrollEl,
-      plugin,
-    )
-  }
-
   protected getChartOption(data: BasesData): EChartsOption | null {
     const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY)
     const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY)

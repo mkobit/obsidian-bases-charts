@@ -1,5 +1,4 @@
-import type { QueryController, ViewOption } from 'obsidian'
-import type BarePlugin from '../main'
+import type { ViewOption } from 'obsidian'
 import { BaseChartView } from './base-chart-view'
 import { transformDataToChartOption } from '../charts/transformer'
 import type { EChartsOption } from 'echarts'
@@ -8,16 +7,7 @@ import { t } from '../lang/text'
 
 export class HeatmapChartView extends BaseChartView {
   readonly type = 'heatmap-chart'
-
-  constructor(controller: Readonly<QueryController>, containerEl: Readonly<HTMLElement>, plugin: Readonly<BarePlugin>) {
-    super(
-      controller,
-      containerEl,
-      plugin,
-    )
-  }
-
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.common.x_axis_prop'),

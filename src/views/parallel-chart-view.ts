@@ -9,7 +9,7 @@ import { t } from '../lang/text'
 export class ParallelChartView extends BaseChartView {
   readonly type = 'parallel'
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       {
         displayName: t('views.parallel.dimensions'),
