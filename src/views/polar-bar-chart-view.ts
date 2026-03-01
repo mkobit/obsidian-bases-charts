@@ -6,21 +6,13 @@ import type { BasesData } from '../charts/transformers/base'
 import { t } from '../lang/text'
 
 export class PolarBarChartView extends BaseChartView {
-  type = 'polar_bar'
+  readonly type = 'polar-bar-chart'
 
-  getIcon(): string {
-    return 'bar-chart-2'
-  }
-
-  getDisplayName(): string {
-    return 'Polar Bar Chart'
-  }
-
-  getChartOption(data: BasesData): EChartsOption {
+  protected getChartOption(data: BasesData): EChartsOption | null {
     const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string
     const yProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string
     const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY) as string
-    const isStacked = String(this.config.get('stack')) === 'true'
+    const isStacked = this.getBooleanOption('stack') ?? false
 
     return transformDataToChartOption(
       data,

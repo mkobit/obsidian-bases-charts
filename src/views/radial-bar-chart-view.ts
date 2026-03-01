@@ -46,7 +46,7 @@ export class RadialBarChartView extends BaseChartView {
     const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY)
     const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY)
     const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY)
-    const isStacked = this.config.get('stack') === 'true'
+    const isStacked = this.getBooleanOption('stack') ?? false
 
     if (typeof xProp !== 'string' || typeof yProp !== 'string') {
       return null

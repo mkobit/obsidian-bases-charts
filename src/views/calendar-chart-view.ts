@@ -7,11 +7,6 @@ import { t } from '../lang/text'
 
 export class CalendarChartView extends BaseChartView {
   readonly type = 'calendar-chart'
-  getViewType(): string { return 'calendar-chart' }
-
-  getDisplayText(): string { return 'Calendar' }
-
-  getIcon(): string { return 'calendar' }
 
   static getViewOptions(): ViewOption[] {
     return [
