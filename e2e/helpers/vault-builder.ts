@@ -3,18 +3,32 @@ import * as fs from 'node:fs/promises'
 // eslint-disable-next-line import/no-nodejs-modules
 import * as path from 'node:path'
 import { z } from 'zod'
+import { Temporal } from 'temporal-polyfill'
 
 export const FrontmatterValueSchema = z.union([
   z.string(),
   z.number(),
   z.boolean(),
   z.array(z.string()).readonly(),
+  z.instanceof(Temporal.PlainDate),
+  z.instanceof(Temporal.Instant),
+  z.instanceof(Temporal.PlainDateTime),
+  z.instanceof(Temporal.ZonedDateTime),
 ])
 
 export type FrontmatterValue = z.infer<typeof FrontmatterValueSchema>
 
+export const PathSchema = z.object({
+  dir: z.string(),
+  name: z.string(),
+  ext: z.string(),
+  base: z.string(),
+}).readonly()
+
+export type Path = z.infer<typeof PathSchema>
+
 export const NoteDefinitionSchema = z.object({
-  relativePath: z.string(),
+  relativePath: PathSchema,
   frontmatter: z.record(z.string(), FrontmatterValueSchema).readonly(),
   body: z.string().optional(),
 }).readonly()
@@ -27,44 +41,42 @@ export const serializeFrontmatter = (fm: Readonly<Record<string, FrontmatterValu
     return '---\n---\n'
   }
 
-  const lines = ['---']
-  for (const [key, value] of entries) {
+  const lines = entries.flatMap(([key, value]) => {
     if (typeof value === 'string') {
-      // Escape quotes in string if necessary, but typically standard quotes are fine or just quote everything.
-      // Requirements say: string: key: "value" (quoted)
       const escapedValue = value.replace(/"/g, '\\"')
-      // eslint-disable-next-line functional/immutable-data
-      lines.push(`${key}: "${escapedValue}"`)
+      return [`${key}: "${escapedValue}"`]
     }
-    else if (typeof value === 'number' || typeof value === 'boolean') {
-      // Requirements say: number: key: 42 (unquoted), boolean: key: true (unquoted)
-      // eslint-disable-next-line functional/immutable-data
-      lines.push(`${key}: ${value}`)
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      return [`${key}: ${value}`]
     }
-    else if (Array.isArray(value)) {
-      // Requirements say: readonly string[]: key:\n  - item1\n  - item2 (YAML list format)
-      // eslint-disable-next-line functional/immutable-data
-      lines.push(`${key}:`)
-      for (const item of value) {
-        // eslint-disable-next-line functional/immutable-data
-        lines.push(`  - ${item}`)
-      }
+    if (Array.isArray(value)) {
+      return [`${key}:`, ...value.map(item => `  - ${item}`)]
     }
-  }
-  // eslint-disable-next-line functional/immutable-data
-  lines.push('---')
-  return lines.join('\n') + '\n'
+    // Handle Temporal objects by checking for toString
+    if (value && typeof (value as { toString?: () => string }).toString === 'function') {
+      return [`${key}: ${(value as { toString: () => string }).toString()}`]
+    }
+    return []
+  })
+
+  return ['---', ...lines, '---'].join('\n') + '\n'
 }
 
 export class NoteBuilder {
   private constructor(
-    private readonly relativePath: string,
+    private readonly relativePath: Path,
     private readonly frontmatter: Readonly<Record<string, FrontmatterValue>>,
     private readonly body?: string,
   ) {}
 
   static create(relativePath: string): NoteBuilder {
-    return new NoteBuilder(relativePath, {})
+    const parsed = path.parse(relativePath)
+    return new NoteBuilder({
+      dir: parsed.dir,
+      name: parsed.name,
+      ext: parsed.ext,
+      base: parsed.base,
+    }, {})
   }
 
   withProperty(key: string, value: FrontmatterValue): NoteBuilder {
@@ -95,6 +107,10 @@ export class VaultBuilder {
     return new VaultBuilder([])
   }
 
+  getNotes(): readonly NoteDefinition[] {
+    return this.notes
+  }
+
   withNote(note: NoteDefinition): VaultBuilder {
     return new VaultBuilder([...this.notes, note])
   }
@@ -102,18 +118,24 @@ export class VaultBuilder {
   withNotes(notes: readonly NoteDefinition[]): VaultBuilder {
     return new VaultBuilder([...this.notes, ...notes])
   }
+}
 
-  async build(outputDir: string): Promise<void> {
-    for (const note of this.notes) {
-      const fullPath = path.join(outputDir, note.relativePath)
-      const parentDir = path.dirname(fullPath)
+export async function writeNoteToVault(baseDir: string, note: NoteDefinition): Promise<void | Error> {
+  try {
+    const fullPath = path.join(baseDir, note.relativePath.dir, note.relativePath.base)
+    const parentDir = path.dirname(fullPath)
 
-      await fs.mkdir(parentDir, { recursive: true })
+    await fs.mkdir(parentDir, { recursive: true })
 
-      const frontmatterStr = serializeFrontmatter(note.frontmatter)
-      const content = note.body !== undefined ? `${frontmatterStr}\n${note.body}` : frontmatterStr
+    const frontmatterStr = serializeFrontmatter(note.frontmatter)
+    const content = note.body !== undefined ? `${frontmatterStr}\n${note.body}` : frontmatterStr
 
-      await fs.writeFile(fullPath, content, 'utf-8')
+    await fs.writeFile(fullPath, content, 'utf-8')
+  }
+  catch (error) {
+    if (error instanceof Error) {
+      return error
     }
+    return new Error(String(error))
   }
 }

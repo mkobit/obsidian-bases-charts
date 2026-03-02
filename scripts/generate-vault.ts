@@ -1,6 +1,6 @@
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
-import { VaultBuilder } from '../e2e/helpers/vault-builder'
+import { VaultBuilder, writeNoteToVault } from '../e2e/helpers/vault-builder'
 import {
   salesDataset,
   ganttDataset,
@@ -44,7 +44,21 @@ async function main() {
     .withNotes(characterDataset)
     .withNotes(serverMetricsDataset)
 
-  await builder.build(OUTPUT_DIR)
+  const errors: Error[] = []
+  for (const note of builder.getNotes()) {
+    const err = await writeNoteToVault(OUTPUT_DIR, note)
+    if (err instanceof Error) {
+      errors.push(err)
+    }
+  }
+
+  if (errors.length > 0) {
+    console.error('Errors encountered during generation:')
+    for (const err of errors) {
+      console.error(err)
+    }
+    process.exit(1)
+  }
 
   console.log('\nGeneration Summary:')
   console.log(`- Sales Notes: ${salesDataset.length}`)
