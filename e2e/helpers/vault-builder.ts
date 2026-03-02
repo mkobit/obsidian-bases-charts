@@ -87,6 +87,14 @@ export class NoteBuilder {
     )
   }
 
+  withFrontmatter(frontmatter: Readonly<Record<string, FrontmatterValue>>): NoteBuilder {
+    return new NoteBuilder(
+      this.relativePath,
+      { ...this.frontmatter, ...frontmatter },
+      this.body,
+    )
+  }
+
   withBody(content: string): NoteBuilder {
     return new NoteBuilder(this.relativePath, this.frontmatter, content)
   }

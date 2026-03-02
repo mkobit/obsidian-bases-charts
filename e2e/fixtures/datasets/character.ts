@@ -1,0 +1,30 @@
+import { z } from 'zod'
+import { NoteBuilder } from '../../helpers/vault-builder'
+import type { NoteDefinition } from '../../helpers/vault-builder'
+
+export const CharacterRecordSchema = z.object({
+  Name: z.string(),
+  Strength: z.number().int(),
+  Agility: z.number().int(),
+  Intelligence: z.number().int(),
+  Defense: z.number().int(),
+  HP: z.number().int(),
+}).readonly()
+
+export type CharacterRecord = z.infer<typeof CharacterRecordSchema>
+
+const rawCharacters: readonly CharacterRecord[] = [
+  { Name: 'Grom', Strength: 18, Agility: 10, Intelligence: 8, Defense: 16, HP: 150 },
+  { Name: 'Elara', Strength: 6, Agility: 12, Intelligence: 20, Defense: 8, HP: 80 },
+  { Name: 'Sylas', Strength: 10, Agility: 18, Intelligence: 12, Defense: 10, HP: 100 },
+  { Name: 'Bran', Strength: 12, Agility: 10, Intelligence: 16, Defense: 14, HP: 120 },
+  { Name: 'Kael', Strength: 16, Agility: 8, Intelligence: 14, Defense: 18, HP: 140 },
+  { Name: 'Lyra', Strength: 12, Agility: 16, Intelligence: 10, Defense: 12, HP: 110 },
+]
+
+export const characterDataset: readonly NoteDefinition[] = rawCharacters.map((record, index) => {
+  const charClass = ['Warrior', 'Mage', 'Rogue', 'Cleric', 'Paladin', 'Ranger'][index]
+  return NoteBuilder.create(`Char-${charClass}.md`)
+    .withFrontmatter(CharacterRecordSchema.parse(record))
+    .build()
+})
