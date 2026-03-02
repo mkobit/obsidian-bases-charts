@@ -35,14 +35,10 @@ export class RadialBarChartView extends BaseChartView {
       ...BaseChartView.getCommonViewOptions().filter(opt =>
       // Filter out options that are not applicable to Radial Bar or are already added
       // We keep Legend and Height
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (opt as any).key === BaseChartView.LEGEND_KEY
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        || (opt as any).key === BaseChartView.HEIGHT_KEY
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        || (opt as any).key === BaseChartView.LEGEND_POSITION_KEY
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        || (opt as any).key === BaseChartView.LEGEND_ORIENT_KEY),
+        (opt as { key?: string }).key === BaseChartView.LEGEND_KEY
+        || (opt as { key?: string }).key === BaseChartView.HEIGHT_KEY
+        || (opt as { key?: string }).key === BaseChartView.LEGEND_POSITION_KEY
+        || (opt as { key?: string }).key === BaseChartView.LEGEND_ORIENT_KEY),
     ]
   }
 
@@ -50,7 +46,7 @@ export class RadialBarChartView extends BaseChartView {
     const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY)
     const yProp = this.config.get(BaseChartView.Y_AXIS_PROP_KEY)
     const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY)
-    const isStacked = this.config.get('stack') === 'true'
+    const isStacked = this.getBooleanOption('stack') ?? false
 
     if (typeof xProp !== 'string' || typeof yProp !== 'string') {
       return null

@@ -6,23 +6,15 @@ import type { BasesData } from '../charts/transformers/base'
 import { t } from '../lang/text'
 
 export class PolarLineChartView extends BaseChartView {
-  type = 'polar_line'
+  readonly type = 'polar-line-chart'
 
-  getIcon(): string {
-    return 'activity'
-  }
-
-  getDisplayName(): string {
-    return 'Polar Line Chart'
-  }
-
-  getChartOption(data: BasesData): EChartsOption {
+  protected getChartOption(data: BasesData): EChartsOption | null {
     const xProp = this.config.get(BaseChartView.X_AXIS_PROP_KEY) as string
     const yProp = this.config.get(BaseChartView.VALUE_PROP_KEY) as string
     const seriesProp = this.config.get(BaseChartView.SERIES_PROP_KEY) as string
-    const isSmooth = this.config.get('smooth') === 'true'
-    const hasAreaStyle = this.config.get('areaStyle') === 'true'
-    const isStacked = this.config.get('stack') === 'true'
+    const isSmooth = this.getBooleanOption('smooth') ?? false
+    const hasAreaStyle = this.getBooleanOption('areaStyle') ?? false
+    const isStacked = this.getBooleanOption('stack') ?? false
 
     return transformDataToChartOption(
       data,

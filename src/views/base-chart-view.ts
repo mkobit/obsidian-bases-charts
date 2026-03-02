@@ -9,7 +9,7 @@ import {
 import * as echarts from 'echarts'
 import type BarePlugin from '../main'
 import type { EChartsOption } from 'echarts'
-import type { BasesData, BaseTransformerOptions } from '../charts/transformers/base'
+import type { BasesData, BaseTransformerOptions, VisualMapOptions } from '../charts/transformers/base'
 import { ChartModal } from './chart-modal'
 import { t } from '../lang/text'
 
@@ -112,6 +112,22 @@ export abstract class BaseChartView extends BasesView {
     return typeof val === 'string' ? val : undefined
   }
 
+  protected getVisualMapTransformerOptions(): VisualMapOptions {
+    const visualMapMin = this.config.get(BaseChartView.VISUAL_MAP_MIN_KEY) ? Number(this.config.get(BaseChartView.VISUAL_MAP_MIN_KEY)) : undefined
+    const visualMapMax = this.config.get(BaseChartView.VISUAL_MAP_MAX_KEY) ? Number(this.config.get(BaseChartView.VISUAL_MAP_MAX_KEY)) : undefined
+    const visualMapColor = (this.config.get(BaseChartView.VISUAL_MAP_COLOR_KEY) as string)?.split(',').map(s => s.trim()).filter(Boolean)
+    const visualMapOrient = this.config.get(BaseChartView.VISUAL_MAP_ORIENT_KEY) as 'horizontal' | 'vertical' | undefined
+    const visualMapType = this.config.get(BaseChartView.VISUAL_MAP_TYPE_KEY) as 'continuous' | 'piecewise' | undefined
+
+    return {
+      visualMapMin: !Number.isNaN(visualMapMin) ? visualMapMin : undefined,
+      visualMapMax: !Number.isNaN(visualMapMax) ? visualMapMax : undefined,
+      visualMapColor: visualMapColor && visualMapColor.length > 0 ? visualMapColor : undefined,
+      visualMapOrient,
+      visualMapType,
+    }
+  }
+
   protected getCommonTransformerOptions(): BaseTransformerOptions {
     const options: BaseTransformerOptions = {
       legend: this.getBooleanOption(BaseChartView.LEGEND_KEY),
@@ -148,7 +164,6 @@ export abstract class BaseChartView extends BasesView {
   }
 
   protected renderChart(): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     !this.chartEl ? undefined : this.executeRender()
   }
 
@@ -156,7 +171,6 @@ export abstract class BaseChartView extends BasesView {
     const height = this.getStringOption(BaseChartView.HEIGHT_KEY) || this.plugin.settings.defaultHeight
     this.chartEl.style.height = height
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.chart
       ? this.chart.resize()
       : (this.chart = echarts.init(
@@ -167,7 +181,6 @@ export abstract class BaseChartView extends BasesView {
     const data = this.data.data as unknown as BasesData
     const option = this.getChartOption(data)
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     option
       ? this.chart.setOption(
           option,
@@ -179,7 +192,6 @@ export abstract class BaseChartView extends BasesView {
   protected abstract getChartOption(data: BasesData): EChartsOption | null
 
   private readonly updateChartTheme = (): void => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.chart && (
       this.chart.dispose(),
       this.chart = echarts.init(

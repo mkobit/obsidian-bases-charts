@@ -270,6 +270,7 @@ export default tseslint.config(
         ignoreClasses: true,
         ignoreAccessorPattern: ['this.**'],
       }],
+      '@typescript-eslint/no-unused-expressions': 'off',
     },
   },
   // Overrides for Tests
