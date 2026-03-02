@@ -1,9 +1,7 @@
 ---
-Path: "Project/Backend/DB"
-Value: 30
-Department: "Engineering"
+Task: "Project Kickoff"
+Start: "2024-01-01"
+End: "2024-01-05"
+Category: "Planning"
+Status: "Done"
 ---
-
-# Task-1
-
-This is a sample file for demonstration.
