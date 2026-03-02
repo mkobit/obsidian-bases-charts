@@ -2,14 +2,24 @@
 import * as fs from 'node:fs/promises'
 // eslint-disable-next-line import/no-nodejs-modules
 import * as path from 'node:path'
+import { z } from 'zod'
 
-export type FrontmatterValue = string | number | boolean | readonly string[]
+export const FrontmatterValueSchema = z.union([
+  z.string(),
+  z.number(),
+  z.boolean(),
+  z.array(z.string()).readonly(),
+])
 
-export type NoteDefinition = Readonly<{
-  relativePath: string
-  frontmatter: Readonly<Record<string, FrontmatterValue>>
-  body?: string
-}>
+export type FrontmatterValue = z.infer<typeof FrontmatterValueSchema>
+
+export const NoteDefinitionSchema = z.object({
+  relativePath: z.string(),
+  frontmatter: z.record(z.string(), FrontmatterValueSchema).readonly(),
+  body: z.string().optional(),
+}).readonly()
+
+export type NoteDefinition = z.infer<typeof NoteDefinitionSchema>
 
 export const serializeFrontmatter = (fm: Readonly<Record<string, FrontmatterValue>>): string => {
   const entries = Object.entries(fm)
