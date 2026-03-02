@@ -52,9 +52,14 @@ export const serializeFrontmatter = (fm: Readonly<Record<string, FrontmatterValu
     if (Array.isArray(value)) {
       return [`${key}:`, ...value.map(item => `  - ${item}`)]
     }
-    // Handle Temporal objects by checking for toString
-    if (value && typeof (value as { toString?: () => string }).toString === 'function') {
-      return [`${key}: ${(value as { toString: () => string }).toString()}`]
+    // Explicitly check for Temporal types using instanceof
+    if (
+      value instanceof Temporal.PlainDate
+      || value instanceof Temporal.Instant
+      || value instanceof Temporal.PlainDateTime
+      || value instanceof Temporal.ZonedDateTime
+    ) {
+      return [`${key}: ${value.toString()}`]
     }
     return []
   })
@@ -62,49 +67,21 @@ export const serializeFrontmatter = (fm: Readonly<Record<string, FrontmatterValu
   return ['---', ...lines, '---'].join('\n') + '\n'
 }
 
-export class NoteBuilder {
-  private constructor(
-    private readonly relativePath: Path,
-    private readonly frontmatter: Readonly<Record<string, FrontmatterValue>>,
-    private readonly body?: string,
-  ) {}
-
-  static create(relativePath: string): NoteBuilder {
-    const parsed = path.parse(relativePath)
-    return new NoteBuilder({
+export const createNote = (
+  relativePath: string,
+  frontmatter: Readonly<Record<string, FrontmatterValue>>,
+  body?: string,
+): NoteDefinition => {
+  const parsed = path.parse(relativePath)
+  return {
+    relativePath: {
       dir: parsed.dir,
       name: parsed.name,
       ext: parsed.ext,
       base: parsed.base,
-    }, {})
-  }
-
-  withProperty(key: string, value: FrontmatterValue): NoteBuilder {
-    return new NoteBuilder(
-      this.relativePath,
-      { ...this.frontmatter, [key]: value },
-      this.body,
-    )
-  }
-
-  withFrontmatter(frontmatter: Readonly<Record<string, FrontmatterValue>>): NoteBuilder {
-    return new NoteBuilder(
-      this.relativePath,
-      { ...this.frontmatter, ...frontmatter },
-      this.body,
-    )
-  }
-
-  withBody(content: string): NoteBuilder {
-    return new NoteBuilder(this.relativePath, this.frontmatter, content)
-  }
-
-  build(): NoteDefinition {
-    return {
-      relativePath: this.relativePath,
-      frontmatter: this.frontmatter,
-      body: this.body,
-    }
+    },
+    frontmatter,
+    body,
   }
 }
 

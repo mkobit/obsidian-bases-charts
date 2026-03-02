@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { NoteBuilder } from '../../helpers/vault-builder'
+import { createNote } from '../../helpers/vault-builder'
 import type { NoteDefinition } from '../../helpers/vault-builder'
 
 export const SalesRecordSchema = z.object({
@@ -26,7 +26,5 @@ const rawSales: readonly SalesRecord[] = [
 ]
 
 export const salesDataset: readonly NoteDefinition[] = rawSales.map(record =>
-  NoteBuilder.create(`Sales-${record.Date.slice(0, 7)}.md`)
-    .withFrontmatter(SalesRecordSchema.parse(record))
-    .build(),
+  createNote(`Sales-${record.Date.slice(0, 7)}.md`, SalesRecordSchema.parse(record)),
 )

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { NoteBuilder } from '../../helpers/vault-builder'
+import { createNote } from '../../helpers/vault-builder'
 import type { NoteDefinition } from '../../helpers/vault-builder'
 
 export const ScoreRecordSchema = z.object({
@@ -30,7 +30,5 @@ const rawScores: readonly ScoreRecord[] = [
 ]
 
 export const scoreDataset: readonly NoteDefinition[] = rawScores.map(record =>
-  NoteBuilder.create(`Score-${record.Student}-${record.Subject}.md`)
-    .withFrontmatter(ScoreRecordSchema.parse(record))
-    .build(),
+  createNote(`Score-${record.Student}-${record.Subject}.md`, ScoreRecordSchema.parse(record)),
 )

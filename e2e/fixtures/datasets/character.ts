@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { NoteBuilder } from '../../helpers/vault-builder'
+import { createNote } from '../../helpers/vault-builder'
 import type { NoteDefinition } from '../../helpers/vault-builder'
 
 export const CharacterRecordSchema = z.object({
@@ -24,7 +24,5 @@ const rawCharacters: readonly CharacterRecord[] = [
 
 export const characterDataset: readonly NoteDefinition[] = rawCharacters.map((record, index) => {
   const charClass = ['Warrior', 'Mage', 'Rogue', 'Cleric', 'Paladin', 'Ranger'][index]
-  return NoteBuilder.create(`Char-${charClass}.md`)
-    .withFrontmatter(CharacterRecordSchema.parse(record))
-    .build()
+  return createNote(`Char-${charClass}.md`, CharacterRecordSchema.parse(record))
 })

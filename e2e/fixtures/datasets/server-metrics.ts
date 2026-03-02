@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import { NoteBuilder } from '../../helpers/vault-builder'
+import { Temporal } from 'temporal-polyfill'
+import { createNote } from '../../helpers/vault-builder'
 import type { NoteDefinition } from '../../helpers/vault-builder'
 
 export const ServerMetricsRecordSchema = z.object({
   Server: z.enum(['Server A', 'Server B', 'Server C']),
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  Date: z.string().datetime({ offset: true }),
+  Date: z.instanceof(Temporal.Instant),
   CPU: z.number(),
   Memory: z.number(),
   Requests: z.number().int(),
@@ -13,7 +13,7 @@ export const ServerMetricsRecordSchema = z.object({
 
 export type ServerMetricsRecord = z.infer<typeof ServerMetricsRecordSchema>
 
-const rawServerMetrics: readonly ServerMetricsRecord[] = [
+const rawServerMetrics = [
   { Server: 'Server A', Date: '2023-11-01T00:00:00Z', CPU: 25, Memory: 40, Requests: 1500 },
   { Server: 'Server A', Date: '2023-11-01T04:00:00Z', CPU: 30, Memory: 45, Requests: 1800 },
   { Server: 'Server A', Date: '2023-11-01T08:00:00Z', CPU: 65, Memory: 70, Requests: 5500 },
@@ -34,7 +34,7 @@ const rawServerMetrics: readonly ServerMetricsRecord[] = [
   { Server: 'Server C', Date: '2023-11-01T20:00:00Z', CPU: 30, Memory: 40, Requests: 2500 },
   { Server: 'Server A', Date: '2023-11-01T23:59:59Z', CPU: 55, Memory: 63.3, Requests: 27_300 },
   { Server: 'Server B', Date: '2023-11-01T23:59:59Z', CPU: 45.6, Memory: 56.3, Requests: 23_700 },
-]
+] as const
 
 export const serverMetricsDataset: readonly NoteDefinition[] = rawServerMetrics.map((record) => {
   const isSummary = record.Date.includes('23:59:59')
@@ -43,7 +43,13 @@ export const serverMetricsDataset: readonly NoteDefinition[] = rawServerMetrics.
     ? `${record.Server.replace(' ', '')}-Summary.md`
     : `${record.Server.replace(' ', '')}-${timeStr}.md`
 
-  return NoteBuilder.create(fileName)
-    .withFrontmatter(ServerMetricsRecordSchema.parse(record))
-    .build()
+  const typedRecord: ServerMetricsRecord = {
+    Server: record.Server,
+    Date: Temporal.Instant.from(record.Date),
+    CPU: record.CPU,
+    Memory: record.Memory,
+    Requests: record.Requests,
+  }
+
+  return createNote(fileName, ServerMetricsRecordSchema.parse(typedRecord))
 })

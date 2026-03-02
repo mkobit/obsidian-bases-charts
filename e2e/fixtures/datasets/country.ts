@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { NoteBuilder } from '../../helpers/vault-builder'
+import { createNote } from '../../helpers/vault-builder'
 import type { NoteDefinition } from '../../helpers/vault-builder'
 
 export const CountryRecordSchema = z.object({
@@ -25,7 +25,5 @@ const rawCountries: readonly CountryRecord[] = [
 ]
 
 export const countryDataset: readonly NoteDefinition[] = rawCountries.map(record =>
-  NoteBuilder.create(`Country-${record.Country}.md`)
-    .withFrontmatter(CountryRecordSchema.parse(record))
-    .build(),
+  createNote(`Country-${record.Country}.md`, CountryRecordSchema.parse(record)),
 )
