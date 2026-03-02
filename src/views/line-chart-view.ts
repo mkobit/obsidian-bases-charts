@@ -36,7 +36,7 @@ export class LineChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       ...BaseChartView.getCommonViewOptions(),
       ...BaseChartView.getAxisViewOptions(),

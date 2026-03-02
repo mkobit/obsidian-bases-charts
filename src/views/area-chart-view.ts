@@ -38,7 +38,7 @@ export class AreaChartView extends BaseChartView {
     )
   }
 
-  static getViewOptions(_?: unknown): ViewOption[] {
+  static getViewOptions(): ViewOption[] {
     return [
       ...BaseChartView.getCommonViewOptions(),
       ...BaseChartView.getAxisViewOptions(),

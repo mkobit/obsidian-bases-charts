@@ -410,7 +410,7 @@ export default class BarePlugin extends Plugin {
           containerEl,
           this,
         ),
-        options: (_?: unknown) => GanttChartView.getViewOptions(this),
+        options: () => GanttChartView.getViewOptions(this),
       },
     )
 
