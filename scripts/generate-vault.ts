@@ -1,5 +1,6 @@
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
+import * as readline from 'node:readline/promises'
 import { VaultBuilder, writeNoteToVault } from '../e2e/vault'
 import {
   salesDataset,
@@ -13,9 +14,19 @@ import {
 
 const OUTPUT_DIR = path.join(__dirname, '../example/Charts')
 
+async function confirmAction(promptText: string): Promise<boolean> {
+  if (process.argv.includes('--force') || process.argv.includes('-f')) {
+    return true
+  }
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+  const answer = await rl.question(`${promptText} [y/N]: `)
+  rl.close()
+  return answer.toLowerCase().trim() === 'y'
+}
+
 async function clearMarkdownFiles(dir: string): Promise<void> {
   try {
-    const files = await fs.readdir(dir)
+    const files = await fs.readdir(dir, { recursive: true })
     for (const file of files) {
       if (file.endsWith('.md')) {
         await fs.rm(path.join(dir, file))
@@ -31,6 +42,12 @@ async function clearMarkdownFiles(dir: string): Promise<void> {
 }
 
 async function main() {
+  const confirmed = await confirmAction(`Are you sure you want to clear markdown files in ${OUTPUT_DIR}?`)
+  if (!confirmed) {
+    console.log('Aborted.')
+    process.exit(0)
+  }
+
   console.log(`Clearing existing markdown files in ${OUTPUT_DIR}...`)
   await clearMarkdownFiles(OUTPUT_DIR)
 
@@ -44,13 +61,8 @@ async function main() {
     .withNotes(characterDataset)
     .withNotes(serverMetricsDataset)
 
-  const errors: Error[] = []
-  for (const note of builder.getNotes()) {
-    const err = await writeNoteToVault(OUTPUT_DIR, note)
-    if (err instanceof Error) {
-      errors.push(err)
-    }
-  }
+  const results = await Promise.all(builder.getNotes().map(note => writeNoteToVault(OUTPUT_DIR, note)))
+  const errors = results.filter((err): err is Error => err instanceof Error)
 
   if (errors.length > 0) {
     console.error('Errors encountered during generation:')
