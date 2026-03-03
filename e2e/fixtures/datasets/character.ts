@@ -4,7 +4,7 @@ import type { NoteDefinition } from '../../vault'
 
 export const CharacterRecordSchema = z.object({
   Name: z.string(),
-  Class: z.string(),
+  Class: z.enum(['Warrior', 'Mage', 'Rogue', 'Cleric', 'Paladin', 'Ranger']),
   Strength: z.number().int(),
   Agility: z.number().int(),
   Intelligence: z.number().int(),
