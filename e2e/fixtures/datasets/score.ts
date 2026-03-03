@@ -2,11 +2,31 @@ import { z } from 'zod'
 import { createNote } from '../../vault'
 import type { NoteDefinition } from '../../vault'
 
+function calculateGrade(score: number): 'A' | 'B' | 'C' | 'D' | 'F' {
+  if (score >= 90) {
+    return 'A'
+  }
+  if (score >= 80) {
+    return 'B'
+  }
+  if (score >= 70) {
+    return 'C'
+  }
+  if (score >= 60) {
+    return 'D'
+  }
+  return 'F'
+}
+
 export const ScoreRecordSchema = z.object({
   Subject: z.enum(['Math', 'Science', 'History']),
   Score: z.number().int().min(0).max(100),
-  Grade: z.enum(['A', 'B', 'C', 'D', 'F']),
   Student: z.string(),
+}).transform((data) => {
+  return {
+    ...data,
+    Grade: calculateGrade(data.Score),
+  }
 }).readonly()
 
 export type ScoreRecord = z.infer<typeof ScoreRecordSchema>
@@ -29,24 +49,7 @@ const rawScores = [
   { Subject: 'History', Score: 88, Student: 'Eve' },
 ] as const
 
-function calculateGrade(score: number): string {
-  if (score >= 90) {
-    return 'A'
-  }
-  if (score >= 80) {
-    return 'B'
-  }
-  if (score >= 70) {
-    return 'C'
-  }
-  if (score >= 60) {
-    return 'D'
-  }
-  return 'F'
-}
-
 export const scoreDataset: readonly NoteDefinition[] = rawScores.map((record) => {
-  const grade = calculateGrade(record.Score)
-  const typedRecord: ScoreRecord = { ...record, Grade: grade as ScoreRecord['Grade'] }
-  return createNote(`Scores/Score-${record.Student}-${record.Subject}.md`, ScoreRecordSchema.parse(typedRecord))
+  const parsedRecord = ScoreRecordSchema.parse(record)
+  return createNote(`Scores/Score-${parsedRecord.Student}-${parsedRecord.Subject}.md`, parsedRecord)
 })
