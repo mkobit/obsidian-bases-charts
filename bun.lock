@@ -1,6 +1,5 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "obsidian-bases-charts",
@@ -11,7 +10,7 @@
         "obsidian": "1.11.4",
         "remeda": "^2.33.6",
         "temporal-polyfill": "^0.3.0",
-        "zod": "^4.3.5",
+        "zod": "^4.3.6",
       },
       "devDependencies": {
         "@eslint/compat": "^2.0.2",
