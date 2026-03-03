@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { createNote } from '../../helpers/vault-builder'
-import type { NoteDefinition } from '../../helpers/vault-builder'
+import { createNote } from '../../vault'
+import type { NoteDefinition } from '../../vault'
 
 export const CountryRecordSchema = z.object({
   Country: z.string(),

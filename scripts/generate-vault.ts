@@ -1,6 +1,6 @@
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
-import { VaultBuilder, writeNoteToVault } from '../e2e/helpers/vault-builder'
+import { VaultBuilder, writeNoteToVault } from '../e2e/vault'
 import {
   salesDataset,
   ganttDataset,

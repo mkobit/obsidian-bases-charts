@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { Temporal } from 'temporal-polyfill'
-import { createNote } from '../../helpers/vault-builder'
-import type { NoteDefinition } from '../../helpers/vault-builder'
+import { createNote } from '../../vault'
+import type { NoteDefinition } from '../../vault'
 
 export const ServerMetricsRecordSchema = z.object({
   Server: z.enum(['Server A', 'Server B', 'Server C']),

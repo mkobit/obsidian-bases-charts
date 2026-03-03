@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { createNote } from '../../helpers/vault-builder'
-import type { NoteDefinition } from '../../helpers/vault-builder'
+import { createNote } from '../../vault'
+import type { NoteDefinition } from '../../vault'
 
 export const StockRecordSchema = z.object({
   Date: z.string(),
