@@ -308,6 +308,8 @@ export default tseslint.config(
         ignoreClasses: true,
         ignoreAccessorPattern: ['this.**'],
       }],
+      'functional/no-let': 'off', // Allow let in Playwright e2e tests
+      '@typescript-eslint/no-non-null-assertion': 'off', // Allow non-null assertions in tests
     },
   },
   // Legacy Transformers (Pending Refactor)
@@ -432,5 +434,7 @@ export default tseslint.config(
     'versions.json',
     'main.js',
     'coverage',
+    'playwright-report/**',
+    'test-results/**',
   ]),
 )
